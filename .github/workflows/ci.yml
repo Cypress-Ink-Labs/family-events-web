@@ -129,12 +129,13 @@ jobs:
           # misfires. Re-check the post-condition here so CI fails early and
           # clearly if the admin row isn't fully provisioned.
           result=$(psql "$DB_URL" -t -A -F '|' -v ON_ERROR_STOP=1 \
-            -v admin_email="$ADMIN_EMAIL" -c "
+            -v admin_email="$ADMIN_EMAIL" <<'SQL' | tr -d '[:space:]'
             SELECT up.role, COALESCE(ua.is_enabled::text, 'false')
             FROM public.user_profiles up
             LEFT JOIN public.user_access ua ON ua.user_id = up.id
             WHERE up.email = :'admin_email';
-          " | tr -d '[:space:]')
+          SQL
+          )
           if [ "$result" != "admin|true" ]; then
             echo "::error::admin not provisioned: got '$result', want 'admin|true'"
             exit 1
