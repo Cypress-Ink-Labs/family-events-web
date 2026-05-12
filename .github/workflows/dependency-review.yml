@@ -1,0 +1,37 @@
+name: dependency-review
+
+# Runs on PRs only: compares the PR's lockfile against the base branch and
+# fails the build if a new direct or transitive dependency carries a known
+# vulnerability. Cheap (<30s) so it gates every PR.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/dependency-review.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: review
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          # Block any new dep that introduces a high-or-critical severity vuln.
+          fail-on-severity: high
+          # Permissive license posture for now (we use Apache/MIT/BSD/ISC
+          # everywhere); flip to deny-list when we have a license policy.
+          comment-summary-in-pr: on-failure

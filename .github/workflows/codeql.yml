@@ -1,0 +1,57 @@
+name: codeql
+
+# CodeQL SAST scan. Runs weekly + on PRs touching code, plus pushes to main.
+# Independent from ci.yml because it is slow (~5 min) and shouldn't gate
+# every PR's typical lint/test cycle. Findings appear under the repo's
+# Security tab.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "supabase/functions/**"
+      - ".github/workflows/codeql.yml"
+  schedule:
+    - cron: "0 4 * * 1" # weekly Monday 04:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: analyze ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@1521896cd211af95be3f02edf6f436e10b819c27 # v3.35.4
+        with:
+          languages: ${{ matrix.language }}
+          # The default query suite is "code-scanning"; security-extended adds
+          # broader CWE coverage without the false-positive churn of
+          # security-and-quality. Worth the slight extra runtime.
+          queries: security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@1521896cd211af95be3f02edf6f436e10b819c27 # v3.35.4
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@1521896cd211af95be3f02edf6f436e10b819c27 # v3.35.4
+        with:
+          category: "/language:${{ matrix.language }}"
