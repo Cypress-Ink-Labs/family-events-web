@@ -30,11 +30,15 @@ pids+=("$!")
 pnpm run dev &
 pids+=("$!")
 
-while true; do
-  for pid in "${pids[@]}"; do
-    if ! kill -0 "$pid" 2>/dev/null; then
-      wait "$pid"
-    fi
-  done
-  sleep 1
-done
+# Block until ANY child exits. `wait -n` returns as soon as the first child
+# completes (or fails), at which point cleanup() tears down the rest. Replaces
+# the prior `while true; sleep 1` polling loop, which (a) wasted a second on
+# every iteration before noticing a death, and (b) could deadlock by calling
+# `wait` on an already-reaped pid.
+if wait -n; then
+  exit 0
+else
+  exit_code=$?
+  echo "[dev-all] child exited with status $exit_code; shutting down siblings" >&2
+  exit "$exit_code"
+fi
