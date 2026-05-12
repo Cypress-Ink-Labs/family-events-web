@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
 
       - name: Secret scan
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@37b77001d0174ebec2fcca2bd83ff83a6d45a3ab # v3.95.3
         with:
           path: ./
           base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
@@ -36,7 +36,10 @@ jobs:
           extra_args: --only-verified
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
+        with:
+          version: 11.0.9
+          run_install: false
 
       - name: Setup Node
         uses: actions/setup-node@v6
