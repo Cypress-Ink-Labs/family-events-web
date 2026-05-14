@@ -32,9 +32,7 @@ export function EventPin({ bucket, highlighted }: EventPinProps) {
   const fill = PIN_COLORS[bucket]
   return (
     <span
-      className={`relative inline-block ${
-        highlighted ? "scale-125" : ""
-      } transition-transform`}
+      className={`relative inline-block ${highlighted ? "scale-125" : ""} transition-transform`}
     >
       {bucket === "today" && (
         <span

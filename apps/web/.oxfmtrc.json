@@ -1,4 +1,8 @@
 {
   "$schema": "../../node_modules/oxfmt/configuration_schema.json",
-  "extends": ["../../packages/config-quality/oxfmt.base.json"]
+  "semi": false,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 100
 }

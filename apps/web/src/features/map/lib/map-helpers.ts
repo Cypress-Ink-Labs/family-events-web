@@ -17,12 +17,7 @@ export function dateBucket(start: string | Date, now: Date = new Date()): DateBu
 // Haversine — great-circle distance in km. Accurate enough for "how far is
 // this venue from me" UI labels; the underlying earth-isn't-a-sphere error is
 // well under a percent for the distances anyone will see in a single city.
-export function distanceKm(
-  lat1: number,
-  lng1: number,
-  lat2: number,
-  lng2: number
-): number {
+export function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
   const toRad = (deg: number) => (deg * Math.PI) / 180
   const dLat = toRad(lat2 - lat1)

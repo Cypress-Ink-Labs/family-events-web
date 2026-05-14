@@ -6,9 +6,7 @@ export interface MapPointProps {
   eventId: string
 }
 
-export type ClusterOrPoint =
-  | ClusterFeature<{ point_count: number }>
-  | PointFeature<MapPointProps>
+export type ClusterOrPoint = ClusterFeature<{ point_count: number }> | PointFeature<MapPointProps>
 
 interface UseClustersArgs {
   points: PointFeature<MapPointProps>[]

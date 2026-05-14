@@ -69,8 +69,11 @@ export function MapViewPage() {
     bounds: null,
   })
 
-  const { location: userLocation, status: locationStatus, request: requestLocation } =
-    useUserLocation()
+  const {
+    location: userLocation,
+    status: locationStatus,
+    request: requestLocation,
+  } = useUserLocation()
 
   const { data: events = [], isLoading: isEventsLoading } = useEnrichedEvents({
     cityId: selectedCity?.id,
@@ -78,10 +81,7 @@ export function MapViewPage() {
     enabled: Boolean(selectedCity?.id),
   })
 
-  const mappable: MappedEvent[] = useMemo(
-    () => events.filter(hasCoords),
-    [events]
-  )
+  const mappable: MappedEvent[] = useMemo(() => events.filter(hasCoords), [events])
 
   // Convert events → GeoJSON for supercluster. Memoised so the index isn't
   // rebuilt on every viewport tick.
@@ -168,8 +168,7 @@ export function MapViewPage() {
   const sortedList = useMemo(
     () =>
       [...mappable].sort(
-        (a, b) =>
-          new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
+        (a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
       ),
     [mappable]
   )
@@ -210,7 +209,9 @@ export function MapViewPage() {
               type="button"
               onClick={() => setMobilePane("map")}
               className={`px-3 py-1.5 text-xs font-medium ${
-                mobilePane === "map" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                mobilePane === "map"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               Map
@@ -219,7 +220,9 @@ export function MapViewPage() {
               type="button"
               onClick={() => setMobilePane("list")}
               className={`px-3 py-1.5 text-xs font-medium ${
-                mobilePane === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                mobilePane === "list"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               List
@@ -250,155 +253,151 @@ export function MapViewPage() {
         </div>
       ) : (
         <div className="flex-1 min-h-0 grid md:grid-cols-[minmax(280px,360px)_1fr]">
-            {/* LEFT — scrollable list (desktop always, mobile when toggled). */}
-            <aside
-              className={`${
-                mobilePane === "list" ? "flex" : "hidden md:flex"
-              } flex-col border-r border-border/60 bg-background/50 min-h-0`}
+          {/* LEFT — scrollable list (desktop always, mobile when toggled). */}
+          <aside
+            className={`${
+              mobilePane === "list" ? "flex" : "hidden md:flex"
+            } flex-col border-r border-border/60 bg-background/50 min-h-0`}
+          >
+            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border/60 flex items-center gap-1">
+              <List className="h-3 w-3" />
+              {sortedList.length} sorted by date
+            </div>
+            <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
+              {sortedList.map((event) => (
+                <EventListItem
+                  key={event.id}
+                  event={event}
+                  active={popupEvent?.id === event.id || hoveredId === event.id}
+                  userLocation={userLocation}
+                  onHover={setHoveredId}
+                  onSelect={handleSelectEvent}
+                />
+              ))}
+            </div>
+          </aside>
+
+          {/* RIGHT — map. */}
+          <div className={`${mobilePane === "map" ? "block" : "hidden md:block"} relative min-h-0`}>
+            <MapGL
+              ref={mapRef}
+              initialViewState={{
+                longitude: centerLng!,
+                latitude: centerLat!,
+                zoom: 11,
+              }}
+              mapStyle={mapStyle}
+              style={{ width: "100%", height: "100%" }}
+              attributionControl={{ compact: true }}
+              onLoad={handleLoad}
+              onMove={handleMove}
             >
-              <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border/60 flex items-center gap-1">
-                <List className="h-3 w-3" />
-                {sortedList.length} sorted by date
+              <NavigationControl position="top-left" showCompass={false} />
+
+              {/* Geolocation control — opt-in, no auto-prompt. */}
+              <div className="absolute top-2 right-2 z-10">
+                <Button
+                  size="sm"
+                  variant={locationStatus === "granted" ? "default" : "outline"}
+                  onClick={requestLocation}
+                  disabled={locationStatus === "loading"}
+                  className="gap-1.5 h-8 text-xs shadow"
+                >
+                  <Locate className="h-3.5 w-3.5" />
+                  {locationStatus === "loading"
+                    ? "Locating..."
+                    : locationStatus === "granted"
+                      ? "You're here"
+                      : locationStatus === "denied"
+                        ? "Location blocked"
+                        : "Use my location"}
+                </Button>
               </div>
-              <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
-                {sortedList.map((event) => (
-                  <EventListItem
-                    key={event.id}
-                    event={event}
-                    active={popupEvent?.id === event.id || hoveredId === event.id}
-                    userLocation={userLocation}
-                    onHover={setHoveredId}
-                    onSelect={handleSelectEvent}
-                  />
-                ))}
-              </div>
-            </aside>
 
-            {/* RIGHT — map. */}
-            <div
-              className={`${
-                mobilePane === "map" ? "block" : "hidden md:block"
-              } relative min-h-0`}
-            >
-              <MapGL
-                ref={mapRef}
-                initialViewState={{
-                  longitude: centerLng!,
-                  latitude: centerLat!,
-                  zoom: 11,
-                }}
-                mapStyle={mapStyle}
-                style={{ width: "100%", height: "100%" }}
-                attributionControl={{ compact: true }}
-                onLoad={handleLoad}
-                onMove={handleMove}
-              >
-                <NavigationControl position="top-left" showCompass={false} />
+              {userLocation && (
+                <Marker
+                  longitude={userLocation.longitude}
+                  latitude={userLocation.latitude}
+                  anchor="center"
+                >
+                  <UserLocationDot />
+                </Marker>
+              )}
 
-                {/* Geolocation control — opt-in, no auto-prompt. */}
-                <div className="absolute top-2 right-2 z-10">
-                  <Button
-                    size="sm"
-                    variant={locationStatus === "granted" ? "default" : "outline"}
-                    onClick={requestLocation}
-                    disabled={locationStatus === "loading"}
-                    className="gap-1.5 h-8 text-xs shadow"
-                  >
-                    <Locate className="h-3.5 w-3.5" />
-                    {locationStatus === "loading"
-                      ? "Locating..."
-                      : locationStatus === "granted"
-                        ? "You're here"
-                        : locationStatus === "denied"
-                          ? "Location blocked"
-                          : "Use my location"}
-                  </Button>
-                </div>
-
-                {userLocation && (
-                  <Marker
-                    longitude={userLocation.longitude}
-                    latitude={userLocation.latitude}
-                    anchor="center"
-                  >
-                    <UserLocationDot />
-                  </Marker>
-                )}
-
-                {clusters.map((feature) => {
-                  const [lng, lat] = feature.geometry.coordinates as [number, number]
-                  if (isClusterFeature(feature)) {
-                    const clusterId = feature.id as number
-                    const count = feature.properties.point_count
-                    return (
-                      <Marker
-                        key={`cluster-${clusterId}`}
-                        longitude={lng}
-                        latitude={lat}
-                        anchor="center"
-                        onClick={(e) => {
-                          e.originalEvent.stopPropagation()
-                          const targetZoom = expand(clusterId)
-                          mapRef.current?.flyTo({
-                            center: [lng, lat],
-                            zoom: Math.min(targetZoom + 0.5, 18),
-                            speed: 1.4,
-                            essential: true,
-                          })
-                        }}
-                      >
-                        <ClusterBubble count={count} />
-                      </Marker>
-                    )
-                  }
-
-                  const event = eventById.get(feature.properties.eventId)
-                  if (!event) return null
-                  const bucket = dateBucket(event.start_datetime)
+              {clusters.map((feature) => {
+                const [lng, lat] = feature.geometry.coordinates as [number, number]
+                if (isClusterFeature(feature)) {
+                  const clusterId = feature.id as number
+                  const count = feature.properties.point_count
                   return (
                     <Marker
-                      key={event.id}
+                      key={`cluster-${clusterId}`}
                       longitude={lng}
                       latitude={lat}
-                      anchor="bottom"
+                      anchor="center"
                       onClick={(e) => {
                         e.originalEvent.stopPropagation()
-                        setPopupEvent(event)
+                        const targetZoom = expand(clusterId)
+                        mapRef.current?.flyTo({
+                          center: [lng, lat],
+                          zoom: Math.min(targetZoom + 0.5, 18),
+                          speed: 1.4,
+                          essential: true,
+                        })
                       }}
                     >
-                      <button
-                        type="button"
-                        aria-label={event.title}
-                        onMouseEnter={() => setHoveredId(event.id)}
-                        onMouseLeave={() => setHoveredId(null)}
-                        className="block transition-transform hover:scale-110 active:scale-95"
-                      >
-                        <EventPin
-                          bucket={bucket}
-                          highlighted={hoveredId === event.id || popupEvent?.id === event.id}
-                        />
-                      </button>
+                      <ClusterBubble count={count} />
                     </Marker>
                   )
-                })}
+                }
 
-                {popupEvent && (
-                  <Popup
-                    longitude={popupEvent.longitude}
-                    latitude={popupEvent.latitude}
+                const event = eventById.get(feature.properties.eventId)
+                if (!event) return null
+                const bucket = dateBucket(event.start_datetime)
+                return (
+                  <Marker
+                    key={event.id}
+                    longitude={lng}
+                    latitude={lat}
                     anchor="bottom"
-                    offset={36}
-                    closeButton
-                    closeOnClick={false}
-                    onClose={() => setPopupEvent(null)}
-                    maxWidth="280px"
+                    onClick={(e) => {
+                      e.originalEvent.stopPropagation()
+                      setPopupEvent(event)
+                    }}
                   >
-                    <EventPopup event={popupEvent} userLocation={userLocation} />
-                  </Popup>
-                )}
-              </MapGL>
-            </div>
+                    <button
+                      type="button"
+                      aria-label={event.title}
+                      onMouseEnter={() => setHoveredId(event.id)}
+                      onMouseLeave={() => setHoveredId(null)}
+                      className="block transition-transform hover:scale-110 active:scale-95"
+                    >
+                      <EventPin
+                        bucket={bucket}
+                        highlighted={hoveredId === event.id || popupEvent?.id === event.id}
+                      />
+                    </button>
+                  </Marker>
+                )
+              })}
+
+              {popupEvent && (
+                <Popup
+                  longitude={popupEvent.longitude}
+                  latitude={popupEvent.latitude}
+                  anchor="bottom"
+                  offset={36}
+                  closeButton
+                  closeOnClick={false}
+                  onClose={() => setPopupEvent(null)}
+                  maxWidth="280px"
+                >
+                  <EventPopup event={popupEvent} userLocation={userLocation} />
+                </Popup>
+              )}
+            </MapGL>
           </div>
+        </div>
       )}
     </div>
   )
