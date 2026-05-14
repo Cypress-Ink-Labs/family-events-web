@@ -9,6 +9,8 @@ on:
     branches: [main]
     paths:
       - "package.json"
+      - "apps/**/package.json"
+      - "packages/**/package.json"
       - "pnpm-lock.yaml"
       - ".github/workflows/dependency-review.yml"
 

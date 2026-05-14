@@ -50,8 +50,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Docs guards
+        run: pnpm run docs:test
+
+      - name: Workspace guards
+        run: pnpm run workspace:test
+
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter @family-events/web exec playwright install --with-deps
 
       - name: Check
         run: pnpm run check
@@ -158,9 +164,41 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report
-          path: output/playwright/
+          path: apps/web/output/playwright/
           retention-days: 7
 
       - name: Stop local Supabase
         if: always()
         run: bash scripts/supabase.sh stop || true
+
+  ios:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
+        with:
+          version: 11.0.9
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate iOS project
+        run: cd apps/ios && xcodegen generate
+
+      - name: Run iOS tests
+        run: cd apps/ios && xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination 'platform=iOS Simulator,name=iPhone 15' test
