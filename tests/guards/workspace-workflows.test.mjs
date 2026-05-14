@@ -7,6 +7,7 @@ const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "
 const ciPath = path.join(repoRoot, ".github", "workflows", "ci.yml")
 const depReviewPath = path.join(repoRoot, ".github", "workflows", "dependency-review.yml")
 const localScriptPath = path.join(repoRoot, "scripts", "check-monorepo.sh")
+const rootPackagePath = path.join(repoRoot, "package.json")
 
 test("ci workflow includes repeatable guard/check/test/build commands", () => {
   const ci = readFileSync(ciPath, "utf8")
@@ -34,4 +35,11 @@ test("local repeatable workflow script exists and runs the same gate sequence", 
   assert.match(script, /pnpm run check/)
   assert.match(script, /pnpm run test/)
   assert.match(script, /pnpm run build/)
+})
+
+test("turbo scripts avoid deprecated parallel flag", () => {
+  const pkg = JSON.parse(readFileSync(rootPackagePath, "utf8"))
+  for (const [scriptName, script] of Object.entries(pkg.scripts)) {
+    assert.doesNotMatch(script, /--parallel\b/, `${scriptName} uses deprecated --parallel`)
+  }
 })
