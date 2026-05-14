@@ -43,7 +43,7 @@ export function groupByCity<T extends { city_id: string | null }>(
     }
   }
 
-  return [...buckets.values()].sort((a, b) => {
+  return Array.from(buckets.values()).toSorted((a, b) => {
     if (a.key === UNASSIGNED_CITY_KEY) return 1
     if (b.key === UNASSIGNED_CITY_KEY) return -1
     return a.label.localeCompare(b.label)

@@ -6,12 +6,9 @@ interface SmartImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   placeholderClassName?: string
   /** Whether to render a skeleton behind the image while it loads. */
   showPlaceholder?: boolean
+  alt: string
 }
 
-/**
- * Drop-in <img> replacement that fades the image in after it decodes.
- * Prevents the "snap" of an image popping into view.
- */
 export function SmartImage({
   className,
   placeholderClassName,
@@ -19,6 +16,7 @@ export function SmartImage({
   onLoad,
   onError,
   src,
+  alt,
   ...props
 }: SmartImageProps) {
   const [loaded, setLoaded] = useState(false)
@@ -43,6 +41,7 @@ export function SmartImage({
       <img
         ref={imgRef}
         src={src}
+        alt={alt}
         data-loaded={loaded ? "true" : "false"}
         onLoad={(event) => {
           setLoaded(true)

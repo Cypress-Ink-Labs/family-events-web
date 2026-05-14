@@ -167,7 +167,7 @@ export function MapViewPage() {
   // how a parent planning the weekend wants to browse.
   const sortedList = useMemo(
     () =>
-      [...mappable].sort(
+      mappable.toSorted(
         (a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
       ),
     [mappable]

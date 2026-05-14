@@ -48,7 +48,7 @@ function roundedCoordinate(value: number | null | undefined): number | null {
 }
 
 function sortedUnique(values: readonly string[] | undefined): readonly string[] {
-  return [...new Set(values ?? [])].sort()
+  return Array.from(new Set(values ?? [])).toSorted()
 }
 
 function normalizeEventFilters(filters: EventFilters = {}) {
