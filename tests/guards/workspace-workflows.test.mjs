@@ -43,3 +43,9 @@ test("turbo scripts avoid deprecated parallel flag", () => {
     assert.doesNotMatch(script, /--parallel\b/, `${scriptName} uses deprecated --parallel`)
   }
 })
+
+test("workspace exposes turbo-backed formatting scripts", () => {
+  const pkg = JSON.parse(readFileSync(rootPackagePath, "utf8"))
+  assert.equal(pkg.scripts.format, "turbo run format")
+  assert.equal(pkg.scripts["format:check"], "turbo run format:check")
+})

@@ -52,9 +52,7 @@ export function PublicEventPreviewPage() {
     return (
       <div className="mx-auto flex min-h-screen max-w-3xl items-center px-4 py-10">
         <Card className="w-full border-border/60">
-          <CardContent className="p-6 text-sm text-muted-foreground">
-            Loading preview…
-          </CardContent>
+          <CardContent className="p-6 text-sm text-muted-foreground">Loading preview…</CardContent>
         </Card>
       </div>
     )

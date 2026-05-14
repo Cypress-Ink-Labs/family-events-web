@@ -7,10 +7,14 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "format": "oxfmt --config ../config-quality/oxfmt.base.json --write src",
+    "format:check": "oxfmt --config ../config-quality/oxfmt.base.json --check src",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
   "devDependencies": {
+    "@family-events/config-quality": "workspace:*",
+    "oxfmt": "^0.48.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.6"
   }

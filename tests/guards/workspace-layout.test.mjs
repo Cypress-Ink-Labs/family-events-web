@@ -8,6 +8,7 @@ const rootPkgPath = path.join(repoRoot, "package.json")
 const webPkgPath = path.join(repoRoot, "apps", "web", "package.json")
 const wsPath = path.join(repoRoot, "pnpm-workspace.yaml")
 const turboPath = path.join(repoRoot, "turbo.json")
+const gitignorePath = path.join(repoRoot, ".gitignore")
 const webTsAppPath = path.join(repoRoot, "apps", "web", "tsconfig.app.json")
 const webTsNodePath = path.join(repoRoot, "apps", "web", "tsconfig.node.json")
 
@@ -16,6 +17,7 @@ test("workspace root files exist", () => {
   assert.equal(existsSync(webPkgPath), true)
   assert.equal(existsSync(wsPath), true)
   assert.equal(existsSync(turboPath), true)
+  assert.equal(existsSync(gitignorePath), true)
 })
 
 test("workspace configuration includes apps, packages, supabase/functions", () => {
@@ -39,4 +41,9 @@ test("web tsconfig consumers extend config-typescript presets", () => {
   const nodeCfg = JSON.parse(readFileSync(webTsNodePath, "utf8"))
   assert.equal(appCfg.extends, "@family-events/config-typescript/react-vite.json")
   assert.equal(nodeCfg.extends, "@family-events/config-typescript/node.json")
+})
+
+test("turbo cache directory is ignored", () => {
+  const gitignore = readFileSync(gitignorePath, "utf8")
+  assert.match(gitignore, /^\.turbo$/m)
 })

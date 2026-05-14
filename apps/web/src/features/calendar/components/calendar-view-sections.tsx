@@ -210,12 +210,7 @@ export function CalendarMonthPanel({
           <h2 className="text-base font-semibold text-foreground tracking-tight">
             {format(currentMonth, "MMMM yyyy")}
           </h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 rounded-full"
-            onClick={onNextMonth}
-          >
+          <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={onNextMonth}>
             <ChevronRight className="size-4" />
           </Button>
         </div>

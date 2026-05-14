@@ -94,8 +94,8 @@ export function RequestInviteDialog({ defaultEmail = "", trigger }: RequestInvit
             <DialogHeader className="space-y-1.5">
               <DialogTitle>Request received</DialogTitle>
               <DialogDescription>
-                Thanks, we&apos;ll review and email you a code if approved. This usually takes a
-                day or two.
+                Thanks, we&apos;ll review and email you a code if approved. This usually takes a day
+                or two.
               </DialogDescription>
             </DialogHeader>
             <Button onClick={() => handleOpenChange(false)} className="mt-2">
