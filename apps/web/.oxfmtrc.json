@@ -1,0 +1,4 @@
+{
+  "$schema": "../../node_modules/oxfmt/configuration_schema.json",
+  "extends": ["../../packages/config-quality/oxfmt.base.json"]
+}

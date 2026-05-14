@@ -1,0 +1,7 @@
+{
+  "extends": "@family-events/config-typescript/node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../node_modules/.tmp/apps-web-node.tsbuildinfo"
+  },
+  "include": ["vite.config.ts", "vitest.config.ts", "playwright.config.ts"]
+}

@@ -1,0 +1,227 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-family-warm: var(--family-warm);
+  --color-family-warm-foreground: var(--family-warm-foreground);
+  --color-family-accent: var(--family-accent);
+  --color-family-accent-foreground: var(--family-accent-foreground);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  --background: oklch(0.99 0.003 12);
+  --foreground: oklch(0.18 0.018 20);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.018 20);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.018 20);
+
+  --primary: oklch(0.54 0.215 12);
+  --primary-foreground: oklch(0.99 0.003 12);
+
+  --secondary: oklch(0.96 0.01 12);
+  --secondary-foreground: oklch(0.3 0.04 12);
+  --muted: oklch(0.965 0.006 12);
+  --muted-foreground: oklch(0.52 0.02 15);
+  --accent: oklch(0.93 0.028 12);
+  --accent-foreground: oklch(0.28 0.04 12);
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.91 0.01 12);
+  --input: oklch(0.93 0.008 12);
+  --ring: oklch(0.54 0.215 12);
+
+  --chart-1: oklch(0.62 0.22 12);
+  --chart-2: oklch(0.6 0.14 160);
+  --chart-3: oklch(0.7 0.12 200);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.65 0.18 290);
+
+  --sidebar: oklch(0.22 0.02 12);
+  --sidebar-foreground: oklch(0.93 0.008 12);
+  --sidebar-primary: oklch(0.73 0.185 12);
+  --sidebar-primary-foreground: oklch(0.16 0.016 12);
+  --sidebar-accent: oklch(0.32 0.024 12);
+  --sidebar-accent-foreground: oklch(0.93 0.008 12);
+  --sidebar-border: oklch(0.34 0.024 12);
+  --sidebar-ring: oklch(0.54 0.215 12);
+
+  --family-warm: oklch(0.96 0.038 12);
+  --family-warm-foreground: oklch(0.35 0.08 12);
+  --family-accent: oklch(0.54 0.215 12);
+  --family-accent-foreground: oklch(0.99 0.003 12);
+}
+
+.dark {
+  --background: oklch(0.145 0.014 12);
+  --foreground: oklch(0.955 0.007 12);
+  --card: oklch(0.195 0.017 12);
+  --card-foreground: oklch(0.955 0.007 12);
+  --popover: oklch(0.225 0.017 12);
+  --popover-foreground: oklch(0.955 0.007 12);
+  --primary: oklch(0.73 0.185 12);
+  --primary-foreground: oklch(0.15 0.016 12);
+  --secondary: oklch(0.265 0.018 12);
+  --secondary-foreground: oklch(0.955 0.007 12);
+  --muted: oklch(0.255 0.013 12);
+  --muted-foreground: oklch(0.605 0.018 15);
+  --accent: oklch(0.305 0.024 12);
+  --accent-foreground: oklch(0.955 0.007 12);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.73 0.185 12);
+  --chart-1: oklch(0.74 0.19 12);
+  --chart-2: oklch(0.65 0.16 155);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.175 0.016 12);
+  --sidebar-foreground: oklch(0.93 0.008 12);
+  --sidebar-primary: oklch(0.73 0.185 12);
+  --sidebar-primary-foreground: oklch(0.15 0.016 12);
+  --sidebar-accent: oklch(0.28 0.022 12);
+  --sidebar-accent-foreground: oklch(0.93 0.008 12);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.73 0.185 12);
+  --family-warm: oklch(0.275 0.042 12);
+  --family-warm-foreground: oklch(0.88 0.04 12);
+  --family-accent: oklch(0.73 0.185 12);
+  --family-accent-foreground: oklch(0.15 0.016 12);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .smart-image-fade {
+    opacity: 0;
+    transition: opacity 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .smart-image-fade[data-loaded="true"] {
+    opacity: 1;
+  }
+}
+
+/* MapLibre overrides — bring popups & controls into the design system. */
+.maplibregl-popup-content {
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  box-shadow:
+    0 10px 25px -10px oklch(0 0 0 / 0.25),
+    0 4px 6px -2px oklch(0 0 0 / 0.06);
+}
+.maplibregl-popup-close-button {
+  color: var(--muted-foreground);
+  font-size: 1.1rem;
+  padding: 0.25rem 0.4rem;
+}
+.maplibregl-popup-close-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: var(--popover);
+}
+.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+  border-bottom-color: var(--popover);
+}
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: var(--popover);
+}
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: var(--popover);
+}
+.maplibregl-ctrl-group {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.06);
+}
+/* Use background-color only — MapLibre paints + / − icons via background-image
+ * on these buttons, so the `background` shorthand wipes the glyphs entirely. */
+.maplibregl-ctrl-group button {
+  background-color: transparent;
+  color: var(--foreground);
+}
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid var(--border);
+}
+.maplibregl-ctrl-group button:hover {
+  background-color: var(--accent);
+}
+/* In dark mode the bundled glyphs are dark and disappear against the dark
+ * control surface. Invert them so they read as light icons. */
+.dark .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(0.92) hue-rotate(180deg);
+}
+.maplibregl-ctrl-attrib {
+  background: oklch(from var(--card) l c h / 0.85);
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--primary);
+}

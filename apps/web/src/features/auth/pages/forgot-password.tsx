@@ -1,0 +1,100 @@
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { useAuth } from "@/features/auth/stores/auth-store"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent } from "@/components/ui/card"
+import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { toast } from "sonner"
+
+export function ForgotPasswordPage() {
+  const { resetPassword } = useAuth()
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    const { error } = await resetPassword(email)
+    setLoading(false)
+    if (error) {
+      // Soft-fail UI: still claim success to avoid leaking which addresses exist.
+      // The toast in the error branch surfaces transport/throttle issues only.
+      toast.error("Couldn't send reset link", {
+        description: humanizeSupabaseError(error, "Try again in a minute."),
+      })
+      return
+    }
+    setSubmitted(true)
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-4">
+            <div className="h-10 w-10 rounded-2xl bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground text-lg font-black">F</span>
+            </div>
+          </Link>
+          <h1 className="text-2xl font-extrabold text-foreground">Forgot password?</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            We'll email you a link to set a new one.
+          </p>
+        </div>
+
+        <Card className="border-border/60">
+          <CardContent className="p-6">
+            {submitted ? (
+              <div className="space-y-3 text-sm">
+                <p className="text-foreground font-medium">Check your inbox</p>
+                <p className="text-muted-foreground">
+                  If an account exists for <span className="font-medium">{email}</span>, we just
+                  sent a reset link. It expires in 1 hour.
+                </p>
+                <p className="text-muted-foreground">
+                  Didn't get it? Check spam, or wait a minute and{" "}
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="text-primary font-medium hover:underline"
+                  >
+                    try again
+                  </button>
+                  .
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    autoFocus
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Sending..." : "Send reset link"}
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+
+        <p className="text-center text-sm text-muted-foreground mt-4">
+          Remembered it?{" "}
+          <Link to="/sign-in" className="text-primary font-medium hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </div>
+    </div>
+  )
+}

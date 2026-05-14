@@ -1,0 +1,12 @@
+{
+  "extends": "@family-events/config-typescript/react-vite.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../node_modules/.tmp/apps-web.tsbuildinfo",
+    "useDefineForClassFields": true,
+    "paths": {
+      "*": ["./*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}
