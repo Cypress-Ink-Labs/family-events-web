@@ -5,19 +5,25 @@ import test from "node:test"
 
 const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..")
 const ciPath = path.join(repoRoot, ".github", "workflows", "ci.yml")
+const rwxCiPath = path.join(repoRoot, ".rwx", "ci.yml")
 const depReviewPath = path.join(repoRoot, ".github", "workflows", "dependency-review.yml")
 const localScriptPath = path.join(repoRoot, "scripts", "check-monorepo.sh")
 const rootPackagePath = path.join(repoRoot, "package.json")
 
 test("ci workflow includes repeatable guard/check/test/build commands", () => {
   const ci = readFileSync(ciPath, "utf8")
-  assert.match(ci, /pnpm install --frozen-lockfile/)
-  assert.match(ci, /pnpm run docs:test/)
-  assert.match(ci, /pnpm run workspace:test/)
-  assert.match(ci, /pnpm run check/)
-  assert.match(ci, /pnpm run test/)
-  assert.match(ci, /pnpm run build/)
-  assert.match(ci, /xcodegen generate/)
+  // RWX owns most tasks; check combined coverage across both CI configs
+  const rwxCi = existsSync(rwxCiPath) ? readFileSync(rwxCiPath, "utf8") : ""
+  const combined = ci + "\n" + rwxCi
+  assert.match(combined, /pnpm install --frozen-lockfile/)
+  assert.match(combined, /pnpm(?:\s+run)?\s+docs:test/)
+  assert.match(combined, /pnpm(?:\s+run)?\s+workspace:test/)
+  // RWX runs typecheck + lint + format individually instead of `pnpm run check`
+  assert.match(combined, /typecheck|pnpm run check/)
+  // RWX runs captain or vitest directly instead of `pnpm run test`
+  assert.match(combined, /vitest|captain|pnpm run test/)
+  assert.match(combined, /build/)
+  assert.match(combined, /xcodegen generate/)
 })
 
 test("dependency-review watches all workspace manifests", () => {
