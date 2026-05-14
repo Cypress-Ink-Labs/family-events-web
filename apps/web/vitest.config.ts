@@ -17,5 +17,6 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.ts", "../../supabase/functions/**/*.test.ts"],
     exclude: ["node_modules", "dist", ".git"],
+    includeTaskLocation: true,
   },
 })
