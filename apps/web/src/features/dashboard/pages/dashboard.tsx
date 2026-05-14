@@ -46,18 +46,27 @@ export function DashboardPage() {
   const happeningSoon = events.filter((event) => !event.is_featured).slice(0, 4)
   const recommended = events.slice(0, 4)
   const savedEvents = events.filter((event) => isFavorited(event.id)).slice(0, 3)
-  const todayEvents = events
-    .filter((e) => {
-      const tz = e.timezone || selectedCity?.timezone || "UTC"
-      const fmt = new Intl.DateTimeFormat("en-CA", {
+  const fmtCache = new Map<string, Intl.DateTimeFormat>()
+  const isToday = (start: string, tz: string) => {
+    let fmt = fmtCache.get(tz)
+    if (!fmt) {
+      fmt = new Intl.DateTimeFormat("en-CA", {
         timeZone: tz,
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
       })
-      return fmt.format(new Date(e.start_datetime)) === fmt.format(new Date())
-    })
-    .slice(0, 2)
+      fmtCache.set(tz, fmt)
+    }
+    return fmt.format(new Date(start)) === fmt.format(new Date())
+  }
+  const todayEvents: typeof events = []
+  for (const e of events) {
+    if (todayEvents.length >= 2) break
+    if (isToday(e.start_datetime, e.timezone || selectedCity?.timezone || "UTC")) {
+      todayEvents.push(e)
+    }
+  }
 
   const greeting = profile?.display_name
     ? `Welcome back, ${profile.display_name.split(" ")[0]}!`

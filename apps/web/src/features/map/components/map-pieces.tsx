@@ -84,7 +84,7 @@ export function UserLocationDot() {
   return (
     <div className="relative">
       <span className="absolute inset-0 -m-2 rounded-full bg-blue-400 animate-ping opacity-40" />
-      <span className="relative block h-3 w-3 rounded-full bg-blue-500 ring-2 ring-white shadow" />
+      <span className="relative block size-3 rounded-full bg-blue-500 ring-2 ring-white shadow" />
     </div>
   )
 }
@@ -111,12 +111,12 @@ export function EventPopup({ event, userLocation }: EventPopupProps) {
       </Link>
       {event.venue_name && (
         <p className="text-xs text-muted-foreground flex items-center gap-1">
-          <MapPin className="h-3 w-3" />
+          <MapPin className="size-3" />
           {event.venue_name}
         </p>
       )}
       <p className="text-xs text-muted-foreground flex items-center gap-1">
-        <Calendar className="h-3 w-3" />
+        <Calendar className="size-3" />
         {format(new Date(event.start_datetime), "MMM d, h:mm a")}
       </p>
       {distance !== null && (
@@ -150,7 +150,7 @@ export function EventPopup({ event, userLocation }: EventPopupProps) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Navigation className="h-3 w-3" />
+            <Navigation className="size-3" />
             Directions
           </a>
         </Button>

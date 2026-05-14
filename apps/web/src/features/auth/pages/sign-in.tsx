@@ -109,11 +109,11 @@ export function SignInPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="h-10 w-10 rounded-2xl bg-primary flex items-center justify-center">
+            <div className="size-10 rounded-2xl bg-primary flex items-center justify-center">
               <span className="text-primary-foreground text-lg font-black">F</span>
             </div>
           </Link>
-          <h1 className="text-2xl font-extrabold text-foreground">Welcome back</h1>
+          <h1 className="text-2xl font-semibold text-foreground">Welcome back</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {mode === "magic"
               ? "We'll email you a one-tap sign-in link."
@@ -162,7 +162,7 @@ export function SignInPage() {
                 {requiresInvite && (
                   <div className="space-y-1.5">
                     <Label htmlFor="invite-code" className="flex items-center gap-1.5">
-                      <Ticket className="h-3.5 w-3.5 text-primary" />
+                      <Ticket className="size-3.5 text-primary" />
                       Invite code
                     </Label>
                     <Input

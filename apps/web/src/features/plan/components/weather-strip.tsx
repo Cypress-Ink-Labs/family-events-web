@@ -32,7 +32,7 @@ export function WeatherStrip({ date, cityName, weather }: WeatherStripProps) {
 
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs text-muted-foreground">
-      <CloudSun className="h-3.5 w-3.5 text-primary" />
+      <CloudSun className="size-3.5 text-primary" />
       <span>{details ? `${dateLabel} · ${details}` : `${dateLabel} · ${cityLabel}`}</span>
     </div>
   )

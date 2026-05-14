@@ -31,7 +31,7 @@ export function AdminRatingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Ratings</h1>
+          <h1 className="text-xl font-semibold text-foreground">Ratings</h1>
           <p className="text-muted-foreground text-sm mt-0.5">
             {ratings.length} ratings · {avg} avg
           </p>
@@ -42,7 +42,7 @@ export function AdminRatingsPage() {
         {ratings.map((r) => (
           <Card key={r.id} className="border-border/60">
             <CardContent className="p-4 flex items-center gap-3">
-              <Avatar className="h-8 w-8 shrink-0">
+              <Avatar className="size-8 shrink-0">
                 <AvatarFallback className="text-xs bg-muted">
                   {(r.user_profiles?.display_name || "A").charAt(0)}
                 </AvatarFallback>
@@ -66,10 +66,10 @@ export function AdminRatingsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-destructive hover:bg-destructive/10 shrink-0"
+                className="size-8 text-destructive hover:bg-destructive/10 shrink-0"
                 onClick={() => handleRemove(r.id)}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               </Button>
             </CardContent>
           </Card>

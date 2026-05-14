@@ -53,7 +53,7 @@ export function PublicEventPreviewPage() {
       <div className="mx-auto flex min-h-screen max-w-3xl items-center px-4 py-10">
         <Card className="w-full border-border/60">
           <CardContent className="p-6 text-sm text-muted-foreground">
-            Loading preview...
+            Loading preview…
           </CardContent>
         </Card>
       </div>
@@ -67,7 +67,7 @@ export function PublicEventPreviewPage() {
       <div className="mx-auto flex min-h-screen max-w-3xl items-center px-4 py-10">
         <Card className="w-full border-border/60">
           <CardContent className="space-y-3 p-6 text-center">
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className="text-xl font-semibold text-foreground">
               We couldn't load this event preview.
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -99,7 +99,7 @@ export function PublicEventPreviewPage() {
       <div className="mx-auto flex min-h-screen max-w-3xl items-center px-4 py-10">
         <Card className="w-full border-border/60">
           <CardContent className="space-y-3 p-6 text-center">
-            <h1 className="text-xl font-bold text-foreground">
+            <h1 className="text-xl font-semibold text-foreground">
               This event is no longer available.
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -139,7 +139,7 @@ export function PublicEventPreviewPage() {
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               Shared plan
             </p>
-            <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               {event.title ?? "Family event"}
             </h1>
             {event.description ? (
@@ -148,13 +148,13 @@ export function PublicEventPreviewPage() {
             <div className="space-y-1 text-sm text-muted-foreground">
               {eventDate ? (
                 <p className="inline-flex items-center gap-1">
-                  <CalendarDays className="h-4 w-4" />
+                  <CalendarDays className="size-4" />
                   {eventDate}
                 </p>
               ) : null}
               {event.venue_name ? (
                 <p className="inline-flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
+                  <MapPin className="size-4" />
                   {event.venue_name}
                 </p>
               ) : null}

@@ -72,7 +72,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border/60">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <Link to={HOME_PATH} className="flex items-center gap-2 shrink-0">
-            <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center">
+            <div className="size-8 rounded-xl bg-primary flex items-center justify-center">
               <span className="text-primary-foreground text-sm font-black">F</span>
             </div>
             <span className="font-extrabold text-foreground tracking-tight hidden sm:block">
@@ -102,9 +102,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+            <Button variant="ghost" size="icon" className="size-8" asChild>
               <Link to="/explore">
-                <Search className="h-4 w-4" />
+                <Search className="size-4" />
               </Link>
             </Button>
 
@@ -112,13 +112,13 @@ export function AppLayout({ children }: AppLayoutProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="gap-2 h-8 px-2">
-                    <Avatar className="h-6 w-6">
+                    <Avatar className="size-6">
                       <AvatarImage src={profile?.avatar_url || undefined} />
                       <AvatarFallback className="text-[10px] bg-primary text-primary-foreground">
                         {profile?.display_name?.charAt(0)?.toUpperCase() ?? "U"}
                       </AvatarFallback>
                     </Avatar>
-                    <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                    <ChevronDown className="size-3 text-muted-foreground" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
@@ -129,12 +129,12 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="gap-2">
-                      <User className="h-4 w-4" /> Profile
+                      <User className="size-4" /> Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/saved" className="gap-2">
-                      <Bookmark className="h-4 w-4" /> My Events
+                      <Bookmark className="size-4" /> My Events
                     </Link>
                   </DropdownMenuItem>
                   {isAdmin && (
@@ -142,7 +142,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="gap-2 text-primary">
-                          <Shield className="h-4 w-4" /> Admin Dashboard
+                          <Shield className="size-4" /> Admin Dashboard
                         </Link>
                       </DropdownMenuItem>
                     </>
@@ -152,7 +152,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     onClick={handleSignOut}
                     className="gap-2 text-destructive focus:text-destructive"
                   >
-                    <LogOut className="h-4 w-4" /> Sign Out
+                    <LogOut className="size-4" /> Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -181,11 +181,11 @@ export function AppLayout({ children }: AppLayoutProps) {
                   key={to}
                   to={to}
                   className={cn(
-                    "relative flex items-center gap-1.5 px-3 py-3 text-sm font-medium transition-colors",
+                    "relative flex items-center gap-1.5 p-3 text-sm font-medium transition-colors",
                     active ? "text-primary" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="size-4" />
                   {label}
                   {active && (
                     <m.span
@@ -201,13 +201,13 @@ export function AppLayout({ children }: AppLayoutProps) {
               <Link
                 to="/admin"
                 className={cn(
-                  "relative ml-auto flex items-center gap-1.5 px-3 py-3 text-sm font-medium transition-colors",
+                  "relative ml-auto flex items-center gap-1.5 p-3 text-sm font-medium transition-colors",
                   location.pathname.startsWith("/admin")
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Shield className="h-4 w-4" />
+                <Shield className="size-4" />
                 Admin
                 {location.pathname.startsWith("/admin") && (
                   <m.span
@@ -230,7 +230,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Mobile Bottom Tab Bar */}
       {isMobile && (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-t border-border/60">
-          <div className="flex items-center justify-around px-2 py-2">
+          <div className="flex items-center justify-around p-2">
             {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
               const active = isActive(to)
               return (
@@ -238,7 +238,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <div
                     className={cn(
                       "relative flex items-center justify-center rounded-xl",
-                      to === "/explore" ? "h-11 w-11" : "h-8 w-8"
+                      to === "/explore" ? "size-11" : "size-8"
                     )}
                   >
                     {active && (
@@ -253,7 +253,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     )}
                     <Icon
                       className={cn(
-                        "relative z-10 transition-colors h-5 w-5",
+                        "relative z-10 transition-colors size-5",
                         to === "/explore" && active && "text-primary-foreground",
                         active && to !== "/explore" && "text-primary",
                         !active && "text-muted-foreground"

@@ -89,7 +89,7 @@ export function FavoriteButton({
       <Heart
         className={cn(
           "transition-colors",
-          variant === "overlay" ? (size === "sm" ? "h-3.5 w-3.5" : "h-4.5 w-4.5") : "h-4 w-4",
+          variant === "overlay" ? (size === "sm" ? "size-3.5" : "size-4.5") : "size-4",
           optimistic
             ? "fill-destructive stroke-destructive"
             : variant === "overlay"
@@ -126,7 +126,7 @@ export function FavoriteButton({
         className={cn(
           "absolute top-3 right-3 z-10 flex items-center justify-center rounded-full",
           "bg-white/90 backdrop-blur-sm shadow-md",
-          size === "sm" ? "h-7 w-7" : "h-9 w-9",
+          size === "sm" ? "size-7" : "size-9",
           className
         )}
         aria-label={optimistic ? "Remove from favorites" : "Add to favorites"}

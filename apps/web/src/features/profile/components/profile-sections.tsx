@@ -19,8 +19,8 @@ interface ProfileGuestStateProps {
 export function ProfileGuestState({ signInHref }: ProfileGuestStateProps) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-20 text-center">
-      <User className="h-16 w-16 text-muted-foreground/30 mx-auto mb-6" />
-      <h1 className="text-2xl font-extrabold text-foreground mb-2">Your Profile</h1>
+      <User className="size-16 text-muted-foreground/30 mx-auto mb-6" />
+      <h1 className="text-2xl font-semibold text-foreground mb-2">Your Profile</h1>
       <p className="text-muted-foreground mb-6">Sign in to manage your profile and preferences.</p>
       <Button asChild>
         <Link to={signInHref}>Sign In</Link>
@@ -44,18 +44,18 @@ export function ProfileUserSummary({
 }: ProfileUserSummaryProps) {
   return (
     <div className="flex items-center gap-4">
-      <Avatar className="h-16 w-16 border-2 border-primary/20">
+      <Avatar className="size-16 border-2 border-primary/20">
         <AvatarImage src={avatarUrl || undefined} />
         <AvatarFallback className="text-xl bg-primary text-primary-foreground font-bold">
           {displayName?.charAt(0)?.toUpperCase() ?? "U"}
         </AvatarFallback>
       </Avatar>
       <div>
-        <h2 className="text-lg font-bold text-foreground">{displayName}</h2>
+        <h2 className="text-lg font-semibold text-foreground">{displayName}</h2>
         <p className="text-sm text-muted-foreground">{email}</p>
         {isAdmin && (
           <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-primary">
-            <Shield className="h-3 w-3" />
+            <Shield className="size-3" />
             Admin
           </span>
         )}
@@ -93,7 +93,7 @@ export function ProfileThemeCard({ theme, onThemeChange }: ProfileThemeCardProps
                   : "border-border hover:border-primary/40 text-muted-foreground"
               }`}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="size-5" />
               {label}
             </button>
           ))}
@@ -169,7 +169,7 @@ export function ProfileChangePasswordCard({
     <Card className="border-border/60">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <KeyRound className="h-4 w-4 text-muted-foreground" />
+          <KeyRound className="size-4 text-muted-foreground" />
           Change Password
         </CardTitle>
       </CardHeader>
@@ -224,7 +224,7 @@ export function ProfileAdminLink({ href }: { href: string }) {
   return (
     <Button variant="outline" className="w-full gap-2 border-primary text-primary" asChild>
       <Link to={href}>
-        <Shield className="h-4 w-4" />
+        <Shield className="size-4" />
         Open Admin Dashboard
       </Link>
     </Button>
@@ -234,7 +234,7 @@ export function ProfileAdminLink({ href }: { href: string }) {
 export function ProfileSignOutButton({ onSignOut }: { onSignOut: () => void }) {
   return (
     <Button variant="destructive" className="w-full gap-2" onClick={onSignOut}>
-      <LogOut className="h-4 w-4" />
+      <LogOut className="size-4" />
       Sign Out
     </Button>
   )

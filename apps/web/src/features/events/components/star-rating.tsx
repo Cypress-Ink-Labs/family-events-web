@@ -23,7 +23,7 @@ export function StarRating({
 }: StarRatingProps) {
   const [hovered, setHovered] = useState(0)
 
-  const sizes = { sm: "h-3 w-3", md: "h-4 w-4", lg: "h-5 w-5" }
+  const sizes = { sm: "size-3", md: "size-4", lg: "size-5" }
   const display = hovered || value
 
   return (

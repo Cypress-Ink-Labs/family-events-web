@@ -27,7 +27,12 @@ export async function enrichEvents(
 
   const { userId, includeRatings = true, includeUserState = true } = options
   const eventIds = events.map((event) => event.id)
-  const cityIds = [...new Set(events.map((event) => event.city_id).filter(Boolean))] as string[]
+  const cityIds = Array.from(
+    events.reduce((set, event) => {
+      if (event.city_id) set.add(event.city_id)
+      return set
+    }, new Set<string>())
+  )
 
   const tagsPromise = supabase
     .from("event_tags")

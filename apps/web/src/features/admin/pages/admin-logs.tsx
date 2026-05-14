@@ -70,8 +70,8 @@ function TagQueueSummaryPanel() {
     <Card className="border-border/60">
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <TagIcon className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-sm font-bold text-foreground">Tag-event queue</h2>
+          <TagIcon className="size-4 text-muted-foreground" />
+          <h2 className="text-sm font-semibold text-foreground">Tag-event queue</h2>
           {dead && dead.row_count > 0 && (
             <Badge variant="destructive" className="text-[10px]">
               {dead.row_count} dead-lettered
@@ -133,12 +133,12 @@ export function AdminLogsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Ingestion Logs</h1>
+          <h1 className="text-xl font-semibold text-foreground">Ingestion Logs</h1>
           <p className="text-muted-foreground text-sm mt-0.5">Scrape run history and diagnostics</p>
         </div>
         {hasRunning && (
           <div className="flex items-center gap-1.5 text-xs text-blue-600">
-            <RefreshCw className="h-3 w-3 animate-spin" />
+            <RefreshCw className="size-3 animate-spin" />
             <span>Live</span>
           </div>
         )}
@@ -173,7 +173,7 @@ export function AdminLogsPage() {
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className={cn("mt-0.5 shrink-0", status.color)}>
-                    <status.icon className={cn("h-5 w-5", isRunning && "animate-spin")} />
+                    <status.icon className={cn("size-5", isRunning && "animate-spin")} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -199,7 +199,7 @@ export function AdminLogsPage() {
                     </div>
                     <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground flex-wrap">
                       <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
+                        <Clock className="size-3" />
                         {format(new Date(run.started_at), "MMM d, h:mm a")}
                       </span>
                       {isRunning ? (

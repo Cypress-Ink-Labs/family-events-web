@@ -70,7 +70,7 @@ interface ExploreHeaderProps {
 export function ExploreHeader({ cityName }: ExploreHeaderProps) {
   return (
     <div>
-      <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
+      <h1 className="text-3xl font-semibold text-foreground tracking-tight">
         Today&apos;s adventures, <span className="text-primary italic">hand-picked</span> for them.
       </h1>
       <p className="text-muted-foreground text-sm mt-1">
@@ -117,7 +117,7 @@ export function ExploreSearchFilters({
   return (
     <div className="flex gap-2">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
         <Input
           value={keyword}
           onChange={(e) => onKeywordChange(e.target.value)}
@@ -129,17 +129,17 @@ export function ExploreSearchFilters({
             onClick={onClearKeyword}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </button>
         )}
       </div>
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" className="h-11 px-4 gap-2 border-border/60 relative">
-            <SlidersHorizontal className="h-4 w-4" />
+            <SlidersHorizontal className="size-4" />
             Filters
             {activeFilterCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+              <span className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
                 {activeFilterCount}
               </span>
             )}
@@ -159,14 +159,14 @@ export function ExploreSearchFilters({
                 </button>
               )}
               <SheetClose className="rounded-sm opacity-60 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
-                <X className="h-4 w-4" />
+                <X className="size-4" />
                 <span className="sr-only">Close</span>
               </SheetClose>
             </div>
           </div>
 
           {/* Scrollable body */}
-          <div className="flex-1 overflow-y-auto px-5 py-5">
+          <div className="flex-1 overflow-y-auto p-5">
             <div className="space-y-6">
               {/* When */}
               <div>
@@ -255,12 +255,12 @@ export function ExploreSearchFilters({
                         style={isSelected ? { backgroundColor: `${tag.color}20` } : {}}
                       >
                         <span
-                          className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+                          className="size-2.5 rounded-full flex-shrink-0"
                           style={{ backgroundColor: tag.color }}
                         />
                         <span className="flex-1">{tag.name}</span>
                         {isSelected && (
-                          <Check className="h-3.5 w-3.5 text-foreground/40 flex-shrink-0" />
+                          <Check className="size-3.5 text-foreground/40 flex-shrink-0" />
                         )}
                       </button>
                     )
@@ -313,7 +313,7 @@ export function ExploreActiveFilters({
             <Badge variant="secondary" className="gap-1">
               Free only
               <button onClick={() => onOnlyFreeChange(false)}>
-                <X className="h-3 w-3" />
+                <X className="size-3" />
               </button>
             </Badge>
           </m.div>
@@ -330,7 +330,7 @@ export function ExploreActiveFilters({
             <Badge variant="secondary" className="gap-1 capitalize">
               {activeCategory}
               <button onClick={() => onActiveCategoryChange(null)}>
-                <X className="h-3 w-3" />
+                <X className="size-3" />
               </button>
             </Badge>
           </m.div>
@@ -349,7 +349,7 @@ export function ExploreActiveFilters({
               <Badge variant="secondary" className="gap-1">
                 {tag.name}
                 <button onClick={() => onToggleTagSlug(slug)}>
-                  <X className="h-3 w-3" />
+                  <X className="size-3" />
                 </button>
               </Badge>
             </m.div>
@@ -393,8 +393,8 @@ export function ExploreCategoryGrid({
                 : "border-border/60 bg-card hover:border-primary/30"
             )}
           >
-            <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", color)}>
-              <Icon className="h-5 w-5" />
+            <div className={cn("size-10 rounded-xl flex items-center justify-center", color)}>
+              <Icon className="size-5" />
             </div>
             <span className="text-xs font-semibold text-center text-foreground leading-tight">
               {label}
@@ -426,7 +426,7 @@ export function ExploreEventsSection({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">
+        <h2 className="text-lg font-semibold text-foreground">
           {activeCategoryLabel ?? "Happening Soon"}
         </h2>
         <span className="text-sm text-muted-foreground">{filteredEvents.length} events</span>
@@ -459,7 +459,7 @@ export function ExploreEventsSection({
           </StaggerList>
         ) : filteredEvents.length === 0 ? (
           <div className="text-center py-16">
-            <Search className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
+            <Search className="size-12 text-muted-foreground/30 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">No events found</h3>
             <p className="text-muted-foreground text-sm mb-4">
               Try adjusting your filters or search terms
@@ -485,10 +485,10 @@ export function ExploreEventsSection({
 export function ExploreNeighborhoodCta() {
   return (
     <div className="rounded-2xl bg-muted/60 border border-border/60 p-6 text-center">
-      <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-        <Map className="h-5 w-5 text-primary" />
+      <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+        <Map className="size-5 text-primary" />
       </div>
-      <h3 className="font-bold text-foreground mb-1">New in your neighborhood?</h3>
+      <h3 className="font-semibold text-foreground mb-1">New in your neighborhood?</h3>
       <p className="text-sm text-muted-foreground mb-3">
         Check out our interactive map for pop-up play spots.
       </p>

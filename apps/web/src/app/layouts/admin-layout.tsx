@@ -53,7 +53,7 @@ export function AdminLayout() {
     return (
       <FadeSwap stateKey="admin-loading">
         <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
         </div>
       </FadeSwap>
     )
@@ -74,8 +74,8 @@ export function AdminLayout() {
         <Sidebar collapsible="icon">
           <SidebarHeader className="p-4">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-xl bg-sidebar-primary flex items-center justify-center shrink-0">
-                <Zap className="h-4 w-4 text-sidebar-primary-foreground" />
+              <div className="size-8 rounded-xl bg-sidebar-primary flex items-center justify-center shrink-0">
+                <Zap className="size-4 text-sidebar-primary-foreground" />
               </div>
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="text-sm font-bold text-sidebar-foreground">Family Events</p>

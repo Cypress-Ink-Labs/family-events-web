@@ -24,13 +24,13 @@ export function AdminAccessHeader({ query, onQueryChange }: AdminAccessHeaderPro
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
-        <h1 className="text-xl font-extrabold text-foreground">Account Access</h1>
+        <h1 className="text-xl font-semibold text-foreground">Account Access</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
           Enable or disable invited accounts without deleting them.
         </p>
       </div>
       <div className="relative w-full max-w-xs">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
@@ -65,8 +65,8 @@ export function AdminAccessList({
           <Card key={account.user_id} className="border-border/60">
             <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-center">
               <div className="flex min-w-0 flex-1 items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                  <UserRound className="h-5 w-5" />
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <UserRound className="size-5" />
                 </div>
                 <div className="min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -104,7 +104,7 @@ export function AdminAccessList({
                     className="gap-2"
                     onClick={() => onDisable(account.user_id)}
                   >
-                    <ShieldOff className="h-4 w-4" />
+                    <ShieldOff className="size-4" />
                     Disable
                   </Button>
                 ) : (
@@ -114,7 +114,7 @@ export function AdminAccessList({
                     className="gap-2"
                     onClick={() => onEnable(account.user_id)}
                   >
-                    <ShieldCheck className="h-4 w-4" />
+                    <ShieldCheck className="size-4" />
                     Re-enable
                   </Button>
                 )}

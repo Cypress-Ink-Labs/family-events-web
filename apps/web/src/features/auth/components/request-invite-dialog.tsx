@@ -80,7 +80,7 @@ export function RequestInviteDialog({ defaultEmail = "", trigger }: RequestInvit
       <DialogTrigger asChild>
         {trigger ?? (
           <Button variant="ghost" size="sm" className="gap-1.5 text-primary">
-            <MailPlus className="h-3.5 w-3.5" />
+            <MailPlus className="size-3.5" />
             Request invite code
           </Button>
         )}
@@ -88,13 +88,13 @@ export function RequestInviteDialog({ defaultEmail = "", trigger }: RequestInvit
       <DialogContent>
         {submitted ? (
           <div className="space-y-3 py-4 text-center">
-            <div className="mx-auto h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
-              <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+            <div className="mx-auto size-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+              <CheckCircle2 className="size-6 text-emerald-500" />
             </div>
             <DialogHeader className="space-y-1.5">
               <DialogTitle>Request received</DialogTitle>
               <DialogDescription>
-                Thanks — we&apos;ll review and email you a code if approved. This usually takes a
+                Thanks, we&apos;ll review and email you a code if approved. This usually takes a
                 day or two.
               </DialogDescription>
             </DialogHeader>

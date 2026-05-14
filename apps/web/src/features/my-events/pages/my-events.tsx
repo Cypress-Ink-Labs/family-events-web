@@ -77,8 +77,8 @@ export function MyEventsPage() {
   if (!user) {
     return (
       <div className="max-w-5xl mx-auto px-4 py-20 text-center">
-        <Bookmark className="h-16 w-16 text-muted-foreground/30 mx-auto mb-6" />
-        <h1 className="text-2xl font-extrabold text-foreground mb-2">My Events</h1>
+        <Bookmark className="size-16 text-muted-foreground/30 mx-auto mb-6" />
+        <h1 className="text-2xl font-semibold text-foreground mb-2">My Events</h1>
         <p className="text-muted-foreground mb-6">Sign in to save and manage your family events.</p>
         <div className="flex gap-3 justify-center">
           <Button asChild>
@@ -95,7 +95,7 @@ export function MyEventsPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-foreground">My Events</h1>
+        <h1 className="text-2xl font-semibold text-foreground">My Events</h1>
         <p className="text-muted-foreground text-sm mt-1">
           {allSaved.length} saved event{allSaved.length !== 1 ? "s" : ""}
         </p>

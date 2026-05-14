@@ -74,7 +74,7 @@ function StatusIndicator({ status }: { status: SourceStatus }) {
 
   return (
     <div className={`flex items-center gap-1 ${config.color}`}>
-      <config.icon className="h-3.5 w-3.5" />
+      <config.icon className="size-3.5" />
       <span className="text-xs font-medium">{config.label}</span>
     </div>
   )
@@ -119,7 +119,7 @@ export function AdminSourcesHeader({
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-xl font-extrabold text-foreground">Event Sources</h1>
+        <h1 className="text-xl font-semibold text-foreground">Event Sources</h1>
         <p className="text-muted-foreground text-sm mt-0.5">{activeSourceCount} active sources</p>
       </div>
       <div className="flex items-center gap-2">
@@ -142,7 +142,7 @@ export function AdminSourcesHeader({
         <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
           <DialogTrigger asChild>
             <Button className="gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Add Source
             </Button>
           </DialogTrigger>
@@ -285,7 +285,7 @@ export function AdminSourcesList({
               <CollapsibleTrigger className="w-full group">
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-2">
-                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
+                    <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
                     <h3 className="font-semibold text-sm text-foreground">{group.label}</h3>
                     <Badge variant="outline" className="text-[10px]">
                       {group.items.length}
@@ -344,8 +344,8 @@ function SourceCard({
     <Card className="border-border/60">
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
-          <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-            <TypeIcon className="h-5 w-5 text-muted-foreground" />
+          <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+            <TypeIcon className="size-5 text-muted-foreground" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -405,7 +405,7 @@ function SourceCard({
               onClick={() => onScrape(source.id)}
             >
               <RefreshCw
-                className={cn("h-3 w-3", scrapingSourceIds.has(source.id) && "animate-spin")}
+                className={cn("size-3", scrapingSourceIds.has(source.id) && "animate-spin")}
               />
               {scrapingSourceIds.has(source.id) ? "Running..." : "Scrape Now"}
             </Button>
@@ -429,11 +429,11 @@ function EmptyCityCard({ label, onAddSource }: EmptyCityCardProps) {
           <div className="min-w-0">
             <h3 className="font-semibold text-sm text-foreground">{label}</h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              No sources yet — add one to start ingesting events for this city.
+              No sources yet. Add one to start ingesting events for this city.
             </p>
           </div>
           <Button size="sm" variant="outline" className="gap-1.5 shrink-0" onClick={onAddSource}>
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="size-3.5" />
             Add source
           </Button>
         </div>

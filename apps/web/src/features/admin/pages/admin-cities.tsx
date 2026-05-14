@@ -66,7 +66,7 @@ export function AdminCitiesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Cities</h1>
+          <h1 className="text-xl font-semibold text-foreground">Cities</h1>
           <p className="text-muted-foreground text-sm mt-0.5">
             {cities.filter((c) => c.is_active).length} active cities
           </p>
@@ -74,7 +74,7 @@ export function AdminCitiesPage() {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Add City
             </Button>
           </DialogTrigger>
@@ -131,8 +131,8 @@ export function AdminCitiesPage() {
         {cities.map((city) => (
           <Card key={city.id} className="border-border/60">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                <MapPin className="h-5 w-5 text-muted-foreground" />
+              <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                <MapPin className="size-5 text-muted-foreground" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">

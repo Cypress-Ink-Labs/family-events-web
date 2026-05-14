@@ -58,7 +58,7 @@ export function AdminEventStatusFilterBar({
 }: StatusFilterBarProps) {
   return (
     <div>
-      <h1 className="text-xl font-extrabold text-foreground">Events</h1>
+      <h1 className="text-xl font-semibold text-foreground">Events</h1>
       <div className="flex gap-3 mt-2 flex-wrap">
         {(["all", "draft", "published", "rejected"] as const).map((status) => (
           <button
@@ -102,7 +102,7 @@ export function AdminEventsToolbar({
   return (
     <div className="flex gap-2 items-center">
       <div className="relative flex-1 max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
         <Input
           value={keyword}
           onChange={(event) => onKeywordChange(event.target.value)}
@@ -115,11 +115,11 @@ export function AdminEventsToolbar({
           <span
             aria-hidden="true"
             className={cn(
-              "flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-lg border border-input shadow-xs transition-colors",
+              "flex size-3.5 shrink-0 items-center justify-center rounded-lg border border-input shadow-xs transition-colors",
               allVisibleSelected && "border-primary bg-primary text-primary-foreground"
             )}
           >
-            <Check className="h-3 w-3" />
+            <Check className="size-3" />
           </span>
           {allVisibleSelected ? "Deselect all" : `Select all visible (${eventCount})`}
         </Button>
@@ -163,7 +163,7 @@ export function AdminEventsBulkBar({
           disabled={isStatusPending || selectedDraftCount === 0}
           onClick={onPublish}
         >
-          <CheckCheck className="h-3.5 w-3.5" />
+          <CheckCheck className="size-3.5" />
           Publish drafts{selectedDraftCount > 0 ? ` (${selectedDraftCount})` : ""}
         </Button>
         <Button
@@ -173,7 +173,7 @@ export function AdminEventsBulkBar({
           disabled={isStatusPending || selectedDraftCount === 0}
           onClick={onReject}
         >
-          <XCircle className="h-3.5 w-3.5" />
+          <XCircle className="size-3.5" />
           Reject drafts{selectedDraftCount > 0 ? ` (${selectedDraftCount})` : ""}
         </Button>
         <Button
@@ -183,7 +183,7 @@ export function AdminEventsBulkBar({
           disabled={isDeletePending}
           onClick={onDelete}
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="size-3.5" />
           Delete selected
         </Button>
         <Button size="sm" variant="ghost" onClick={onClear}>
@@ -244,7 +244,7 @@ export function AdminEventsList({
               <CollapsibleTrigger className="w-full group">
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-2">
-                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
+                    <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
                     <h3 className="font-semibold text-sm text-foreground">{group.label}</h3>
                     <Badge variant="outline" className="text-[10px]">
                       {group.items.length}
@@ -311,8 +311,8 @@ function EventCard({
             className="mt-1 shrink-0"
             aria-label={`Select ${event.title}`}
           />
-          <div className="h-14 w-14 rounded-xl overflow-hidden shrink-0 bg-muted">
-            <img src={imageUrl} alt={event.title} className="h-full w-full object-cover" />
+          <div className="size-14 rounded-xl overflow-hidden shrink-0 bg-muted">
+            <img src={imageUrl} alt={event.title} className="size-full object-cover" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start gap-2 flex-wrap">
@@ -330,13 +330,13 @@ function EventCard({
               <span>{event.venue_name}</span>
               {event.ai_confidence !== null && (
                 <span className="flex items-center gap-1">
-                  <Tag className="h-3 w-3" />
+                  <Tag className="size-3" />
                   AI: {Math.round((event.ai_confidence ?? 0) * 100)}%
                 </span>
               )}
               {event.ai_tag_provider && (
                 <span className="flex items-center gap-1">
-                  <Bot className="h-3 w-3" />
+                  <Bot className="size-3" />
                   {formatProviderLabel(event.ai_tag_provider)}
                 </span>
               )}
@@ -353,10 +353,10 @@ function EventCard({
               variant="ghost"
               size="icon"
               aria-label="Review event"
-              className="h-8 w-8"
+              className="size-8"
               onClick={() => onOpenReview(event)}
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="size-4" />
             </Button>
             {event.status === "draft" && (
               <>
@@ -364,19 +364,19 @@ function EventCard({
                   variant="ghost"
                   size="icon"
                   aria-label="Publish event"
-                  className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                  className="size-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
                   onClick={() => onUpdateStatus(event.id, "published")}
                 >
-                  <Check className="h-4 w-4" />
+                  <Check className="size-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   aria-label="Reject event"
-                  className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                  className="size-8 text-destructive hover:bg-destructive/10"
                   onClick={() => onUpdateStatus(event.id, "rejected")}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="size-4" />
                 </Button>
               </>
             )}
@@ -385,10 +385,10 @@ function EventCard({
                 variant="ghost"
                 size="icon"
                 aria-label="Archive event"
-                className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                className="size-8 text-destructive hover:bg-destructive/10"
                 onClick={() => onUpdateStatus(event.id, "archived")}
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             )}
           </div>
@@ -445,7 +445,7 @@ export function AdminEventReviewDialog({
               className="w-full h-40 object-cover rounded-xl"
             />
             <div>
-              <h3 className="font-bold text-lg">{event.title}</h3>
+              <h3 className="font-semibold text-lg">{event.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
@@ -496,7 +496,7 @@ export function AdminEventReviewDialog({
             <Separator />
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
+                <Sparkles className="size-4 text-primary" />
                 <p className="text-sm font-semibold">AI Tagging Details</p>
               </div>
 
@@ -510,7 +510,7 @@ export function AdminEventReviewDialog({
                 <div className="space-y-4 rounded-xl border border-border/60 p-4">
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary" className="gap-1">
-                      <Bot className="h-3 w-3" />
+                      <Bot className="size-3" />
                       {formatProviderLabel(selectedEventTrace.provider)}
                     </Badge>
                     {selectedEventTrace.model ? (
@@ -543,7 +543,7 @@ export function AdminEventReviewDialog({
 
                   {selectedEventTrace.status !== "success" && selectedEventTrace.fallback_reason ? (
                     <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
-                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                      <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                       <span>{selectedEventTrace.fallback_reason}</span>
                     </div>
                   ) : null}
@@ -648,7 +648,7 @@ export function AdminEventReviewDialog({
             </div>
             <div className="flex gap-2 pt-2">
               <Button className="flex-1 gap-2" onClick={onPublish}>
-                <Check className="h-4 w-4" />
+                <Check className="size-4" />
                 Publish
               </Button>
               <Button
@@ -656,7 +656,7 @@ export function AdminEventReviewDialog({
                 className="flex-1 gap-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                 onClick={onReject}
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
                 Reject
               </Button>
             </div>

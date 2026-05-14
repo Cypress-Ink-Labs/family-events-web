@@ -118,7 +118,7 @@ function RunStatusBadge({ status }: { status: string | null }) {
   const cfg = STATUS_CONFIG[key]
   return (
     <div className={cn("flex items-center gap-1", cfg.color)}>
-      <cfg.icon className={cn("h-3.5 w-3.5", key === "running" && "animate-spin")} />
+      <cfg.icon className={cn("size-3.5", key === "running" && "animate-spin")} />
       <span className="text-xs font-medium">{cfg.label}</span>
     </div>
   )
@@ -225,8 +225,8 @@ function CronJobCard({ job }: CronJobCardProps) {
       <Card className={cn("border-border/60", !job.active && "opacity-60")}>
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
-            <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-              <CalendarClock className="h-5 w-5 text-muted-foreground" />
+            <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+              <CalendarClock className="size-5 text-muted-foreground" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -275,7 +275,7 @@ function CronJobCard({ job }: CronJobCardProps) {
                 className="h-8 px-2 text-muted-foreground hover:text-foreground"
                 onClick={() => setScheduleDialogOpen(true)}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil className="size-3.5" />
               </Button>
               <Switch
                 checked={job.active}
@@ -298,7 +298,7 @@ function RunHistoryRow({ run }: { run: CronRun }) {
 
   return (
     <div className="flex items-center gap-3 py-2.5 border-b border-border/40 last:border-0">
-      <cfg.icon className={cn("h-3.5 w-3.5 shrink-0", cfg.color)} />
+      <cfg.icon className={cn("size-3.5 shrink-0", cfg.color)} />
       <span className="text-xs font-medium text-muted-foreground w-36 shrink-0 truncate">
         {run.jobname}
       </span>
@@ -334,7 +334,7 @@ function RunHistoryDomainGroup({
         <CollapsibleTrigger className="w-full group">
           <div className="flex items-center justify-between px-3 py-2.5">
             <div className="flex items-center gap-2 min-w-0">
-              <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
+              <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
               <h3 className="truncate text-xs font-semibold text-foreground">{group.label}</h3>
               <Badge variant="outline" className="text-[10px]">
                 {group.runs.length}
@@ -399,16 +399,16 @@ export function AdminCronsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Scheduled Jobs</h1>
+          <h1 className="text-xl font-semibold text-foreground">Scheduled Jobs</h1>
           <p className="text-muted-foreground text-sm mt-0.5">
             Manage pg_cron jobs and run history
           </p>
         </div>
         <Button className="gap-2" onClick={handleRunNow} disabled={runDueScrapes.isPending}>
           {runDueScrapes.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           ) : (
-            <Play className="h-4 w-4" />
+            <Play className="size-4" />
           )}
           Run All Due Now
         </Button>
@@ -425,7 +425,7 @@ export function AdminCronsPage() {
         ) : jobs.length === 0 ? (
           <Card className="border-dashed border-border/60 bg-muted/20">
             <CardContent className="p-8 text-center">
-              <CalendarClock className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+              <CalendarClock className="size-8 text-muted-foreground/30 mx-auto mb-2" />
               <p className="text-sm text-muted-foreground">No cron jobs found</p>
             </CardContent>
           </Card>

@@ -39,7 +39,7 @@ export function DashboardHeader({
         <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">
           Dashboard
         </p>
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight text-balance">
+        <h1 className="text-3xl font-semibold text-foreground tracking-tight text-balance">
           {greeting}
         </h1>
         {childName && (
@@ -49,7 +49,7 @@ export function DashboardHeader({
         )}
       </div>
       {showAvatar && (
-        <Avatar className="h-11 w-11 border-2 border-primary/20">
+        <Avatar className="size-11 border-2 border-primary/20">
           <AvatarImage src={avatarUrl || undefined} />
           <AvatarFallback className="bg-primary text-primary-foreground font-bold">
             {userInitial ?? "U"}
@@ -74,7 +74,7 @@ export function DashboardLoadingState() {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">Loading events</h2>
+        <h2 className="text-lg font-semibold text-foreground">Loading events</h2>
       </div>
       <StaggerList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, index) => (
@@ -91,7 +91,7 @@ export function DashboardEmptyState() {
   return (
     <Card className="border-border/60">
       <CardContent className="p-8 text-center space-y-3">
-        <h2 className="text-xl font-bold text-foreground">No events yet in this city</h2>
+        <h2 className="text-xl font-semibold text-foreground">No events yet in this city</h2>
         <p className="text-sm text-muted-foreground">
           We are still importing local family events. Try exploring another city or check back soon.
         </p>
@@ -120,13 +120,13 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-primary" />
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Calendar className="size-5 text-primary" />
           Upcoming Today
         </h2>
         <Button variant="ghost" size="sm" className="text-primary gap-1" asChild>
           <Link to="/calendar">
-            View Calendar <ArrowRight className="h-3 w-3" />
+            View Calendar <ArrowRight className="size-3" />
           </Link>
         </Button>
       </div>
@@ -151,23 +151,23 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
                     </div>
                   )}
                   <div className="flex gap-4">
-                    <div className="h-20 w-20 rounded-xl overflow-hidden shrink-0 bg-muted">
+                    <div className="size-20 rounded-xl overflow-hidden shrink-0 bg-muted">
                       <SmartImage
                         src={
                           safeImageSrc(event.images?.[0]) ??
                           `https://picsum.photos/seed/${event.id}/200/200`
                         }
                         alt={event.title}
-                        className="h-full w-full object-cover"
-                        placeholderClassName="h-full w-full"
+                        className="size-full object-cover"
+                        placeholderClassName="size-full"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-foreground leading-tight">
+                      <h3 className="font-semibold text-base text-foreground leading-tight">
                         {event.title}
                       </h3>
                       <div className="flex items-center gap-1.5 mt-1 text-muted-foreground text-xs">
-                        <MapPin className="h-3 w-3" />
+                        <MapPin className="size-3" />
                         <span className="truncate">{event.venue_name}</span>
                       </div>
                       <div className="mt-2">
@@ -219,13 +219,13 @@ export function DashboardCarouselSection({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <Icon className="h-5 w-5 text-primary" />
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Icon className="size-5 text-primary" />
           {title}
         </h2>
         <Button variant="ghost" size="sm" className="text-primary gap-1" asChild>
           <Link to="/explore">
-            See all <ArrowRight className="h-3 w-3" />
+            See all <ArrowRight className="size-3" />
           </Link>
         </Button>
       </div>
@@ -263,13 +263,13 @@ export function DashboardSoonSection({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <Clock className="h-5 w-5 text-primary" />
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Clock className="size-5 text-primary" />
           Happening Soon
         </h2>
         <Button variant="ghost" size="sm" className="text-primary gap-1" asChild>
           <Link to="/explore">
-            See all <ArrowRight className="h-3 w-3" />
+            See all <ArrowRight className="size-3" />
           </Link>
         </Button>
       </div>
@@ -305,10 +305,10 @@ export function DashboardSavedSection({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">Saved Ideas</h2>
+        <h2 className="text-lg font-semibold text-foreground">Saved Ideas</h2>
         <Button variant="ghost" size="sm" className="text-primary gap-1" asChild>
           <Link to="/saved">
-            View all saved <ArrowRight className="h-3 w-3" />
+            View all saved <ArrowRight className="size-3" />
           </Link>
         </Button>
       </div>
@@ -340,8 +340,8 @@ export function DashboardSavedSection({
 export function DashboardParentPulse() {
   return (
     <div className="rounded-2xl bg-primary p-4 flex items-start gap-3">
-      <div className="h-8 w-8 rounded-xl bg-primary-foreground/20 flex items-center justify-center shrink-0">
-        <Lightbulb className="h-4 w-4 text-primary-foreground" />
+      <div className="size-8 rounded-xl bg-primary-foreground/20 flex items-center justify-center shrink-0">
+        <Lightbulb className="size-4 text-primary-foreground" />
       </div>
       <div>
         <p className="text-primary-foreground font-semibold text-sm">Parent Pulse</p>
@@ -357,7 +357,7 @@ export function DashboardParentPulse() {
 export function DashboardGuestCta() {
   return (
     <div className="rounded-2xl border border-border/60 bg-family-warm p-6 text-center">
-      <h3 className="text-xl font-bold text-family-warm-foreground mb-2">Never miss a playdate.</h3>
+      <h3 className="text-xl font-semibold text-family-warm-foreground mb-2">Never miss a playdate.</h3>
       <p className="text-sm text-muted-foreground mb-4">
         Get a weekly curated list of weekend family events in your city.
       </p>

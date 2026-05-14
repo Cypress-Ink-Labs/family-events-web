@@ -65,7 +65,7 @@ export function AdminInvitesHeader({
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-xl font-extrabold text-foreground">Invite Codes</h1>
+        <h1 className="text-xl font-semibold text-foreground">Invite Codes</h1>
         <p className="text-muted-foreground text-sm mt-0.5">
           {codes.length} code{codes.length === 1 ? "" : "s"} ·{" "}
           {codes.reduce((sum, code) => sum + code.used_count, 0)} total uses
@@ -74,7 +74,7 @@ export function AdminInvitesHeader({
       <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
         <DialogTrigger asChild>
           <Button className="gap-2">
-            <Plus className="h-4 w-4" /> New Code
+            <Plus className="size-4" /> New Code
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -84,10 +84,10 @@ export function AdminInvitesHeader({
           <div className="space-y-4 py-2">
             <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-100">
               <div className="flex gap-2">
-                <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                <AlertCircle className="size-3.5 shrink-0 mt-0.5" />
                 <div>
                   Codes are generated server-side and shown <strong>once</strong>. The plaintext is
-                  hashed before storage — there is no way to recover it afterward, so copy it
+                  hashed before storage; there is no way to recover it afterward, so copy it
                   immediately.
                 </div>
               </div>
@@ -159,8 +159,8 @@ export function AdminInvitesCreatedReveal({
     <Card className="border-emerald-500/40 bg-emerald-500/5">
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-          <KeyRound className="h-4 w-4" />
-          <span className="text-sm font-bold">Code generated — copy it now</span>
+          <KeyRound className="size-4" />
+          <span className="text-sm font-bold">Code generated, copy it now</span>
         </div>
         <div className="flex items-center gap-2">
           <code className="flex-1 font-mono text-base font-bold tracking-widest rounded-md border border-border/60 bg-background px-3 py-2">
@@ -169,11 +169,11 @@ export function AdminInvitesCreatedReveal({
           <Button variant="outline" size="sm" className="h-10" onClick={onCopy}>
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-green-600 mr-1.5" /> Copied
+                <Check className="size-3.5 text-green-600 mr-1.5" /> Copied
               </>
             ) : (
               <>
-                <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy
+                <Copy className="size-3.5 mr-1.5" /> Copy
               </>
             )}
           </Button>
@@ -193,8 +193,8 @@ export function AdminInvitesEmptyState() {
   return (
     <Card className="border-border/60">
       <CardContent className="p-8 text-center space-y-3">
-        <Ticket className="h-8 w-8 mx-auto text-muted-foreground" />
-        <h2 className="text-lg font-bold">No invite codes yet</h2>
+        <Ticket className="size-8 mx-auto text-muted-foreground" />
+        <h2 className="text-lg font-semibold">No invite codes yet</h2>
         <p className="text-sm text-muted-foreground">
           Generate codes to let specific people sign up during the closed beta.
         </p>
@@ -253,7 +253,7 @@ export function AdminInvitesList({ codes, onDelete }: AdminInvitesListProps) {
                   className="h-8 text-destructive hover:text-destructive"
                   onClick={() => onDelete(code.id)}
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 className="size-3.5" />
                 </Button>
               </div>
             </CardContent>
@@ -268,8 +268,8 @@ export function AdminInviteRequestsEmptyState() {
   return (
     <Card className="border-border/60">
       <CardContent className="p-8 text-center space-y-3">
-        <Inbox className="h-8 w-8 mx-auto text-muted-foreground" />
-        <h2 className="text-lg font-bold">No invite requests yet</h2>
+        <Inbox className="size-8 mx-auto text-muted-foreground" />
+        <h2 className="text-lg font-semibold">No invite requests yet</h2>
         <p className="text-sm text-muted-foreground">
           When someone clicks &quot;Request invite code&quot; on the sign-in page, they&apos;ll show
           up here for approval.
@@ -360,7 +360,7 @@ export function AdminInviteRequestsList({
                       onClick={() => onApprove(request.id)}
                       disabled={isApproving || isRejecting}
                     >
-                      <CircleCheck className="h-3.5 w-3.5" />
+                      <CircleCheck className="size-3.5" />
                       {isApproving ? "Approving..." : "Approve"}
                     </Button>
                     <Button
@@ -370,7 +370,7 @@ export function AdminInviteRequestsList({
                       onClick={() => onReject(request.id)}
                       disabled={isApproving || isRejecting}
                     >
-                      <CircleX className="h-3.5 w-3.5" />
+                      <CircleX className="size-3.5" />
                       {isRejecting ? "Rejecting..." : "Reject"}
                     </Button>
                   </div>

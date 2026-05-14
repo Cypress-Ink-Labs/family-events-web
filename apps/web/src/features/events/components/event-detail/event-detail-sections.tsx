@@ -27,7 +27,7 @@ export function EventDetailLoadingState() {
     <div className="max-w-2xl mx-auto">
       <div className="sticky top-14 z-30 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
         <div className="flex items-center gap-2 -ml-2">
-          <Skeleton className="h-4 w-4 rounded" />
+          <Skeleton className="size-4 rounded" />
           <Skeleton className="h-4 w-12" />
         </div>
       </div>
@@ -47,7 +47,7 @@ export function EventDetailLoadingState() {
           {Array.from({ length: 4 }).map((_, index) => (
             <Card key={`event-info-skeleton-${index}`} className="border-border/60">
               <CardContent className="p-4 flex items-center gap-3">
-                <Skeleton className="h-9 w-9 rounded-xl shrink-0" />
+                <Skeleton className="size-9 rounded-xl shrink-0" />
                 <div className="flex-1 space-y-1.5">
                   <Skeleton className="h-3 w-16" />
                   <Skeleton className="h-4 w-20" />
@@ -65,7 +65,7 @@ export function EventDetailLoadingState() {
         <div className="space-y-2">
           <Skeleton className="h-5 w-28" />
           <div className="flex items-center gap-3">
-            <Skeleton className="h-4 w-4" />
+            <Skeleton className="size-4" />
             <div className="space-y-1.5 flex-1">
               <Skeleton className="h-4 w-1/2" />
               <Skeleton className="h-3 w-2/3" />
@@ -116,7 +116,7 @@ export function EventDetailHero({
       <div className="sticky top-14 z-30 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
         <Button variant="ghost" size="sm" className="gap-2 -ml-2" asChild>
           <Link to="/explore">
-            <ArrowLeft className="h-4 w-4" /> Back
+            <ArrowLeft className="size-4" /> Back
           </Link>
         </Button>
       </div>
@@ -136,8 +136,8 @@ export function EventDetailHero({
             onToggle={onFavoriteToggle}
             variant="overlay"
           />
-          <button className="h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md">
-            <Share2 className="h-4 w-4 text-foreground" />
+          <button className="size-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md">
+            <Share2 className="size-4 text-foreground" />
           </button>
         </div>
       </div>
@@ -162,7 +162,7 @@ export function EventDetailSummary({ event, startDate }: EventDetailSummaryProps
           {format(startDate, "EEEE MMMM")} Morning
         </span>
       </div>
-      <h1 className="text-2xl font-extrabold text-foreground tracking-tight">{event.title}</h1>
+      <h1 className="text-2xl font-semibold text-foreground tracking-tight">{event.title}</h1>
       <p className="text-muted-foreground text-sm mt-2 leading-relaxed">
         {event.description?.slice(0, 100)}
       </p>
@@ -183,8 +183,8 @@ export function EventDetailInfoGrid({ infoItems }: { infoItems: EventDetailInfoI
       {infoItems.map((item) => (
         <Card key={item.label} className="border-border/60">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-muted flex items-center justify-center shrink-0">
-              <item.icon className="h-4 w-4 text-muted-foreground" />
+            <div className="size-9 rounded-xl bg-muted flex items-center justify-center shrink-0">
+              <item.icon className="size-4 text-muted-foreground" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{item.label}</p>
@@ -200,11 +200,11 @@ export function EventDetailInfoGrid({ infoItems }: { infoItems: EventDetailInfoI
 export function EventDetailAbout({ description }: { description: string | null }) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-3">About the Experience</h2>
+      <h2 className="text-lg font-semibold text-foreground mb-3">About the Experience</h2>
       <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
 
       <div className="mt-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 p-4 flex gap-3">
-        <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+        <Info className="size-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
         <div>
           <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-0.5">
             Parent Tip
@@ -222,9 +222,9 @@ export function EventDetailAbout({ description }: { description: string | null }
 export function EventDetailLocation({ event }: { event: EventWithDetails }) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-3">Location</h2>
+      <h2 className="text-lg font-semibold text-foreground mb-3">Location</h2>
       <div className="flex items-start gap-3 mb-3">
-        <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+        <MapPin className="size-4 text-primary mt-0.5 shrink-0" />
         <div>
           {event.venue_name && (
             <p className="text-sm font-semibold text-foreground">{event.venue_name}</p>
@@ -265,7 +265,7 @@ export function EventDetailBooking({
 }: EventDetailBookingProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-4">Reserve Your Spot</h2>
+      <h2 className="text-lg font-semibold text-foreground mb-4">Reserve Your Spot</h2>
       <div className="space-y-3 mb-5">
         <div className="flex items-center justify-between py-3 border-b border-border/40">
           <span className="text-sm text-muted-foreground">Date</span>
@@ -280,14 +280,14 @@ export function EventDetailBooking({
           <div className="flex items-center gap-3">
             <button
               onClick={onDecrement}
-              className="h-7 w-7 rounded-full border border-border flex items-center justify-center hover:bg-accent text-sm font-bold"
+              className="size-7 rounded-full border border-border flex items-center justify-center hover:bg-accent text-sm font-bold"
             >
               −
             </button>
             <span className="text-sm font-bold w-4 text-center">{attendees}</span>
             <button
               onClick={onIncrement}
-              className="h-7 w-7 rounded-full border border-border flex items-center justify-center hover:bg-accent text-sm font-bold"
+              className="size-7 rounded-full border border-border flex items-center justify-center hover:bg-accent text-sm font-bold"
             >
               +
             </button>
@@ -312,12 +312,12 @@ export function EventDetailBooking({
         )}
         onClick={onAddToCalendar}
       >
-        <CalendarPlus className="h-4 w-4" />
+        <CalendarPlus className="size-4" />
         {isInCalendar ? "Added to Calendar" : "Add to Calendar"}
       </Button>
 
       <div className="flex items-center justify-center gap-1.5 mt-3">
-        <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+        <div className="size-1.5 rounded-full bg-green-500" />
         <span className="text-xs text-muted-foreground">SECURE PARENTING PLATFORM</span>
       </div>
     </div>
@@ -347,7 +347,7 @@ export function EventDetailReviews({
 }: EventDetailReviewsProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-foreground mb-4">Reviews</h2>
+      <h2 className="text-lg font-semibold text-foreground mb-4">Reviews</h2>
 
       {canReview && (
         <Card className="border-border/60 mb-4">
@@ -371,7 +371,7 @@ export function EventDetailReviews({
       <div className="space-y-4">
         {comments.map((commentEntry) => (
           <div key={commentEntry.id} className="flex gap-3">
-            <Avatar className="h-8 w-8 shrink-0">
+            <Avatar className="size-8 shrink-0">
               <AvatarFallback className="text-xs bg-muted">
                 {(commentEntry.user_profiles?.display_name || "U").charAt(0)}
               </AvatarFallback>

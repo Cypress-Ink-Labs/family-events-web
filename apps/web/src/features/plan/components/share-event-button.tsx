@@ -76,7 +76,7 @@ export function ShareEventButton({ eventId, eventTitle }: ShareEventButtonProps)
   return (
     <>
       <Button onClick={handleShare} className="gap-2">
-        <Share2 className="h-4 w-4" />
+        <Share2 className="size-4" />
         Share plan
       </Button>
 
@@ -94,7 +94,7 @@ export function ShareEventButton({ eventId, eventTitle }: ShareEventButtonProps)
               Close
             </Button>
             <Button onClick={handleManualCopy} className="gap-2">
-              <Copy className="h-4 w-4" />
+              <Copy className="size-4" />
               Copy link
             </Button>
           </DialogFooter>

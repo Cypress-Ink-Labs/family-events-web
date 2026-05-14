@@ -46,7 +46,7 @@ interface AdminDashboardHeaderProps {
 export function AdminDashboardHeader({ title, description }: AdminDashboardHeaderProps) {
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-foreground">{title}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
       <p className="text-muted-foreground text-sm mt-1">{description}</p>
     </div>
   )
@@ -65,7 +65,7 @@ export function AdminDashboardStatsGrid({ stats, isLoading }: AdminDashboardStat
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              <stat.icon className={`size-4 ${stat.color}`} />
             </div>
             <p className="text-2xl font-extrabold text-foreground">
               {isLoading ? "..." : stat.value}
@@ -87,7 +87,7 @@ export function AdminDashboardIngestionChart({ data }: AdminDashboardIngestionCh
     <Card className="border-border/60">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <BarChart3 className="h-4 w-4 text-primary" />
+          <BarChart3 className="size-4 text-primary" />
           Event Ingestion (Last 7 Days)
         </CardTitle>
       </CardHeader>
@@ -130,11 +130,11 @@ export function AdminDashboardRecentRuns({ runs, isLoading }: AdminDashboardRece
           >
             <div className="flex items-center gap-2.5 min-w-0">
               {run.status === "success" && (
-                <CheckCircle className="h-4 w-4 text-green-600 shrink-0" />
+                <CheckCircle className="size-4 text-green-600 shrink-0" />
               )}
-              {run.status === "error" && <XCircle className="h-4 w-4 text-destructive shrink-0" />}
+              {run.status === "error" && <XCircle className="size-4 text-destructive shrink-0" />}
               {run.status === "partial" && (
-                <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                <AlertTriangle className="size-4 text-amber-500 shrink-0" />
               )}
               <div className="min-w-0">
                 <p className="text-sm font-medium truncate">{run.source}</p>

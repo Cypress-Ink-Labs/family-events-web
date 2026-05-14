@@ -20,7 +20,7 @@ export function LoadingRows() {
           <Card className="border-border/60">
             <CardContent className="p-4">
               <div className="flex gap-4">
-                <Skeleton className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl" />
+                <Skeleton className="size-16 sm:h-20 sm:w-20 rounded-xl" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-3 w-2/3" />
@@ -56,12 +56,12 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
       <CardContent className="p-4">
         <div className="flex gap-4">
           <Link to={`/events/${event.id}`} className="shrink-0">
-            <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-muted">
+            <div className="size-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-muted">
               <SmartImage
                 src={imageUrl}
                 alt={event.title}
-                className="h-full w-full object-cover"
-                placeholderClassName="h-full w-full"
+                className="size-full object-cover"
+                placeholderClassName="size-full"
               />
             </div>
           </Link>
@@ -69,7 +69,7 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <Link to={`/events/${event.id}`} className="min-w-0">
-                <h3 className="font-bold text-sm text-foreground leading-tight line-clamp-2">
+                <h3 className="font-semibold text-sm text-foreground leading-tight line-clamp-2">
                   {event.title}
                 </h3>
               </Link>
@@ -78,12 +78,12 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
                 className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
                 aria-label="Remove"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               </button>
             </div>
 
             <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" />
+              <Clock className="size-3" />
               <span>{format(startDate, "EEE, MMM d · h:mm a")}</span>
             </div>
 
@@ -133,7 +133,7 @@ interface EmptyStateProps {
 export function EmptyState({ icon: Icon, title, description, cta, ctaHref }: EmptyStateProps) {
   return (
     <div className="py-16 text-center">
-      <Icon className="h-14 w-14 text-muted-foreground/25 mx-auto mb-4" />
+      <Icon className="size-14 text-muted-foreground/25 mx-auto mb-4" />
       <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
       <p className="text-muted-foreground text-sm mb-5">{description}</p>
       <Button asChild>

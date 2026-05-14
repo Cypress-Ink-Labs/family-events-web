@@ -67,7 +67,7 @@ function PlanContextBar({ cityName, childAge }: PlanContextBarProps) {
           key={chip.label}
           className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground"
         >
-          <chip.icon className="h-3.5 w-3.5 text-primary" />
+          <chip.icon className="size-3.5 text-primary" />
           {chip.label}
         </div>
       ))}
@@ -124,7 +124,7 @@ export function SaturdayPlanPage() {
         <p className="text-xs font-semibold uppercase tracking-wide text-primary">
           This week's plan
         </p>
-        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
           {profile?.child_name
             ? `Best family options for ${profile.child_name} this week`
             : "Best family options this week"}
@@ -160,7 +160,7 @@ export function SaturdayPlanPage() {
                   void refetch()
                 }}
               >
-                <RefreshCw className="h-4 w-4" />
+                <RefreshCw className="size-4" />
                 {isRefetching ? "Retrying..." : "Retry"}
               </Button>
             </CardContent>
@@ -204,7 +204,7 @@ export function SaturdayPlanPage() {
               <Button variant="ghost" className="gap-1 text-primary" asChild>
                 <Link to={exploreHref}>
                   See more options
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Link>
               </Button>
             </div>

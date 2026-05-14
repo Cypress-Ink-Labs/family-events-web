@@ -39,15 +39,15 @@ export function PlanThumbCard({ event }: PlanThumbCardProps) {
           />
         </div>
         <CardContent className="space-y-2 p-3">
-          <h3 className="line-clamp-2 text-sm font-bold text-foreground">{event.title}</h3>
+          <h3 className="line-clamp-2 text-sm font-semibold text-foreground">{event.title}</h3>
           <div className="space-y-1 text-xs text-muted-foreground">
             <div className="inline-flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" />
+              <Clock className="size-3.5" />
               {format(new Date(event.start_datetime), "EEE · h:mm a")}
             </div>
             {event.venue_name ? (
               <div className="inline-flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5" />
+                <MapPin className="size-3.5" />
                 <span className="truncate">{event.venue_name}</span>
               </div>
             ) : null}

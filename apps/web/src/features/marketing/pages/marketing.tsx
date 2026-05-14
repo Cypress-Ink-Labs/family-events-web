@@ -29,7 +29,7 @@ export function MarketingPage() {
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6">
         <header className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary">
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-primary">
               <span className="text-lg font-black text-primary-foreground">F</span>
             </div>
             <span className="text-lg font-extrabold tracking-tight text-foreground">
@@ -51,12 +51,12 @@ export function MarketingPage() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <section className="space-y-6">
               <Badge variant="outline" className="gap-2 px-3 py-1 text-xs font-semibold">
-                <Ticket className="h-3.5 w-3.5" />
+                <Ticket className="size-3.5" />
                 Invite-only launch
               </Badge>
 
               <div className="space-y-4">
-                <h1 className="max-w-3xl text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
                   Family event discovery for parents who want fewer tabs and better plans.
                 </h1>
                 <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
@@ -68,7 +68,7 @@ export function MarketingPage() {
               <div className="flex flex-wrap gap-3">
                 <Button size="lg" className="gap-2" asChild>
                   <Link to="/sign-up">
-                    Sign up with invite <ArrowRight className="h-4 w-4" />
+                    Sign up with invite <ArrowRight className="size-4" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
@@ -81,11 +81,11 @@ export function MarketingPage() {
               {HIGHLIGHTS.map(({ icon: Icon, title, description }) => (
                 <Card key={title} className="border-border/60">
                   <CardContent className="flex gap-4 p-5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                      <Icon className="h-5 w-5" />
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <Icon className="size-5" />
                     </div>
                     <div className="space-y-1">
-                      <h2 className="text-base font-bold text-foreground">{title}</h2>
+                      <h2 className="text-base font-semibold text-foreground">{title}</h2>
                       <p className="text-sm text-muted-foreground">{description}</p>
                     </div>
                   </CardContent>

@@ -36,16 +36,16 @@ export function CalendarViewHeader({ view, onViewChange }: PageHeaderProps) {
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
           Calendar
         </p>
-        <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Your Adventures</h1>
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Your Adventures</h1>
       </div>
       <Tabs value={view} onValueChange={(nextView) => onViewChange(nextView as "month" | "week")}>
         <TabsList className="h-9">
           <TabsTrigger value="month" className="text-xs gap-1.5 px-3">
-            <CalendarDays className="h-3.5 w-3.5" />
+            <CalendarDays className="size-3.5" />
             Month
           </TabsTrigger>
           <TabsTrigger value="week" className="text-xs gap-1.5 px-3">
-            <List className="h-3.5 w-3.5" />
+            <List className="size-3.5" />
             Week
           </TabsTrigger>
         </TabsList>
@@ -86,14 +86,14 @@ export function CalendarWeekPanel({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full"
+            className="size-8 rounded-full"
             onClick={onPreviousWeek}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </Button>
-          <h2 className="text-base font-bold text-foreground tracking-tight">{weekLabel}</h2>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={onNextWeek}>
-            <ChevronRight className="h-4 w-4" />
+          <h2 className="text-base font-semibold text-foreground tracking-tight">{weekLabel}</h2>
+          <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={onNextWeek}>
+            <ChevronRight className="size-4" />
           </Button>
         </div>
 
@@ -138,7 +138,7 @@ export function CalendarWeekPanel({
                         <div
                           key={event.id}
                           className={cn(
-                            "h-1 w-1 rounded-full",
+                            "size-1 rounded-full",
                             isSelected
                               ? "bg-primary-foreground/60"
                               : isTodayDay
@@ -158,15 +158,15 @@ export function CalendarWeekPanel({
 
       <div className="flex items-center gap-5 px-1">
         <div className="flex items-center gap-1.5">
-          <div className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+          <div className="size-2 rounded-full bg-muted-foreground/40" />
           <span className="text-xs text-muted-foreground">Has events</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="h-4 w-4 rounded-full ring-2 ring-primary/40 ring-inset" />
+          <div className="size-4 rounded-full ring-2 ring-primary/40 ring-inset" />
           <span className="text-xs text-muted-foreground">Today</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="h-4 w-4 rounded-full bg-primary" />
+          <div className="size-4 rounded-full bg-primary" />
           <span className="text-xs text-muted-foreground">Selected</span>
         </div>
       </div>
@@ -202,21 +202,21 @@ export function CalendarMonthPanel({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full"
+            className="size-8 rounded-full"
             onClick={onPreviousMonth}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </Button>
-          <h2 className="text-base font-bold text-foreground tracking-tight">
+          <h2 className="text-base font-semibold text-foreground tracking-tight">
             {format(currentMonth, "MMMM yyyy")}
           </h2>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full"
+            className="size-8 rounded-full"
             onClick={onNextMonth}
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           </Button>
         </div>
 
@@ -261,7 +261,7 @@ export function CalendarMonthPanel({
                         <div
                           key={event.id}
                           className={cn(
-                            "h-1 w-1 rounded-full",
+                            "size-1 rounded-full",
                             isSelected
                               ? "bg-primary-foreground/60"
                               : isTodayDay
@@ -281,15 +281,15 @@ export function CalendarMonthPanel({
 
       <div className="flex items-center gap-5 px-1">
         <div className="flex items-center gap-1.5">
-          <div className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+          <div className="size-2 rounded-full bg-muted-foreground/40" />
           <span className="text-xs text-muted-foreground">Has events</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="h-4 w-4 rounded-full ring-2 ring-primary/40 ring-inset" />
+          <div className="size-4 rounded-full ring-2 ring-primary/40 ring-inset" />
           <span className="text-xs text-muted-foreground">Today</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="h-4 w-4 rounded-full bg-primary" />
+          <div className="size-4 rounded-full bg-primary" />
           <span className="text-xs text-muted-foreground">Selected</span>
         </div>
       </div>
@@ -316,7 +316,7 @@ export function CalendarSelectedDatePanel({
     <div className="bg-card border border-border/60 rounded-2xl shadow-sm overflow-hidden">
       <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-foreground text-sm">
+          <h3 className="font-semibold text-foreground text-sm">
             {isToday(selectedDate) ? "Today" : format(selectedDate, "EEEE")}
           </h3>
           <p className="text-xs text-muted-foreground">{format(selectedDate, "MMMM d, yyyy")}</p>
@@ -345,8 +345,8 @@ export function CalendarSelectedDatePanel({
           </div>
         ) : events.length === 0 ? (
           <div className="py-10 px-4 text-center">
-            <div className="h-12 w-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3">
-              <CalendarDays className="h-5 w-5 text-muted-foreground/50" />
+            <div className="size-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3">
+              <CalendarDays className="size-5 text-muted-foreground/50" />
             </div>
             <p className="text-sm font-medium text-foreground mb-1">Nothing planned</p>
             <p className="text-xs text-muted-foreground mb-4">No events on this day</p>
@@ -382,14 +382,14 @@ export function CalendarStatsPanel({ savedCount, upcomingCount }: StatsCardsProp
     <div className="grid grid-cols-2 gap-3">
       <div className="bg-card border border-border/60 rounded-2xl p-4 text-center shadow-sm">
         <div className="flex items-center justify-center mb-1">
-          <Bookmark className="h-4 w-4 text-primary" />
+          <Bookmark className="size-4 text-primary" />
         </div>
         <p className="text-2xl font-extrabold text-primary leading-none">{savedCount}</p>
         <p className="text-[11px] text-muted-foreground mt-1 font-medium">Saved</p>
       </div>
       <div className="bg-card border border-border/60 rounded-2xl p-4 text-center shadow-sm">
         <div className="flex items-center justify-center mb-1">
-          <CalendarDays className="h-4 w-4 text-primary" />
+          <CalendarDays className="size-4 text-primary" />
         </div>
         <p className="text-2xl font-extrabold text-primary leading-none">{upcomingCount}</p>
         <p className="text-[11px] text-muted-foreground mt-1 font-medium">Upcoming</p>
@@ -415,7 +415,7 @@ export function SavedEventsSection({
     <section>
       <Separator className="mb-6" />
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-foreground">Saved Events</h2>
+        <h2 className="text-lg font-semibold text-foreground">Saved Events</h2>
         <span className="text-sm text-muted-foreground">{savedEvents.length} saved</span>
       </div>
       <FadeSwap
@@ -437,8 +437,8 @@ export function SavedEventsSection({
           </StaggerList>
         ) : savedEvents.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-              <Bookmark className="h-7 w-7 text-muted-foreground/40" />
+            <div className="size-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+              <Bookmark className="size-7 text-muted-foreground/40" />
             </div>
             <h3 className="text-lg font-semibold text-foreground mb-2">No saved events yet</h3>
             <p className="text-muted-foreground text-sm mb-5">

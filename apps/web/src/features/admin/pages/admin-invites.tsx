@@ -202,7 +202,7 @@ export function AdminInvitesPage() {
             <>
               {pendingCount > 0 && (
                 <div className="space-y-2">
-                  <h2 className="text-sm font-bold text-foreground">Pending review</h2>
+                  <h2 className="text-sm font-semibold text-foreground">Pending review</h2>
                   <AdminInviteRequestsList
                     requests={pendingRequests}
                     approvingId={approvingId}
@@ -214,7 +214,7 @@ export function AdminInvitesPage() {
               )}
               {reviewedOnly.length > 0 && (
                 <div className="space-y-2">
-                  <h2 className="text-sm font-bold text-muted-foreground">History</h2>
+                  <h2 className="text-sm font-semibold text-muted-foreground">History</h2>
                   <AdminInviteRequestsList
                     requests={reviewedOnly}
                     approvingId={null}

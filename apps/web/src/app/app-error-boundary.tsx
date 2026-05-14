@@ -65,10 +65,10 @@ class AppErrorBoundaryInner extends Component<InnerProps, ErrorBoundaryState> {
         <div className="max-w-3xl mx-auto px-4 py-16">
           <Card className="border-destructive/30 bg-destructive/5">
             <CardContent className="p-8 space-y-4 text-center">
-              <div className="mx-auto h-12 w-12 rounded-2xl bg-destructive/10 flex items-center justify-center">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
+              <div className="mx-auto size-12 rounded-2xl bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="size-6 text-destructive" />
               </div>
-              <h1 className="text-xl font-bold text-foreground">Something went wrong</h1>
+              <h1 className="text-xl font-semibold text-foreground">Something went wrong</h1>
               <p className="text-sm text-muted-foreground">
                 We hit an unexpected error while rendering this page.
               </p>

@@ -70,11 +70,11 @@ export function ResetPasswordPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="h-10 w-10 rounded-2xl bg-primary flex items-center justify-center">
+            <div className="size-10 rounded-2xl bg-primary flex items-center justify-center">
               <span className="text-primary-foreground text-lg font-black">F</span>
             </div>
           </Link>
-          <h1 className="text-2xl font-extrabold text-foreground">Set a new password</h1>
+          <h1 className="text-2xl font-semibold text-foreground">Set a new password</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Pick something you'll actually remember this time.
           </p>

@@ -54,15 +54,15 @@ export function PlanHeroCard({ event }: PlanHeroCardProps) {
 
       <CardContent className="space-y-4 p-4">
         <div className="space-y-2">
-          <h2 className="text-2xl font-extrabold tracking-tight text-foreground">{event.title}</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">{event.title}</h2>
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1">
-              <Clock className="h-4 w-4" />
+              <Clock className="size-4" />
               {format(new Date(event.start_datetime), "EEE, MMM d · h:mm a")}
             </span>
             {event.venue_name ? (
               <span className="inline-flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
+                <MapPin className="size-4" />
                 {event.venue_name}
               </span>
             ) : null}

@@ -40,12 +40,12 @@ export function EventCard({
             className
           )}
         >
-          <div className="h-14 w-14 rounded-xl overflow-hidden shrink-0 bg-muted">
+          <div className="size-14 rounded-xl overflow-hidden shrink-0 bg-muted">
             <SmartImage
               src={imageUrl}
               alt={event.title}
-              className="h-full w-full object-cover"
-              placeholderClassName="h-full w-full"
+              className="size-full object-cover"
+              placeholderClassName="size-full"
             />
           </div>
           <div className="flex-1 min-w-0">
@@ -126,16 +126,16 @@ export function EventCard({
                   <TagBadge key={et.tag_id} tag={et.tag} />
                 ))}
             </div>
-            <h3 className="font-bold text-base text-foreground leading-tight line-clamp-2">
+            <h3 className="font-semibold text-base text-foreground leading-tight line-clamp-2">
               {event.title}
             </h3>
             <div className="flex items-center gap-1.5 mt-1.5 text-muted-foreground text-xs">
-              <Clock className="h-3 w-3" />
+              <Clock className="size-3" />
               <span>{format(startDate, "EEE, MMM d · h:mm a")}</span>
             </div>
             {event.venue_name && (
               <div className="flex items-center gap-1.5 mt-1 text-muted-foreground text-xs">
-                <MapPin className="h-3 w-3" />
+                <MapPin className="size-3" />
                 <span className="truncate">{event.venue_name}</span>
               </div>
             )}
@@ -252,16 +252,16 @@ export function EventCard({
               <TagBadge key={et.tag_id} tag={et.tag} />
             ))}
           </div>
-          <h3 className="font-bold text-sm text-foreground leading-snug line-clamp-2">
+          <h3 className="font-semibold text-sm text-foreground leading-snug line-clamp-2">
             {event.title}
           </h3>
           <div className="flex items-center gap-1 mt-1 text-muted-foreground text-xs">
-            <Clock className="h-3 w-3" />
+            <Clock className="size-3" />
             <span>{format(startDate, "MMM d · h a")}</span>
           </div>
           {event.venue_name && (
             <div className="flex items-center gap-1 mt-0.5 text-muted-foreground text-xs">
-              <MapPin className="h-3 w-3" />
+              <MapPin className="size-3" />
               <span className="truncate">{event.venue_name}</span>
             </div>
           )}
@@ -292,7 +292,7 @@ export function EventCardSkeleton({
   if (variant === "compact") {
     return (
       <div className="flex gap-3 items-center py-3">
-        <Skeleton className="h-14 w-14 rounded-xl shrink-0" />
+        <Skeleton className="size-14 rounded-xl shrink-0" />
         <div className="flex-1">
           <Skeleton className="h-4 w-3/4 mb-1.5" />
           <Skeleton className="h-3 w-1/2 mb-1.5" />

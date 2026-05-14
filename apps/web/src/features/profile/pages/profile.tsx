@@ -76,7 +76,7 @@ export function ProfilePage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-6 space-y-6">
-      <h1 className="text-2xl font-extrabold text-foreground">Profile</h1>
+      <h1 className="text-2xl font-semibold text-foreground">Profile</h1>
 
       {/* User summary */}
       <ProfileUserSummary
