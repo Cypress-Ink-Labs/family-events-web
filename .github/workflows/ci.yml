@@ -18,6 +18,7 @@ env:
   E2E_ADMIN_PASSWORD: Admin123!
 
 jobs:
+  # Secret scanning + E2E (needs local Supabase — can't run on RWX)
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -50,23 +51,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Docs guards
-        run: pnpm run docs:test
-
-      - name: Workspace guards
-        run: pnpm run workspace:test
-
       - name: Install Playwright browsers
         run: pnpm --filter @family-events/web exec playwright install --with-deps
-
-      - name: Check
-        run: pnpm run check
-
-      - name: Test
-        run: pnpm run test
-
-      - name: Build
-        run: pnpm run build
 
       # ─── E2E preflight ────────────────────────────────────────────────
       # Boot a local Supabase stack and seed an admin user. The E2E suite
@@ -88,8 +74,6 @@ jobs:
           anon_key=$(echo "$STATUS" | grep '^PUBLISHABLE_KEY=' | cut -d'"' -f2)
           service_role=$(echo "$STATUS" | grep '^SERVICE_ROLE_KEY=' | cut -d'"' -f2)
           db_url=$(echo "$STATUS" | grep '^DB_URL='            | cut -d'"' -f2)
-          # Treat keys as masked output. They are local-only test secrets,
-          # but masking keeps them out of step logs if any tool echoes them.
           echo "::add-mask::$anon_key"
           echo "::add-mask::$service_role"
           {
@@ -106,8 +90,6 @@ jobs:
           ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ env.E2E_ADMIN_PASSWORD }}
         run: |
-          # GoTrue admin endpoint. 200/201 = created, 422 = already exists
-          # (idempotent re-run path). Anything else fails the job loudly.
           payload=$(printf '{"email":"%s","password":"%s","email_confirm":true}' \
             "$ADMIN_EMAIL" "$ADMIN_PASSWORD")
           code=$(curl -sS -o /tmp/seed_admin.json -w "%{http_code}" \
@@ -134,9 +116,6 @@ jobs:
           DB_URL: ${{ steps.supabase.outputs.db_url }}
           ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
         run: |
-          # setup-local.sh prints warnings rather than failing on bootstrap
-          # misfires. Re-check the post-condition here so CI fails early and
-          # clearly if the admin row isn't fully provisioned.
           result=$(psql "$DB_URL" -t -A -F '|' -v ON_ERROR_STOP=1 \
             -v admin_email="$ADMIN_EMAIL" <<'SQL' | tr -d '[:space:]'
             SELECT up.role, COALESCE(ua.is_enabled::text, 'false')
@@ -171,6 +150,7 @@ jobs:
         if: always()
         run: bash scripts/supabase.sh stop || true
 
+  # iOS simulator tests (needs macOS — can't run on RWX)
   ios:
     runs-on: macos-14
     steps:
