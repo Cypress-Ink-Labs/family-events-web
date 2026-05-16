@@ -1,0 +1,29 @@
+{
+  "name": "@family-events/design-system",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Single source of truth for family-events design tokens. Codegen feeds apps/web (CSS vars) and apps/ios (Swift constants).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens": "./tokens/tokens.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:web": "node scripts/gen-web-css.mjs",
+    "build:ios": "node scripts/gen-ios-swift.mjs",
+    "build:ts": "node scripts/gen-ts-tokens.mjs",
+    "verify:drift": "node scripts/verify-drift.mjs",
+    "check": "tsc -p tsconfig.json --noEmit && node scripts/verify-drift.mjs",
+    "format": "oxfmt --config ../config-quality/oxfmt.base.json --write src scripts",
+    "format:check": "oxfmt --config ../config-quality/oxfmt.base.json --check src scripts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@family-events/config-quality": "workspace:*",
+    "@family-events/config-typescript": "workspace:*",
+    "oxfmt": "^0.49.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.6"
+  }
+}

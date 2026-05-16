@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/*
+ * v2 design tokens (light + dark) generated from packages/design-system.
+ * Provides --color-bg, --color-accent-primary, --space-*, --radius-*, etc.
+ * Coexists with the legacy shadcn tokens below during migration.
+ * Source of truth: docs/DESIGN.md
+ */
+@import "./styles/tokens.generated.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
