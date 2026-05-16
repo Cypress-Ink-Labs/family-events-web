@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@family-events/contracts": "workspace:*",
+    "@family-events/design-system": "workspace:*",
     "@family-events/shared": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@sentry/react": "^10.53.1",
