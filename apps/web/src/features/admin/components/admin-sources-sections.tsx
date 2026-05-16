@@ -1,18 +1,20 @@
 import type { ElementType } from "react"
 import {
   Calendar,
+  ChevronDown,
   Circle as XCircle,
   CircleCheck as CheckCircle,
   Clock,
   FileText,
   Globe,
   HelpCircle,
+  MoreHorizontal,
   Plus,
   RefreshCw,
   Rss,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
-import { format } from "date-fns"
+import { format, isToday, isThisYear } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -25,6 +27,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -36,9 +44,9 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { groupByCity, UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
+import { FormGrid, Toolbar } from "@/components/v2"
 import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 import type { City, EventSource } from "@/lib/types"
 
@@ -64,6 +72,12 @@ function getSourceStatus(lastStatus: string | null | undefined): SourceStatus {
   return "pending"
 }
 
+function formatLastRunCompact(date: Date): string {
+  if (isToday(date)) return format(date, "h:mma").toLowerCase()
+  if (isThisYear(date)) return format(date, "M/d h:mma").toLowerCase()
+  return format(date, "M/d/yy")
+}
+
 function StatusIndicator({ status }: { status: SourceStatus }) {
   const config = {
     success: { icon: CheckCircle, color: "text-green-600", label: "Healthy" },
@@ -73,7 +87,7 @@ function StatusIndicator({ status }: { status: SourceStatus }) {
   }[status]
 
   return (
-    <div className={`flex items-center gap-1 ${config.color}`}>
+    <div className={cn("inline-flex items-center gap-1", config.color)}>
       <config.icon className="size-3.5" />
       <span className="text-xs font-medium">{config.label}</span>
     </div>
@@ -117,104 +131,110 @@ export function AdminSourcesHeader({
   onDisableAllAutoApprove,
 }: AdminSourcesHeaderProps) {
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-xl font-semibold text-foreground">Event Sources</h1>
-        <p className="text-muted-foreground text-sm mt-0.5">{activeSourceCount} active sources</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={isBulkPending}
-          onClick={onEnableAllAutoApprove}
-        >
-          Auto-Approve All
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={isBulkPending}
-          onClick={onDisableAllAutoApprove}
-        >
-          Disable Auto-Approve All
-        </Button>
-        <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="size-4" />
-              Add Source
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Event Source</DialogTitle>
-              <DialogDescription>
-                Create a source, then trigger a scrape to import events into the review queue.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-2">
-              <div className="space-y-1.5">
-                <Label>Source Name</Label>
-                <Input
-                  value={newSource.name}
-                  onChange={(event) => onNameChange(event.target.value)}
-                  placeholder="e.g. NYC Parks Family Events"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>URL</Label>
-                <Input
-                  value={newSource.url}
-                  onChange={(event) => onUrlChange(event.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>Type</Label>
-                  <Select
-                    value={newSource.source_type}
-                    onValueChange={(value) => onTypeChange(value as SourceType)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="website">Website</SelectItem>
-                      <SelectItem value="ical">iCal Feed</SelectItem>
-                      <SelectItem value="rss">RSS Feed</SelectItem>
-                      <SelectItem value="manual">Manual</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>City</Label>
-                  <Select value={newSource.city_id} onValueChange={onCityChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.id}>
-                          {city.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => onDialogOpenChange(false)}>
-                Cancel
+    <Toolbar
+      title="Event Sources"
+      subtitle={`${activeSourceCount} active`}
+      actions={
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="min-h-[44px] gap-1.5"
+                disabled={isBulkPending}
+                aria-label="Bulk actions"
+              >
+                <MoreHorizontal className="size-4" />
+                <span className="hidden sm:inline">Bulk</span>
               </Button>
-              <Button onClick={onAddSource}>Add Source</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={onEnableAllAutoApprove} disabled={isBulkPending}>
+                Auto-Approve All
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDisableAllAutoApprove} disabled={isBulkPending}>
+                Disable Auto-Approve All
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
+            <DialogTrigger asChild>
+              <Button className="min-h-[44px] gap-2">
+                <Plus className="size-4" />
+                <span>Add Source</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Event Source</DialogTitle>
+                <DialogDescription>
+                  Create a source, then trigger a scrape to import events into the review queue.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <div className="space-y-1.5">
+                  <Label>Source Name</Label>
+                  <Input
+                    value={newSource.name}
+                    onChange={(event) => onNameChange(event.target.value)}
+                    placeholder="e.g. NYC Parks Family Events"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>URL</Label>
+                  <Input
+                    value={newSource.url}
+                    onChange={(event) => onUrlChange(event.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
+                <FormGrid cols={2} gap="3">
+                  <div className="space-y-1.5">
+                    <Label>Type</Label>
+                    <Select
+                      value={newSource.source_type}
+                      onValueChange={(value) => onTypeChange(value as SourceType)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="website">Website</SelectItem>
+                        <SelectItem value="ical">iCal Feed</SelectItem>
+                        <SelectItem value="rss">RSS Feed</SelectItem>
+                        <SelectItem value="manual">Manual</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>City</Label>
+                    <Select value={newSource.city_id} onValueChange={onCityChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cities.map((city) => (
+                          <SelectItem key={city.id} value={city.id}>
+                            {city.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </FormGrid>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => onDialogOpenChange(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={onAddSource}>Add Source</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>
+      }
+    />
   )
 }
 
@@ -282,11 +302,11 @@ export function AdminSourcesList({
         return (
           <Collapsible key={group.key} defaultOpen={false}>
             <Card className="border-border/60">
-              <CollapsibleTrigger className="w-full group">
+              <CollapsibleTrigger className="group w-full">
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-2">
                     <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
-                    <h3 className="font-semibold text-sm text-foreground">{group.label}</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{group.label}</h3>
                     <Badge variant="outline" className="text-[10px]">
                       {group.items.length}
                     </Badge>
@@ -294,7 +314,7 @@ export function AdminSourcesList({
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="border-t border-border/60 p-3 space-y-3">
+                <div className="space-y-3 border-t border-border/60 p-3">
                   {group.items.map((source) => (
                     <SourceCard
                       key={source.id}
@@ -339,77 +359,79 @@ function SourceCard({
   const TypeIcon = getSourceIcon(source.source_type)
   const cityLabel = cities.find((city) => city.id === source.city_id)?.name ?? "Unassigned"
   const safeStatus = getSourceStatus(source.last_status)
+  const lastRunDate = source.last_scraped_at ? new Date(source.last_scraped_at) : null
+  const isScraping = scrapingSourceIds.has(source.id)
 
   return (
-    <Card className="border-border/60">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-4">
-          <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+    <Card className="@container/src-card border-border/60">
+      <CardContent className="space-y-3 p-4">
+        {/* Identity row: icon + title + meta. Always vertical-friendly. */}
+        <div className="flex items-start gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
             <TypeIcon className="size-5 text-muted-foreground" />
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-semibold text-sm text-foreground">{source.name}</h3>
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm font-semibold text-foreground">{source.name}</h3>
               <Badge variant="outline" className="text-[10px] capitalize">
                 {source.source_type}
               </Badge>
               <span className="text-[10px] text-muted-foreground">{cityLabel}</span>
             </div>
-            <p className="text-xs text-muted-foreground truncate mt-0.5">{source.url}</p>
-            <div className="flex items-center gap-4 mt-2 flex-wrap">
-              <StatusIndicator status={safeStatus} />
-              {safeStatus === "error" && (
-                <span
-                  className="min-w-0 max-w-xl truncate text-xs text-destructive/80"
-                  title={errorMessage}
-                >
-                  {errorMessage ?? "No error detail recorded"}
-                </span>
-              )}
-              {source.last_scraped_at && (
-                <span className="text-xs text-muted-foreground">
-                  Last run {format(new Date(source.last_scraped_at), "MMM d, h:mm a")}
-                </span>
-              )}
-              {source.error_count > 0 && (
-                <span className="text-xs text-destructive">{source.error_count} errors</span>
-              )}
-            </div>
+            <p className="truncate font-mono text-[11px] text-muted-foreground">{source.url}</p>
           </div>
-          <div className="flex items-center gap-4 shrink-0">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-muted-foreground">Active</span>
-              <Switch
-                checked={source.is_active}
-                onCheckedChange={(checked) => onToggleActive(source.id, checked)}
-                aria-label={`Toggle ${source.name} active`}
-              />
-            </div>
-            <div
-              className={`flex items-center gap-1.5 ${!source.is_active ? "opacity-40 pointer-events-none" : ""}`}
-              title={!source.is_active ? "Enable the source to configure auto-approve" : undefined}
-            >
-              <span className="text-xs text-muted-foreground">Auto-approve</span>
-              <Switch
-                checked={source.auto_approve}
-                disabled={!source.is_active}
-                onCheckedChange={(checked) => onToggleAutoApprove(source.id, checked)}
-                aria-label={`Toggle ${source.name} auto-approve`}
-              />
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5 text-xs h-8"
-              disabled={scrapingSourceIds.has(source.id) || !source.is_active}
-              onClick={() => onScrape(source.id)}
-            >
-              <RefreshCw
-                className={cn("size-3", scrapingSourceIds.has(source.id) && "animate-spin")}
-              />
-              {scrapingSourceIds.has(source.id) ? "Running..." : "Scrape Now"}
-            </Button>
-          </div>
+        </div>
+
+        {/* Status row: status + last-run + error count. Compact metadata. */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground">
+          <StatusIndicator status={safeStatus} />
+          {lastRunDate ? <span>Last run {formatLastRunCompact(lastRunDate)}</span> : null}
+          {source.error_count > 0 ? (
+            <span className="text-destructive">{source.error_count} errors</span>
+          ) : null}
+        </div>
+
+        {safeStatus === "error" && errorMessage ? (
+          <p className="line-clamp-2 text-xs text-destructive/80" title={errorMessage}>
+            {errorMessage}
+          </p>
+        ) : null}
+
+        {/* Controls row: collapses to two-col grid on narrow card, single-row on wider. */}
+        <div className="grid grid-cols-1 gap-2 border-t border-border/60 pt-3 @[480px]/src-card:grid-cols-[auto_auto_1fr] @[480px]/src-card:items-center @[480px]/src-card:gap-4">
+          <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+            <Switch
+              checked={source.is_active}
+              onCheckedChange={(checked) => onToggleActive(source.id, checked)}
+              aria-label={`Toggle ${source.name} active`}
+            />
+            <span className="text-xs text-muted-foreground">Active</span>
+          </label>
+          <label
+            className={cn(
+              "inline-flex min-h-[44px] cursor-pointer items-center gap-2",
+              !source.is_active && "pointer-events-none opacity-40"
+            )}
+            title={!source.is_active ? "Enable the source to configure auto-approve" : undefined}
+          >
+            <Switch
+              checked={source.auto_approve}
+              disabled={!source.is_active}
+              onCheckedChange={(checked) => onToggleAutoApprove(source.id, checked)}
+              aria-label={`Toggle ${source.name} auto-approve`}
+            />
+            <span className="text-xs text-muted-foreground">Auto-approve</span>
+          </label>
+          <Button
+            variant="outline"
+            size="sm"
+            className="min-h-[44px] gap-1.5 text-xs @[480px]/src-card:ml-auto @[480px]/src-card:w-auto"
+            disabled={isScraping || !source.is_active}
+            onClick={() => onScrape(source.id)}
+          >
+            <RefreshCw className={cn("size-3.5", isScraping && "animate-spin")} />
+            {isScraping ? "Running..." : "Scrape Now"}
+          </Button>
         </div>
       </CardContent>
     </Card>
@@ -425,14 +447,19 @@ function EmptyCityCard({ label, onAddSource }: EmptyCityCardProps) {
   return (
     <Card className="border-dashed border-border/60 bg-muted/20">
       <CardContent className="p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h3 className="font-semibold text-sm text-foreground">{label}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-semibold text-foreground">{label}</h3>
+            <p className="mt-0.5 text-xs text-muted-foreground">
               No sources yet. Add one to start ingesting events for this city.
             </p>
           </div>
-          <Button size="sm" variant="outline" className="gap-1.5 shrink-0" onClick={onAddSource}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="min-h-[44px] shrink-0 gap-1.5"
+            onClick={onAddSource}
+          >
             <Plus className="size-3.5" />
             Add source
           </Button>

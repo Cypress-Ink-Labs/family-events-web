@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
 import { UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
+import { FilterBar } from "@/components/v2"
 import type { City } from "@/lib/types"
 import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 
@@ -36,25 +37,27 @@ export function AdminCityFilterBar({
   }
 
   return (
-    <div className="flex gap-2 flex-wrap items-center">
-      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mr-1">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
         City
       </span>
-      <CityChip
-        label="All"
-        count={total}
-        active={value === "all"}
-        onClick={() => onChange("all")}
-      />
-      {cityChips.map((chip) => (
+      <FilterBar>
         <CityChip
-          key={chip.key}
-          label={chip.label}
-          count={chip.count}
-          active={value === chip.key}
-          onClick={() => onChange(chip.key)}
+          label="All"
+          count={total}
+          active={value === "all"}
+          onClick={() => onChange("all")}
         />
-      ))}
+        {cityChips.map((chip) => (
+          <CityChip
+            key={chip.key}
+            label={chip.label}
+            count={chip.count}
+            active={value === chip.key}
+            onClick={() => onChange(chip.key)}
+          />
+        ))}
+      </FilterBar>
     </div>
   )
 }
@@ -73,14 +76,14 @@ function CityChip({ label, count, active, onClick }: CityChipProps) {
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "text-xs font-semibold px-2.5 py-1 rounded-full border transition-colors",
+        "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
         active
-          ? "bg-primary text-primary-foreground border-primary"
+          ? "border-primary bg-primary text-primary-foreground"
           : "border-border hover:bg-accent"
       )}
     >
       {label}
-      <span className="ml-1 opacity-70">({count})</span>
+      <span className="opacity-70">({count})</span>
     </button>
   )
 }

@@ -119,13 +119,16 @@ export function AdminLayout() {
         </Sidebar>
 
         <SidebarInset>
-          <header className="flex items-center h-14 px-6 border-b border-border/60 bg-background sticky top-0 z-30">
-            <SidebarTrigger className="-ml-2 mr-4" />
-            <h1 className="text-sm font-semibold text-foreground">
+          <header
+            className="sticky top-0 z-30 flex h-14 items-center border-b border-border/60 bg-background px-4 md:px-6"
+            style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+          >
+            <SidebarTrigger className="-ml-2 mr-3 min-h-[44px] min-w-[44px]" />
+            <h1 className="truncate font-display text-base font-medium text-foreground">
               {ADMIN_NAV.find((n) => isActive(n.to, n.exact))?.label ?? "Admin"}
             </h1>
           </header>
-          <div className="flex-1 p-6">
+          <div className="flex-1 px-4 py-4 md:px-6 md:py-6">
             <PageTransition>
               <Outlet />
             </PageTransition>
