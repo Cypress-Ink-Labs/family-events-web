@@ -8,6 +8,7 @@
  * Source of truth: docs/DESIGN.md
  */
 @import "./styles/tokens.generated.css";
+@import "./styles/safe-area.css";
 
 @custom-variant dark (&:is(.dark *));
 

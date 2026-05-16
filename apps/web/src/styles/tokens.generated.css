@@ -15,14 +15,14 @@
   --color-accent-primary-soft: oklch(93% 0.04 165);
   --color-accent-secondary: oklch(65% 0.16 35);
   --color-accent-secondary-soft: oklch(92% 0.05 35);
-  --color-accent-tertiary: oklch(56% 0.10 245);
+  --color-accent-tertiary: oklch(56% 0.1 245);
   --color-accent-tertiary-soft: oklch(93% 0.03 240);
   --color-accent-kid: oklch(83% 0.16 90);
   --color-accent-kid-soft: oklch(93% 0.06 90);
   --color-success: oklch(48% 0.085 155);
   --color-warning: oklch(60% 0.13 70);
   --color-error: oklch(55% 0.16 25);
-  --color-info: oklch(56% 0.10 245);
+  --color-info: oklch(56% 0.1 245);
 }
 
 :root {
@@ -94,7 +94,7 @@
   --bp-2xl: 1440px;
   --shadow-sm: 0 1px 2px 0 rgb(40 30 20 / 0.05);
   --shadow-md: 0 4px 8px -2px rgb(40 30 20 / 0.08), 0 2px 4px -2px rgb(40 30 20 / 0.04);
-  --shadow-lg: 0 12px 24px -6px rgb(40 30 20 / 0.10), 0 4px 8px -2px rgb(40 30 20 / 0.05);
+  --shadow-lg: 0 12px 24px -6px rgb(40 30 20 / 0.1), 0 4px 8px -2px rgb(40 30 20 / 0.05);
   --shadow-hero: 0 30px 60px -30px rgb(40 30 20 / 0.18);
   --z-base: 0;
   --z-raised: 1;
@@ -115,16 +115,16 @@
   --color-text-primary: oklch(94% 0.012 78);
   --color-text-muted: oklch(70% 0.02 78);
   --color-border: oklch(34% 0.02 70);
-  --color-accent-primary: oklch(65% 0.10 165);
+  --color-accent-primary: oklch(65% 0.1 165);
   --color-accent-primary-soft: oklch(28% 0.06 165);
   --color-accent-secondary: oklch(72% 0.16 35);
   --color-accent-secondary-soft: oklch(30% 0.08 35);
-  --color-accent-tertiary: oklch(68% 0.10 245);
+  --color-accent-tertiary: oklch(68% 0.1 245);
   --color-accent-tertiary-soft: oklch(30% 0.05 245);
   --color-accent-kid: oklch(83% 0.16 90);
   --color-accent-kid-soft: oklch(30% 0.08 90);
-  --color-success: oklch(65% 0.10 155);
+  --color-success: oklch(65% 0.1 155);
   --color-warning: oklch(72% 0.14 70);
   --color-error: oklch(68% 0.16 25);
-  --color-info: oklch(68% 0.10 245);
+  --color-info: oklch(68% 0.1 245);
 }

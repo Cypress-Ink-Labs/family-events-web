@@ -47,14 +47,7 @@ type StackProps = {
  * Vertical layout primitive. Always stacks top-to-bottom.
  * Spacing token: gap-1 = 4px, gap-4 = 16px (default), gap-5 = 24px.
  */
-export function Stack({
-  gap = "4",
-  align,
-  justify,
-  as,
-  className,
-  children,
-}: StackProps) {
+export function Stack({ gap = "4", align, justify, as, className, children }: StackProps) {
   const Tag = (as ?? "div") as ElementType
   return (
     <Tag
@@ -63,7 +56,7 @@ export function Stack({
         gapClass[gap],
         align && alignClass[align],
         justify && justifyClass[justify],
-        className,
+        className
       )}
     >
       {children}
@@ -98,7 +91,7 @@ export function Row({
         gapClass[gap],
         alignClass[align],
         justify && justifyClass[justify],
-        className,
+        className
       )}
     >
       {children}

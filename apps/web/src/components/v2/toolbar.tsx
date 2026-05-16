@@ -31,9 +31,7 @@ export function Toolbar({ title, subtitle, actions, children, className }: Toolb
               {title}
             </h2>
           ) : null}
-          {subtitle ? (
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
-          ) : null}
+          {subtitle ? <p className="text-sm text-muted-foreground">{subtitle}</p> : null}
         </div>
         {actions ? (
           <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>

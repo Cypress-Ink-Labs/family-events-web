@@ -1,19 +1,14 @@
-import * as React from "react"
+import { useBreakpoint } from "@/hooks/use-breakpoint"
 
-const MOBILE_BREAKPOINT = 768
-
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
-
-  return !!isMobile
+/**
+ * Backward-compatible alias kept for existing callers (sidebar, app-layout).
+ * New code should prefer `useBreakpoint` directly, which exposes the full
+ * `xs|sm|md|lg|xl|2xl` token scale and container-query-friendly comparators.
+ *
+ * `isMobile` here means "below `md` (640px)" — matches the v2 token scale.
+ * Old code used a 768 threshold; the slight tighten to 640 lines up with the
+ * mobile-tight density spec in `docs/DESIGN.md`.
+ */
+export function useIsMobile(): boolean {
+  return useBreakpoint().isBelow("md")
 }

@@ -21,12 +21,12 @@ export const TouchTarget = forwardRef<HTMLElement, TouchTargetProps<ElementType>
         ref={ref}
         className={cn(
           "inline-flex min-h-[44px] min-w-[44px] items-center justify-center",
-          className,
+          className
         )}
         {...rest}
       >
         {children}
       </Tag>
     )
-  },
+  }
 )

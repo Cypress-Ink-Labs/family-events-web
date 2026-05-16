@@ -30,7 +30,7 @@ export function Page({ width = "content", padded = true, className, children }: 
         "mx-auto w-full",
         widthClass[width],
         padded && "px-4 md:px-6 lg:px-8",
-        className,
+        className
       )}
     >
       {children}

@@ -27,7 +27,7 @@ export function FilterBar({ children, trailing, className }: FilterBarProps) {
           "flex min-w-0 flex-1 items-center gap-2",
           "overflow-x-auto md:flex-wrap md:overflow-visible",
           "snap-x snap-mandatory md:snap-none",
-          "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         )}
       >
         {children}

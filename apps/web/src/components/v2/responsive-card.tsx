@@ -42,7 +42,9 @@ export function ResponsiveCard({
         <div className="flex flex-col gap-3 @[380px]/card:flex-row @[380px]/card:items-start">
           {leading ? <div className="shrink-0">{leading}</div> : null}
           <div className="min-w-0 flex-1 space-y-1">
-            {title ? <div className="font-display text-base font-medium leading-tight">{title}</div> : null}
+            {title ? (
+              <div className="font-display text-base font-medium leading-tight">{title}</div>
+            ) : null}
             {body ? <div className="text-sm text-muted-foreground">{body}</div> : null}
           </div>
           {trailing ? (

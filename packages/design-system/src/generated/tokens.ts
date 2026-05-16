@@ -68,7 +68,7 @@ export const designTokens = {
         "role": "action chip bg"
       },
       "accent-tertiary": {
-        "oklch": "56% 0.10 245",
+        "oklch": "56% 0.1 245",
         "hex": "#3B75AF",
         "role": "civic blue — location, admin, info"
       },
@@ -103,7 +103,7 @@ export const designTokens = {
         "role": "destructive, validation fails"
       },
       "info": {
-        "oklch": "56% 0.10 245",
+        "oklch": "56% 0.1 245",
         "hex": "#3B75AF",
         "role": "informational (matches tertiary)"
       }
@@ -140,7 +140,7 @@ export const designTokens = {
         "role": "hairlines"
       },
       "accent-primary": {
-        "oklch": "65% 0.10 165",
+        "oklch": "65% 0.1 165",
         "hex": "#4DA38D",
         "role": "lightened green"
       },
@@ -160,7 +160,7 @@ export const designTokens = {
         "role": "action chip bg dark"
       },
       "accent-tertiary": {
-        "oklch": "68% 0.10 245",
+        "oklch": "68% 0.1 245",
         "hex": "#6FA0D3",
         "role": "lightened blue"
       },
@@ -180,7 +180,7 @@ export const designTokens = {
         "role": "kid pill bg dark"
       },
       "success": {
-        "oklch": "65% 0.10 155",
+        "oklch": "65% 0.1 155",
         "hex": "#56A580",
         "role": "confirmed"
       },
@@ -195,7 +195,7 @@ export const designTokens = {
         "role": "destructive"
       },
       "info": {
-        "oklch": "68% 0.10 245",
+        "oklch": "68% 0.1 245",
         "hex": "#6FA0D3",
         "role": "info"
       }
@@ -425,7 +425,7 @@ export const designTokens = {
       "value": "0 4px 8px -2px rgb(40 30 20 / 0.08), 0 2px 4px -2px rgb(40 30 20 / 0.04)"
     },
     "lg": {
-      "value": "0 12px 24px -6px rgb(40 30 20 / 0.10), 0 4px 8px -2px rgb(40 30 20 / 0.05)"
+      "value": "0 12px 24px -6px rgb(40 30 20 / 0.1), 0 4px 8px -2px rgb(40 30 20 / 0.05)"
     },
     "hero": {
       "value": "0 30px 60px -30px rgb(40 30 20 / 0.18)"
