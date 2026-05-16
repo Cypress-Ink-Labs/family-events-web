@@ -10,7 +10,7 @@ function emitColors(mode, palette) {
     lines.push(`  --color-${name}: oklch(${t.oklch});`)
   }
   return mode === "light"
-    ? `:root {\n${lines.join("\n")}\n}`
+    ? `@theme inline {\n${lines.join("\n")}\n}`
     : `.dark {\n${lines.join("\n")}\n}`
 }
 
@@ -27,7 +27,16 @@ function emitRadius(radius) {
   return lines.join("\n")
 }
 
-function emitTypeFamilies(family) {
+function emitTypeFamiliesForTheme(family) {
+  // Emit into @theme — skip `mono` to avoid colliding with Tailwind's default --font-mono.
+  return Object.entries(family)
+    .filter(([k]) => k !== "mono")
+    .map(([k, v]) => `  --font-${k}: ${v.stack};`)
+    .join("\n")
+}
+
+function emitTypeFamiliesRaw(family) {
+  // Emit into :root for arbitrary-value access; includes mono.
   return Object.entries(family)
     .map(([k, v]) => `  --font-${k}: ${v.stack};`)
     .join("\n")
@@ -77,12 +86,22 @@ export function buildCss(tokens) {
   return [
     GENERATED_BANNER,
     "",
+    "/* @theme inline binds these to Tailwind utilities (bg-*, text-*, font-*). */",
+    "/* All names are v2-specific to avoid colliding with shadcn / Tailwind defaults. */",
     emitColors("light", tokens.color.light),
     "",
+    "@theme inline {",
+    emitTypeFamiliesForTheme(tokens.typography.family),
+    "}",
+    "",
+    "/* :root holds raw CSS variables for inline / arbitrary-value access.",
+    "   Names duplicate the @theme block above where applicable; collision-prone",
+    "   tokens (radius-*, text-*, shadow-*, font-mono, breakpoint-*) live here ONLY",
+    "   so legacy code using Tailwind defaults keeps working. */",
     ":root {",
     emitSpace(tokens.space),
     emitRadius(tokens.radius),
-    emitTypeFamilies(tokens.typography.family),
+    emitTypeFamiliesRaw(tokens.typography.family),
     emitTypeScale(tokens.typography.scale),
     emitMotion(tokens.motion),
     emitBreakpoints(tokens.breakpoint),

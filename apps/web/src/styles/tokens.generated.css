@@ -4,7 +4,9 @@
  * Regenerate: pnpm --filter @family-events/design-system build
  */
 
-:root {
+/* @theme inline binds these to Tailwind utilities (bg-*, text-*, font-*). */
+/* All names are v2-specific to avoid colliding with shadcn / Tailwind defaults. */
+@theme inline {
   --color-bg: oklch(97.5% 0.018 88);
   --color-surface: oklch(100% 0 0);
   --color-surface-raised: oklch(94.5% 0.025 88);
@@ -25,6 +27,16 @@
   --color-info: oklch(56% 0.1 245);
 }
 
+@theme inline {
+  --font-display: Fraunces, ui-serif, Georgia, serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: Newsreader, ui-serif, Georgia, serif;
+}
+
+/* :root holds raw CSS variables for inline / arbitrary-value access.
+   Names duplicate the @theme block above where applicable; collision-prone
+   tokens (radius-*, text-*, shadow-*, font-mono, breakpoint-*) live here ONLY
+   so legacy code using Tailwind defaults keeps working. */
 :root {
   --space-1: 4px;
   --space-2: 8px;
