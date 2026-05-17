@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Toolbar } from "@/components/v2"
 import type { AdminUserAccessRecord } from "@/features/admin/hooks/admin-types"
 
 interface AdminAccessHeaderProps {
@@ -22,23 +23,21 @@ interface AdminAccessHeaderProps {
 
 export function AdminAccessHeader({ query, onQueryChange }: AdminAccessHeaderProps) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div>
-        <h1 className="text-xl font-semibold text-foreground">Account Access</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Enable or disable invited accounts without deleting them.
-        </p>
-      </div>
-      <div className="relative w-full max-w-xs">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Search by name or email"
-          className="pl-9"
-        />
-      </div>
-    </div>
+    <Toolbar
+      title="Account Access"
+      subtitle="Enable or disable invited accounts without deleting them."
+      actions={
+        <div className="relative w-full min-w-[200px] max-w-xs">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(event) => onQueryChange(event.target.value)}
+            placeholder="Search by name or email"
+            className="min-h-[44px] pl-9"
+          />
+        </div>
+      }
+    />
   )
 }
 
