@@ -2,9 +2,11 @@ import { readFileSync } from "node:fs"
 import path from "node:path"
 import { buildCss } from "./gen-web-css.mjs"
 import { buildSwift } from "./gen-ios-swift.mjs"
+import { buildKotlin } from "./gen-android-kotlin.mjs"
 import { buildTs } from "./gen-ts-tokens.mjs"
 import { OUTPUT_PATH as WEB_OUT } from "./gen-web-css.mjs"
 import { OUTPUT_PATH as IOS_OUT } from "./gen-ios-swift.mjs"
+import { OUTPUT_PATH as ANDROID_OUT } from "./gen-android-kotlin.mjs"
 import { OUTPUT_PATH as TS_OUT } from "./gen-ts-tokens.mjs"
 import { loadTokens } from "./_lib.mjs"
 
@@ -20,6 +22,7 @@ const tokens = loadTokens()
 const targets = [
   ["web CSS", WEB_OUT, buildCss(tokens)],
   ["iOS Swift", IOS_OUT, buildSwift(tokens)],
+  ["Android Kotlin", ANDROID_OUT, buildKotlin(tokens)],
   ["TS tokens", TS_OUT, buildTs(tokens)],
 ]
 

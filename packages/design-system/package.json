@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Single source of truth for family-events design tokens. Codegen feeds apps/web (CSS vars) and apps/ios (Swift constants).",
+  "description": "Single source of truth for family-events design tokens. Codegen feeds apps/web, apps/ios, and apps/android.",
   "exports": {
     ".": "./src/index.ts",
     "./tokens": "./tokens/tokens.json"
@@ -12,6 +12,7 @@
     "build": "node scripts/build.mjs",
     "build:web": "node scripts/gen-web-css.mjs",
     "build:ios": "node scripts/gen-ios-swift.mjs",
+    "build:android": "node scripts/gen-android-kotlin.mjs",
     "build:ts": "node scripts/gen-ts-tokens.mjs",
     "verify:drift": "node scripts/verify-drift.mjs",
     "check": "tsc -p tsconfig.json --noEmit && node scripts/verify-drift.mjs",

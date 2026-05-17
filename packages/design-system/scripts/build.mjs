@@ -1,11 +1,13 @@
 import path from "node:path"
 import { run as runWeb, OUTPUT_PATH as WEB_OUT } from "./gen-web-css.mjs"
 import { run as runIos, OUTPUT_PATH as IOS_OUT } from "./gen-ios-swift.mjs"
+import { run as runAndroid, OUTPUT_PATH as ANDROID_OUT } from "./gen-android-kotlin.mjs"
 import { run as runTs, OUTPUT_PATH as TS_OUT } from "./gen-ts-tokens.mjs"
 
 const tasks = [
   ["web CSS", runWeb, WEB_OUT],
   ["iOS Swift", runIos, IOS_OUT],
+  ["Android Kotlin", runAndroid, ANDROID_OUT],
   ["TS tokens", runTs, TS_OUT],
 ]
 
