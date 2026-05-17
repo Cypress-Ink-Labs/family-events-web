@@ -130,7 +130,7 @@ export function AdminEventsToolbar({
             <Check className="size-3" />
           </span>
           <span className="truncate">
-            {allVisibleSelected ? "Deselect all" : `Select all (${eventCount})`}
+            {allVisibleSelected ? "Deselect all visible" : `Select all visible (${eventCount})`}
           </span>
         </Button>
       )}

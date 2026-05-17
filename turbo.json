@@ -1,5 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": [
+    "ANDROID_GOOGLE_WEB_CLIENT_ID",
+    "ANDROID_HOME",
+    "ANDROID_SDK_ROOT",
+    "JAVA_HOME",
+    "MAP_STYLE_URL",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+  ],
   "tasks": {
     "dev": {
       "cache": false,
