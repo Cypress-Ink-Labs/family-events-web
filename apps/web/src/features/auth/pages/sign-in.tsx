@@ -108,13 +108,18 @@ export function SignInPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="size-10 rounded-2xl bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground text-lg font-black">F</span>
+          <Link to="/" className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center gap-2">
+            <div
+              className="flex size-10 items-center justify-center rounded-md font-display text-lg font-medium text-primary-foreground"
+              style={{ background: "var(--color-accent-primary)" }}
+            >
+              F
             </div>
           </Link>
-          <h1 className="text-2xl font-semibold text-foreground">Welcome back</h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <h1 className="font-display text-2xl font-medium tracking-tight text-foreground">
+            Welcome back
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {mode === "magic"
               ? "We'll email you a one-tap sign-in link."
               : mode === "magic-sent"
@@ -136,7 +141,7 @@ export function SignInPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
+                  className="min-h-[44px] w-full"
                   onClick={() => {
                     setMode("password")
                     setInviteCode("")
@@ -180,7 +185,11 @@ export function SignInPage() {
                     </p>
                   </div>
                 )}
-                <Button type="submit" className="w-full" disabled={loading || inviteCheckLoading}>
+                <Button
+                  type="submit"
+                  className="min-h-[44px] w-full"
+                  disabled={loading || inviteCheckLoading}
+                >
                   {loading ? "Sending..." : "Send magic link"}
                 </Button>
                 <button
@@ -223,7 +232,7 @@ export function SignInPage() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="min-h-[44px] w-full" disabled={loading}>
                   {loading ? "Signing in..." : "Sign In"}
                 </Button>
                 <button
