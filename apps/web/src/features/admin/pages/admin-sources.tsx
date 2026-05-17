@@ -19,7 +19,7 @@ import { useAdminSourceRunErrors } from "@/features/admin/hooks/use-admin-source
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
 
-type SourceType = "website" | "ical" | "rss" | "manual"
+type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid"
 
 export function AdminSourcesPage() {
   const { data: sources = [] } = useAdminSources()

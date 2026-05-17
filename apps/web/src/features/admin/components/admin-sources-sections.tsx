@@ -12,6 +12,7 @@ import {
   Plus,
   RefreshCw,
   Rss,
+  Sparkles,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
 import { format, isToday, isThisYear } from "date-fns"
@@ -50,7 +51,7 @@ import { FormGrid, Toolbar } from "@/components/v2"
 import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 import type { City, EventSource } from "@/lib/types"
 
-type SourceType = "website" | "ical" | "rss" | "manual"
+type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid"
 type SourceStatus = "pending" | "success" | "error" | "partial"
 
 const SOURCE_TYPE_ICONS: Record<SourceType, ElementType> = {
@@ -58,6 +59,7 @@ const SOURCE_TYPE_ICONS: Record<SourceType, ElementType> = {
   rss: Rss,
   ical: Calendar,
   manual: FileText,
+  macaronikid: Sparkles,
 }
 
 function getSourceIcon(sourceType: string): ElementType {
@@ -203,6 +205,7 @@ export function AdminSourcesHeader({
                         <SelectItem value="website">Website</SelectItem>
                         <SelectItem value="ical">iCal Feed</SelectItem>
                         <SelectItem value="rss">RSS Feed</SelectItem>
+                        <SelectItem value="macaronikid">Macaroni Kid</SelectItem>
                         <SelectItem value="manual">Manual</SelectItem>
                       </SelectContent>
                     </Select>

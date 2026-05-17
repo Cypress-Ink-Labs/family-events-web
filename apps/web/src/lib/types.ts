@@ -183,7 +183,7 @@ export interface EventSource {
   id: string
   name: string
   url: string
-  source_type: "website" | "ical" | "rss" | "manual"
+  source_type: "website" | "ical" | "rss" | "manual" | "macaronikid"
   city_id: string | null
   is_active: boolean
   auto_approve: boolean

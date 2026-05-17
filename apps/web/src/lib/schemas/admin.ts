@@ -8,7 +8,7 @@ export const eventSourceRowSchema = z.object({
   id: z.string(),
   name: z.string(),
   url: z.string(),
-  source_type: z.enum(["website", "ical", "rss", "manual"]),
+  source_type: z.enum(["website", "ical", "rss", "manual", "macaronikid"]),
   city_id: z.string().nullable(),
   is_active: z.boolean(),
   auto_approve: z.boolean(),
