@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
+import { FilterBar, FormGrid } from "@/components/v2"
 import { groupByCity } from "@/lib/group-by-city"
 import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 
@@ -57,29 +58,31 @@ export function AdminEventStatusFilterBar({
   onChange,
 }: StatusFilterBarProps) {
   return (
-    <div>
-      <h1 className="text-xl font-semibold text-foreground">Events</h1>
-      <div className="flex gap-3 mt-2 flex-wrap">
+    <div className="space-y-2">
+      <h2 className="font-display text-xl font-medium tracking-tight text-foreground md:text-2xl">
+        Events
+      </h2>
+      <FilterBar>
         {(["all", "draft", "published", "rejected"] as const).map((status) => (
           <button
             key={status}
             onClick={() => onChange(status)}
             className={cn(
-              "text-xs font-semibold px-2.5 py-1 rounded-full border transition-colors",
+              "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
               statusFilter === status
-                ? "bg-primary text-primary-foreground border-primary"
+                ? "border-primary bg-primary text-primary-foreground"
                 : "border-border hover:bg-accent"
             )}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
             {status !== "all" && counts[status] ? (
-              <span className="ml-1">({counts[status]})</span>
+              <span className="opacity-70">({counts[status]})</span>
             ) : status === "all" ? (
-              <span className="ml-1">({total})</span>
+              <span className="opacity-70">({total})</span>
             ) : null}
           </button>
         ))}
-      </div>
+      </FilterBar>
     </div>
   )
 }
@@ -100,28 +103,35 @@ export function AdminEventsToolbar({
   onToggleSelectAll,
 }: ToolbarProps) {
   return (
-    <div className="flex gap-2 items-center">
-      <div className="relative flex-1 max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="relative min-w-[200px] flex-1 sm:max-w-sm">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={keyword}
           onChange={(event) => onKeywordChange(event.target.value)}
           placeholder="Search events..."
-          className="pl-9"
+          className="min-h-[44px] pl-9"
         />
       </div>
       {eventCount > 0 && (
-        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={onToggleSelectAll}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="min-h-[44px] gap-1.5 text-xs"
+          onClick={onToggleSelectAll}
+        >
           <span
             aria-hidden="true"
             className={cn(
-              "flex size-3.5 shrink-0 items-center justify-center rounded-lg border border-input shadow-xs transition-colors",
+              "inline-flex size-3.5 shrink-0 items-center justify-center rounded-md border border-input shadow-xs transition-colors",
               allVisibleSelected && "border-primary bg-primary text-primary-foreground"
             )}
           >
             <Check className="size-3" />
           </span>
-          {allVisibleSelected ? "Deselect all" : `Select all visible (${eventCount})`}
+          <span className="truncate">
+            {allVisibleSelected ? "Deselect all" : `Select all (${eventCount})`}
+          </span>
         </Button>
       )}
     </div>
@@ -152,41 +162,39 @@ export function AdminEventsBulkBar({
   if (selectedCount === 0) return null
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2.5">
-      <span className="text-sm font-medium">
-        {selectedCount} event{selectedCount === 1 ? "" : "s"} selected
-      </span>
-      <div className="flex gap-2 ml-auto">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 sm:px-4">
+      <span className="text-sm font-medium">{selectedCount} selected</span>
+      <div className="ml-auto flex flex-wrap gap-2">
         <Button
           size="sm"
-          className="gap-1.5 bg-green-600 hover:bg-green-700 text-white"
+          className="min-h-[44px] gap-1.5 bg-green-600 text-white hover:bg-green-700"
           disabled={isStatusPending || selectedDraftCount === 0}
           onClick={onPublish}
         >
           <CheckCheck className="size-3.5" />
-          Publish drafts{selectedDraftCount > 0 ? ` (${selectedDraftCount})` : ""}
+          <span>Publish{selectedDraftCount > 0 ? ` (${selectedDraftCount})` : ""}</span>
         </Button>
         <Button
           size="sm"
           variant="outline"
-          className="gap-1.5 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+          className="min-h-[44px] gap-1.5 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
           disabled={isStatusPending || selectedDraftCount === 0}
           onClick={onReject}
         >
           <XCircle className="size-3.5" />
-          Reject drafts{selectedDraftCount > 0 ? ` (${selectedDraftCount})` : ""}
+          <span>Reject{selectedDraftCount > 0 ? ` (${selectedDraftCount})` : ""}</span>
         </Button>
         <Button
           size="sm"
           variant="outline"
-          className="gap-1.5 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+          className="min-h-[44px] gap-1.5 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
           disabled={isDeletePending}
           onClick={onDelete}
         >
           <Trash2 className="size-3.5" />
-          Delete selected
+          <span>Delete</span>
         </Button>
-        <Button size="sm" variant="ghost" onClick={onClear}>
+        <Button size="sm" variant="ghost" className="min-h-[44px]" onClick={onClear}>
           Clear
         </Button>
       </div>
@@ -353,7 +361,7 @@ function EventCard({
               variant="ghost"
               size="icon"
               aria-label="Review event"
-              className="size-8"
+              className="size-11"
               onClick={() => onOpenReview(event)}
             >
               <Eye className="size-4" />
@@ -364,7 +372,7 @@ function EventCard({
                   variant="ghost"
                   size="icon"
                   aria-label="Publish event"
-                  className="size-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                  className="size-11 text-green-600 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/20"
                   onClick={() => onUpdateStatus(event.id, "published")}
                 >
                   <Check className="size-4" />
@@ -373,7 +381,7 @@ function EventCard({
                   variant="ghost"
                   size="icon"
                   aria-label="Reject event"
-                  className="size-8 text-destructive hover:bg-destructive/10"
+                  className="size-11 text-destructive hover:bg-destructive/10"
                   onClick={() => onUpdateStatus(event.id, "rejected")}
                 >
                   <X className="size-4" />
@@ -385,7 +393,7 @@ function EventCard({
                 variant="ghost"
                 size="icon"
                 aria-label="Archive event"
-                className="size-8 text-destructive hover:bg-destructive/10"
+                className="size-11 text-destructive hover:bg-destructive/10"
                 onClick={() => onUpdateStatus(event.id, "archived")}
               >
                 <X className="size-4" />
@@ -448,7 +456,7 @@ export function AdminEventReviewDialog({
               <h3 className="font-semibold text-lg">{event.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
             </div>
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <FormGrid cols={2} gap="3" className="text-sm">
               <div>
                 <span className="text-muted-foreground">Date:</span>{" "}
                 <span className="font-medium">
@@ -467,7 +475,7 @@ export function AdminEventReviewDialog({
                 <span className="text-muted-foreground">AI confidence:</span>{" "}
                 <span className="font-medium">{Math.round((event.ai_confidence ?? 0) * 100)}%</span>
               </div>
-            </div>
+            </FormGrid>
             <div>
               <p className="text-sm font-semibold mb-2">Tags</p>
               <div className="flex flex-wrap gap-1.5">

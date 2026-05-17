@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Progress } from "@/components/ui/progress"
+import { Toolbar } from "@/components/v2"
 import type { ChartConfig } from "@/components/ui/chart"
 
 const chartConfig: ChartConfig = {
@@ -44,12 +45,7 @@ interface AdminDashboardHeaderProps {
 }
 
 export function AdminDashboardHeader({ title, description }: AdminDashboardHeaderProps) {
-  return (
-    <div>
-      <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
-      <p className="text-muted-foreground text-sm mt-1">{description}</p>
-    </div>
-  )
+  return <Toolbar title={title} subtitle={description} />
 }
 
 interface AdminDashboardStatsGridProps {
