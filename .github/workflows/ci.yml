@@ -85,6 +85,7 @@ jobs:
         id: seed_admin
         env:
           API_URL: ${{ steps.supabase.outputs.api_url }}
+          DB_URL: ${{ steps.supabase.outputs.db_url }}
           SERVICE_ROLE_KEY: ${{ steps.supabase.outputs.service_role }}
           ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
         run: |
@@ -103,9 +104,14 @@ jobs:
               echo "admin auth user already exists; resetting password to current run value"
               existing_user_id=$(jq -r '.id // empty' /tmp/seed_admin.json)
               if [ -z "$existing_user_id" ]; then
-                echo "::error::could not extract existing admin user id from create response"
-                cat /tmp/seed_admin.json
-                exit 1
+                existing_user_id=$(psql "$DB_URL" -t -A -v ON_ERROR_STOP=1 -v admin_email="$ADMIN_EMAIL" \
+                  -c "SELECT id FROM auth.users WHERE lower(email) = lower(:'admin_email') LIMIT 1;")
+                existing_user_id=$(printf '%s' "$existing_user_id" | tr -d '[:space:]')
+                if [ -z "$existing_user_id" ]; then
+                  echo "::error::could not extract existing admin user id from create response or auth.users"
+                  cat /tmp/seed_admin.json
+                  exit 1
+                fi
               fi
               reset_payload=$(printf '{"password":"%s"}' "$ADMIN_PASSWORD")
               reset_code=$(curl -sS -o /tmp/seed_admin_reset.json -w "%{http_code}" \
