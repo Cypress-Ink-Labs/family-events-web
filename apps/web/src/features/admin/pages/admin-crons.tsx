@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import { Toolbar } from "@/components/v2"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import {
   useAdminCronJobs,
@@ -397,22 +398,24 @@ export function AdminCronsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Scheduled Jobs</h1>
-          <p className="text-muted-foreground text-sm mt-0.5">
-            Manage pg_cron jobs and run history
-          </p>
-        </div>
-        <Button className="gap-2" onClick={handleRunNow} disabled={runDueScrapes.isPending}>
-          {runDueScrapes.isPending ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
-            <Play className="size-4" />
-          )}
-          Run All Due Now
-        </Button>
-      </div>
+      <Toolbar
+        title="Scheduled Jobs"
+        subtitle="Manage pg_cron jobs and run history"
+        actions={
+          <Button
+            className="min-h-[44px] gap-2"
+            onClick={handleRunNow}
+            disabled={runDueScrapes.isPending}
+          >
+            {runDueScrapes.isPending ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Play className="size-4" />
+            )}
+            <span>Run All Due Now</span>
+          </Button>
+        }
+      />
 
       {/* Job cards */}
       <div className="space-y-3">

@@ -14,6 +14,7 @@ import {
 } from "@/features/admin/hooks/use-admin-comments"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
+import { Toolbar } from "@/components/v2"
 
 interface CommentCardProps {
   c: AdminComment
@@ -119,10 +120,10 @@ export function AdminCommentsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-foreground">Comment Moderation</h1>
+      <Toolbar title="Comment Moderation" subtitle={`${comments.length} total`} />
 
       <Tabs defaultValue="all">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="all">All ({comments.length})</TabsTrigger>
           <TabsTrigger value="flagged">
             Flagged{" "}

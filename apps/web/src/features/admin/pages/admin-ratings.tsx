@@ -7,6 +7,7 @@ import { StarRating } from "@/features/events/components/star-rating"
 import { useAdminRatings, useDeleteAdminRating } from "@/features/admin/hooks/use-admin-ratings"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
+import { Toolbar } from "@/components/v2"
 
 export function AdminRatingsPage() {
   const { data: ratings = [] } = useAdminRatings()
@@ -29,36 +30,29 @@ export function AdminRatingsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Ratings</h1>
-          <p className="text-muted-foreground text-sm mt-0.5">
-            {ratings.length} ratings · {avg} avg
-          </p>
-        </div>
-      </div>
+      <Toolbar title="Ratings" subtitle={`${ratings.length} ratings · ${avg} avg`} />
 
       <div className="space-y-3">
         {ratings.map((r) => (
           <Card key={r.id} className="border-border/60">
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="flex items-center gap-3 p-4">
               <Avatar className="size-8 shrink-0">
-                <AvatarFallback className="text-xs bg-muted">
+                <AvatarFallback className="bg-muted text-xs">
                   {(r.user_profiles?.display_name || "A").charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                   <span className="text-sm font-semibold">
                     {r.user_profiles?.display_name || "Anonymous"}
                   </span>
-                  <span className="text-xs text-muted-foreground truncate">
+                  <span className="truncate text-xs text-muted-foreground">
                     on {r.events?.title || "Event"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="mt-1 flex flex-wrap items-center gap-2">
                   <StarRating value={r.score} readonly size="sm" />
-                  <span className="text-xs text-muted-foreground">
+                  <span className="font-mono text-[11px] text-muted-foreground">
                     {format(new Date(r.created_at), "MMM d, yyyy")}
                   </span>
                 </div>
@@ -66,8 +60,9 @@ export function AdminRatingsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-8 text-destructive hover:bg-destructive/10 shrink-0"
+                className="size-11 shrink-0 text-destructive hover:bg-destructive/10"
                 onClick={() => handleRemove(r.id)}
+                aria-label="Remove rating"
               >
                 <Trash2 className="size-4" />
               </Button>

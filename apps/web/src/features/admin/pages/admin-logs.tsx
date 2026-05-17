@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { Toolbar } from "@/components/v2"
 import { useAdminSourceRuns } from "@/features/admin/hooks/use-admin-source-runs"
 import {
   type TagQueueStatus,
@@ -131,18 +132,18 @@ export function AdminLogsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Ingestion Logs</h1>
-          <p className="text-muted-foreground text-sm mt-0.5">Scrape run history and diagnostics</p>
-        </div>
-        {hasRunning && (
-          <div className="flex items-center gap-1.5 text-xs text-blue-600">
-            <RefreshCw className="size-3 animate-spin" />
-            <span>Live</span>
-          </div>
-        )}
-      </div>
+      <Toolbar
+        title="Ingestion Logs"
+        subtitle="Scrape run history and diagnostics"
+        actions={
+          hasRunning ? (
+            <div className="flex items-center gap-1.5 text-xs text-blue-600">
+              <RefreshCw className="size-3 animate-spin" />
+              <span>Live</span>
+            </div>
+          ) : null
+        }
+      />
 
       <TagQueueSummaryPanel />
 
