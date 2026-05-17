@@ -11,14 +11,18 @@ const OUTPUT = path.join(
   "Sources",
   "FEDesignSystem",
   "Generated",
-  "Tokens.swift",
+  "Tokens.swift"
 )
 
 function hexToRGBA(hex) {
   const cleaned = hex.replace(/^#/, "")
-  const expanded = cleaned.length === 3
-    ? cleaned.split("").map((c) => c + c).join("")
-    : cleaned
+  const expanded =
+    cleaned.length === 3
+      ? cleaned
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : cleaned
   const r = Number.parseInt(expanded.slice(0, 2), 16) / 255
   const g = Number.parseInt(expanded.slice(2, 4), 16) / 255
   const b = Number.parseInt(expanded.slice(4, 6), 16) / 255

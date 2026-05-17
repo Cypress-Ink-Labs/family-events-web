@@ -6,6 +6,7 @@ import test from "node:test"
 const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..")
 const rootPkgPath = path.join(repoRoot, "package.json")
 const webPkgPath = path.join(repoRoot, "apps", "web", "package.json")
+const androidPkgPath = path.join(repoRoot, "apps", "android", "package.json")
 const wsPath = path.join(repoRoot, "pnpm-workspace.yaml")
 const turboPath = path.join(repoRoot, "turbo.json")
 const gitignorePath = path.join(repoRoot, ".gitignore")
@@ -15,9 +16,19 @@ const webTsNodePath = path.join(repoRoot, "apps", "web", "tsconfig.node.json")
 test("workspace root files exist", () => {
   assert.equal(existsSync(rootPkgPath), true)
   assert.equal(existsSync(webPkgPath), true)
+  assert.equal(existsSync(androidPkgPath), true)
   assert.equal(existsSync(wsPath), true)
   assert.equal(existsSync(turboPath), true)
   assert.equal(existsSync(gitignorePath), true)
+})
+
+test("android workspace exposes Gradle-backed package scripts", () => {
+  const androidPkg = JSON.parse(readFileSync(androidPkgPath, "utf8"))
+  assert.equal(androidPkg.name, "@family-events/android")
+  assert.equal(androidPkg.scripts.check, "./gradlew check")
+  assert.equal(androidPkg.scripts.test, "./gradlew test")
+  assert.equal(androidPkg.scripts.build, "./gradlew assembleDebug")
+  assert.equal(androidPkg.scripts.lint, "./gradlew lint")
 })
 
 test("workspace configuration includes apps, packages, supabase/functions", () => {

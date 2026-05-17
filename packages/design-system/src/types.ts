@@ -8,10 +8,7 @@ export type ColorMode = Record<string, ColorToken>
 
 export type SpaceScale = Record<string, { px: number }>
 
-export type RadiusScale = Record<
-  "sm" | "md" | "lg" | "full",
-  { px: number; role: string }
->
+export type RadiusScale = Record<"sm" | "md" | "lg" | "full", { px: number; role: string }>
 
 export type TypographyFamily = Record<
   "display" | "body" | "editorial" | "mono",

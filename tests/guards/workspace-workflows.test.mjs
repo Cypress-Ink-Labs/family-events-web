@@ -24,6 +24,7 @@ test("ci workflow includes repeatable guard/check/test/build commands", () => {
   assert.match(combined, /vitest|captain|pnpm run test/)
   assert.match(combined, /build/)
   assert.match(combined, /xcodegen generate/)
+  assert.match(combined, /android|gradle|setup-java/i)
 })
 
 test("dependency-review watches all workspace manifests", () => {
@@ -54,4 +55,7 @@ test("workspace exposes turbo-backed formatting scripts", () => {
   const pkg = JSON.parse(readFileSync(rootPackagePath, "utf8"))
   assert.equal(pkg.scripts.format, "turbo run format")
   assert.equal(pkg.scripts["format:check"], "turbo run format:check")
+  assert.equal(pkg.scripts["android:check"], "pnpm --filter @family-events/android check")
+  assert.equal(pkg.scripts["android:test"], "pnpm --filter @family-events/android test")
+  assert.equal(pkg.scripts["android:build"], "pnpm --filter @family-events/android build")
 })

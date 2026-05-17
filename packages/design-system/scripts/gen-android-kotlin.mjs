@@ -14,7 +14,7 @@ const OUTPUT = path.join(
   "familyevents",
   "designsystem",
   "generated",
-  "Tokens.kt",
+  "Tokens.kt"
 )
 
 const BANNER = `/*
@@ -37,7 +37,10 @@ function ident(name, prefix = "") {
 
 function colorEntries(palette) {
   return Object.entries(palette)
-    .map(([name, token]) => `        val ${ident(name)} = Color(0xFF${token.hex.replace("#", "").toUpperCase()})`)
+    .map(
+      ([name, token]) =>
+        `        val ${ident(name)} = Color(0xFF${token.hex.replace("#", "").toUpperCase()})`
+    )
     .join("\n")
 }
 
