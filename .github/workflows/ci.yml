@@ -213,7 +213,18 @@ jobs:
         run: cd apps/ios && xcodegen generate
 
       - name: Run iOS tests
-        run: cd apps/ios && xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination 'platform=iOS Simulator,name=iPhone 17' test
+        run: |
+          cd apps/ios
+          SIMULATOR_ID="$(xcrun simctl list devices available | awk -F '[()]' '
+            /iPhone 17 \(/ { print $2; found = 1; exit }
+            /iPhone/ && !fallback { fallback = $2 }
+            END { if (!found && fallback) print fallback }
+          ')"
+          if [ -z "$SIMULATOR_ID" ]; then
+            xcrun simctl list devices available
+            exit 1
+          fi
+          xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination "platform=iOS Simulator,id=$SIMULATOR_ID" test
 
   android:
     runs-on: ubuntu-latest
