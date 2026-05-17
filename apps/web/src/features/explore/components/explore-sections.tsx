@@ -53,6 +53,7 @@ export const DATE_QUICK_FILTERS = [
   { label: "This Weekend", value: "weekend" },
   { label: "This Week", value: "week" },
   { label: "This Month", value: "month" },
+  { label: "Past Events", value: "past" },
 ] as const
 
 export const AGE_OPTIONS = [

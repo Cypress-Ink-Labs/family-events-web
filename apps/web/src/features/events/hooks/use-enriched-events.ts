@@ -12,6 +12,7 @@ interface UseEnrichedEventsOptions {
   limit?: number
   offset?: number
   enabled?: boolean
+  includePast?: boolean
   /**
    * When set, the RPC returns exactly those events, bypassing the
    * city/status/limit/offset filters. Used by my-events and event-detail
@@ -30,6 +31,20 @@ const DEFAULT_STATUS: Event["status"] = "published"
 
 function toIsoDate(value: string | Date): string {
   return typeof value === "string" ? value : value.toISOString()
+}
+
+function startOfTodayIso(now = new Date()): string {
+  const start = new Date(now)
+  start.setHours(0, 0, 0, 0)
+  return start.toISOString()
+}
+
+function effectiveDateFrom(options: UseEnrichedEventsOptions): string | Date | undefined {
+  if (options.eventIds || options.includePast || options.dateFrom || options.dateTo) {
+    return options.dateFrom
+  }
+
+  return startOfTodayIso()
 }
 
 // Adapt the RPC's flat tag array into EventWithDetails' nested EventTag + Tag
@@ -99,9 +114,9 @@ export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
     limit = DEFAULT_LIMIT,
     offset = DEFAULT_OFFSET,
     eventIds,
-    dateFrom,
     dateTo,
   } = options
+  const resolvedDateFrom = effectiveDateFrom(options)
 
   return {
     p_city_id: eventIds ? undefined : (cityId ?? undefined),
@@ -110,7 +125,7 @@ export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
     p_offset: eventIds ? undefined : offset,
     p_user_id: userId ?? undefined,
     p_event_ids: eventIds,
-    p_date_from: dateFrom ? toIsoDate(dateFrom) : undefined,
+    p_date_from: resolvedDateFrom ? toIsoDate(resolvedDateFrom) : undefined,
     p_date_to: dateTo ? toIsoDate(dateTo) : undefined,
   }
 }
@@ -120,7 +135,7 @@ export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
 //  - list:     ["events-enriched", { cityId, status, userId, dateFrom, dateTo }]
 // IDs are sorted so caller insertion-order does not fragment the cache.
 export function buildEnrichedQueryKey(options: UseEnrichedEventsOptions) {
-  return qk.enrichedEvents.key(options)
+  return qk.enrichedEvents.key({ ...options, dateFrom: effectiveDateFrom(options) })
 }
 
 async function fetchEnrichedEvents(options: UseEnrichedEventsOptions): Promise<EventWithDetails[]> {

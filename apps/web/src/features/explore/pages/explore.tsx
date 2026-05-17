@@ -40,6 +40,10 @@ export function ExplorePage() {
     const startOfToday = new Date(now)
     startOfToday.setHours(0, 0, 0, 0)
 
+    if (activeDateFilter === "past") {
+      return { dateFrom: undefined, dateTo: startOfToday.toISOString() }
+    }
+
     if (activeDateFilter === "today") {
       const end = new Date(startOfToday)
       end.setDate(end.getDate() + 1)
@@ -87,6 +91,8 @@ export function ExplorePage() {
   } = useEnrichedEvents({
     cityId: selectedCity?.id,
     userId: user?.id,
+    dateFrom: dateRange.dateFrom,
+    dateTo: dateRange.dateTo,
   })
 
   const filteredEvents = useMemo(() => {

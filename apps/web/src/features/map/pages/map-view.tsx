@@ -9,7 +9,7 @@ import {
   type ViewStateChangeEvent,
 } from "react-map-gl/maplibre"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { Locate, List, MapPin } from "lucide-react"
+import { Clock, Locate, List, MapPin } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -53,6 +53,7 @@ export function MapViewPage() {
   const [popupEvent, setPopupEvent] = useState<MappedEvent | null>(null)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [mobilePane, setMobilePane] = useState<"map" | "list">("map")
+  const [showPastEvents, setShowPastEvents] = useState(false)
 
   // Viewport state drives supercluster's `getClusters(bounds, zoom)` call. We
   // mirror the map's actual viewport here on every move; supercluster recomputes
@@ -78,6 +79,7 @@ export function MapViewPage() {
   const { data: events = [], isLoading: isEventsLoading } = useEnrichedEvents({
     cityId: selectedCity?.id,
     userId: user?.id,
+    includePast: showPastEvents,
     enabled: Boolean(selectedCity?.id),
   })
 
@@ -198,6 +200,15 @@ export function MapViewPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant={showPastEvents ? "default" : "outline"}
+            onClick={() => setShowPastEvents((value) => !value)}
+            className="h-8 gap-1.5 text-xs"
+          >
+            <Clock className="size-3.5" />
+            Past events
+          </Button>
           {events.length > mappable.length && (
             <Badge variant="outline" className="text-xs hidden sm:inline-flex">
               {events.length - mappable.length} missing coords

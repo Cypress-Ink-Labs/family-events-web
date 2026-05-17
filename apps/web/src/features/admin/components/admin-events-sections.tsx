@@ -455,7 +455,9 @@ export function AdminEventReviewDialog({
             />
             <div>
               <h3 className="font-semibold text-lg">{event.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{cleanDescription(event.description)}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {cleanDescription(event.description)}
+              </p>
             </div>
             <FormGrid cols={2} gap="3" className="text-sm">
               <div>

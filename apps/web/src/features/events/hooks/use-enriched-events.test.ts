@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
   adaptEnrichedRow,
   buildEnrichedQueryKey,
@@ -104,6 +104,15 @@ describe("adaptEnrichedRow", () => {
 })
 
 describe("buildEnrichedRpcArgs", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date("2026-05-17T16:30:00.000Z"))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it("elides city/status/limit/offset when eventIds is set (RPC ignores them)", () => {
     const args = buildEnrichedRpcArgs({
       eventIds: ["a", "b"],
@@ -140,9 +149,31 @@ describe("buildEnrichedRpcArgs", () => {
     const args = buildEnrichedRpcArgs({ dateFrom: iso })
     expect(args.p_date_from).toBe(iso)
   })
+
+  it("defaults list queries to upcoming events", () => {
+    const args = buildEnrichedRpcArgs({})
+    const start = new Date("2026-05-17T16:30:00.000Z")
+    start.setHours(0, 0, 0, 0)
+
+    expect(args.p_date_from).toBe(start.toISOString())
+  })
+
+  it("allows list queries to include past events", () => {
+    const args = buildEnrichedRpcArgs({ includePast: true })
+    expect(args.p_date_from).toBeUndefined()
+  })
 })
 
 describe("buildEnrichedQueryKey", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date("2026-05-17T16:30:00.000Z"))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it("emits the by-ids key shape with sorted ids when eventIds is set", () => {
     const key = buildEnrichedQueryKey({
       eventIds: ["c", "a", "b"],
@@ -175,9 +206,25 @@ describe("buildEnrichedQueryKey", () => {
     expect(may).not.toEqual(june)
   })
 
-  it("defaults missing list-path fields to null / 'published'", () => {
+  it("defaults missing list-path fields to today / 'published'", () => {
     const key = buildEnrichedQueryKey({})
+    const start = new Date("2026-05-17T16:30:00.000Z")
+    start.setHours(0, 0, 0, 0)
+
     expect(key).toEqual([
+      "events-enriched",
+      {
+        cityId: null,
+        status: "published",
+        userId: null,
+        dateFrom: start.toISOString(),
+        dateTo: null,
+      },
+    ])
+  })
+
+  it("uses a distinct list-path key when past events are included", () => {
+    expect(buildEnrichedQueryKey({ includePast: true })).toEqual([
       "events-enriched",
       { cityId: null, status: "published", userId: null, dateFrom: null, dateTo: null },
     ])
