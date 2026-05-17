@@ -100,7 +100,28 @@ jobs:
             -d "$payload")
           case "$code" in
             200|201) echo "admin auth user created" ;;
-            422)     echo "admin auth user already exists (idempotent reuse)" ;;
+            422)
+              echo "admin auth user already exists; resetting password to current run value"
+              existing_user_id=$(jq -r '.id // empty' /tmp/seed_admin.json)
+              if [ -z "$existing_user_id" ]; then
+                echo "::error::could not extract existing admin user id from create response"
+                cat /tmp/seed_admin.json
+                exit 1
+              fi
+              reset_payload=$(printf '{"password":"%s"}' "$ADMIN_PASSWORD")
+              reset_code=$(curl -sS -o /tmp/seed_admin_reset.json -w "%{http_code}" \
+                -X PUT "$API_URL/auth/v1/admin/users/$existing_user_id" \
+                -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
+                -H "apikey: $SERVICE_ROLE_KEY" \
+                -H "Content-Type: application/json" \
+                -d "$reset_payload")
+              if [ "$reset_code" != "200" ]; then
+                echo "::error::password reset failed with HTTP $reset_code"
+                cat /tmp/seed_admin_reset.json
+                exit 1
+              fi
+              echo "admin password reset completed"
+              ;;
             *)
               echo "::error::auth admin create returned HTTP $code"
               cat /tmp/seed_admin.json
