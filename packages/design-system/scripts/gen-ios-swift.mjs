@@ -29,12 +29,23 @@ function camel(name) {
   return name.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
 }
 
+/// Swift identifiers cannot start with a digit. JSON keys like "2xs" / "2xl"
+/// get prefixed with `size`/`bp` so they compile as Swift constants. The
+/// generated names are local to each `enum`, so the conversion is consistent
+/// per-scope.
+function swiftIdent(name, prefix) {
+  const ident = camel(name)
+  return /^[0-9]/.test(ident) ? `${prefix}${ident[0].toUpperCase()}${ident.slice(1)}` : ident
+}
+
 function emitColorEntries(palette) {
   return Object.entries(palette)
     .map(([name, t]) => {
       const c = hexToRGBA(t.hex)
       const ident = camel(name)
-      return `        public static let ${ident} = Color(red: ${c.r.toFixed(4)}, green: ${c.g.toFixed(4)}, blue: ${c.b.toFixed(4)}, opacity: ${c.a})`
+      // SwiftUI.Color qualifier — inside `enum DesignTokens.Color`, the
+      // unqualified `Color` would resolve to the enum itself.
+      return `        public static let ${ident} = SwiftUI.Color(red: ${c.r.toFixed(4)}, green: ${c.g.toFixed(4)}, blue: ${c.b.toFixed(4)}, opacity: ${c.a})`
     })
     .join("\n")
 }
@@ -54,7 +65,7 @@ function emitRadius(radius) {
 function emitTextScale(scale) {
   return Object.entries(scale)
     .map(([name, e]) => {
-      const ident = camel(name)
+      const ident = swiftIdent(name, "size")
       return `    public static let ${ident}Mobile = TextSize(size: ${e.mobile.px}, lineHeight: ${e.mobile.lh})\n    public static let ${ident}Desktop = TextSize(size: ${e.desktop.px}, lineHeight: ${e.desktop.lh})`
     })
     .join("\n")
@@ -62,7 +73,7 @@ function emitTextScale(scale) {
 
 function emitBreakpoints(bp) {
   return Object.entries(bp)
-    .map(([k, v]) => `    public static let ${camel(k)}: CGFloat = ${v.px}`)
+    .map(([k, v]) => `    public static let ${swiftIdent(k, "bp")}: CGFloat = ${v.px}`)
     .join("\n")
 }
 
