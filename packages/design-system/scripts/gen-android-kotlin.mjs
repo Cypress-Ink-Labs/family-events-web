@@ -26,7 +26,7 @@ const BANNER = `/*
 
 function pascal(name) {
   return name
-    .replace(/(^|[-_\\s]+)([a-z0-9])/g, (_, __, c) => c.toUpperCase())
+    .replace(/(^|[-_\s]+)([a-z0-9])/g, (_, __, c) => c.toUpperCase())
     .replace(/[^A-Za-z0-9]/g, "")
 }
 
