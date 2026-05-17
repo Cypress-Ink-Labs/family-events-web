@@ -38,7 +38,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
-          version: 11.0.9
           run_install: false
 
       - name: Setup Node
@@ -86,6 +85,7 @@ jobs:
         id: seed_admin
         env:
           API_URL: ${{ steps.supabase.outputs.api_url }}
+          DB_URL: ${{ steps.supabase.outputs.db_url }}
           SERVICE_ROLE_KEY: ${{ steps.supabase.outputs.service_role }}
           ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
         run: |
@@ -100,7 +100,34 @@ jobs:
             -d "$payload")
           case "$code" in
             200|201) echo "admin auth user created" ;;
-            422)     echo "admin auth user already exists (idempotent reuse)" ;;
+            422)
+              echo "admin auth user already exists; resetting password to current run value"
+              existing_user_id=$(jq -r '.id // empty' /tmp/seed_admin.json)
+              if [ -z "$existing_user_id" ]; then
+                escaped_admin_email=$(printf "%s" "$ADMIN_EMAIL" | sed "s/'/''/g")
+                existing_user_id=$(psql "$DB_URL" -t -A -v ON_ERROR_STOP=1 \
+                  -c "SELECT id FROM auth.users WHERE lower(email) = lower('$escaped_admin_email') LIMIT 1;")
+                existing_user_id=$(printf '%s' "$existing_user_id" | tr -d '[:space:]')
+                if [ -z "$existing_user_id" ]; then
+                  echo "::error::could not extract existing admin user id from create response or auth.users"
+                  cat /tmp/seed_admin.json
+                  exit 1
+                fi
+              fi
+              reset_payload=$(printf '{"password":"%s"}' "$ADMIN_PASSWORD")
+              reset_code=$(curl -sS -o /tmp/seed_admin_reset.json -w "%{http_code}" \
+                -X PUT "$API_URL/auth/v1/admin/users/$existing_user_id" \
+                -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
+                -H "apikey: $SERVICE_ROLE_KEY" \
+                -H "Content-Type: application/json" \
+                -d "$reset_payload")
+              if [ "$reset_code" != "200" ]; then
+                echo "::error::password reset failed with HTTP $reset_code"
+                cat /tmp/seed_admin_reset.json
+                exit 1
+              fi
+              echo "admin password reset completed"
+              ;;
             *)
               echo "::error::auth admin create returned HTTP $code"
               cat /tmp/seed_admin.json
@@ -163,7 +190,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
-          version: 11.0.9
           run_install: false
 
       - name: Setup Node
@@ -195,7 +221,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
-          version: 11.0.9
           run_install: false
 
       - name: Setup Node
