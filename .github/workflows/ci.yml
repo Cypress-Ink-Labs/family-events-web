@@ -17,8 +17,76 @@ env:
   E2E_ADMIN_EMAIL: admin@familyevents.local
 
 jobs:
-  # Secret scanning + E2E (needs local Supabase — can't run on RWX)
-  verify:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      verify: ${{ steps.filter.outputs.verify }}
+      ios: ${{ steps.filter.outputs.ios }}
+      android: ${{ steps.filter.outputs.android }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect changed areas
+        id: filter
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            {
+              echo "web=true"
+              echo "verify=true"
+              echo "ios=true"
+              echo "android=true"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          files="$(git diff --name-only "$base...$head")"
+
+          matches() {
+            local pattern
+            for pattern in "$@"; do
+              if printf '%s\n' "$files" | grep -Eq "$pattern"; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          web=false
+          verify=false
+          ios=false
+          android=false
+
+          if matches '^(apps/web|packages|supabase|scripts)/' '^(\.github/workflows/ci\.yml|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json)$'; then
+            web=true
+            verify=true
+          fi
+
+          if matches '^apps/ios/' '^\.github/workflows/ci\.yml$'; then
+            ios=true
+          fi
+
+          if matches '^apps/android/' '^\.github/workflows/ci\.yml$'; then
+            android=true
+          fi
+
+          {
+            echo "web=$web"
+            echo "verify=$verify"
+            echo "ios=$ios"
+            echo "android=$android"
+          } >> "$GITHUB_OUTPUT"
+
+  secret-scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,6 +103,16 @@ jobs:
           head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           extra_args: --only-verified
 
+  web-check:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
@@ -48,6 +126,45 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Web check
+        run: pnpm --filter @family-events/web check
+
+  # E2E (needs local Supabase — can't run on RWX)
+  verify:
+    needs:
+      - changes
+      - web-check
+    if: always() && needs.changes.outputs.verify == 'true' && needs.web-check.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml', 'apps/web/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
         run: pnpm --filter @family-events/web exec playwright install --with-deps
@@ -180,26 +297,14 @@ jobs:
 
   # iOS simulator tests (needs macOS — can't run on RWX)
   ios:
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
     runs-on: macos-26
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
-        with:
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -213,12 +318,21 @@ jobs:
           fi
           xcodebuild -version
 
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/family-events-swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
+
       - name: Generate iOS project
         run: cd apps/ios && xcodegen generate
 
       - name: Run iOS tests
         run: |
           cd apps/ios
+          mkdir -p "$HOME/Library/Caches/family-events-swiftpm"
           SIMULATOR_ID="$(xcrun simctl list devices available | awk -F '[()]' '
             /iPhone 17 \(/ { print $2; found = 1; exit }
             /iPhone/ && !fallback { fallback = $2 }
@@ -229,26 +343,23 @@ jobs:
             exit 1
           fi
           echo "Using simulator $SIMULATOR_ID"
-          xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -skip-testing:FEDesignSystemTests/EventCardSnapshotTests test
+          xcodebuild \
+            -project FamilyEvents.xcodeproj \
+            -scheme FamilyEvents \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -clonedSourcePackagesDirPath "$HOME/Library/Caches/family-events-swiftpm" \
+            -skip-testing:FEDesignSystemTests/EventCardSnapshotTests \
+            test
 
   android:
+    needs: changes
+    if: needs.changes.outputs.android == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
-        with:
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
 
       - name: Setup JDK 17
         uses: actions/setup-java@v5
@@ -263,14 +374,5 @@ jobs:
       - name: Install Android SDK 36
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Android check
-        run: pnpm run android:check
-
-      - name: Android test
-        run: pnpm run android:test
-
-      - name: Android build
-        run: pnpm run android:build
+      - name: Android checks
+        run: cd apps/android && scripts/with-android-env.sh ./gradlew --build-cache check assembleDebug
