@@ -118,7 +118,7 @@ export function AdminLayout() {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset>
+        <SidebarInset className="min-w-0 overflow-x-hidden">
           <header
             className="sticky top-0 z-30 flex h-14 items-center border-b border-border/60 bg-background px-4 md:px-6"
             style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
@@ -128,7 +128,7 @@ export function AdminLayout() {
               {ADMIN_NAV.find((n) => isActive(n.to, n.exact))?.label ?? "Admin"}
             </h1>
           </header>
-          <div className="flex-1 px-4 py-4 md:px-6 md:py-6">
+          <div className="min-w-0 flex-1 px-4 py-4 md:px-6 md:py-6">
             <PageTransition>
               <Outlet />
             </PageTransition>

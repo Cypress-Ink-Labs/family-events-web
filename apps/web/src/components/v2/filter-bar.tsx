@@ -21,7 +21,7 @@ type FilterBarProps = {
  */
 export function FilterBar({ children, trailing, className }: FilterBarProps) {
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex w-full min-w-0 items-center gap-2", className)}>
       <div
         className={cn(
           "flex min-w-0 flex-1 items-center gap-2",
