@@ -15,6 +15,7 @@ import { EventMapMini } from "@/features/events/components/event-map-mini"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/components/motion"
 import { StarRating } from "@/features/events/components/star-rating"
+import { FormGrid } from "@/components/v2"
 
 interface EventDetailInfoItem {
   label: string
@@ -179,21 +180,23 @@ export function EventDetailSummary({ event, startDate }: EventDetailSummaryProps
 
 export function EventDetailInfoGrid({ infoItems }: { infoItems: EventDetailInfoItem[] }) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <FormGrid cols={2} gap="3">
       {infoItems.map((item) => (
         <Card key={item.label} className="border-border/60">
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-muted flex items-center justify-center shrink-0">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted">
               <item.icon className="size-4 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{item.label}</p>
-              <p className="text-sm font-bold text-foreground">{item.value}</p>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                {item.label}
+              </p>
+              <p className="font-display text-sm font-medium text-foreground">{item.value}</p>
             </div>
           </CardContent>
         </Card>
       ))}
-    </div>
+    </FormGrid>
   )
 }
 
@@ -280,14 +283,14 @@ export function EventDetailBooking({
           <div className="flex items-center gap-3">
             <button
               onClick={onDecrement}
-              className="size-7 rounded-full border border-border flex items-center justify-center hover:bg-accent text-sm font-bold"
+              className="flex size-11 items-center justify-center rounded-full border border-border text-base font-bold hover:bg-accent"
             >
               −
             </button>
             <span className="text-sm font-bold w-4 text-center">{attendees}</span>
             <button
               onClick={onIncrement}
-              className="size-7 rounded-full border border-border flex items-center justify-center hover:bg-accent text-sm font-bold"
+              className="flex size-11 items-center justify-center rounded-full border border-border text-base font-bold hover:bg-accent"
             >
               +
             </button>

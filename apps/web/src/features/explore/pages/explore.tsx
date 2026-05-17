@@ -14,6 +14,7 @@ import {
   ExploreNeighborhoodCta,
   ExploreSearchFilters,
 } from "@/features/explore/components/explore-sections"
+import { Page, Stack } from "@/components/v2"
 
 export function ExplorePage() {
   const { user } = useAuth()
@@ -135,46 +136,48 @@ export function ExplorePage() {
   ].filter(Boolean).length
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
-      <ExploreHeader cityName={selectedCity?.name} />
-      <ExploreSearchFilters
-        keyword={keyword}
-        activeFilterCount={activeFilterCount}
-        activeDateFilter={activeDateFilter}
-        selectedAge={selectedAge}
-        onlyFree={onlyFree}
-        selectedTagSlugs={selectedTagSlugs}
-        tags={tags}
-        onKeywordChange={setKeyword}
-        onClearKeyword={() => setKeyword("")}
-        onDateFilterChange={setActiveDateFilter}
-        onAgeChange={setSelectedAge}
-        onOnlyFreeChange={setOnlyFree}
-        onToggleTagSlug={toggleTagSlug}
-        onClearAllFilters={resetFilters}
-      />
-      <ExploreActiveFilters
-        onlyFree={onlyFree}
-        activeCategory={activeCategory}
-        selectedTagSlugs={selectedTagSlugs}
-        tags={tags}
-        onOnlyFreeChange={setOnlyFree}
-        onActiveCategoryChange={setActiveCategory}
-        onToggleTagSlug={toggleTagSlug}
-      />
-      <ExploreCategoryGrid
-        keyword={keyword}
-        activeCategory={activeCategory}
-        onActiveCategoryChange={setActiveCategory}
-      />
-      <ExploreEventsSection
-        activeCategory={activeCategory}
-        filteredEvents={filteredEvents}
-        isEventsLoading={isEventsLoading}
-        isEventsError={isEventsError}
-        onClearAllFilters={resetFilters}
-      />
-      <ExploreNeighborhoodCta />
-    </div>
+    <Page width="content" className="py-6">
+      <Stack gap="5">
+        <ExploreHeader cityName={selectedCity?.name} />
+        <ExploreSearchFilters
+          keyword={keyword}
+          activeFilterCount={activeFilterCount}
+          activeDateFilter={activeDateFilter}
+          selectedAge={selectedAge}
+          onlyFree={onlyFree}
+          selectedTagSlugs={selectedTagSlugs}
+          tags={tags}
+          onKeywordChange={setKeyword}
+          onClearKeyword={() => setKeyword("")}
+          onDateFilterChange={setActiveDateFilter}
+          onAgeChange={setSelectedAge}
+          onOnlyFreeChange={setOnlyFree}
+          onToggleTagSlug={toggleTagSlug}
+          onClearAllFilters={resetFilters}
+        />
+        <ExploreActiveFilters
+          onlyFree={onlyFree}
+          activeCategory={activeCategory}
+          selectedTagSlugs={selectedTagSlugs}
+          tags={tags}
+          onOnlyFreeChange={setOnlyFree}
+          onActiveCategoryChange={setActiveCategory}
+          onToggleTagSlug={toggleTagSlug}
+        />
+        <ExploreCategoryGrid
+          keyword={keyword}
+          activeCategory={activeCategory}
+          onActiveCategoryChange={setActiveCategory}
+        />
+        <ExploreEventsSection
+          activeCategory={activeCategory}
+          filteredEvents={filteredEvents}
+          isEventsLoading={isEventsLoading}
+          isEventsError={isEventsError}
+          onClearAllFilters={resetFilters}
+        />
+        <ExploreNeighborhoodCta />
+      </Stack>
+    </Page>
   )
 }
