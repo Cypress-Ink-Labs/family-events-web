@@ -15,7 +15,6 @@ permissions:
 
 env:
   E2E_ADMIN_EMAIL: admin@familyevents.local
-  E2E_ADMIN_PASSWORD: Admin123!
 
 jobs:
   # Secret scanning + E2E (needs local Supabase — can't run on RWX)
@@ -84,12 +83,13 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Seed admin auth user
+        id: seed_admin
         env:
           API_URL: ${{ steps.supabase.outputs.api_url }}
           SERVICE_ROLE_KEY: ${{ steps.supabase.outputs.service_role }}
           ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
-          ADMIN_PASSWORD: ${{ env.E2E_ADMIN_PASSWORD }}
         run: |
+          ADMIN_PASSWORD="$(openssl rand -base64 24 | tr -d "=+/" | cut -c1-24)!Aa1"
           payload=$(printf '{"email":"%s","password":"%s","email_confirm":true}' \
             "$ADMIN_EMAIL" "$ADMIN_PASSWORD")
           code=$(curl -sS -o /tmp/seed_admin.json -w "%{http_code}" \
@@ -107,6 +107,7 @@ jobs:
               exit 1
               ;;
           esac
+          echo "admin_password=$ADMIN_PASSWORD" >> "$GITHUB_OUTPUT"
 
       - name: Promote admin via setup-local
         run: bash scripts/setup-local.sh
@@ -135,7 +136,7 @@ jobs:
           VITE_SUPABASE_URL: ${{ steps.supabase.outputs.api_url }}
           VITE_SUPABASE_ANON_KEY: ${{ steps.supabase.outputs.anon_key }}
           PLAYWRIGHT_ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
-          PLAYWRIGHT_ADMIN_PASSWORD: ${{ env.E2E_ADMIN_PASSWORD }}
+          PLAYWRIGHT_ADMIN_PASSWORD: ${{ steps.seed_admin.outputs.admin_password }}
         run: pnpm run test:e2e
 
       - name: Upload Playwright report on failure
