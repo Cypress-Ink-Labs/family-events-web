@@ -109,7 +109,6 @@ export function ResetPasswordPage() {
                     placeholder="Min. 6 characters"
                     required
                     minLength={6}
-                    autoFocus
                   />
                 </div>
                 <div className="space-y-1.5">

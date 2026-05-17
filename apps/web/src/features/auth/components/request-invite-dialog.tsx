@@ -28,7 +28,7 @@ interface RequestInviteDialogProps {
 
 export function RequestInviteDialog({ defaultEmail = "", trigger }: RequestInviteDialogProps) {
   const [open, setOpen] = useState(false)
-  const [email, setEmail] = useState(defaultEmail)
+  const [email, setEmail] = useState("")
   const [message, setMessage] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const requestInvite = useRequestInvite()
@@ -36,6 +36,9 @@ export function RequestInviteDialog({ defaultEmail = "", trigger }: RequestInvit
   // Reset state whenever the dialog closes so re-opening starts fresh.
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen)
+    if (nextOpen) {
+      setEmail((current) => current || defaultEmail)
+    }
     if (!nextOpen) {
       // Defer reset so the close animation completes without flicker.
       setTimeout(() => {
@@ -120,7 +123,6 @@ export function RequestInviteDialog({ defaultEmail = "", trigger }: RequestInvit
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@example.com"
                 required
-                autoFocus
               />
             </div>
             <div className="space-y-1.5">

@@ -57,6 +57,8 @@ export function useGeolocation(options: UseGeolocationOptions = {}): Geolocation
       return
     }
 
+    setState((current) => ({ ...current, status: "resolving" }))
+
     let isClosed = false
     navigator.geolocation.getCurrentPosition(
       (position) => {

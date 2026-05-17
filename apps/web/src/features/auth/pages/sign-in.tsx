@@ -161,7 +161,6 @@ export function SignInPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
-                    autoFocus
                   />
                 </div>
                 {requiresInvite && (

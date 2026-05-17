@@ -198,14 +198,16 @@ function darkenLibertyStyle(style: StyleSpecification): StyleSpecification {
 
     // Roads (transportation source-layer, line type)
     if (sl === "transportation" && type === "line") {
+      const tokens = new Set(id.split(/[_-]/g))
+      const has = (token: string) => tokens.has(token)
       const isCasing = id.includes("casing")
       const isHatching = id.includes("hatching")
 
-      if (id.includes("rail")) {
+      if (has("rail")) {
         paint(layer, "line-color", isHatching ? DARK.railHatching : DARK.rail)
         continue
       }
-      if (id.includes("motorway") && !id.includes("link")) {
+      if (has("motorway") && !has("link")) {
         paint(layer, "line-color", isCasing ? DARK.motorwayCasing : DARK.motorway)
         continue
       }
@@ -221,23 +223,23 @@ function darkenLibertyStyle(style: StyleSpecification): StyleSpecification {
         paint(layer, "line-color", isCasing ? DARK.secondaryTertiaryCasing : DARK.secondaryTertiary)
         continue
       }
-      if (id.includes("street")) {
+      if (has("street")) {
         paint(layer, "line-color", isCasing ? DARK.streetCasing : DARK.street)
         continue
       }
-      if (id.includes("minor")) {
+      if (has("minor")) {
         paint(layer, "line-color", isCasing ? DARK.minorCasing : DARK.minor)
         continue
       }
-      if (id.includes("path") || id.includes("pedestrian")) {
+      if (has("path") || has("pedestrian")) {
         paint(layer, "line-color", DARK.path)
         continue
       }
-      if (id.includes("service") || id.includes("track")) {
+      if (has("service") || has("track")) {
         paint(layer, "line-color", isCasing ? DARK.serviceCasing : DARK.service)
         continue
       }
-      if (id.includes("link")) {
+      if (has("link")) {
         paint(layer, "line-color", isCasing ? DARK.linkCasing : DARK.link)
         continue
       }
