@@ -223,15 +223,20 @@ function CronJobCard({ job }: CronJobCardProps) {
 
   return (
     <>
-      <Card className={cn("border-border/60", !job.active && "opacity-60")}>
-        <CardContent className="p-4">
-          <div className="flex items-start gap-4">
-            <div className="size-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+      <Card className={cn("@container/cron-card border-border/60", !job.active && "opacity-60")}>
+        <CardContent className="space-y-3 p-4">
+          {/* Identity row: icon + jobname + schedule pill + controls. Controls
+              collapse below identity when the card container falls under 420px,
+              which is the typical phone-with-admin-shell width. */}
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
               <CalendarClock className="size-5 text-muted-foreground" />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold text-sm text-foreground">{job.jobname}</h3>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="break-all font-display text-sm font-medium text-foreground">
+                  {job.jobname}
+                </h3>
                 <Badge variant="outline" className="font-mono text-[10px]">
                   {job.schedule}
                 </Badge>
@@ -241,42 +246,17 @@ function CronJobCard({ job }: CronJobCardProps) {
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center gap-4 mt-2 flex-wrap">
-                {job.last_run_status ? (
-                  <>
-                    <RunStatusBadge status={job.last_run_status} />
-                    {job.last_run_start && (
-                      <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(job.last_run_start), { addSuffix: true })}
-                      </span>
-                    )}
-                    {job.last_run_start && job.last_run_end && (
-                      <span className="text-xs text-muted-foreground">
-                        {Math.round(
-                          (new Date(job.last_run_end).getTime() -
-                            new Date(job.last_run_start).getTime()) /
-                            1000
-                        )}
-                        s
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-xs text-muted-foreground">Never run</span>
-                )}
-              </div>
-              <p className="text-[10px] text-muted-foreground/60 font-mono mt-2 truncate">
-                {job.command}
-              </p>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
+            {/* Wide-container layout — controls inline */}
+            <div className="hidden shrink-0 items-center gap-2 @[420px]/cron-card:flex">
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                size="icon"
+                className="size-11 text-muted-foreground hover:text-foreground"
                 onClick={() => setScheduleDialogOpen(true)}
+                aria-label={`Edit schedule for ${job.jobname}`}
               >
-                <Pencil className="size-3.5" />
+                <Pencil className="size-4" />
               </Button>
               <Switch
                 checked={job.active}
@@ -285,6 +265,59 @@ function CronJobCard({ job }: CronJobCardProps) {
                 aria-label={`${job.active ? "Pause" : "Resume"} ${job.jobname}`}
               />
             </div>
+          </div>
+
+          {/* Status row */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            {job.last_run_status ? (
+              <>
+                <RunStatusBadge status={job.last_run_status} />
+                {job.last_run_start && (
+                  <span>
+                    {formatDistanceToNow(new Date(job.last_run_start), { addSuffix: true })}
+                  </span>
+                )}
+                {job.last_run_start && job.last_run_end && (
+                  <span className="font-mono tabular-nums">
+                    {Math.round(
+                      (new Date(job.last_run_end).getTime() -
+                        new Date(job.last_run_start).getTime()) /
+                        1000
+                    )}
+                    s
+                  </span>
+                )}
+              </>
+            ) : (
+              <span>Never run</span>
+            )}
+          </div>
+
+          <p className="truncate font-mono text-[10px] text-muted-foreground/60">{job.command}</p>
+
+          {/* Narrow-container layout — controls below content with min-h-44 */}
+          <div className="flex items-center justify-end gap-2 border-t border-border/60 pt-3 @[420px]/cron-card:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="min-h-[44px] gap-1.5"
+              onClick={() => setScheduleDialogOpen(true)}
+              aria-label={`Edit schedule for ${job.jobname}`}
+            >
+              <Pencil className="size-3.5" />
+              <span>Edit schedule</span>
+            </Button>
+            <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+              <Switch
+                checked={job.active}
+                onCheckedChange={handleToggle}
+                disabled={toggleJob.isPending}
+                aria-label={`${job.active ? "Pause" : "Resume"} ${job.jobname}`}
+              />
+              <span className="text-xs text-muted-foreground">
+                {job.active ? "Active" : "Paused"}
+              </span>
+            </label>
           </div>
         </CardContent>
       </Card>
