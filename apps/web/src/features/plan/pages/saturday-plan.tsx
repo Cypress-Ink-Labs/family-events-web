@@ -12,6 +12,7 @@ import { useApp } from "@/app/stores/app-store"
 import { usePlanForToday } from "@/features/plan/hooks/use-plan-for-today"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
 import { toast } from "sonner"
+import { Page, Stack } from "@/components/v2"
 
 function planExploreHref(date: string | null, weatherFit: string): string {
   const params = new URLSearchParams()
@@ -119,98 +120,103 @@ export function SaturdayPlanPage() {
   )
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5 px-4 py-6">
-      <div className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-          This week's plan
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {profile?.child_name
-            ? `Best family options for ${profile.child_name} this week`
-            : "Best family options this week"}
-        </h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          A ranked shortlist from the next 7 days, tuned by distance, weather, age fit, and saved
-          events.
-        </p>
-        <PlanContextBar cityName={selectedCity?.name} childAge={profile?.child_age ?? null} />
-        <WeatherStrip
-          date={plan?.date ?? null}
-          cityName={selectedCity?.name}
-          weather={plan?.weather ?? null}
-        />
-      </div>
+    <Page width="content" className="py-6">
+      <Stack gap="5">
+        <Stack gap="4">
+          <p
+            className="font-mono text-[10px] font-semibold uppercase tracking-wider"
+            style={{ color: "var(--color-accent-secondary)" }}
+          >
+            This week's plan
+          </p>
+          <h1 className="font-display text-2xl font-medium leading-tight tracking-tight text-foreground md:text-3xl">
+            {profile?.child_name
+              ? `Best family options for ${profile.child_name} this week`
+              : "Best family options this week"}
+          </h1>
+          <p className="max-w-2xl font-editorial text-base italic text-muted-foreground md:text-lg">
+            A ranked shortlist from the next 7 days, tuned by distance, weather, age fit, and saved
+            events.
+          </p>
+          <PlanContextBar cityName={selectedCity?.name} childAge={profile?.child_age ?? null} />
+          <WeatherStrip
+            date={plan?.date ?? null}
+            cityName={selectedCity?.name}
+            weather={plan?.weather ?? null}
+          />
+        </Stack>
 
-      <FadeSwap
-        stateKey={isLoading ? "plan-loading" : isError ? "plan-error" : "plan-content"}
-        className="space-y-5"
-      >
-        {isLoading ? (
-          <LoadingState />
-        ) : isError ? (
-          <Card className="border-destructive/30 bg-destructive/5">
-            <CardContent className="space-y-3 p-4">
-              <p className="text-sm text-destructive">
-                We couldn't load this week's plan right now.
-              </p>
-              <Button
-                variant="outline"
-                className="gap-2"
-                onClick={() => {
-                  void refetch()
-                }}
-              >
-                <RefreshCw className="size-4" />
-                {isRefetching ? "Retrying..." : "Retry"}
-              </Button>
-            </CardContent>
-          </Card>
-        ) : plan ? (
-          <>
-            {plan.fallbackMessage ? (
-              <Card className="border-border/60">
-                <CardContent className="p-3 text-sm text-muted-foreground">
-                  {plan.fallbackMessage}
-                </CardContent>
-              </Card>
-            ) : null}
+        <FadeSwap
+          stateKey={isLoading ? "plan-loading" : isError ? "plan-error" : "plan-content"}
+          className="space-y-5"
+        >
+          {isLoading ? (
+            <LoadingState />
+          ) : isError ? (
+            <Card className="border-destructive/30 bg-destructive/5">
+              <CardContent className="space-y-3 p-4">
+                <p className="text-sm text-destructive">
+                  We couldn't load this week's plan right now.
+                </p>
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => {
+                    void refetch()
+                  }}
+                >
+                  <RefreshCw className="size-4" />
+                  {isRefetching ? "Retrying..." : "Retry"}
+                </Button>
+              </CardContent>
+            </Card>
+          ) : plan ? (
+            <>
+              {plan.fallbackMessage ? (
+                <Card className="border-border/60">
+                  <CardContent className="p-3 text-sm text-muted-foreground">
+                    {plan.fallbackMessage}
+                  </CardContent>
+                </Card>
+              ) : null}
 
-            {plan.heroEvent ? (
-              <PlanHeroCard event={plan.heroEvent} />
-            ) : (
-              <Card className="border-border/60">
-                <CardContent className="space-y-3 p-6 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    No family plans found nearby in the next 7 days.
-                  </p>
-                  <Button asChild>
-                    <Link to="/explore">Explore events</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+              {plan.heroEvent ? (
+                <PlanHeroCard event={plan.heroEvent} />
+              ) : (
+                <Card className="border-border/60">
+                  <CardContent className="space-y-3 p-6 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      No family plans found nearby in the next 7 days.
+                    </p>
+                    <Button asChild>
+                      <Link to="/explore">Explore events</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
 
-            {plan.secondaryEvents.length > 0 ? (
-              <StaggerList className="grid gap-3 sm:grid-cols-2">
-                {plan.secondaryEvents.map((event) => (
-                  <StaggerItem key={event.id}>
-                    <PlanThumbCard event={event} />
-                  </StaggerItem>
-                ))}
-              </StaggerList>
-            ) : null}
+              {plan.secondaryEvents.length > 0 ? (
+                <StaggerList className="grid gap-3 sm:grid-cols-2">
+                  {plan.secondaryEvents.map((event) => (
+                    <StaggerItem key={event.id}>
+                      <PlanThumbCard event={event} />
+                    </StaggerItem>
+                  ))}
+                </StaggerList>
+              ) : null}
 
-            <div className="flex justify-end">
-              <Button variant="ghost" className="gap-1 text-primary" asChild>
-                <Link to={exploreHref}>
-                  See more options
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-            </div>
-          </>
-        ) : null}
-      </FadeSwap>
-    </div>
+              <div className="flex justify-end">
+                <Button variant="ghost" className="min-h-[44px] gap-1 text-primary" asChild>
+                  <Link to={exploreHref}>
+                    See more options
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+              </div>
+            </>
+          ) : null}
+        </FadeSwap>
+      </Stack>
+    </Page>
   )
 }

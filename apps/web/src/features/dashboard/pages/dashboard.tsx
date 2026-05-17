@@ -15,6 +15,7 @@ import {
   DashboardSoonSection,
   DashboardTodaySection,
 } from "@/features/dashboard/components/dashboard-sections"
+import { Page, Stack } from "@/components/v2"
 
 export function DashboardPage() {
   const { user, profile } = useAuth()
@@ -81,58 +82,60 @@ export function DashboardPage() {
         : "dashboard-content"
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 space-y-8">
-      <DashboardHeader
-        greeting={greeting}
-        childName={profile?.child_name}
-        userInitial={profile?.display_name?.charAt(0)?.toUpperCase() ?? "U"}
-        avatarUrl={profile?.avatar_url}
-        showAvatar={Boolean(user)}
-      />
-      <FadeSwap stateKey={bodyKey} className="space-y-8">
-        {bodyKey === "dashboard-error" ? (
-          <DashboardErrorState />
-        ) : bodyKey === "dashboard-loading" ? (
-          <DashboardLoadingState />
-        ) : bodyKey === "dashboard-empty" ? (
-          <DashboardEmptyState />
-        ) : (
-          <>
-            <DashboardTodaySection todayEvents={todayEvents} />
-            <DashboardCarouselSection
-              title="Featured Events"
-              icon="featured"
-              events={featuredEvents}
-              eventCardVariant="featured"
-              isFavorited={isFavorited}
-              onFavoriteToggle={handleFavoriteToggle}
-            />
-            <DashboardCarouselSection
-              title={
-                user && profile?.child_name
-                  ? `Recommended for ${profile.child_name}`
-                  : "Happening Near You"
-              }
-              icon="recommended"
-              events={recommended}
-              eventCardVariant="default"
-              isFavorited={isFavorited}
-              onFavoriteToggle={handleFavoriteToggle}
-            />
-            <DashboardSoonSection
-              events={happeningSoon}
-              isFavorited={isFavorited}
-              onFavoriteToggle={handleFavoriteToggle}
-            />
-            <DashboardSavedSection
-              savedEvents={savedEvents}
-              onFavoriteToggle={handleFavoriteToggle}
-            />
-            <DashboardParentPulse />
-            {!user && <DashboardGuestCta />}
-          </>
-        )}
-      </FadeSwap>
-    </div>
+    <Page width="content" className="py-6">
+      <Stack gap="6">
+        <DashboardHeader
+          greeting={greeting}
+          childName={profile?.child_name}
+          userInitial={profile?.display_name?.charAt(0)?.toUpperCase() ?? "U"}
+          avatarUrl={profile?.avatar_url}
+          showAvatar={Boolean(user)}
+        />
+        <FadeSwap stateKey={bodyKey} className="space-y-8">
+          {bodyKey === "dashboard-error" ? (
+            <DashboardErrorState />
+          ) : bodyKey === "dashboard-loading" ? (
+            <DashboardLoadingState />
+          ) : bodyKey === "dashboard-empty" ? (
+            <DashboardEmptyState />
+          ) : (
+            <>
+              <DashboardTodaySection todayEvents={todayEvents} />
+              <DashboardCarouselSection
+                title="Featured Events"
+                icon="featured"
+                events={featuredEvents}
+                eventCardVariant="featured"
+                isFavorited={isFavorited}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+              <DashboardCarouselSection
+                title={
+                  user && profile?.child_name
+                    ? `Recommended for ${profile.child_name}`
+                    : "Happening Near You"
+                }
+                icon="recommended"
+                events={recommended}
+                eventCardVariant="default"
+                isFavorited={isFavorited}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+              <DashboardSoonSection
+                events={happeningSoon}
+                isFavorited={isFavorited}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+              <DashboardSavedSection
+                savedEvents={savedEvents}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+              <DashboardParentPulse />
+              {!user && <DashboardGuestCta />}
+            </>
+          )}
+        </FadeSwap>
+      </Stack>
+    </Page>
   )
 }
