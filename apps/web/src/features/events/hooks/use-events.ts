@@ -15,7 +15,7 @@ interface UseEventsOptions {
 }
 
 const OPEN_ENDED_MAX_AGE = 99
-const DEFAULT_LIMIT = 100
+const DEFAULT_LIMIT = 24
 const DEFAULT_OFFSET = 0
 
 function toIsoDate(value: string | Date): string {
@@ -91,12 +91,13 @@ async function fetchEvents(
   )
 }
 
+const EVENT_SELECT_FIELDS =
+  "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, recurrence_info, is_featured, view_count, created_at, updated_at"
+
 async function fetchEventById(eventId: string, userId?: string): Promise<EventWithDetails | null> {
   const { data, error } = await supabase
     .from("events")
-    .select(
-      "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, recurrence_info, is_featured, view_count, search_vector, created_at, updated_at"
-    )
+    .select(EVENT_SELECT_FIELDS)
     .eq("id", eventId)
     .maybeSingle()
 
@@ -125,9 +126,7 @@ async function fetchEventsByIds(eventIds: string[], userId?: string): Promise<Ev
   const uniqueEventIds = [...new Set(eventIds)]
   const { data, error } = await supabase
     .from("events")
-    .select(
-      "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, recurrence_info, is_featured, view_count, search_vector, created_at, updated_at"
-    )
+    .select(EVENT_SELECT_FIELDS)
     .in("id", uniqueEventIds)
     .order("start_datetime", { ascending: true })
 
