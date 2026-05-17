@@ -22,6 +22,7 @@ import type {
 } from "@/lib/types"
 import { safeImageSrc } from "@/lib/safe-url"
 import { cn, formatEventPrice } from "@/lib/utils"
+import { cleanDescription } from "@family-events/shared"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -454,7 +455,7 @@ export function AdminEventReviewDialog({
             />
             <div>
               <h3 className="font-semibold text-lg">{event.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
+              <p className="text-sm text-muted-foreground mt-1">{cleanDescription(event.description)}</p>
             </div>
             <FormGrid cols={2} gap="3" className="text-sm">
               <div>

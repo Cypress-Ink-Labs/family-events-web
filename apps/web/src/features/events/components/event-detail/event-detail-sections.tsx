@@ -16,6 +16,7 @@ import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/components/motion"
 import { StarRating } from "@/features/events/components/star-rating"
 import { FormGrid } from "@/components/v2"
+import { cleanDescription } from "@family-events/shared"
 
 interface EventDetailInfoItem {
   label: string
@@ -165,7 +166,7 @@ export function EventDetailSummary({ event, startDate }: EventDetailSummaryProps
       </div>
       <h1 className="text-2xl font-semibold text-foreground tracking-tight">{event.title}</h1>
       <p className="text-muted-foreground text-sm mt-2 leading-relaxed">
-        {event.description?.slice(0, 100)}
+        {(cleanDescription(event.description) ?? "").slice(0, 100)}
       </p>
 
       <div className="flex flex-wrap gap-2 mt-3">

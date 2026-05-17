@@ -4,6 +4,7 @@ import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
 import { safeImageSrc } from "@/lib/safe-url"
 import { formatEventPrice } from "@/lib/utils"
+import { cleanDescription } from "@family-events/shared"
 import { Separator } from "@/components/ui/separator"
 import {
   EventDetailAbout,
@@ -188,7 +189,7 @@ export function EventDetailPage() {
       <EventDetailSectionLayout>
         <EventDetailSummary event={currentEvent} startDate={startDate} />
         <EventDetailInfoGrid infoItems={infoItems} />
-        <EventDetailAbout description={currentEvent.description} />
+        <EventDetailAbout description={cleanDescription(currentEvent.description)} />
         <Separator />
         <EventDetailLocation event={currentEvent} />
         <Separator />

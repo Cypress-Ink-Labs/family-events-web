@@ -6,6 +6,7 @@ import type { PublicEventRow } from "@/lib/db"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { cleanDescription } from "@family-events/shared"
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
@@ -140,9 +141,12 @@ export function PublicEventPreviewPage() {
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               {event.title ?? "Family event"}
             </h1>
-            {event.description ? (
-              <p className="text-sm leading-relaxed text-muted-foreground">{event.description}</p>
-            ) : null}
+            {(() => {
+              const cleaned = cleanDescription(event.description)
+              return cleaned ? (
+                <p className="text-sm leading-relaxed text-muted-foreground">{cleaned}</p>
+              ) : null
+            })()}
             <div className="space-y-1 text-sm text-muted-foreground">
               {eventDate ? (
                 <p className="inline-flex items-center gap-1">
