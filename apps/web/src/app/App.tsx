@@ -101,6 +101,11 @@ const AdminEventsPage = lazy(() =>
     default: module.AdminEventsPage,
   }))
 )
+const AdminEventEditPage = lazy(() =>
+  import("@/features/admin/pages/admin-event-edit").then((module) => ({
+    default: module.AdminEventEditPage,
+  }))
+)
 const AdminCitiesPage = lazy(() =>
   import("@/features/admin/pages/admin-cities").then((module) => ({
     default: module.AdminCitiesPage,
@@ -244,6 +249,7 @@ export default function App() {
                       <Route index element={<AdminDashboardPage />} />
                       <Route path="sources" element={<AdminSourcesPage />} />
                       <Route path="events" element={<AdminEventsPage />} />
+                      <Route path="events/:eventId/edit" element={<AdminEventEditPage />} />
                       <Route path="cities" element={<AdminCitiesPage />} />
                       <Route path="comments" element={<AdminCommentsPage />} />
                       <Route path="ratings" element={<AdminRatingsPage />} />

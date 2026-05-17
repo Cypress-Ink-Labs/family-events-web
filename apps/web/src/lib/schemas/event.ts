@@ -57,8 +57,24 @@ export const eventRowSchema = z.object({
   ai_tag_provider: z.enum(["openai", "keyword-fallback"]).nullable(),
   recurrence_info: z.unknown().nullable().optional(),
   is_featured: z.boolean(),
+  is_outdoor: z
+    .boolean()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   view_count: z.number(),
   search_vector: z.string().nullable().optional(),
+  admin_locked_fields: z.array(z.string()).optional().default([]),
+  admin_last_edited_at: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  admin_last_edited_by: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   created_at: z.string(),
   updated_at: z.string(),
 })

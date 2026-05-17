@@ -197,6 +197,10 @@ export const qk = {
         status: Event["status"] | "all",
         cityFilter: "all" | "none" | string = "all"
       ) => ["admin", "events", normalizeAdminEventsParams(keyword, status, cityFilter)] as const,
+      detail: (eventId: string | null | undefined) =>
+        ["admin", "events", "detail", nil(eventId)] as const,
+      audit: (eventId: string | null | undefined) =>
+        ["admin", "events", "audit", nil(eventId)] as const,
       facets: (keyword: string) =>
         ["admin", "events", "facets", { keyword: sanitizePostgrestLike(keyword) }] as const,
     },

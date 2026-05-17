@@ -234,8 +234,12 @@ export interface Event {
   ai_tag_provider: "openai" | "keyword-fallback" | null
   recurrence_info: Json | null
   is_featured: boolean
+  is_outdoor: boolean | null
   view_count: number
   search_vector: string | null
+  admin_locked_fields: string[]
+  admin_last_edited_at: string | null
+  admin_last_edited_by: string | null
   created_at: string
   updated_at: string
 }

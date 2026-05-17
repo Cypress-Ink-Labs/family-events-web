@@ -6,6 +6,7 @@ import {
   CheckCheck,
   ChevronDown,
   Eye,
+  Pencil,
   Search,
   Sparkles,
   Tag,
@@ -13,6 +14,7 @@ import {
   X,
   XCircle,
 } from "lucide-react"
+import { Link } from "react-router-dom"
 import type {
   City,
   Event,
@@ -358,6 +360,11 @@ function EventCard({
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
+            <Button variant="ghost" size="icon" aria-label="Edit event" className="size-11" asChild>
+              <Link to={`/admin/events/${event.id}/edit`}>
+                <Pencil className="size-4" />
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -658,6 +665,12 @@ export function AdminEventReviewDialog({
               )}
             </div>
             <div className="flex gap-2 pt-2">
+              <Button variant="outline" className="flex-1 gap-2" asChild>
+                <Link to={`/admin/events/${event.id}/edit`}>
+                  <Pencil className="size-4" />
+                  Edit full event
+                </Link>
+              </Button>
               <Button className="flex-1 gap-2" onClick={onPublish}>
                 <Check className="size-4" />
                 Publish

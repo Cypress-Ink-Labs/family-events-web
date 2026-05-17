@@ -1,8 +1,10 @@
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
+import { MemoryRouter } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
+import type { EventWithDetails } from "@/lib/types"
 
-import { AdminEventsToolbar } from "./admin-events-sections"
+import { AdminEventsList, AdminEventsToolbar } from "./admin-events-sections"
 
 describe("AdminEventsToolbar", () => {
   it("renders a single button for the select-all visible control", () => {
@@ -18,5 +20,69 @@ describe("AdminEventsToolbar", () => {
 
     expect((html.match(/<button\b/g) ?? []).length).toBe(1)
     expect(html).toContain("Select all visible (3)")
+  })
+})
+
+describe("AdminEventsList", () => {
+  it("renders an edit link for each admin event card", () => {
+    const event: EventWithDetails = {
+      id: "event-1",
+      title: "Story Time",
+      description: null,
+      start_datetime: "2026-06-01T15:00:00.000Z",
+      end_datetime: null,
+      timezone: "America/Chicago",
+      venue_name: "Library",
+      address: null,
+      city_id: null,
+      latitude: null,
+      longitude: null,
+      age_min: null,
+      age_max: null,
+      price: null,
+      is_free: true,
+      is_outdoor: null,
+      source_url: null,
+      source_name: null,
+      source_id: null,
+      images: [],
+      status: "draft",
+      ai_confidence: null,
+      ai_tag_provider: null,
+      recurrence_info: null,
+      is_featured: false,
+      view_count: 0,
+      search_vector: null,
+      admin_locked_fields: [],
+      admin_last_edited_at: null,
+      admin_last_edited_by: null,
+      created_at: "2026-05-01T00:00:00.000Z",
+      updated_at: "2026-05-01T00:00:00.000Z",
+    }
+
+    const html = renderToStaticMarkup(
+      createElement(
+        MemoryRouter,
+        null,
+        createElement(AdminEventsList, {
+          events: [event],
+          selectedIds: new Set<string>(),
+          statusConfig: {
+            draft: { label: "Draft", color: "draft" },
+            published: { label: "Published", color: "published" },
+            rejected: { label: "Rejected", color: "rejected" },
+            archived: { label: "Archived", color: "archived" },
+          },
+          cities: [],
+          cityFilter: "none",
+          onToggleSelect: vi.fn(),
+          onOpenReview: vi.fn(),
+          onUpdateStatus: vi.fn(),
+        })
+      )
+    )
+
+    expect(html).toContain('href="/admin/events/event-1/edit"')
+    expect(html).toContain("Edit event")
   })
 })
