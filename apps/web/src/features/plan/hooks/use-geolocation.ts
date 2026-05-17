@@ -47,10 +47,6 @@ export function useGeolocation(options: UseGeolocationOptions = {}): Geolocation
   )
 
   useEffect(() => {
-    if (enabled) {
-      setState((current) => ({ ...current, status: "resolving" }))
-    }
-
     if (!enabled) {
       setState(fallbackResult)
       return
@@ -60,6 +56,8 @@ export function useGeolocation(options: UseGeolocationOptions = {}): Geolocation
       setState(fallbackResult)
       return
     }
+
+    setState((current) => ({ ...current, status: "resolving" }))
 
     let isClosed = false
     navigator.geolocation.getCurrentPosition(
