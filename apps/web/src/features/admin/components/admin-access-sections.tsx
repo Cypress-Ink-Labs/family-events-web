@@ -95,26 +95,26 @@ export function AdminAccessList({
                 </div>
               </div>
 
-              <div className="flex shrink-0 gap-2">
+              <div className="flex shrink-0 flex-wrap gap-2">
                 {account.is_enabled ? (
                   <Button
                     variant="destructive"
                     size="sm"
-                    className="gap-2"
+                    className="min-h-[44px] gap-2"
                     onClick={() => onDisable(account.user_id)}
                   >
                     <ShieldOff className="size-4" />
-                    Disable
+                    <span>Disable</span>
                   </Button>
                 ) : (
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-2"
+                    className="min-h-[44px] gap-2"
                     onClick={() => onEnable(account.user_id)}
                   >
                     <ShieldCheck className="size-4" />
-                    Re-enable
+                    <span>Re-enable</span>
                   </Button>
                 )}
               </div>

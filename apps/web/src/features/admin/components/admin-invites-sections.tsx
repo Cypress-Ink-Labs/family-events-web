@@ -161,24 +161,26 @@ export function AdminInvitesCreatedReveal({
           <KeyRound className="size-4" />
           <span className="text-sm font-bold">Code generated, copy it now</span>
         </div>
-        <div className="flex items-center gap-2">
-          <code className="flex-1 font-mono text-base font-bold tracking-widest rounded-md border border-border/60 bg-background px-3 py-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <code className="min-w-0 flex-1 break-all rounded-md border border-border/60 bg-background px-3 py-2 font-mono text-base font-bold tracking-widest">
             {created.code}
           </code>
-          <Button variant="outline" size="sm" className="h-10" onClick={onCopy}>
-            {copied ? (
-              <>
-                <Check className="size-3.5 text-green-600 mr-1.5" /> Copied
-              </>
-            ) : (
-              <>
-                <Copy className="size-3.5 mr-1.5" /> Copy
-              </>
-            )}
-          </Button>
-          <Button variant="ghost" size="sm" className="h-10" onClick={onDismiss}>
-            Dismiss
-          </Button>
+          <div className="flex shrink-0 gap-2">
+            <Button variant="outline" size="sm" className="min-h-[44px]" onClick={onCopy}>
+              {copied ? (
+                <>
+                  <Check className="mr-1.5 size-3.5 text-green-600" /> Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="mr-1.5 size-3.5" /> Copy
+                </>
+              )}
+            </Button>
+            <Button variant="ghost" size="sm" className="min-h-[44px]" onClick={onDismiss}>
+              Dismiss
+            </Button>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground">
           This plaintext is not stored. Once dismissed, only the hash remains.
@@ -245,14 +247,15 @@ export function AdminInvitesList({ codes, onDelete }: AdminInvitesListProps) {
                   {code.notes && <span className="italic">{code.notes}</span>}
                 </div>
               </div>
-              <div className="flex gap-2 shrink-0">
+              <div className="flex shrink-0 gap-2">
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="h-8 text-destructive hover:text-destructive"
+                  size="icon"
+                  className="size-11 text-destructive hover:text-destructive"
                   onClick={() => onDelete(code.id)}
+                  aria-label="Delete invite code"
                 >
-                  <Trash2 className="size-3.5" />
+                  <Trash2 className="size-4" />
                 </Button>
               </div>
             </CardContent>
