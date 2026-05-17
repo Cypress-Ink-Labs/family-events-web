@@ -122,7 +122,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 min-h-[44px] min-w-[44px]"
+              className="size-10 min-h-[44px] min-w-[44px]"
               asChild
             >
               <Link to="/explore" aria-label="Search events">

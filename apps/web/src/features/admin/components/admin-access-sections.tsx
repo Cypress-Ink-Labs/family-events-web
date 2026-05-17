@@ -1,8 +1,8 @@
-import { format } from "date-fns"
 import { Search, ShieldCheck, ShieldOff, UserRound } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { ClientDate } from "@/components/client-date"
 import {
   Dialog,
   DialogContent,
@@ -82,9 +82,13 @@ export function AdminAccessList({
                     {profile?.email || "No email on file"}
                   </p>
                   <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                    <span>Joined {format(new Date(account.created_at), "MMM d, yyyy")}</span>
+                    <span>
+                      Joined <ClientDate value={account.created_at} pattern="MMM d, yyyy" />
+                    </span>
                     {account.disabled_at && (
-                      <span>Disabled {format(new Date(account.disabled_at), "MMM d, yyyy")}</span>
+                      <span>
+                        Disabled <ClientDate value={account.disabled_at} pattern="MMM d, yyyy" />
+                      </span>
                     )}
                   </div>
                   {account.disabled_reason && (

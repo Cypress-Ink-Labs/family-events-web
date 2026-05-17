@@ -70,7 +70,7 @@ async function fetchWeatherSnapshot(
   endpoint.searchParams.set("appid", apiKey)
   endpoint.searchParams.set("units", "metric")
 
-  for (let attempt = 0; attempt < WEATHER_MAX_ATTEMPTS; attempt += 1) {
+  async function attemptFetch(attempt: number): Promise<WeatherSnapshot | null> {
     try {
       const response = await fetch(endpoint, { headers: { Accept: "application/json" } })
       if (!response.ok) {
@@ -86,7 +86,7 @@ async function fetchWeatherSnapshot(
         }
         if (attempt < WEATHER_MAX_ATTEMPTS - 1 && shouldRetry(response.status)) {
           await sleep((attempt + 1) * 250)
-          continue
+          return attemptFetch(attempt + 1)
         }
         return null
       }
@@ -107,13 +107,13 @@ async function fetchWeatherSnapshot(
     } catch {
       if (attempt < WEATHER_MAX_ATTEMPTS - 1) {
         await sleep((attempt + 1) * 250)
-        continue
+        return attemptFetch(attempt + 1)
       }
       return null
     }
   }
 
-  return null
+  return attemptFetch(0)
 }
 
 export function useWeather(options: UseWeatherOptions = {}) {

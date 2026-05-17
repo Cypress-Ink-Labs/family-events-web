@@ -1,7 +1,7 @@
-import { format } from "date-fns"
 import { Bot, Sparkles } from "lucide-react"
 import type { ReactNode } from "react"
 import { Badge } from "@/components/ui/badge"
+import { ClientDate } from "@/components/client-date"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { Event, EventAiTraceWithParsed } from "@/lib/types"
@@ -105,7 +105,7 @@ export function AdminEventAiReference({
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         {isLoading ? (
-          <p className="text-muted-foreground">Loading classification details...</p>
+          <p className="text-muted-foreground">Loading classification details…</p>
         ) : trace ? (
           <>
             <div className="flex flex-wrap gap-2">
@@ -116,7 +116,7 @@ export function AdminEventAiReference({
               {trace.model ? <Badge variant="outline">Model: {trace.model}</Badge> : null}
               <Badge variant="outline">Status: {trace.status}</Badge>
               <Badge variant="outline">
-                Run: {format(new Date(trace.created_at), "MMM d, h:mm a")}
+                Run: <ClientDate value={trace.created_at} pattern="MMM d, h:mm a" />
               </Badge>
             </div>
             <p className="text-muted-foreground">

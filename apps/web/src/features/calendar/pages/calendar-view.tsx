@@ -74,15 +74,15 @@ export function CalendarViewPage() {
     userId: user?.id,
   })
 
-  const baseFavoritedIds = useMemo(
-    () =>
-      new Set(
-        [...monthEvents, ...savedEvents]
-          .filter((event) => event.is_favorited || savedEventIds.has(event.id))
-          .map((event) => event.id)
-      ),
-    [monthEvents, savedEventIds, savedEvents]
-  )
+  const baseFavoritedIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const event of [...monthEvents, ...savedEvents]) {
+      if (event.is_favorited || savedEventIds.has(event.id)) {
+        ids.add(event.id)
+      }
+    }
+    return ids
+  }, [monthEvents, savedEventIds, savedEvents])
 
   function isFavorited(eventId: string) {
     return favoriteOverrides[eventId] ?? baseFavoritedIds.has(eventId)

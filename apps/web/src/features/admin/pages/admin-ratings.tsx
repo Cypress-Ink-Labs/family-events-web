@@ -1,7 +1,7 @@
 import { Trash2 } from "lucide-react"
-import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { ClientDate } from "@/components/client-date"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { StarRating } from "@/features/events/components/star-rating"
 import { useAdminRatings, useDeleteAdminRating } from "@/features/admin/hooks/use-admin-ratings"
@@ -53,7 +53,7 @@ export function AdminRatingsPage() {
                 <div className="mt-1 flex flex-wrap items-center gap-2">
                   <StarRating value={r.score} readonly size="sm" />
                   <span className="font-mono text-[11px] text-muted-foreground">
-                    {format(new Date(r.created_at), "MMM d, yyyy")}
+                    <ClientDate value={r.created_at} pattern="MMM d, yyyy" />
                   </span>
                 </div>
               </div>

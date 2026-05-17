@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
-import { format } from "date-fns"
 import { Calendar, MapPin, Navigation } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ClientDate } from "@/components/client-date"
 import type { EventWithDetails } from "@/lib/types"
 import {
   type DateBucket,
@@ -117,7 +117,7 @@ export function EventPopup({ event, userLocation }: EventPopupProps) {
       )}
       <p className="text-xs text-muted-foreground flex items-center gap-1">
         <Calendar className="size-3" />
-        {format(new Date(event.start_datetime), "MMM d, h:mm a")}
+        <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
       </p>
       {distance !== null && (
         <p className="text-xs text-muted-foreground">{formatDistance(distance)} away</p>
@@ -205,7 +205,7 @@ export function EventListItem({
             <p className="text-xs text-muted-foreground truncate">{event.venue_name}</p>
           )}
           <p className="text-xs text-muted-foreground">
-            {format(new Date(event.start_datetime), "MMM d, h:mm a")}
+            <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
             {distance !== null && <> · {formatDistance(distance)}</>}
           </p>
           <div className="flex gap-1 flex-wrap mt-1">

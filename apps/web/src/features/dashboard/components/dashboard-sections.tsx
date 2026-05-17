@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom"
-import { format } from "date-fns"
 import { MapPin, Clock, Lightbulb, Calendar, Sparkles, TrendingUp, ArrowRight } from "lucide-react"
 import { safeImageSrc } from "@/lib/safe-url"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { ClientDate } from "@/components/client-date"
 import {
   Carousel,
   CarouselContent,
@@ -146,7 +146,7 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
                   {isFirst && (
                     <div className="flex items-center gap-2 mb-3">
                       <Badge className="bg-primary text-primary-foreground text-xs uppercase tracking-wide">
-                        Today · {format(new Date(event.start_datetime), "h:mm a")}
+                        Today · <ClientDate value={event.start_datetime} pattern="h:mm a" />
                       </Badge>
                     </div>
                   )}

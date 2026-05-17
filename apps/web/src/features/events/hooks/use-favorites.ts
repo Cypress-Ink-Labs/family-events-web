@@ -225,8 +225,13 @@ export function useToggleFavorite(userId: string | undefined) {
       }
       handleToggleFavoriteOnError(queryClient, userId, variables, context)
     },
-    onSettled: (_isNowFavorited, _error, variables) => {
+    onSuccess: (_isNowFavorited, variables) => {
       handleToggleFavoriteOnSettled(queryClient, userId, variables.eventId)
+    },
+    onSettled: (_isNowFavorited, error, variables) => {
+      if (error) {
+        handleToggleFavoriteOnSettled(queryClient, userId, variables.eventId)
+      }
     },
   })
 }

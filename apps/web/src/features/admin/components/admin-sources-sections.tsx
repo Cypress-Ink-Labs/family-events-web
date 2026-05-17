@@ -176,16 +176,18 @@ export function AdminSourcesHeader({
               </DialogHeader>
               <div className="space-y-4 py-2">
                 <div className="space-y-1.5">
-                  <Label>Source Name</Label>
+                  <Label htmlFor="new-source-name">Source Name</Label>
                   <Input
+                    id="new-source-name"
                     value={newSource.name}
                     onChange={(event) => onNameChange(event.target.value)}
                     placeholder="e.g. NYC Parks Family Events"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>URL</Label>
+                  <Label htmlFor="new-source-url">URL</Label>
                   <Input
+                    id="new-source-url"
                     value={newSource.url}
                     onChange={(event) => onUrlChange(event.target.value)}
                     placeholder="https://..."
@@ -402,8 +404,12 @@ function SourceCard({
 
         {/* Controls row: collapses to two-col grid on narrow card, single-row on wider. */}
         <div className="grid grid-cols-1 gap-2 border-t border-border/60 pt-3 @[480px]/src-card:grid-cols-[auto_auto_1fr] @[480px]/src-card:items-center @[480px]/src-card:gap-4">
-          <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+          <label
+            htmlFor={`source-${source.id}-active`}
+            className="inline-flex min-h-[44px] cursor-pointer items-center gap-2"
+          >
             <Switch
+              id={`source-${source.id}-active`}
               checked={source.is_active}
               onCheckedChange={(checked) => onToggleActive(source.id, checked)}
               aria-label={`Toggle ${source.name} active`}
@@ -411,6 +417,7 @@ function SourceCard({
             <span className="text-xs text-muted-foreground">Active</span>
           </label>
           <label
+            htmlFor={`source-${source.id}-auto-approve`}
             className={cn(
               "inline-flex min-h-[44px] cursor-pointer items-center gap-2",
               !source.is_active && "pointer-events-none opacity-40"
@@ -418,6 +425,7 @@ function SourceCard({
             title={!source.is_active ? "Enable the source to configure auto-approve" : undefined}
           >
             <Switch
+              id={`source-${source.id}-auto-approve`}
               checked={source.auto_approve}
               disabled={!source.is_active}
               onCheckedChange={(checked) => onToggleAutoApprove(source.id, checked)}

@@ -38,8 +38,7 @@ setup("authenticate local admin", async ({ page }) => {
     .catch(() => false)
 
   if (isLoginFormVisible) {
-    await emailField.fill(adminEmail)
-    await passwordField.fill(adminPassword)
+    await Promise.all([emailField.fill(adminEmail), passwordField.fill(adminPassword)])
     await page.getByRole("button", { name: "Sign In" }).click()
   } else if (!page.url().match(/\/home$/)) {
     const url = page.url()
@@ -52,8 +51,10 @@ setup("authenticate local admin", async ({ page }) => {
     )
   }
 
-  await expect(page).toHaveURL(/\/home$/, { timeout: 30_000 })
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
+  await Promise.all([
+    expect(page).toHaveURL(/\/home$/, { timeout: 30_000 }),
+    expect(page.getByRole("heading", { level: 1 })).toBeVisible(),
+  ])
 
   await page.context().storageState({ path: authFile })
 })

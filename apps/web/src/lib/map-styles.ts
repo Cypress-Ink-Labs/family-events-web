@@ -192,7 +192,8 @@ function darkenLibertyStyle(style: StyleSpecification): StyleSpecification {
 
     // Boundaries
     if (sl === "boundary" && type === "line") {
-      paint(layer, "line-color", id.includes("disputed") ? DARK.boundaryDisputed : DARK.boundary)
+      const tokens = new Set(id.split(/[_-]/g))
+      paint(layer, "line-color", tokens.has("disputed") ? DARK.boundaryDisputed : DARK.boundary)
       continue
     }
 
@@ -200,8 +201,8 @@ function darkenLibertyStyle(style: StyleSpecification): StyleSpecification {
     if (sl === "transportation" && type === "line") {
       const tokens = new Set(id.split(/[_-]/g))
       const has = (token: string) => tokens.has(token)
-      const isCasing = id.includes("casing")
-      const isHatching = id.includes("hatching")
+      const isCasing = has("casing")
+      const isHatching = has("hatching")
 
       if (has("rail")) {
         paint(layer, "line-color", isHatching ? DARK.railHatching : DARK.rail)
@@ -211,15 +212,15 @@ function darkenLibertyStyle(style: StyleSpecification): StyleSpecification {
         paint(layer, "line-color", isCasing ? DARK.motorwayCasing : DARK.motorway)
         continue
       }
-      if (id.includes("motorway_link")) {
+      if (has("motorway") && has("link")) {
         paint(layer, "line-color", isCasing ? DARK.motorwayLinkCasing : DARK.motorwayLink)
         continue
       }
-      if (id.includes("trunk_primary")) {
+      if (has("trunk") && has("primary")) {
         paint(layer, "line-color", isCasing ? DARK.trunkPrimaryCasing : DARK.trunkPrimary)
         continue
       }
-      if (id.includes("secondary_tertiary")) {
+      if (has("secondary") && has("tertiary")) {
         paint(layer, "line-color", isCasing ? DARK.secondaryTertiaryCasing : DARK.secondaryTertiary)
         continue
       }

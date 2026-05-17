@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+const IMAGE_PROTOCOLS = new Set(["http:", "https:"])
+
 const nullableNumber = z.preprocess((value) => {
   if (value === "" || value === null || value === undefined) return null
   return Number(value)
@@ -90,7 +92,7 @@ export const adminEventEditorSchema = z
       if (!trimmed) continue
       try {
         const url = new URL(trimmed)
-        if (!["http:", "https:"].includes(url.protocol)) throw new Error("bad protocol")
+        if (!IMAGE_PROTOCOLS.has(url.protocol)) throw new Error("bad protocol")
       } catch {
         ctx.addIssue({
           code: "custom",

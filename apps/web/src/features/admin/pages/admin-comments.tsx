@@ -1,9 +1,9 @@
 import { useMemo } from "react"
 import { Check, Flag, Trash2, MessageSquare } from "lucide-react"
-import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { ClientDate } from "@/components/client-date"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -42,7 +42,7 @@ function CommentCard({ c, onApprove, onRemove }: CommentCardProps) {
                 {c.events?.title || "Event"}
               </span>
               <span className="text-xs text-muted-foreground ml-auto">
-                {format(new Date(c.created_at), "MMM d")}
+                <ClientDate value={c.created_at} pattern="MMM d" />
               </span>
             </div>
             <p className="text-sm text-muted-foreground mt-1">{c.body}</p>

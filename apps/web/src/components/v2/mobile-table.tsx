@@ -58,6 +58,13 @@ export function MobileTable<T>({
     return <div className={cn("text-sm text-muted-foreground", className)}>{empty}</div>
   }
 
+  const mobileColumns: MobileTableColumn<T>[] = []
+  for (const column of columns) {
+    if (!column.desktopOnly) {
+      mobileColumns.push(column)
+    }
+  }
+
   return (
     <div className={className}>
       {/* Mobile: card-list */}
@@ -81,18 +88,16 @@ export function MobileTable<T>({
                     <div className="text-sm text-muted-foreground">{cardSubtitle(row)}</div>
                   ) : null}
                   <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-                    {columns
-                      .filter((c) => !c.desktopOnly)
-                      .map((col) => (
-                        <div key={col.key} className="min-w-0 space-y-0.5">
-                          <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                            {col.header}
-                          </dt>
-                          <dd className={cn("truncate text-foreground", col.className)}>
-                            {col.cell(row)}
-                          </dd>
-                        </div>
-                      ))}
+                    {mobileColumns.map((col) => (
+                      <div key={col.key} className="min-w-0 space-y-0.5">
+                        <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {col.header}
+                        </dt>
+                        <dd className={cn("truncate text-foreground", col.className)}>
+                          {col.cell(row)}
+                        </dd>
+                      </div>
+                    ))}
                   </dl>
                 </CardContent>
               </Card>

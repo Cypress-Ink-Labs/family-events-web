@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
-import { format } from "date-fns"
 import { Clock, MapPin } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { ClientDate } from "@/components/client-date"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/components/motion"
 import { safeImageSrc } from "@/lib/safe-url"
@@ -43,7 +43,7 @@ export function PlanThumbCard({ event }: PlanThumbCardProps) {
           <div className="space-y-1 text-xs text-muted-foreground">
             <div className="inline-flex items-center gap-1">
               <Clock className="size-3.5" />
-              {format(new Date(event.start_datetime), "EEE · h:mm a")}
+              <ClientDate value={event.start_datetime} pattern="EEE · h:mm a" />
             </div>
             {event.venue_name ? (
               <div className="inline-flex items-center gap-1">

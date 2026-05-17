@@ -1,4 +1,3 @@
-import { format, formatDistanceToNow } from "date-fns"
 import {
   AlertCircle,
   Check,
@@ -11,6 +10,7 @@ import {
   Ticket,
   Trash2,
 } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { FormGrid, Toolbar } from "@/components/v2"
+import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import type { CreatedInviteCode, InviteCode, InviteRequest } from "@/lib/types"
 
 type ExpiryOption = "7d" | "30d" | "never"
@@ -210,10 +211,17 @@ interface AdminInvitesListProps {
 }
 
 export function AdminInvitesList({ codes, onDelete }: AdminInvitesListProps) {
+  const [nowMs, setNowMs] = useState<number | null>(null)
+
+  useEffect(() => {
+    setNowMs(Date.now())
+  }, [])
+
   return (
     <div className="space-y-2">
       {codes.map((code) => {
-        const expired = code.expires_at ? new Date(code.expires_at) < new Date() : false
+        const expired =
+          code.expires_at && nowMs !== null ? Date.parse(code.expires_at) < nowMs : false
         const exhausted = code.used_count >= code.max_uses
         const dead = expired || exhausted
 
@@ -240,9 +248,13 @@ export function AdminInvitesList({ codes, onDelete }: AdminInvitesListProps) {
                   )}
                 </div>
                 <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground flex-wrap">
-                  <span>Created {format(new Date(code.created_at), "MMM d, h:mm a")}</span>
+                  <span>
+                    Created <ClientDate value={code.created_at} pattern="MMM d, h:mm a" />
+                  </span>
                   {code.expires_at && (
-                    <span>Expires {format(new Date(code.expires_at), "MMM d")}</span>
+                    <span>
+                      Expires <ClientDate value={code.expires_at} pattern="MMM d" />
+                    </span>
                   )}
                   {code.notes && <span className="italic">{code.notes}</span>}
                 </div>
@@ -343,13 +355,11 @@ export function AdminInviteRequestsList({
                     )}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    Submitted{" "}
-                    {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
+                    Submitted <ClientDistanceToNow value={request.created_at} addSuffix />
                     {request.reviewed_at && (
                       <>
                         {" · "}
-                        Reviewed{" "}
-                        {formatDistanceToNow(new Date(request.reviewed_at), { addSuffix: true })}
+                        Reviewed <ClientDistanceToNow value={request.reviewed_at} addSuffix />
                       </>
                     )}
                   </div>

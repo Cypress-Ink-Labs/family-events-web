@@ -17,6 +17,22 @@ import {
 } from "@/features/dashboard/components/dashboard-sections"
 import { Page, Stack } from "@/components/v2"
 
+const dateFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
+
+function getDayFormatter(timeZone: string) {
+  let formatter = dateFormattersByTimeZone.get(timeZone)
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    dateFormattersByTimeZone.set(timeZone, formatter)
+  }
+  return formatter
+}
+
 export function DashboardPage() {
   const { user, profile } = useAuth()
   const { selectedCity } = useApp()
@@ -30,10 +46,15 @@ export function DashboardPage() {
     userId: user?.id,
   })
 
-  const baseFavoritedIds = useMemo(
-    () => new Set(events.filter((event) => event.is_favorited).map((event) => event.id)),
-    [events]
-  )
+  const baseFavoritedIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const event of events) {
+      if (event.is_favorited) {
+        ids.add(event.id)
+      }
+    }
+    return ids
+  }, [events])
 
   function isFavorited(eventId: string) {
     return favoriteOverrides[eventId] ?? baseFavoritedIds.has(eventId)
@@ -47,18 +68,8 @@ export function DashboardPage() {
   const happeningSoon = events.filter((event) => !event.is_featured).slice(0, 4)
   const recommended = events.slice(0, 4)
   const savedEvents = events.filter((event) => isFavorited(event.id)).slice(0, 3)
-  const fmtCache = new Map<string, Intl.DateTimeFormat>()
   const isToday = (start: string, tz: string) => {
-    let fmt = fmtCache.get(tz)
-    if (!fmt) {
-      fmt = new Intl.DateTimeFormat("en-CA", {
-        timeZone: tz,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })
-      fmtCache.set(tz, fmt)
-    }
+    const fmt = getDayFormatter(tz)
     return fmt.format(new Date(start)) === fmt.format(new Date())
   }
   const todayEvents: typeof events = []

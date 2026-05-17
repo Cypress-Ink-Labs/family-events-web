@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { format, formatDistanceToNow } from "date-fns"
 import {
   CircleCheck as CheckCircle,
   Circle as XCircle,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import { cn } from "@/lib/utils"
 import { Toolbar } from "@/components/v2"
 import { useAdminSourceRuns } from "@/features/admin/hooks/use-admin-source-runs"
@@ -36,10 +36,10 @@ function isRunStatus(status: string): status is RunStatus {
   return status in STATUS_CONFIG
 }
 
-function resolveStatus(status: string, startedAt: string): RunStatus {
+function resolveStatus(status: string, startedAt: string, nowMs: number): RunStatus {
   const normalized: RunStatus = isRunStatus(status) ? status : "error"
   if (normalized !== "running") return normalized
-  const elapsed = Date.now() - new Date(startedAt).getTime()
+  const elapsed = nowMs - Date.parse(startedAt)
   return elapsed > STALE_THRESHOLD_MS ? "timed_out" : "running"
 }
 
@@ -97,8 +97,7 @@ function TagQueueSummaryPanel() {
                 <div className="text-lg font-bold tabular-nums">{row?.row_count ?? 0}</div>
                 {row?.oldest_enqueued_at && (
                   <div className="text-[10px] mt-0.5">
-                    oldest{" "}
-                    {formatDistanceToNow(new Date(row.oldest_enqueued_at), { addSuffix: true })}
+                    oldest <ClientDistanceToNow value={row.oldest_enqueued_at} addSuffix />
                   </div>
                 )}
               </div>
@@ -128,7 +127,18 @@ function ElapsedTimer({ startedAt }: { startedAt: string }) {
 
 export function AdminLogsPage() {
   const { data: logs = [] } = useAdminSourceRuns()
-  const hasRunning = logs.some((r) => resolveStatus(r.status, r.started_at) === "running")
+  const [nowMs, setNowMs] = useState<number | null>(null)
+
+  useEffect(() => {
+    setNowMs(Date.now())
+    const id = setInterval(() => setNowMs(Date.now()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const statusNowMs = nowMs ?? 0
+  const hasRunning = logs.some(
+    (r) => resolveStatus(r.status, r.started_at, statusNowMs) === "running"
+  )
 
   return (
     <div className="space-y-6">
@@ -149,17 +159,15 @@ export function AdminLogsPage() {
 
       <div className="space-y-3">
         {logs.map((run) => {
-          const resolvedStatus = resolveStatus(run.status, run.started_at)
+          const resolvedStatus = resolveStatus(run.status, run.started_at, statusNowMs)
           const status = STATUS_CONFIG[resolvedStatus]
           const isRunning = resolvedStatus === "running"
           const isTimedOut = resolvedStatus === "timed_out"
           const duration =
             !isRunning && run.completed_at
-              ? Math.round(
-                  (new Date(run.completed_at).getTime() - new Date(run.started_at).getTime()) / 1000
-                )
+              ? Math.round((Date.parse(run.completed_at) - Date.parse(run.started_at)) / 1000)
               : isTimedOut
-                ? Math.round((Date.now() - new Date(run.started_at).getTime()) / 1000)
+                ? Math.round((statusNowMs - Date.parse(run.started_at)) / 1000)
                 : null
 
           return (
@@ -201,7 +209,7 @@ export function AdminLogsPage() {
                     <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground flex-wrap">
                       <span className="flex items-center gap-1">
                         <Clock className="size-3" />
-                        {format(new Date(run.started_at), "MMM d, h:mm a")}
+                        <ClientDate value={run.started_at} pattern="MMM d, h:mm a" />
                       </span>
                       {isRunning ? (
                         <ElapsedTimer startedAt={run.started_at} />

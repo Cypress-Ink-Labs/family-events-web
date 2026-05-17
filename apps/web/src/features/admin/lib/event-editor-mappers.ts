@@ -84,10 +84,10 @@ export function editorValuesToEventPatch(values: AdminEventEditorValues): AdminE
     source_url: textOrNull(values.source_url),
     source_name: textOrNull(values.source_name),
     source_id: values.source_id,
-    images: values.imagesText
-      .split("\n")
-      .map((value) => value.trim())
-      .filter(Boolean),
+    images: values.imagesText.split("\n").flatMap((value) => {
+      const trimmed = value.trim()
+      return trimmed ? [trimmed] : []
+    }),
     status: values.status,
     recurrence_info: parseJsonText(values.recurrenceInfoText),
     is_featured: values.is_featured,

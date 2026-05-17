@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Heart } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
@@ -29,10 +29,14 @@ export function FavoriteButton({
 }: FavoriteButtonProps) {
   const { user } = useAuth()
   const toggleFavorite = useToggleFavorite(user?.id)
-  const [optimistic, setOptimistic] = useState(isFavorited)
+  const [optimisticOverride, setOptimisticOverride] = useState<boolean | null>(null)
   // Only burst on a real user toggle, not on mount or external prop sync.
   const [burstSeed, setBurstSeed] = useState<number | null>(null)
+  const optimistic = optimisticOverride ?? isFavorited
 
+  useEffect(() => {
+    setOptimisticOverride(null)
+  }, [isFavorited])
 
   async function handleToggle(e: React.MouseEvent) {
     e.preventDefault()
@@ -48,7 +52,7 @@ export function FavoriteButton({
     const currentState = optimistic
     const nextState = !currentState
 
-    setOptimistic(nextState)
+    setOptimisticOverride(nextState)
     onToggle?.(eventId, nextState)
     if (nextState) {
       setBurstSeed(Date.now())
@@ -60,7 +64,7 @@ export function FavoriteButton({
         isFavorited: currentState,
       })
 
-      setOptimistic(persistedState)
+      setOptimisticOverride(persistedState)
       onToggle?.(eventId, persistedState)
 
       if (persistedState) {
@@ -69,7 +73,7 @@ export function FavoriteButton({
         toast("Removed from favorites")
       }
     } catch (error) {
-      setOptimistic(currentState)
+      setOptimisticOverride(currentState)
       onToggle?.(eventId, currentState)
       toast.error(humanizeSupabaseError(error, "Failed to update favorite."))
     }

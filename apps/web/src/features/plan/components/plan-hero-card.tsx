@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom"
-import { format } from "date-fns"
 import { Clock, MapPin } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ClientDate } from "@/components/client-date"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { ShareEventButton } from "@/features/plan/components/share-event-button"
 import { SmartImage } from "@/components/motion"
@@ -58,7 +58,7 @@ export function PlanHeroCard({ event }: PlanHeroCardProps) {
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <Clock className="size-4" />
-              {format(new Date(event.start_datetime), "EEE, MMM d · h:mm a")}
+              <ClientDate value={event.start_datetime} pattern="EEE, MMM d · h:mm a" />
             </span>
             {event.venue_name ? (
               <span className="inline-flex items-center gap-1">

@@ -17,6 +17,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { FormGrid } from "@/components/v2"
+import { ClientDate } from "@/components/client-date"
 import type { City, EventAiTraceWithParsed, EventSource, EventWithDetails, Tag } from "@/lib/types"
 import { safeImageSrc } from "@/lib/safe-url"
 import { cn } from "@/lib/utils"
@@ -89,12 +90,10 @@ export function AdminEventEditForm({
   }, [isDirty, onDirtyChange])
 
   const imagesText = String(watch("imagesText") ?? "")
-  const imagePreviews = imagesText
-    .split("\n")
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .map((value) => safeImageSrc(value))
-    .filter((value): value is string => Boolean(value))
+  const imagePreviews = imagesText.split("\n").flatMap((value) => {
+    const image = safeImageSrc(value.trim())
+    return image ? [image] : []
+  })
 
   function submit(values: AdminEventEditorValues) {
     const patch = isDirty ? changedEventPatch(defaults, values) : editorValuesToEventPatch(values)
@@ -389,9 +388,11 @@ export function AdminEventEditForm({
           <Badge variant="outline">{event.admin_locked_fields.length} locked fields</Badge>
           <Badge variant="outline">
             Last edited:{" "}
-            {event.admin_last_edited_at
-              ? new Date(event.admin_last_edited_at).toLocaleString()
-              : "Never"}
+            {event.admin_last_edited_at ? (
+              <ClientDate value={event.admin_last_edited_at} pattern="Pp" />
+            ) : (
+              "Never"
+            )}
           </Badge>
           {event.admin_last_edited_by ? (
             <Badge variant="outline">Editor: {event.admin_last_edited_by}</Badge>

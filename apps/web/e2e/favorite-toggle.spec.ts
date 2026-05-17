@@ -40,19 +40,24 @@ async function titleOnExploreCard(card: Locator) {
 /** Unfavorite first card until aria-label is Add (so add→remove round-trip is deterministic). */
 async function ensureAddOnFirstFavorite(page: Page) {
   const card = await firstExploreCard(page)
-  for (let i = 0; i < 5; i++) {
+  async function reset(attempt: number): Promise<{ card: Locator; addButton: Locator }> {
     const b = firstFavoriteButtonInCard(card)
     const label = await b.getAttribute("aria-label")
     if (label === "Add to favorites") {
       return { card, addButton: b }
+    }
+    if (attempt >= 5) {
+      throw new Error("Could not reach Add to favorites on first card")
     }
     await b.click()
     await card.getByRole("button", { name: "Add to favorites" }).first().waitFor({
       state: "visible",
       timeout: 20_000,
     })
+    return reset(attempt + 1)
   }
-  throw new Error("Could not reach Add to favorites on first card")
+
+  return reset(0)
 }
 
 test.describe("favorite toggle (regression)", () => {

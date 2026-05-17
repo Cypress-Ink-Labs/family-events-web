@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { ClientDate } from "@/components/client-date"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
@@ -386,7 +387,7 @@ export function EventDetailReviews({
                   {commentEntry.user_profiles?.display_name || "Anonymous"}
                 </span>
                 <span className="text-xs text-muted-foreground ml-auto">
-                  {format(new Date(commentEntry.created_at), "MMM d, yyyy")}
+                  <ClientDate value={commentEntry.created_at} pattern="MMM d, yyyy" />
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mt-1">{commentEntry.body}</p>

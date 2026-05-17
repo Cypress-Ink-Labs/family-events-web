@@ -63,9 +63,12 @@ export function AdminEventsPage() {
   const selectedDraftIds = [...selectedIds].filter((id) =>
     draftEvents.some((event) => event.id === id)
   )
-  const selectedVisibleIds = events
-    .filter((event) => selectedIds.has(event.id))
-    .map((event) => event.id)
+  const selectedVisibleIds: string[] = []
+  for (const event of events) {
+    if (selectedIds.has(event.id)) {
+      selectedVisibleIds.push(event.id)
+    }
+  }
   const allVisibleSelected = events.length > 0 && events.every((event) => selectedIds.has(event.id))
 
   const statusCounts = useMemo(() => {

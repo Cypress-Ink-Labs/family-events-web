@@ -1,4 +1,3 @@
-import { format } from "date-fns"
 import {
   AlertTriangle,
   Bot,
@@ -28,6 +27,7 @@ import { cleanDescription } from "@family-events/shared"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { ClientDate } from "@/components/client-date"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -337,7 +337,9 @@ function EventCard({
               </span>
             </div>
             <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground flex-wrap">
-              <span>{format(new Date(event.start_datetime), "MMM d, h:mm a")}</span>
+              <span>
+                <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
+              </span>
               <span>{event.venue_name}</span>
               {event.ai_confidence !== null && (
                 <span className="flex items-center gap-1">
@@ -470,7 +472,7 @@ export function AdminEventReviewDialog({
               <div>
                 <span className="text-muted-foreground">Date:</span>{" "}
                 <span className="font-medium">
-                  {format(new Date(event.start_datetime), "MMM d, h:mm a")}
+                  <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
                 </span>
               </div>
               <div>
@@ -536,7 +538,8 @@ export function AdminEventReviewDialog({
                     ) : null}
                     <Badge variant="outline">Status: {selectedEventTrace.status}</Badge>
                     <Badge variant="outline">
-                      Run: {format(new Date(selectedEventTrace.created_at), "MMM d, h:mm a")}
+                      Run:{" "}
+                      <ClientDate value={selectedEventTrace.created_at} pattern="MMM d, h:mm a" />
                     </Badge>
                   </div>
 

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react"
-import { format, formatDistanceToNow } from "date-fns"
 import {
   Clock,
   Play,
@@ -14,6 +13,7 @@ import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   Dialog,
@@ -273,15 +273,13 @@ function CronJobCard({ job }: CronJobCardProps) {
                 <RunStatusBadge status={job.last_run_status} />
                 {job.last_run_start && (
                   <span>
-                    {formatDistanceToNow(new Date(job.last_run_start), { addSuffix: true })}
+                    <ClientDistanceToNow value={job.last_run_start} addSuffix />
                   </span>
                 )}
                 {job.last_run_start && job.last_run_end && (
                   <span className="font-mono tabular-nums">
                     {Math.round(
-                      (new Date(job.last_run_end).getTime() -
-                        new Date(job.last_run_start).getTime()) /
-                        1000
+                      (Date.parse(job.last_run_end) - Date.parse(job.last_run_start)) / 1000
                     )}
                     s
                   </span>
@@ -336,7 +334,7 @@ function RunHistoryRow({ run }: { run: CronRun }) {
         {run.jobname}
       </span>
       <span className="text-xs text-muted-foreground flex-1">
-        {format(new Date(run.start_time), "MMM d, h:mm:ss a")}
+        <ClientDate value={run.start_time} pattern="MMM d, h:mm:ss a" />
       </span>
       {run.duration_ms != null && (
         <span className="text-xs text-muted-foreground tabular-nums">

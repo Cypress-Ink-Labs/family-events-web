@@ -22,18 +22,22 @@ export function useAdminStats() {
 
       const eventRows = events ?? []
       const sourceRows = sources ?? []
-      const confidenceValues = eventRows
-        .map((event) => event.ai_confidence)
-        .filter((value): value is number => typeof value === "number")
-      const totalConfidenceRows = confidenceValues.length || 1
-      const high = Math.round(
-        (confidenceValues.filter((value) => value >= 0.9).length / totalConfidenceRows) * 100
-      )
-      const medium = Math.round(
-        (confidenceValues.filter((value) => value >= 0.7 && value < 0.9).length /
-          totalConfidenceRows) *
-          100
-      )
+      let totalConfidenceRows = 0
+      let highConfidenceRows = 0
+      let mediumConfidenceRows = 0
+      for (const event of eventRows) {
+        const value = event.ai_confidence
+        if (typeof value !== "number") continue
+        totalConfidenceRows += 1
+        if (value >= 0.9) {
+          highConfidenceRows += 1
+        } else if (value >= 0.7) {
+          mediumConfidenceRows += 1
+        }
+      }
+      const confidenceDenominator = totalConfidenceRows || 1
+      const high = Math.round((highConfidenceRows / confidenceDenominator) * 100)
+      const medium = Math.round((mediumConfidenceRows / confidenceDenominator) * 100)
 
       return {
         totalEvents: eventRows.length,

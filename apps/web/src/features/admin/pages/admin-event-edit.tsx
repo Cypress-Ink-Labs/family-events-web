@@ -1,9 +1,10 @@
 import { ArrowLeft, Archive, Check, Trash2, XCircle } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ClientDate } from "@/components/client-date"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import {
   useAdminEventDetail,
@@ -25,7 +26,7 @@ import type { Event } from "@/lib/types"
 export function AdminEventEditPage() {
   const { eventId } = useParams()
   const navigate = useNavigate()
-  const [isDirty, setIsDirty] = useState(false)
+  const isDirtyRef = useRef(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const eventQuery = useAdminEventDetail(eventId)
   const traceQuery = useAdminEventLatestTrace(eventId)
@@ -37,19 +38,23 @@ export function AdminEventEditPage() {
   const unlockFields = useUnlockAdminEventFields()
   const deleteEvents = useDeleteAdminEvents()
 
+  const setIsDirty = useCallback((dirty: boolean) => {
+    isDirtyRef.current = dirty
+  }, [])
+
   useEffect(() => {
-    if (!isDirty) return
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!isDirtyRef.current) return
       event.preventDefault()
       event.returnValue = ""
     }
     window.addEventListener("beforeunload", handleBeforeUnload)
     return () => window.removeEventListener("beforeunload", handleBeforeUnload)
-  }, [isDirty])
+  }, [])
 
   const confirmLeave = useCallback(() => {
-    return !isDirty || window.confirm("Discard unsaved event changes?")
-  }, [isDirty])
+    return !isDirtyRef.current || window.confirm("Discard unsaved event changes?")
+  }, [])
 
   function goBack() {
     if (confirmLeave()) {
@@ -155,9 +160,11 @@ export function AdminEventEditPage() {
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
             Last edited{" "}
-            {event.admin_last_edited_at
-              ? new Date(event.admin_last_edited_at).toLocaleString()
-              : "never"}
+            {event.admin_last_edited_at ? (
+              <ClientDate value={event.admin_last_edited_at} pattern="Pp" />
+            ) : (
+              "never"
+            )}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
