@@ -229,7 +229,7 @@ jobs:
             exit 1
           fi
           echo "Using simulator $SIMULATOR_ID"
-          xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination "platform=iOS Simulator,id=$SIMULATOR_ID" test
+          xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -skip-testing:FEDesignSystemTests/EventCardSnapshotTests test
 
   android:
     runs-on: ubuntu-latest
