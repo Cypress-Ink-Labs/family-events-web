@@ -38,7 +38,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
-          version: 11.0.9
           run_install: false
 
       - name: Setup Node
@@ -184,7 +183,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
-          version: 11.0.9
           run_install: false
 
       - name: Setup Node
@@ -216,7 +214,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@ab5d408e9d066b8ffe7503f789d50fd7e35c0c92 # v6.0.7
         with:
-          version: 11.0.9
           run_install: false
 
       - name: Setup Node
