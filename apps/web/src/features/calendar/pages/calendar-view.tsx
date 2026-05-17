@@ -25,6 +25,7 @@ import { useApp } from "@/app/stores/app-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useFavorites } from "@/features/events/hooks/use-favorites"
 import { useCalendarEvents } from "@/features/events/hooks/use-calendar-events"
+import { Page, Stack } from "@/components/v2"
 
 export function CalendarViewPage() {
   const { user } = useAuth()
@@ -118,49 +119,51 @@ export function CalendarViewPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
-      <CalendarViewHeader view={view} onViewChange={setView} />
-      {isMonthEventsError && <CalendarErrorState />}
+    <Page width="content" className="py-6">
+      <Stack gap="5">
+        <CalendarViewHeader view={view} onViewChange={setView} />
+        {isMonthEventsError && <CalendarErrorState />}
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-        {view === "week" ? (
-          <CalendarWeekPanel
-            weekDays={weekDays}
-            selectedDate={selectedDate}
-            getEventsForDay={getEventsForDay}
-            onPreviousWeek={handlePreviousWeek}
-            onNextWeek={handleNextWeek}
-            onSelectDate={setSelectedDate}
-          />
-        ) : (
-          <CalendarMonthPanel
-            currentMonth={currentMonth}
-            selectedDate={selectedDate}
-            firstDayOfWeek={firstDayOfWeek}
-            days={days}
-            getEventsForDay={getEventsForDay}
-            onPreviousMonth={() => setCurrentMonth(subMonths(currentMonth, 1))}
-            onNextMonth={() => setCurrentMonth(addMonths(currentMonth, 1))}
-            onSelectDate={setSelectedDate}
-          />
-        )}
-        <div className="lg:col-span-2 space-y-4">
-          <CalendarSelectedDatePanel
-            selectedDate={selectedDate}
-            events={eventsForSelectedDate}
-            isLoading={isMonthEventsLoading}
-            isFavorited={isFavorited}
-            onFavoriteToggle={handleFavoriteToggle}
-          />
-          <CalendarStatsPanel savedCount={savedEventIds.size} upcomingCount={upcomingCount} />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+          {view === "week" ? (
+            <CalendarWeekPanel
+              weekDays={weekDays}
+              selectedDate={selectedDate}
+              getEventsForDay={getEventsForDay}
+              onPreviousWeek={handlePreviousWeek}
+              onNextWeek={handleNextWeek}
+              onSelectDate={setSelectedDate}
+            />
+          ) : (
+            <CalendarMonthPanel
+              currentMonth={currentMonth}
+              selectedDate={selectedDate}
+              firstDayOfWeek={firstDayOfWeek}
+              days={days}
+              getEventsForDay={getEventsForDay}
+              onPreviousMonth={() => setCurrentMonth(subMonths(currentMonth, 1))}
+              onNextMonth={() => setCurrentMonth(addMonths(currentMonth, 1))}
+              onSelectDate={setSelectedDate}
+            />
+          )}
+          <div className="lg:col-span-2 space-y-4">
+            <CalendarSelectedDatePanel
+              selectedDate={selectedDate}
+              events={eventsForSelectedDate}
+              isLoading={isMonthEventsLoading}
+              isFavorited={isFavorited}
+              onFavoriteToggle={handleFavoriteToggle}
+            />
+            <CalendarStatsPanel savedCount={savedEventIds.size} upcomingCount={upcomingCount} />
+          </div>
         </div>
-      </div>
-      <SavedEventsSection
-        savedEvents={savedEvents}
-        isLoading={isSavedEventsLoading}
-        isFavorited={isFavorited}
-        onFavoriteToggle={handleFavoriteToggle}
-      />
-    </div>
+        <SavedEventsSection
+          savedEvents={savedEvents}
+          isLoading={isSavedEventsLoading}
+          isFavorited={isFavorited}
+          onFavoriteToggle={handleFavoriteToggle}
+        />
+      </Stack>
+    </Page>
   )
 }

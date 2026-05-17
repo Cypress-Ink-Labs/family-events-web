@@ -27,6 +27,7 @@ import { useTheme } from "@/app/providers/theme-provider"
 import { useUpdateProfile } from "@/features/profile/hooks/use-profile"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
 import { toast } from "sonner"
+import { Page, Stack } from "@/components/v2"
 
 export function ProfilePage() {
   const { user, profile, signOut, isAdmin, refreshProfile, updatePassword } = useAuth()
@@ -75,87 +76,93 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-6 space-y-6">
-      <h1 className="text-2xl font-semibold text-foreground">Profile</h1>
+    <Page width="content" className="max-w-xl py-6">
+      <Stack gap="5">
+        <h1 className="font-display text-2xl font-medium tracking-tight text-foreground">
+          Profile
+        </h1>
 
-      {/* User summary */}
-      <ProfileUserSummary
-        displayName={profile?.display_name}
-        email={profile?.email}
-        avatarUrl={profile?.avatar_url}
-        isAdmin={isAdmin}
-      />
+        {/* User summary */}
+        <ProfileUserSummary
+          displayName={profile?.display_name}
+          email={profile?.email}
+          avatarUrl={profile?.avatar_url}
+          isAdmin={isAdmin}
+        />
 
-      {/* Profile settings */}
-      <Card className="border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Personal Info</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-1.5">
-            <Label>Your Name</Label>
-            <Input value={displayName} onChange={(e) => setDisplayNameDraft(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Child's Name (optional)</Label>
-            <Input
-              value={childName}
-              onChange={(e) => setChildNameDraft(e.target.value)}
-              placeholder="e.g. Leo"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Child&apos;s Age (optional)</Label>
-            <Input
-              type="number"
-              min={0}
-              max={18}
-              value={childAge}
-              onChange={(e) => setChildAgeDraft(e.target.value)}
-              placeholder="e.g. 3"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Preferred City</Label>
-            <Select
-              value={selectedCity?.id ?? ""}
-              onValueChange={(val) => {
-                const city = resolveSelectedCity(cities, val)
-                if (city) setSelectedCity(city)
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={isCitiesLoading ? "Loading cities..." : "Select city"} />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}, {c.state}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <Button onClick={handleSaveProfile} disabled={updateProfile.isPending}>
-            {updateProfile.isPending ? "Saving..." : "Save Changes"}
-          </Button>
-        </CardContent>
-      </Card>
+        {/* Profile settings */}
+        <Card className="border-border/60">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Personal Info</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Your Name</Label>
+              <Input value={displayName} onChange={(e) => setDisplayNameDraft(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Child's Name (optional)</Label>
+              <Input
+                value={childName}
+                onChange={(e) => setChildNameDraft(e.target.value)}
+                placeholder="e.g. Leo"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Child&apos;s Age (optional)</Label>
+              <Input
+                type="number"
+                min={0}
+                max={18}
+                value={childAge}
+                onChange={(e) => setChildAgeDraft(e.target.value)}
+                placeholder="e.g. 3"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Preferred City</Label>
+              <Select
+                value={selectedCity?.id ?? ""}
+                onValueChange={(val) => {
+                  const city = resolveSelectedCity(cities, val)
+                  if (city) setSelectedCity(city)
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={isCitiesLoading ? "Loading cities..." : "Select city"}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}, {c.state}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleSaveProfile} disabled={updateProfile.isPending}>
+              {updateProfile.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </CardContent>
+        </Card>
 
-      {/* Security */}
-      {user.email && (
-        <ProfileChangePasswordCard email={user.email} onUpdatePassword={updatePassword} />
-      )}
+        {/* Security */}
+        {user.email && (
+          <ProfileChangePasswordCard email={user.email} onUpdatePassword={updatePassword} />
+        )}
 
-      {/* Theme */}
-      <ProfileThemeCard theme={theme} onThemeChange={setTheme} />
+        {/* Theme */}
+        <ProfileThemeCard theme={theme} onThemeChange={setTheme} />
 
-      {/* Admin link */}
-      {isAdmin && <ProfileAdminLink href="/admin" />}
+        {/* Admin link */}
+        {isAdmin && <ProfileAdminLink href="/admin" />}
 
-      <Separator />
+        <Separator />
 
-      <ProfileSignOutButton onSignOut={handleSignOut} />
-    </div>
+        <ProfileSignOutButton onSignOut={handleSignOut} />
+      </Stack>
+    </Page>
   )
 }

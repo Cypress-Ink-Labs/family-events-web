@@ -21,6 +21,7 @@ import { useUpsertRating } from "@/features/events/hooks/use-ratings"
 import type { Favorite, UserCalendarEvent } from "@/lib/types"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
 import { toast } from "sonner"
+import { Page, Stack, Toolbar } from "@/components/v2"
 
 export function buildSavedEventIds(
   favorites: Favorite[],
@@ -76,164 +77,166 @@ export function MyEventsPage() {
 
   if (!user) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-20 text-center">
-        <Bookmark className="size-16 text-muted-foreground/30 mx-auto mb-6" />
-        <h1 className="text-2xl font-semibold text-foreground mb-2">My Events</h1>
-        <p className="text-muted-foreground mb-6">Sign in to save and manage your family events.</p>
-        <div className="flex gap-3 justify-center">
-          <Button asChild>
+      <Page width="content" className="py-20 text-center">
+        <Bookmark className="mx-auto mb-6 size-16 text-muted-foreground/30" />
+        <h1 className="mb-2 font-display text-2xl font-medium tracking-tight text-foreground">
+          My Events
+        </h1>
+        <p className="mb-6 text-muted-foreground">Sign in to save and manage your family events.</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button className="min-h-[44px]" asChild>
             <Link to="/sign-in">Sign In</Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" className="min-h-[44px]" asChild>
             <Link to="/sign-up">Create Account</Link>
           </Button>
         </div>
-      </div>
+      </Page>
     )
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">My Events</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          {allSaved.length} saved event{allSaved.length !== 1 ? "s" : ""}
-        </p>
-      </div>
+    <Page width="content" className="py-6">
+      <Stack gap="5">
+        <Toolbar
+          title="My Events"
+          subtitle={`${allSaved.length} saved event${allSaved.length !== 1 ? "s" : ""}`}
+        />
 
-      <Tabs defaultValue="upcoming">
-        <TabsList className="grid w-full grid-cols-3 h-10">
-          <TabsTrigger value="upcoming" className="text-xs sm:text-sm">
-            Upcoming
-            {upcomingEvents.length > 0 && (
-              <Badge variant="secondary" className="ml-1.5 h-4 px-1.5 text-[10px]">
-                {upcomingEvents.length}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="saved" className="text-xs sm:text-sm">
-            Saved Ideas
-            {allSaved.length > 0 && (
-              <Badge variant="secondary" className="ml-1.5 h-4 px-1.5 text-[10px]">
-                {allSaved.length}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="past" className="text-xs sm:text-sm">
-            Past
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="upcoming">
+          <TabsList className="grid w-full grid-cols-3 h-10">
+            <TabsTrigger value="upcoming" className="text-xs sm:text-sm">
+              Upcoming
+              {upcomingEvents.length > 0 && (
+                <Badge variant="secondary" className="ml-1.5 h-4 px-1.5 text-[10px]">
+                  {upcomingEvents.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="saved" className="text-xs sm:text-sm">
+              Saved Ideas
+              {allSaved.length > 0 && (
+                <Badge variant="secondary" className="ml-1.5 h-4 px-1.5 text-[10px]">
+                  {allSaved.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="past" className="text-xs sm:text-sm">
+              Past
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="upcoming" className="mt-4">
-          <FadeSwap
-            stateKey={
-              isSavedEventsLoading
-                ? "upcoming-loading"
-                : upcomingEvents.length === 0
-                  ? "upcoming-empty"
-                  : "upcoming-content"
-            }
-          >
-            {isSavedEventsLoading ? (
-              <LoadingRows />
-            ) : upcomingEvents.length === 0 ? (
-              <EmptyState
-                icon={Clock}
-                title="No upcoming events"
-                description="Browse events and add them to your calendar."
-                cta="Explore Events"
-                ctaHref="/explore"
-              />
-            ) : (
-              <StaggerList className="space-y-3">
-                {upcomingEvents.map((event) => (
-                  <StaggerItem key={event.id}>
-                    <EventRow event={event} onRemove={handleRemove} variant="upcoming" />
-                  </StaggerItem>
-                ))}
-              </StaggerList>
-            )}
-          </FadeSwap>
-        </TabsContent>
+          <TabsContent value="upcoming" className="mt-4">
+            <FadeSwap
+              stateKey={
+                isSavedEventsLoading
+                  ? "upcoming-loading"
+                  : upcomingEvents.length === 0
+                    ? "upcoming-empty"
+                    : "upcoming-content"
+              }
+            >
+              {isSavedEventsLoading ? (
+                <LoadingRows />
+              ) : upcomingEvents.length === 0 ? (
+                <EmptyState
+                  icon={Clock}
+                  title="No upcoming events"
+                  description="Browse events and add them to your calendar."
+                  cta="Explore Events"
+                  ctaHref="/explore"
+                />
+              ) : (
+                <StaggerList className="space-y-3">
+                  {upcomingEvents.map((event) => (
+                    <StaggerItem key={event.id}>
+                      <EventRow event={event} onRemove={handleRemove} variant="upcoming" />
+                    </StaggerItem>
+                  ))}
+                </StaggerList>
+              )}
+            </FadeSwap>
+          </TabsContent>
 
-        <TabsContent value="saved" className="mt-4">
-          <FadeSwap
-            stateKey={
-              isSavedEventsLoading
-                ? "saved-loading"
-                : allSaved.length === 0
-                  ? "saved-empty"
-                  : "saved-content"
-            }
-          >
-            {isSavedEventsLoading ? (
-              <LoadingRows />
-            ) : allSaved.length === 0 ? (
-              <EmptyState
-                icon={Bookmark}
-                title="No saved events yet"
-                description="Tap the heart on any event to save it here."
-                cta="Find Events"
-                ctaHref="/explore"
-              />
-            ) : (
-              <StaggerList className="space-y-3">
-                {allSaved.map((event) => (
-                  <StaggerItem key={event.id}>
-                    <EventRow event={event} onRemove={handleRemove} variant="saved" />
-                  </StaggerItem>
-                ))}
-              </StaggerList>
-            )}
-          </FadeSwap>
-        </TabsContent>
+          <TabsContent value="saved" className="mt-4">
+            <FadeSwap
+              stateKey={
+                isSavedEventsLoading
+                  ? "saved-loading"
+                  : allSaved.length === 0
+                    ? "saved-empty"
+                    : "saved-content"
+              }
+            >
+              {isSavedEventsLoading ? (
+                <LoadingRows />
+              ) : allSaved.length === 0 ? (
+                <EmptyState
+                  icon={Bookmark}
+                  title="No saved events yet"
+                  description="Tap the heart on any event to save it here."
+                  cta="Find Events"
+                  ctaHref="/explore"
+                />
+              ) : (
+                <StaggerList className="space-y-3">
+                  {allSaved.map((event) => (
+                    <StaggerItem key={event.id}>
+                      <EventRow event={event} onRemove={handleRemove} variant="saved" />
+                    </StaggerItem>
+                  ))}
+                </StaggerList>
+              )}
+            </FadeSwap>
+          </TabsContent>
 
-        <TabsContent value="past" className="mt-4">
-          <FadeSwap
-            stateKey={
-              isSavedEventsLoading
-                ? "past-loading"
-                : pastEvents.length === 0
-                  ? "past-empty"
-                  : "past-content"
-            }
-          >
-            {isSavedEventsLoading ? (
-              <LoadingRows />
-            ) : pastEvents.length === 0 ? (
-              <EmptyState
-                icon={Star}
-                title="No past events"
-                description="Events you've attended will appear here."
-                cta="Find Events"
-                ctaHref="/explore"
-              />
-            ) : (
-              <StaggerList className="space-y-3">
-                {pastEvents.map((event) => (
-                  <StaggerItem key={event.id}>
-                    <EventRow
-                      event={event}
-                      onRemove={handleRemove}
-                      rating={ratings[event.id]}
-                      onRate={async (score) => {
-                        setRatings((prev) => ({ ...prev, [event.id]: score }))
-                        try {
-                          await upsertRating.mutateAsync({ eventId: event.id, score })
-                          toast.success("Rating saved!")
-                        } catch (error) {
-                          toast.error(humanizeSupabaseError(error, "Failed to save rating."))
-                        }
-                      }}
-                      variant="past"
-                    />
-                  </StaggerItem>
-                ))}
-              </StaggerList>
-            )}
-          </FadeSwap>
-        </TabsContent>
-      </Tabs>
-    </div>
+          <TabsContent value="past" className="mt-4">
+            <FadeSwap
+              stateKey={
+                isSavedEventsLoading
+                  ? "past-loading"
+                  : pastEvents.length === 0
+                    ? "past-empty"
+                    : "past-content"
+              }
+            >
+              {isSavedEventsLoading ? (
+                <LoadingRows />
+              ) : pastEvents.length === 0 ? (
+                <EmptyState
+                  icon={Star}
+                  title="No past events"
+                  description="Events you've attended will appear here."
+                  cta="Find Events"
+                  ctaHref="/explore"
+                />
+              ) : (
+                <StaggerList className="space-y-3">
+                  {pastEvents.map((event) => (
+                    <StaggerItem key={event.id}>
+                      <EventRow
+                        event={event}
+                        onRemove={handleRemove}
+                        rating={ratings[event.id]}
+                        onRate={async (score) => {
+                          setRatings((prev) => ({ ...prev, [event.id]: score }))
+                          try {
+                            await upsertRating.mutateAsync({ eventId: event.id, score })
+                            toast.success("Rating saved!")
+                          } catch (error) {
+                            toast.error(humanizeSupabaseError(error, "Failed to save rating."))
+                          }
+                        }}
+                        variant="past"
+                      />
+                    </StaggerItem>
+                  ))}
+                </StaggerList>
+              )}
+            </FadeSwap>
+          </TabsContent>
+        </Tabs>
+      </Stack>
+    </Page>
   )
 }
