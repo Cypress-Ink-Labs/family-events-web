@@ -51,6 +51,13 @@ describe("cleanDescription", () => {
   it("leaves user prose in brackets alone", () => {
     expect(cleanDescription("[See more details below]")).toBe("[See more details below]")
   })
+
+  it("cleans the 500-char-truncated Rock the Block DB row", () => {
+    // Matches what was found in events.description (id 81266285…) on
+    // 2026-05-16 — the slice severed the `[et_pb_image]` shortcode.
+    const truncated = `[et_pb_section fb_built="1" _builder_version="4.16" global_colors_info="{}"][et_pb_row column_structure="2_5,3_5" _builder_version="4.27.6" background_size="initial" background_position="top_left" background_repeat="repeat" global_colors_info="{}"][et_pb_column type="2_5" _builder_version="4.16" custom_padding="|||" global_colors_info="{}" custom_padding__hover="|||"][et_pb_image src="https://acadianacenterforthearts.org/wp-content/uploads/2026/04/Rock-the-Block.png" title_text="Rock the Block" `
+    expect(cleanDescription(truncated)).toBeNull()
+  })
 })
 
 describe("stripDiviShortcodes", () => {
@@ -61,6 +68,11 @@ describe("stripDiviShortcodes", () => {
   it("strips closing shortcode", () => {
     expect(stripDiviShortcodes("Hello[/et_pb_section]")).toBe("Hello")
   })
+
+  it("strips trailing unclosed shortcode (truncated row backfill case)", () => {
+    const input = `[et_pb_section fb_built="1"][et_pb_row]Hello[et_pb_image src="https://example.org/img.png" title_text="Rock the Block"`
+    expect(stripDiviShortcodes(input)).toBe("Hello")
+  })
 })
 
 describe("stripGenericShortcodes", () => {
@@ -70,6 +82,14 @@ describe("stripGenericShortcodes", () => {
 
   it("leaves capitalized prose alone", () => {
     expect(stripGenericShortcodes("[See details]")).toBe("[See details]")
+  })
+
+  it("strips trailing unclosed lowercase shortcode", () => {
+    expect(stripGenericShortcodes(`Hello[caption id="x"`)).toBe("Hello")
+  })
+
+  it("preserves trailing unclosed prose with no attributes", () => {
+    expect(stripGenericShortcodes("Hello [See details")).toBe("Hello [See details")
   })
 })
 

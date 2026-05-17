@@ -28,7 +28,13 @@ const HTML_ENTITIES: ReadonlyArray<readonly [string, string]> = [
 ]
 
 export function stripDiviShortcodes(value: string): string {
-  return value.replace(/\[\/?et_pb_[a-z0-9_]*[^\]]*\]/gis, "")
+  return value
+    .replace(/\[\/?et_pb_[a-z0-9_]*[^\]]*\]/gis, "")
+    // Handle the truncated trailing case: ingest used to slice raw
+    // description to 500 chars before cleaning, sometimes severing a
+    // shortcode mid-attribute. The unclosed `[et_pb_image src="..."` that
+    // survives in those rows has no `]` so the rule above never matches.
+    .replace(/\[\/?et_pb_[a-z0-9_]*[^\]]*$/is, "")
 }
 
 /**
@@ -36,7 +42,14 @@ export function stripDiviShortcodes(value: string): string {
  * `[See more details]` survives.
  */
 export function stripGenericShortcodes(value: string): string {
-  return value.replace(/\[\/?[a-z][a-z0-9_]*(?:\s[^\]]*)?\]/gs, "")
+  return (
+    value
+      .replace(/\[\/?[a-z][a-z0-9_]*(?:\s[^\]]*)?\]/gs, "")
+      // Trailing unclosed shortcode (truncation case). Require a space
+      // after the name so we don't eat user prose like `[See details` that
+      // happens to be at end-of-string.
+      .replace(/\[\/?[a-z][a-z0-9_]*\s[^\]]*$/s, "")
+  )
 }
 
 export function stripHtmlPreservingBreaks(value: string): string {
