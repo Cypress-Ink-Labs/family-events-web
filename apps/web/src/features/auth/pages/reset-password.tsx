@@ -68,14 +68,19 @@ export function ResetPasswordPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="size-10 rounded-2xl bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground text-lg font-black">F</span>
+        <div className="mb-8 text-center">
+          <Link to="/" className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center gap-2">
+            <div
+              className="flex size-10 items-center justify-center rounded-md font-display text-lg font-medium text-primary-foreground"
+              style={{ background: "var(--color-accent-primary)" }}
+            >
+              F
             </div>
           </Link>
-          <h1 className="text-2xl font-semibold text-foreground">Set a new password</h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <h1 className="font-display text-2xl font-medium tracking-tight text-foreground">
+            Set a new password
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Pick something you'll actually remember this time.
           </p>
         </div>
@@ -88,7 +93,7 @@ export function ResetPasswordPage() {
                 <p className="text-muted-foreground">
                   Your reset link may have expired or already been used.
                 </p>
-                <Button asChild className="w-full">
+                <Button asChild className="min-h-[44px] w-full">
                   <Link to="/forgot-password">Request a new link</Link>
                 </Button>
               </div>
@@ -121,7 +126,7 @@ export function ResetPasswordPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="min-h-[44px] w-full"
                   disabled={loading || hasRecoverySession === null}
                 >
                   {loading ? "Updating..." : "Update password"}
