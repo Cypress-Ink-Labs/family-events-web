@@ -204,9 +204,13 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Select Xcode 26.5
+      - name: Select Xcode 26
         run: |
-          sudo xcode-select -s /Applications/Xcode_26.5.0.app/Contents/Developer
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          else
+            sudo xcode-select -s /Applications/Xcode_26.5.0.app/Contents/Developer
+          fi
           xcodebuild -version
 
       - name: Generate iOS project
@@ -224,6 +228,7 @@ jobs:
             xcrun simctl list devices available
             exit 1
           fi
+          echo "Using simulator $SIMULATOR_ID"
           xcodebuild -project FamilyEvents.xcodeproj -scheme FamilyEvents -destination "platform=iOS Simulator,id=$SIMULATOR_ID" test
 
   android:
