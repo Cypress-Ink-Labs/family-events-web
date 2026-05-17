@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Heart } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
@@ -33,9 +33,6 @@ export function FavoriteButton({
   // Only burst on a real user toggle, not on mount or external prop sync.
   const [burstSeed, setBurstSeed] = useState<number | null>(null)
 
-  useEffect(() => {
-    setOptimistic(isFavorited)
-  }, [isFavorited])
 
   async function handleToggle(e: React.MouseEvent) {
     e.preventDefault()

@@ -47,6 +47,10 @@ export function useGeolocation(options: UseGeolocationOptions = {}): Geolocation
   )
 
   useEffect(() => {
+    if (enabled) {
+      setState((current) => ({ ...current, status: "resolving" }))
+    }
+
     if (!enabled) {
       setState(fallbackResult)
       return
