@@ -26,9 +26,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { Toolbar } from "@/components/v2"
+import { FilterBar, Toolbar } from "@/components/v2"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import {
   useAdminCronJobs,
@@ -355,6 +354,40 @@ function RunHistoryRow({ run }: { run: CronRun }) {
   )
 }
 
+interface RunDomainChipProps {
+  label: string
+  count: number
+  active: boolean
+  onClick: () => void
+}
+
+function RunDomainChip({ label, count, active, onClick }: RunDomainChipProps) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+        active
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border hover:bg-accent"
+      )}
+    >
+      <span>{label}</span>
+      <Badge
+        variant={active ? "outline" : "secondary"}
+        className={cn(
+          "text-[10px]",
+          active && "border-primary-foreground/40 bg-primary-foreground/20 text-primary-foreground"
+        )}
+      >
+        {count}
+      </Badge>
+    </button>
+  )
+}
+
 function RunHistoryDomainGroup({
   group,
   defaultOpen,
@@ -472,27 +505,26 @@ export function AdminCronsPage() {
 
       {/* Run history */}
       <Card className="border-border/60">
-        <CardHeader className="pb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <CardHeader className="space-y-3 pb-3">
           <CardTitle className="text-sm font-semibold">Recent Runs</CardTitle>
           {historyGroups.length > 1 && (
-            <Tabs value={selectedDomain} onValueChange={setSelectedDomain}>
-              <TabsList className="h-8 max-w-full overflow-x-auto">
-                <TabsTrigger value={ALL_RUNS_DOMAIN} className="text-xs">
-                  All
-                  <Badge variant="secondary" className="ml-1 text-[10px]">
-                    {history.length}
-                  </Badge>
-                </TabsTrigger>
-                {historyGroups.map((group) => (
-                  <TabsTrigger key={group.key} value={group.key} className="text-xs">
-                    {group.label}
-                    <Badge variant="secondary" className="ml-1 text-[10px]">
-                      {group.runs.length}
-                    </Badge>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+            <FilterBar>
+              <RunDomainChip
+                label="All"
+                count={history.length}
+                active={selectedDomain === ALL_RUNS_DOMAIN}
+                onClick={() => setSelectedDomain(ALL_RUNS_DOMAIN)}
+              />
+              {historyGroups.map((group) => (
+                <RunDomainChip
+                  key={group.key}
+                  label={group.label}
+                  count={group.runs.length}
+                  active={selectedDomain === group.key}
+                  onClick={() => setSelectedDomain(group.key)}
+                />
+              ))}
+            </FilterBar>
           )}
         </CardHeader>
         <CardContent className="pt-0">
