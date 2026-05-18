@@ -58,11 +58,7 @@ interface AdminEventEditFormProps {
   onUnlockFields: () => void
 }
 
-type AdminEventEditorForm = UseFormReturn<
-  AdminEventEditorInput,
-  unknown,
-  AdminEventEditorValues
->
+type AdminEventEditorForm = UseFormReturn<AdminEventEditorInput, unknown, AdminEventEditorValues>
 
 export function AdminEventEditForm({
   event,

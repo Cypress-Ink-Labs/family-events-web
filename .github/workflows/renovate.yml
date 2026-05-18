@@ -1,0 +1,33 @@
+name: renovate
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - renovate.json
+  workflow_dispatch:
+
+concurrency:
+  group: renovate
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Renovate
+        uses: renovatebot/github-action@v41
+        with:
+          token: ${{ secrets.RENOVATE_TOKEN }}

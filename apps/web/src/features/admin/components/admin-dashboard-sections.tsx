@@ -21,7 +21,10 @@ const chartConfig: ChartConfig = {
 
 function lazyRechartsComponent(name: string) {
   return lazy(async () => {
-    const module = (await import("recharts")) as Record<string, ComponentType<Record<string, unknown>>>
+    const module = (await import("recharts")) as unknown as Record<
+      string,
+      ComponentType<Record<string, unknown>>
+    >
     return { default: module[name] }
   })
 }

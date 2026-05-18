@@ -94,7 +94,7 @@ export function MapViewPage() {
       bounds: null,
     },
   } satisfies MapViewState)
-  const { popupEvent, hoveredId, mobilePane, showPastEvents, viewState } = mapState
+  const { popupEvent, hoveredId, showPastEvents, viewState } = mapState
 
   const {
     location: userLocation,
@@ -439,7 +439,9 @@ function MapCanvas(props: MapViewShellProps) {
   const { centerLat, centerLng, handleLoad, handleMove, mapRef, mapState, mapStyle } = props
 
   return (
-    <div className={`${mapState.mobilePane === "map" ? "block" : "hidden md:block"} relative min-h-0`}>
+    <div
+      className={`${mapState.mobilePane === "map" ? "block" : "hidden md:block"} relative min-h-0`}
+    >
       <MapGL
         ref={mapRef}
         initialViewState={{
