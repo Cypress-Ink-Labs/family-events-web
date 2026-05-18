@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react"
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  type Dispatch,
+  type RefObject,
+} from "react"
 import { Link } from "react-router-dom"
 import {
   Map as MapGL,
@@ -58,6 +66,10 @@ interface MapViewState {
 }
 
 type MapViewStatePatch = Partial<MapViewState> | ((state: MapViewState) => Partial<MapViewState>)
+type MapBodyKey = "map-city-loading" | "map-events-loading" | "map-empty" | "map-content"
+type UserLocation = ReturnType<typeof useUserLocation>["location"]
+type SelectedCity = ReturnType<typeof useApp>["selectedCity"]
+type LocationStatus = ReturnType<typeof useUserLocation>["status"]
 
 function mapViewReducer(state: MapViewState, patch: MapViewStatePatch): MapViewState {
   return { ...state, ...(typeof patch === "function" ? patch(state) : patch) }
@@ -203,231 +215,377 @@ export function MapViewPage() {
           : "map-content"
 
   return (
+    <MapViewShell
+      bodyKey={bodyKey}
+      centerLat={centerLat}
+      centerLng={centerLng}
+      clusters={clusters}
+      eventById={eventById}
+      eventsCount={events.length}
+      expand={expand}
+      handleLoad={handleLoad}
+      handleMove={handleMove}
+      handleSelectEvent={handleSelectEvent}
+      hoveredId={hoveredId}
+      isCitiesLoading={isCitiesLoading}
+      isEventsLoading={isEventsLoading}
+      locationStatus={locationStatus}
+      mapRef={mapRef}
+      mapState={mapState}
+      mapStyle={mapStyle}
+      mappableCount={mappable.length}
+      popupEvent={popupEvent}
+      requestLocation={requestLocation}
+      selectedCity={selectedCity}
+      setMapState={setMapState}
+      sortedList={sortedList}
+      userLocation={userLocation}
+    />
+  )
+}
+
+interface MapViewShellProps {
+  bodyKey: MapBodyKey
+  centerLat: number | null | undefined
+  centerLng: number | null | undefined
+  clusters: ClusterOrPoint[]
+  eventById: Map<string, MappedEvent>
+  eventsCount: number
+  expand: (clusterId: number) => number
+  handleLoad: () => void
+  handleMove: (event: ViewStateChangeEvent) => void
+  handleSelectEvent: (event: MappedEvent) => void
+  hoveredId: string | null
+  isCitiesLoading: boolean
+  isEventsLoading: boolean
+  locationStatus: LocationStatus
+  mapRef: RefObject<MapRef | null>
+  mapState: MapViewState
+  mapStyle: ReturnType<typeof useMapStyle>
+  mappableCount: number
+  popupEvent: MappedEvent | null
+  requestLocation: () => void
+  selectedCity: SelectedCity
+  setMapState: Dispatch<MapViewStatePatch>
+  sortedList: MappedEvent[]
+  userLocation: UserLocation
+}
+
+function MapViewShell(props: MapViewShellProps) {
+  return (
     <div className="flex flex-col h-[calc(100dvh-3.5rem-5rem)] md:h-[calc(100dvh-3.5rem-3rem)] overflow-hidden">
-      <div className="px-4 lg:px-6 py-3 flex items-center justify-between gap-4 border-b border-border/60 shrink-0">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Map</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {!selectedCity || isCitiesLoading
-              ? "Loading your city..."
-              : isEventsLoading
-                ? "Loading events..."
-                : mappable.length > 0
-                  ? `${mappable.length} event${mappable.length === 1 ? "" : "s"} in ${selectedCity.name}`
-                  : `No mapped events in ${selectedCity.name} yet`}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant={showPastEvents ? "default" : "outline"}
-            onClick={() => setMapState((state) => ({ showPastEvents: !state.showPastEvents }))}
-            className="h-8 gap-1.5 text-xs"
-          >
-            <Clock className="size-3.5" />
-            Past events
-          </Button>
-          {events.length > mappable.length && (
-            <Badge variant="outline" className="text-xs hidden sm:inline-flex">
-              {events.length - mappable.length} missing coords
-            </Badge>
-          )}
-          {/* Mobile-only toggle between list and map. */}
-          <div className="flex md:hidden border border-border/60 rounded-md overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setMapState({ mobilePane: "map" })}
-              className={`px-3 py-1.5 text-xs font-medium ${
-                mobilePane === "map"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground"
-              }`}
-            >
-              Map
-            </button>
-            <button
-              type="button"
-              onClick={() => setMapState({ mobilePane: "list" })}
-              className={`px-3 py-1.5 text-xs font-medium ${
-                mobilePane === "list"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground"
-              }`}
-            >
-              List
-            </button>
-          </div>
+      <MapViewHeader {...props} />
+      <MapViewBody {...props} />
+    </div>
+  )
+}
+
+function MapViewHeader({
+  eventsCount,
+  isCitiesLoading,
+  isEventsLoading,
+  mapState,
+  mappableCount,
+  selectedCity,
+  setMapState,
+}: MapViewShellProps) {
+  const { mobilePane, showPastEvents } = mapState
+
+  return (
+    <div className="px-4 lg:px-6 py-3 flex items-center justify-between gap-4 border-b border-border/60 shrink-0">
+      <div>
+        <h1 className="text-xl font-semibold text-foreground">Map</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          {!selectedCity || isCitiesLoading
+            ? "Loading your city..."
+            : isEventsLoading
+              ? "Loading events..."
+              : mappableCount > 0
+                ? `${mappableCount} event${mappableCount === 1 ? "" : "s"} in ${selectedCity.name}`
+                : `No mapped events in ${selectedCity.name} yet`}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          variant={showPastEvents ? "default" : "outline"}
+          onClick={() => setMapState((state) => ({ showPastEvents: !state.showPastEvents }))}
+          className="h-8 gap-1.5 text-xs"
+        >
+          <Clock className="size-3.5" />
+          Past events
+        </Button>
+        {eventsCount > mappableCount && (
+          <Badge variant="outline" className="text-xs hidden sm:inline-flex">
+            {eventsCount - mappableCount} missing coords
+          </Badge>
+        )}
+        <div className="flex md:hidden border border-border/60 rounded-md overflow-hidden">
+          <MapPaneToggle
+            isActive={mobilePane === "map"}
+            label="Map"
+            onClick={() => setMapState({ mobilePane: "map" })}
+          />
+          <MapPaneToggle
+            isActive={mobilePane === "list"}
+            label="List"
+            onClick={() => setMapState({ mobilePane: "list" })}
+          />
         </div>
       </div>
-
-      {bodyKey === "map-city-loading" ? (
-        <div className="p-4 lg:p-6 flex-1 min-h-0">
-          <Skeleton className="size-full min-h-[400px] rounded-2xl" />
-        </div>
-      ) : bodyKey === "map-empty" ? (
-        <div className="p-4 lg:p-6 flex-1 min-h-0 overflow-auto">
-          <Card className="border-border/60">
-            <CardContent className="p-8 text-center space-y-3">
-              <MapPin className="size-8 mx-auto text-muted-foreground" />
-              <h2 className="text-lg font-semibold">No events with locations yet</h2>
-              <p className="text-sm text-muted-foreground">
-                Published events need latitude + longitude to appear on the map. Try a different
-                city or switch to the explore view.
-              </p>
-              <Button asChild>
-                <Link to="/explore">Browse Explore</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      ) : (
-        <div className="flex-1 min-h-0 grid md:grid-cols-[minmax(280px,360px)_1fr]">
-          {/* LEFT — scrollable list (desktop always, mobile when toggled). */}
-          <aside
-            className={`${
-              mobilePane === "list" ? "flex" : "hidden md:flex"
-            } flex-col border-r border-border/60 bg-background/50 min-h-0`}
-          >
-            <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border/60 flex items-center gap-1">
-              <List className="size-3" />
-              {sortedList.length} sorted by date
-            </div>
-            <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
-              {sortedList.map((event) => (
-                <EventListItem
-                  key={event.id}
-                  event={event}
-                  active={popupEvent?.id === event.id || hoveredId === event.id}
-                  userLocation={userLocation}
-                  onHover={(hoveredId) => setMapState({ hoveredId })}
-                  onSelect={handleSelectEvent}
-                />
-              ))}
-            </div>
-          </aside>
-
-          {/* RIGHT — map. */}
-          <div className={`${mobilePane === "map" ? "block" : "hidden md:block"} relative min-h-0`}>
-            <MapGL
-              ref={mapRef}
-              initialViewState={{
-                longitude: centerLng!,
-                latitude: centerLat!,
-                zoom: 11,
-              }}
-              mapStyle={mapStyle}
-              style={{ width: "100%", height: "100%" }}
-              attributionControl={{ compact: true }}
-              onLoad={handleLoad}
-              onMove={handleMove}
-            >
-              <NavigationControl position="top-left" showCompass={false} />
-
-              {/* Geolocation control — opt-in, no auto-prompt. */}
-              <div className="absolute top-2 right-2 z-10">
-                <Button
-                  size="sm"
-                  variant={locationStatus === "granted" ? "default" : "outline"}
-                  onClick={requestLocation}
-                  disabled={locationStatus === "loading"}
-                  className="gap-1.5 h-8 text-xs shadow"
-                >
-                  <Locate className="size-3.5" />
-                  {locationStatus === "loading"
-                    ? "Locating..."
-                    : locationStatus === "granted"
-                      ? "You're here"
-                      : locationStatus === "denied"
-                        ? "Location blocked"
-                        : "Use my location"}
-                </Button>
-              </div>
-
-              {userLocation && (
-                <Marker
-                  longitude={userLocation.longitude}
-                  latitude={userLocation.latitude}
-                  anchor="center"
-                >
-                  <UserLocationDot />
-                </Marker>
-              )}
-
-              {clusters.map((feature) => {
-                const [lng, lat] = feature.geometry.coordinates as [number, number]
-                if (isClusterFeature(feature)) {
-                  const clusterId = feature.id as number
-                  const count = feature.properties.point_count
-                  return (
-                    <Marker
-                      key={`cluster-${clusterId}`}
-                      longitude={lng}
-                      latitude={lat}
-                      anchor="center"
-                      onClick={(e) => {
-                        e.originalEvent.stopPropagation()
-                        const targetZoom = expand(clusterId)
-                        mapRef.current?.flyTo({
-                          center: [lng, lat],
-                          zoom: Math.min(targetZoom + 0.5, 18),
-                          speed: 1.4,
-                          essential: true,
-                        })
-                      }}
-                    >
-                      <ClusterBubble count={count} />
-                    </Marker>
-                  )
-                }
-
-                const event = eventById.get(feature.properties.eventId)
-                if (!event) return null
-                const bucket = dateBucket(event.start_datetime)
-                return (
-                  <Marker
-                    key={event.id}
-                    longitude={lng}
-                    latitude={lat}
-                    anchor="bottom"
-                    onClick={(e) => {
-                      e.originalEvent.stopPropagation()
-                      setMapState({ popupEvent: event })
-                    }}
-                  >
-                    <button
-                      type="button"
-                      aria-label={event.title}
-                      onMouseEnter={() => setMapState({ hoveredId: event.id })}
-                      onMouseLeave={() => setMapState({ hoveredId: null })}
-                      className="block transition-transform hover:scale-110 active:scale-95"
-                    >
-                      <EventPin
-                        bucket={bucket}
-                        highlighted={hoveredId === event.id || popupEvent?.id === event.id}
-                      />
-                    </button>
-                  </Marker>
-                )
-              })}
-
-              {popupEvent && (
-                <Popup
-                  longitude={popupEvent.longitude}
-                  latitude={popupEvent.latitude}
-                  anchor="bottom"
-                  offset={36}
-                  closeButton
-                  closeOnClick={false}
-                  onClose={() => setMapState({ popupEvent: null })}
-                  maxWidth="280px"
-                >
-                  <EventPopup event={popupEvent} userLocation={userLocation} />
-                </Popup>
-              )}
-            </MapGL>
-          </div>
-        </div>
-      )}
     </div>
+  )
+}
+
+function MapPaneToggle({
+  isActive,
+  label,
+  onClick,
+}: {
+  isActive: boolean
+  label: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-3 py-1.5 text-xs font-medium ${
+        isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+      }`}
+    >
+      {label}
+    </button>
+  )
+}
+
+function MapViewBody(props: MapViewShellProps) {
+  if (props.bodyKey === "map-city-loading") {
+    return (
+      <div className="p-4 lg:p-6 flex-1 min-h-0">
+        <Skeleton className="size-full min-h-[400px] rounded-2xl" />
+      </div>
+    )
+  }
+
+  if (props.bodyKey === "map-empty") {
+    return <MapEmptyState />
+  }
+
+  return (
+    <div className="flex-1 min-h-0 grid md:grid-cols-[minmax(280px,360px)_1fr]">
+      <MapEventList {...props} />
+      <MapCanvas {...props} />
+    </div>
+  )
+}
+
+function MapEmptyState() {
+  return (
+    <div className="p-4 lg:p-6 flex-1 min-h-0 overflow-auto">
+      <Card className="border-border/60">
+        <CardContent className="p-8 text-center space-y-3">
+          <MapPin className="size-8 mx-auto text-muted-foreground" />
+          <h2 className="text-lg font-semibold">No events with locations yet</h2>
+          <p className="text-sm text-muted-foreground">
+            Published events need latitude + longitude to appear on the map. Try a different city or
+            switch to the explore view.
+          </p>
+          <Button asChild>
+            <Link to="/explore">Browse Explore</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function MapEventList({
+  handleSelectEvent,
+  hoveredId,
+  mapState,
+  popupEvent,
+  setMapState,
+  sortedList,
+  userLocation,
+}: MapViewShellProps) {
+  return (
+    <aside
+      className={`${
+        mapState.mobilePane === "list" ? "flex" : "hidden md:flex"
+      } flex-col border-r border-border/60 bg-background/50 min-h-0`}
+    >
+      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide border-b border-border/60 flex items-center gap-1">
+        <List className="size-3" />
+        {sortedList.length} sorted by date
+      </div>
+      <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
+        {sortedList.map((event) => (
+          <EventListItem
+            key={event.id}
+            event={event}
+            active={popupEvent?.id === event.id || hoveredId === event.id}
+            userLocation={userLocation}
+            onHover={(hoveredId) => setMapState({ hoveredId })}
+            onSelect={handleSelectEvent}
+          />
+        ))}
+      </div>
+    </aside>
+  )
+}
+
+function MapCanvas(props: MapViewShellProps) {
+  const { centerLat, centerLng, handleLoad, handleMove, mapRef, mapState, mapStyle } = props
+
+  return (
+    <div className={`${mapState.mobilePane === "map" ? "block" : "hidden md:block"} relative min-h-0`}>
+      <MapGL
+        ref={mapRef}
+        initialViewState={{
+          longitude: centerLng!,
+          latitude: centerLat!,
+          zoom: 11,
+        }}
+        mapStyle={mapStyle}
+        style={{ width: "100%", height: "100%" }}
+        attributionControl={{ compact: true }}
+        onLoad={handleLoad}
+        onMove={handleMove}
+      >
+        <NavigationControl position="top-left" showCompass={false} />
+        <MapLocationControl {...props} />
+        <MapUserLocationMarker {...props} />
+        <MapClusterMarkers {...props} />
+        <MapEventPopup {...props} />
+      </MapGL>
+    </div>
+  )
+}
+
+function MapLocationControl({ locationStatus, requestLocation }: MapViewShellProps) {
+  return (
+    <div className="absolute top-2 right-2 z-10">
+      <Button
+        size="sm"
+        variant={locationStatus === "granted" ? "default" : "outline"}
+        onClick={requestLocation}
+        disabled={locationStatus === "loading"}
+        className="gap-1.5 h-8 text-xs shadow"
+      >
+        <Locate className="size-3.5" />
+        {locationStatus === "loading"
+          ? "Locating..."
+          : locationStatus === "granted"
+            ? "You're here"
+            : locationStatus === "denied"
+              ? "Location blocked"
+              : "Use my location"}
+      </Button>
+    </div>
+  )
+}
+
+function MapUserLocationMarker({ userLocation }: MapViewShellProps) {
+  if (!userLocation) {
+    return null
+  }
+
+  return (
+    <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} anchor="center">
+      <UserLocationDot />
+    </Marker>
+  )
+}
+
+function MapClusterMarkers({
+  clusters,
+  eventById,
+  expand,
+  hoveredId,
+  mapRef,
+  popupEvent,
+  setMapState,
+}: MapViewShellProps) {
+  return (
+    <>
+      {clusters.map((feature) => {
+        const [lng, lat] = feature.geometry.coordinates as [number, number]
+        if (isClusterFeature(feature)) {
+          const clusterId = feature.id as number
+          const count = feature.properties.point_count
+          return (
+            <Marker
+              key={`cluster-${clusterId}`}
+              longitude={lng}
+              latitude={lat}
+              anchor="center"
+              onClick={(e) => {
+                e.originalEvent.stopPropagation()
+                const targetZoom = expand(clusterId)
+                mapRef.current?.flyTo({
+                  center: [lng, lat],
+                  zoom: Math.min(targetZoom + 0.5, 18),
+                  speed: 1.4,
+                  essential: true,
+                })
+              }}
+            >
+              <ClusterBubble count={count} />
+            </Marker>
+          )
+        }
+
+        const event = eventById.get(feature.properties.eventId)
+        if (!event) return null
+        const bucket = dateBucket(event.start_datetime)
+        return (
+          <Marker
+            key={event.id}
+            longitude={lng}
+            latitude={lat}
+            anchor="bottom"
+            onClick={(e) => {
+              e.originalEvent.stopPropagation()
+              setMapState({ popupEvent: event })
+            }}
+          >
+            <button
+              type="button"
+              aria-label={event.title}
+              onMouseEnter={() => setMapState({ hoveredId: event.id })}
+              onMouseLeave={() => setMapState({ hoveredId: null })}
+              className="block transition-transform hover:scale-110 active:scale-95"
+            >
+              <EventPin
+                bucket={bucket}
+                highlighted={hoveredId === event.id || popupEvent?.id === event.id}
+              />
+            </button>
+          </Marker>
+        )
+      })}
+    </>
+  )
+}
+
+function MapEventPopup({ popupEvent, setMapState, userLocation }: MapViewShellProps) {
+  if (!popupEvent) {
+    return null
+  }
+
+  return (
+    <Popup
+      longitude={popupEvent.longitude}
+      latitude={popupEvent.latitude}
+      anchor="bottom"
+      offset={36}
+      closeButton
+      closeOnClick={false}
+      onClose={() => setMapState({ popupEvent: null })}
+      maxWidth="280px"
+    >
+      <EventPopup event={popupEvent} userLocation={userLocation} />
+    </Popup>
   )
 }

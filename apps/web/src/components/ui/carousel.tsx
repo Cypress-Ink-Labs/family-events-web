@@ -69,9 +69,12 @@ function Carousel({
 
   updateScrollStateRef.current = updateScrollState
 
-  const handleCarouselSelect = React.useCallback((api: CarouselApi) => {
+  const handleCarouselSelectRef = React.useRef((api: CarouselApi) => {
     updateScrollStateRef.current(api)
-  }, [])
+  })
+  handleCarouselSelectRef.current = (api: CarouselApi) => {
+    updateScrollStateRef.current(api)
+  }
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev()
@@ -101,6 +104,10 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return
+    const handleCarouselSelect = (api: CarouselApi) => {
+      handleCarouselSelectRef.current(api)
+    }
+
     handleCarouselSelect(api)
     api.on("reInit", handleCarouselSelect)
     api.on("select", handleCarouselSelect)
@@ -109,7 +116,7 @@ function Carousel({
       api.off("reInit", handleCarouselSelect)
       api.off("select", handleCarouselSelect)
     }
-  }, [api, handleCarouselSelect])
+  }, [api])
 
   return (
     <CarouselContext.Provider

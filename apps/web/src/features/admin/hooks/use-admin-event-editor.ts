@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import type { QueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { supabase } from "@/lib/supabase"
 import type { Event, Json } from "@/lib/types"
@@ -15,18 +14,6 @@ interface UpdateAdminEventInput {
 interface CreateAdminEventInput {
   patch: AdminEventPatch
   tagIds: string[]
-}
-
-function invalidateEventQueries(queryClient: QueryClient, eventId?: string) {
-  void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
-  void queryClient.invalidateQueries({ queryKey: qk.events.all })
-  void queryClient.invalidateQueries({ queryKey: qk.events.detailAll })
-  void queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all })
-  if (eventId) {
-    void queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(eventId) })
-    void queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(eventId) })
-    void queryClient.invalidateQueries({ queryKey: qk.events.detailById(eventId) })
-  }
 }
 
 export function useUpdateAdminEvent() {
@@ -50,8 +37,16 @@ export function useUpdateAdminEvent() {
       }
       return data as Event
     },
-    onSuccess: (_event, variables) => {
-      invalidateEventQueries(queryClient, variables.eventId)
+    onSuccess: async (_event, variables) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
+        queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(variables.eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(variables.eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(variables.eventId) }),
+      ])
     },
   })
 }
@@ -70,8 +65,16 @@ export function useCreateAdminEvent() {
       }
       return data as Event
     },
-    onSuccess: (event) => {
-      invalidateEventQueries(queryClient, event.id)
+    onSuccess: async (event) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
+        queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(event.id) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(event.id) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(event.id) }),
+      ])
     },
   })
 }
@@ -89,8 +92,16 @@ export function useUnlockAdminEventFields() {
       }
       return eventId
     },
-    onSuccess: (eventId) => {
-      invalidateEventQueries(queryClient, eventId)
+    onSuccess: async (eventId) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
+        queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(eventId) }),
+      ])
     },
   })
 }

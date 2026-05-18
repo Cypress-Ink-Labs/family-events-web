@@ -17,24 +17,14 @@ import {
 } from "@/features/dashboard/components/dashboard-sections"
 import { Page, Stack } from "@/components/v2"
 
-const dateFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
+const DAY_FORMATTER_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}
 
 function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<string, boolean>) {
   return { ...state, ...patch }
-}
-
-function getDayFormatter(timeZone: string) {
-  let formatter = dateFormattersByTimeZone.get(timeZone)
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-CA", {
-      timeZone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    dateFormattersByTimeZone.set(timeZone, formatter)
-  }
-  return formatter
 }
 
 export function DashboardPage() {
@@ -72,14 +62,30 @@ export function DashboardPage() {
   const happeningSoon = events.filter((event) => !event.is_featured).slice(0, 4)
   const recommended = events.slice(0, 4)
   const savedEvents = events.filter((event) => isFavorited(event.id)).slice(0, 3)
+  const selectedTimeZone = selectedCity?.timezone ?? "UTC"
+  const dayFormattersByTimeZone = useMemo(() => {
+    const timeZones = new Set([selectedTimeZone])
+    for (const event of events) {
+      timeZones.add(event.timezone || selectedTimeZone)
+    }
+    return new Map(
+      Array.from(timeZones, (timeZone) => [
+        timeZone,
+        new Intl.DateTimeFormat("en-CA", { ...DAY_FORMATTER_OPTIONS, timeZone }),
+      ])
+    )
+  }, [events, selectedTimeZone])
+  const todayFormatter = dayFormattersByTimeZone.get(selectedTimeZone)!
+  const todayKey = useMemo(() => todayFormatter.format(new Date()), [todayFormatter])
   const isToday = (start: string, tz: string) => {
-    const fmt = getDayFormatter(tz)
-    return fmt.format(new Date(start)) === fmt.format(new Date())
+    const formatter = dayFormattersByTimeZone.get(tz) ?? todayFormatter
+    const referenceKey = tz === selectedTimeZone ? todayKey : formatter.format(new Date())
+    return formatter.format(new Date(start)) === referenceKey
   }
   const todayEvents: typeof events = []
   for (const e of events) {
     if (todayEvents.length >= 2) break
-    if (isToday(e.start_datetime, e.timezone || selectedCity?.timezone || "UTC")) {
+    if (isToday(e.start_datetime, e.timezone || selectedTimeZone)) {
       todayEvents.push(e)
     }
   }

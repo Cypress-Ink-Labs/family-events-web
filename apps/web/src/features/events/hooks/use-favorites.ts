@@ -164,8 +164,10 @@ export function handleToggleFavoriteOnSettled(
   // qk.enrichedEvents.all) in sync, so invalidating those roots on every
   // toggle would refetch every cached city/filter combination — doubling
   // network traffic for no correctness benefit.
-  void queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(userId) })
-  void queryClient.invalidateQueries({ queryKey: qk.events.detailById(eventId) })
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(userId) }),
+    queryClient.invalidateQueries({ queryKey: qk.events.detailById(eventId) }),
+  ])
 }
 
 export function useToggleFavorite(userId: string | undefined) {
@@ -225,12 +227,15 @@ export function useToggleFavorite(userId: string | undefined) {
       }
       handleToggleFavoriteOnError(queryClient, userId, variables, context)
     },
-    onSuccess: (_isNowFavorited, variables) => {
-      handleToggleFavoriteOnSettled(queryClient, userId, variables.eventId)
+    onSuccess: async (_isNowFavorited, variables) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(userId) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(variables.eventId) }),
+      ])
     },
-    onSettled: (_isNowFavorited, error, variables) => {
+    onSettled: async (_isNowFavorited, error, variables) => {
       if (error) {
-        handleToggleFavoriteOnSettled(queryClient, userId, variables.eventId)
+        await handleToggleFavoriteOnSettled(queryClient, userId, variables.eventId)
       }
     },
   })

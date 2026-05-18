@@ -1,3 +1,4 @@
+import { lazy, type ComponentType } from "react"
 import {
   ChartBar as BarChart3,
   Calendar,
@@ -5,7 +6,6 @@ import {
   CircleCheck as CheckCircle,
   Circle as XCircle,
 } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
@@ -18,6 +18,19 @@ const chartConfig: ChartConfig = {
   skipped: { label: "Skipped", color: "var(--chart-4)" },
   errors: { label: "Errors", color: "var(--chart-5)" },
 }
+
+function lazyRechartsComponent(name: string) {
+  return lazy(async () => {
+    const module = (await import("recharts")) as Record<string, ComponentType<Record<string, unknown>>>
+    return { default: module[name] }
+  })
+}
+
+const Bar = lazyRechartsComponent("Bar")
+const BarChart = lazyRechartsComponent("BarChart")
+const CartesianGrid = lazyRechartsComponent("CartesianGrid")
+const XAxis = lazyRechartsComponent("XAxis")
+const YAxis = lazyRechartsComponent("YAxis")
 
 export interface AdminDashboardStatCard {
   label: string

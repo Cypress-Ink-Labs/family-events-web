@@ -38,10 +38,6 @@ export function AdminEventEditPage() {
   const unlockFields = useUnlockAdminEventFields()
   const deleteEvents = useDeleteAdminEvents()
 
-  const setIsDirty = useCallback((dirty: boolean) => {
-    isDirtyRef.current = dirty
-  }, [])
-
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!isDirtyRef.current) return
@@ -72,7 +68,7 @@ export function AdminEventEditPage() {
         tagIds: input.tagIds,
       })
       toast.success("Event saved")
-      setIsDirty(false)
+      isDirtyRef.current = false
     } catch (error) {
       setSaveError(humanizeSupabaseError(error, "Failed to save event."))
     }
@@ -88,7 +84,7 @@ export function AdminEventEditPage() {
         tagIds: eventQuery.data.tags?.map((tag) => tag.tag_id) ?? [],
       })
       toast.success(`Event ${status}`)
-      setIsDirty(false)
+      isDirtyRef.current = false
     } catch (error) {
       setSaveError(humanizeSupabaseError(error, "Failed to update event status."))
     }
@@ -223,7 +219,7 @@ export function AdminEventEditPage() {
         isUnlocking={unlockFields.isPending}
         saveError={saveError}
         onSubmit={handleSubmit}
-        onDirtyChange={setIsDirty}
+        dirtyRef={isDirtyRef}
         onUnlockFields={handleUnlockFields}
       />
     </div>
