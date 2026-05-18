@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { Link } from "react-router-dom"
 import type {
+  AiTagProvider,
   City,
   Event,
   EventAiTraceWithParsed,
@@ -41,8 +42,10 @@ import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 
 export type AdminEventStatusFilter = Event["status"] | "all"
 
-export function formatProviderLabel(provider: "openai" | "keyword-fallback" | null | undefined) {
+export function formatProviderLabel(provider: AiTagProvider | null | undefined) {
   if (provider === "openai") return "OpenAI"
+  if (provider === "ollama") return "Ollama"
+  if (provider === "localai") return "LocalAI"
   if (provider === "keyword-fallback") return "Keyword fallback"
   return "Unknown"
 }

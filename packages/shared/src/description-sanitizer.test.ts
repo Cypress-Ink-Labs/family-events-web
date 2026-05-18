@@ -99,7 +99,9 @@ describe("stripHtmlPreservingBreaks", () => {
   })
 
   it("turns </p> into double newlines", () => {
-    expect(stripHtmlPreservingBreaks("<p>a</p><p>b</p>")).toBe("<p>a\n\n<p>b\n\n".replace(/<p>/g, ""))
+    expect(stripHtmlPreservingBreaks("<p>a</p><p>b</p>")).toBe(
+      "<p>a\n\n<p>b\n\n".replace(/<p>/g, "")
+    )
   })
 })
 
