@@ -59,10 +59,13 @@ describe("useNowMs subscribe contract", () => {
 
     // Replicate the subscribe body from useNowMs:
     //   const id = window.setInterval(() => { nowMs = Date.now(); listener() }, intervalMs)
-    const id = (globalThis as Record<string, unknown> & { window: { setInterval: (fn: () => void, ms: number) => number } })
-      .window.setInterval(() => {
-        listener()
-      }, intervalMs)
+    const id = (
+      globalThis as Record<string, unknown> & {
+        window: { setInterval: (fn: () => void, ms: number) => number }
+      }
+    ).window.setInterval(() => {
+      listener()
+    }, intervalMs)
 
     expect(registeredIntervals).toHaveLength(1)
     expect(registeredIntervals[0].ms).toBe(500)
@@ -72,19 +75,24 @@ describe("useNowMs subscribe contract", () => {
   it("registers an interval with the default 1000 ms when none is supplied", () => {
     const defaultMs = 1000
     const listener = vi.fn()
-    ;(globalThis as Record<string, unknown> & { window: { setInterval: (fn: () => void, ms: number) => number } })
-      .window.setInterval(() => listener(), defaultMs)
+    ;(
+      globalThis as Record<string, unknown> & {
+        window: { setInterval: (fn: () => void, ms: number) => number }
+      }
+    ).window.setInterval(() => listener(), defaultMs)
 
     expect(registeredIntervals[0].ms).toBe(1000)
   })
 
   it("cleanup unsubscribes the interval", () => {
-    const w = (globalThis as Record<string, unknown> & {
-      window: {
-        setInterval: (fn: () => void, ms: number) => number
-        clearInterval: (id: number) => void
+    const w = (
+      globalThis as Record<string, unknown> & {
+        window: {
+          setInterval: (fn: () => void, ms: number) => number
+          clearInterval: (id: number) => void
+        }
       }
-    }).window
+    ).window
 
     const listener = vi.fn()
     const id = w.setInterval(() => listener(), 1000)
@@ -96,12 +104,14 @@ describe("useNowMs subscribe contract", () => {
   })
 
   it("cleanup clears only its own interval when multiple subscribers exist", () => {
-    const w = (globalThis as Record<string, unknown> & {
-      window: {
-        setInterval: (fn: () => void, ms: number) => number
-        clearInterval: (id: number) => void
+    const w = (
+      globalThis as Record<string, unknown> & {
+        window: {
+          setInterval: (fn: () => void, ms: number) => number
+          clearInterval: (id: number) => void
+        }
       }
-    }).window
+    ).window
 
     const id1 = w.setInterval(() => {}, 1000)
     const id2 = w.setInterval(() => {}, 500)
@@ -112,9 +122,11 @@ describe("useNowMs subscribe contract", () => {
   })
 
   it("interval callback updates a shared timestamp variable and calls listener", () => {
-    const w = (globalThis as Record<string, unknown> & {
-      window: { setInterval: (fn: () => void, ms: number) => number }
-    }).window
+    const w = (
+      globalThis as Record<string, unknown> & {
+        window: { setInterval: (fn: () => void, ms: number) => number }
+      }
+    ).window
 
     let sharedNow = 0
     const listener = vi.fn()
