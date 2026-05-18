@@ -26,8 +26,8 @@ setup("authenticate local admin", async ({ page }) => {
 
   await page.goto("/sign-in", { waitUntil: "domcontentloaded" })
 
-  const emailField = page.getByLabel(/^email$/i)
-  const passwordField = page.getByLabel(/^password$/i)
+  const emailField = page.locator("input#email[type='email']")
+  const passwordField = page.locator("input#password[type='password']")
 
   // 15s is plenty for a vite dev server to render the sign-in form. Beyond
   // that, the app almost certainly crashed on boot — fail fast with the
@@ -38,7 +38,8 @@ setup("authenticate local admin", async ({ page }) => {
     .catch(() => false)
 
   if (isLoginFormVisible) {
-    await Promise.all([emailField.fill(adminEmail), passwordField.fill(adminPassword)])
+    await emailField.fill(adminEmail)
+    await passwordField.fill(adminPassword)
     await page.getByRole("button", { name: "Sign In" }).click()
   } else if (!page.url().match(/\/home$/)) {
     const url = page.url()
