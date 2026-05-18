@@ -1,6 +1,6 @@
 name: codeql
 
-# CodeQL SAST scan. Runs weekly + on PRs touching code, plus pushes to main.
+# CodeQL SAST scan. Runs weekly + on PRs touching web/shared code, plus pushes to main.
 # Independent from ci.yml because it is slow (~5 min) and shouldn't gate
 # every PR's typical lint/test cycle. Findings appear under the repo's
 # Security tab.
@@ -11,8 +11,12 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "src/**"
+      - "apps/web/**"
+      - "packages/**"
       - "supabase/functions/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/codeql.yml"
   schedule:
     - cron: "0 4 * * 1" # weekly Monday 04:00 UTC

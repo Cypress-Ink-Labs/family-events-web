@@ -1,6 +1,7 @@
 name: ci
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:
@@ -14,11 +15,15 @@ permissions:
   contents: read
 
 env:
+  CI: true
   E2E_ADMIN_EMAIL: admin@familyevents.local
+  NODE_VERSION: "24"
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
 jobs:
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       web: ${{ steps.filter.outputs.web }}
       verify: ${{ steps.filter.outputs.verify }}
@@ -71,11 +76,11 @@ jobs:
             verify=true
           fi
 
-          if matches '^apps/ios/' '^\.github/workflows/ci\.yml$'; then
+          if matches '^(apps/ios|packages/design-system)/' '^\.github/workflows/ci\.yml$'; then
             ios=true
           fi
 
-          if matches '^apps/android/' '^\.github/workflows/ci\.yml$'; then
+          if matches '^(apps/android|packages/design-system)/' '^\.github/workflows/ci\.yml$'; then
             android=true
           fi
 
@@ -88,6 +93,7 @@ jobs:
 
   secret-scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -107,6 +113,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -121,8 +128,23 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Cache JS build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            apps/web/.turbo
+            packages/*/.turbo
+            node_modules/.tmp
+            apps/web/node_modules/.vite
+            packages/*/node_modules/.vite
+          key: ${{ runner.os }}-js-build-${{ hashFiles('pnpm-lock.yaml', 'turbo.json', '**/package.json', '**/tsconfig*.json', '**/vite.config.*', '**/vitest.config.*') }}
+          restore-keys: |
+            ${{ runner.os }}-js-build-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -132,11 +154,10 @@ jobs:
 
   # E2E (needs local Supabase — can't run on RWX)
   verify:
-    needs:
-      - changes
-      - web-check
-    if: always() && needs.changes.outputs.verify == 'true' && needs.web-check.result == 'success'
+    needs: changes
+    if: needs.changes.outputs.verify == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -152,8 +173,23 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Cache JS build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            apps/web/.turbo
+            packages/*/.turbo
+            node_modules/.tmp
+            apps/web/node_modules/.vite
+            packages/*/node_modules/.vite
+          key: ${{ runner.os }}-js-build-${{ hashFiles('pnpm-lock.yaml', 'turbo.json', '**/package.json', '**/tsconfig*.json', '**/vite.config.*', '**/vitest.config.*') }}
+          restore-keys: |
+            ${{ runner.os }}-js-build-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -167,7 +203,7 @@ jobs:
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
-        run: pnpm --filter @family-events/web exec playwright install --with-deps
+        run: pnpm --filter @family-events/web exec playwright install chromium --with-deps
 
       # ─── E2E preflight ────────────────────────────────────────────────
       # Boot a local Supabase stack and seed an admin user. The E2E suite
@@ -300,6 +336,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.ios == 'true'
     runs-on: macos-26
+    timeout-minutes: 12
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -326,6 +363,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-swiftpm-
 
+      - name: Cache Xcode build data
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/FamilyEvents
+          key: ${{ runner.os }}-xcode-familyevents-${{ hashFiles('apps/ios/project.yml', 'apps/ios/**/*.swift', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-familyevents-
+
       - name: Generate iOS project
         run: cd apps/ios && xcodegen generate
 
@@ -348,13 +393,25 @@ jobs:
             -scheme FamilyEvents \
             -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
             -clonedSourcePackagesDirPath "$HOME/Library/Caches/family-events-swiftpm" \
+            -derivedDataPath "$HOME/Library/Developer/Xcode/DerivedData/FamilyEvents" \
+            -resultBundlePath "$RUNNER_TEMP/FamilyEvents.xcresult" \
             -skip-testing:FEDesignSystemTests/EventCardSnapshotTests \
+            -quiet \
             test
+
+      - name: Upload iOS result bundle on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-xcresult
+          path: ${{ runner.temp }}/FamilyEvents.xcresult
+          retention-days: 7
 
   android:
     needs: changes
     if: needs.changes.outputs.android == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -366,13 +423,28 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
+      - name: Cache Android SDK 36
+        id: android-sdk-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/platforms/android-36
+            ${{ env.ANDROID_HOME }}/build-tools/36.0.0
+            ${{ env.ANDROID_HOME }}/licenses
+          key: ${{ runner.os }}-android-sdk-platform-36-build-tools-36.0.0
+
       - name: Install Android SDK 36
+        if: steps.android-sdk-cache.outputs.cache-hit != 'true'
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
       - name: Android checks
-        run: cd apps/android && scripts/with-android-env.sh ./gradlew --build-cache check assembleDebug
+        run: cd apps/android && scripts/with-android-env.sh ./gradlew --build-cache --configuration-cache check assembleDebug
