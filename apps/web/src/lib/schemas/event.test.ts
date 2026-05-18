@@ -55,6 +55,11 @@ describe("eventRowSchema", () => {
     expect(result.success).toBe(false)
   })
 
+  it("accepts local model tagging providers", () => {
+    const parsed = eventRowSchema.parse({ ...baseEventRow, ai_tag_provider: "ollama" })
+    expect(parsed.ai_tag_provider).toBe("ollama")
+  })
+
   it("rejects non-boolean is_free", () => {
     const result = eventRowSchema.safeParse({ ...baseEventRow, is_free: "yes" })
     expect(result.success).toBe(false)
