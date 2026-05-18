@@ -17,6 +17,7 @@ permissions:
 env:
   CI: true
   E2E_ADMIN_EMAIL: admin@familyevents.local
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NODE_VERSION: "24"
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
@@ -411,7 +412,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.android == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -427,6 +428,7 @@ jobs:
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@v4
         with:
+          cache-cleanup: never
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Setup Android SDK
