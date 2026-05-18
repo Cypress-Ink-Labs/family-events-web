@@ -25,7 +25,7 @@ const HTML_ENTITIES: ReadonlyArray<readonly [string, string]> = [
   ["&lsquo;", "'"],
   ["&rdquo;", '"'],
   ["&ldquo;", '"'],
-];
+]
 
 export function stripDiviShortcodes(value: string): string {
   return (
@@ -36,7 +36,7 @@ export function stripDiviShortcodes(value: string): string {
       // shortcode mid-attribute. The unclosed `[et_pb_image src="..."` that
       // survives in those rows has no `]` so the rule above never matches.
       .replace(/\[\/?et_pb_[a-z0-9_]*[^\]]*$/is, "")
-  );
+  )
 }
 
 /**
@@ -51,29 +51,29 @@ export function stripGenericShortcodes(value: string): string {
       // after the name so we don't eat user prose like `[See details` that
       // happens to be at end-of-string.
       .replace(/\[\/?[a-z][a-z0-9_]*\s[^\]]*$/s, "")
-  );
+  )
 }
 
 export function stripHtmlPreservingBreaks(value: string): string {
   return value
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>/gi, "\n\n")
-    .replace(/<[^>]+>/g, "");
+    .replace(/<[^>]+>/g, "")
 }
 
 export function decodeHtmlEntities(value: string): string {
-  let out = value;
+  let out = value
   for (const [entity, replacement] of HTML_ENTITIES) {
-    out = out.split(entity).join(replacement);
+    out = out.split(entity).join(replacement)
   }
-  return out;
+  return out
 }
 
 export function collapseWhitespace(value: string): string {
   return value
     .replace(/[ \t]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
-    .replace(/[ \t]{2,}/g, " ");
+    .replace(/[ \t]{2,}/g, " ")
 }
 
 /**
@@ -82,14 +82,14 @@ export function collapseWhitespace(value: string): string {
  */
 export function cleanDescription(raw: string | null | undefined): string | null {
   if (!raw) {
-    return null;
+    return null
   }
-  let out = raw;
-  out = stripDiviShortcodes(out);
-  out = stripGenericShortcodes(out);
-  out = stripHtmlPreservingBreaks(out);
-  out = decodeHtmlEntities(out);
-  out = collapseWhitespace(out);
-  const trimmed = out.trim();
-  return trimmed.length === 0 ? null : trimmed;
+  let out = raw
+  out = stripDiviShortcodes(out)
+  out = stripGenericShortcodes(out)
+  out = stripHtmlPreservingBreaks(out)
+  out = decodeHtmlEntities(out)
+  out = collapseWhitespace(out)
+  const trimmed = out.trim()
+  return trimmed.length === 0 ? null : trimmed
 }
