@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useReducer } from "react"
 import { useParams } from "react-router-dom"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
@@ -26,6 +26,38 @@ import { useUpsertRating, useUserRating } from "@/features/events/hooks/use-rati
 import { FadeSwap } from "@/components/motion"
 import { toast } from "sonner"
 
+interface EventDetailUiState {
+  attendees: number
+  comment: string
+  userRatingOverride: {
+    eventId: string
+    score: number
+  } | null
+  favoritedOverride: {
+    eventId: string
+    value: boolean
+  } | null
+  calendarOverride: {
+    eventId: string
+    value: boolean
+  } | null
+}
+
+const initialEventDetailUiState: EventDetailUiState = {
+  attendees: 1,
+  comment: "",
+  userRatingOverride: null,
+  favoritedOverride: null,
+  calendarOverride: null,
+}
+
+function eventDetailUiReducer(
+  state: EventDetailUiState,
+  patch: Partial<EventDetailUiState>
+): EventDetailUiState {
+  return { ...state, ...patch }
+}
+
 export function EventDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
@@ -45,20 +77,8 @@ export function EventDetailPage() {
   const upsertRating = useUpsertRating(user?.id)
   const toggleCalendarEvent = useToggleCalendarEvent(user?.id)
 
-  const [attendees, setAttendees] = useState(1)
-  const [comment, setComment] = useState("")
-  const [userRatingOverride, setUserRatingOverride] = useState<{
-    eventId: string
-    score: number
-  } | null>(null)
-  const [favoritedOverride, setFavoritedOverride] = useState<{
-    eventId: string
-    value: boolean
-  } | null>(null)
-  const [calendarOverride, setCalendarOverride] = useState<{
-    eventId: string
-    value: boolean
-  } | null>(null)
+  const [uiState, setUiState] = useReducer(eventDetailUiReducer, initialEventDetailUiState)
+  const { attendees, comment, userRatingOverride, favoritedOverride, calendarOverride } = uiState
 
   const userRating =
     userRatingOverride && userRatingOverride.eventId === id
@@ -136,7 +156,7 @@ export function EventDetailPage() {
         eventId: currentEvent.id,
         isInCalendar,
       })
-      setCalendarOverride({ eventId: currentEvent.id, value: nextState })
+      setUiState({ calendarOverride: { eventId: currentEvent.id, value: nextState } })
       toast.success(nextState ? "Added to your calendar!" : "Removed from calendar")
     } catch (error) {
       toast.error(humanizeSupabaseError(error, "Failed to update calendar."))
@@ -149,12 +169,15 @@ export function EventDetailPage() {
       return
     }
 
-    setUserRatingOverride({ eventId: currentEvent.id, score: nextScore })
+    setUiState({ userRatingOverride: { eventId: currentEvent.id, score: nextScore } })
     try {
       await upsertRating.mutateAsync({ eventId: currentEvent.id, score: nextScore })
       toast.success("Rating saved!")
     } catch (error) {
-      setUserRatingOverride((prev) => (prev?.eventId === currentEvent.id ? null : prev))
+      setUiState({
+        userRatingOverride:
+          userRatingOverride?.eventId === currentEvent.id ? null : userRatingOverride,
+      })
       toast.error(humanizeSupabaseError(error, "Failed to save your rating."))
     }
   }
@@ -168,7 +191,7 @@ export function EventDetailPage() {
 
     try {
       await addComment.mutateAsync({ eventId: currentEvent.id, body: comment.trim() })
-      setComment("")
+      setUiState({ comment: "" })
       toast.success("Comment posted!")
     } catch (error) {
       toast.error(humanizeSupabaseError(error, "Failed to post comment."))
@@ -182,7 +205,7 @@ export function EventDetailPage() {
         imageUrl={imageUrl}
         isFavorited={isFavorited}
         onFavoriteToggle={(_, state) =>
-          setFavoritedOverride({ eventId: currentEvent.id, value: state })
+          setUiState({ favoritedOverride: { eventId: currentEvent.id, value: state } })
         }
       />
 
@@ -197,8 +220,8 @@ export function EventDetailPage() {
           event={currentEvent}
           startDate={startDate}
           attendees={attendees}
-          onDecrement={() => setAttendees(Math.max(1, attendees - 1))}
-          onIncrement={() => setAttendees(Math.min(8, attendees + 1))}
+          onDecrement={() => setUiState({ attendees: Math.max(1, attendees - 1) })}
+          onIncrement={() => setUiState({ attendees: Math.min(8, attendees + 1) })}
           isInCalendar={isInCalendar}
           onAddToCalendar={handleAddToCalendar}
         />
@@ -207,7 +230,7 @@ export function EventDetailPage() {
           canReview={Boolean(user)}
           userRating={userRating}
           comment={comment}
-          onCommentChange={setComment}
+          onCommentChange={(comment) => setUiState({ comment })}
           onRatingChange={handleRatingChange}
           onSubmitComment={handleSubmitComment}
           isSubmitting={addComment.isPending}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react"
 import { Link } from "react-router-dom"
 import {
   Map as MapGL,
@@ -44,31 +44,45 @@ function isClusterFeature(
   return Boolean((f.properties as { cluster?: boolean }).cluster)
 }
 
+interface MapViewState {
+  popupEvent: MappedEvent | null
+  hoveredId: string | null
+  mobilePane: "map" | "list"
+  showPastEvents: boolean
+  viewState: {
+    longitude: number
+    latitude: number
+    zoom: number
+    bounds: [number, number, number, number] | null
+  }
+}
+
+type MapViewStatePatch = Partial<MapViewState> | ((state: MapViewState) => Partial<MapViewState>)
+
+function mapViewReducer(state: MapViewState, patch: MapViewStatePatch): MapViewState {
+  return { ...state, ...(typeof patch === "function" ? patch(state) : patch) }
+}
+
 export function MapViewPage() {
   const { user } = useAuth()
   const { selectedCity, isCitiesLoading } = useApp()
   const mapStyle = useMapStyle()
   const mapRef = useRef<MapRef>(null)
 
-  const [popupEvent, setPopupEvent] = useState<MappedEvent | null>(null)
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [mobilePane, setMobilePane] = useState<"map" | "list">("map")
-  const [showPastEvents, setShowPastEvents] = useState(false)
-
-  // Viewport state drives supercluster's `getClusters(bounds, zoom)` call. We
-  // mirror the map's actual viewport here on every move; supercluster recomputes
-  // on each render, which is cheap for ~hundreds of points.
-  const [viewState, setViewState] = useState<{
-    longitude: number
-    latitude: number
-    zoom: number
-    bounds: [number, number, number, number] | null
-  }>({
-    longitude: selectedCity?.longitude ?? -98,
-    latitude: selectedCity?.latitude ?? 39,
-    zoom: 11,
-    bounds: null,
-  })
+  const [mapState, setMapState] = useReducer(mapViewReducer, {
+    popupEvent: null,
+    hoveredId: null,
+    mobilePane: "map",
+    showPastEvents: false,
+    // Viewport state drives supercluster's `getClusters(bounds, zoom)` call.
+    viewState: {
+      longitude: selectedCity?.longitude ?? -98,
+      latitude: selectedCity?.latitude ?? 39,
+      zoom: 11,
+      bounds: null,
+    },
+  } satisfies MapViewState)
+  const { popupEvent, hoveredId, mobilePane, showPastEvents, viewState } = mapState
 
   const {
     location: userLocation,
@@ -125,21 +139,25 @@ export function MapViewPage() {
     const map = mapRef.current
     if (!map) return
     const b = map.getMap().getBounds()
-    setViewState((prev) => ({
-      ...prev,
-      bounds: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
-      zoom: map.getZoom(),
+    setMapState((state) => ({
+      viewState: {
+        ...state.viewState,
+        bounds: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
+        zoom: map.getZoom(),
+      },
     }))
   }, [])
 
   const handleMove = useCallback((e: ViewStateChangeEvent) => {
     const map = e.target
     const b = map.getBounds()
-    setViewState({
-      longitude: e.viewState.longitude,
-      latitude: e.viewState.latitude,
-      zoom: e.viewState.zoom,
-      bounds: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
+    setMapState({
+      viewState: {
+        longitude: e.viewState.longitude,
+        latitude: e.viewState.latitude,
+        zoom: e.viewState.zoom,
+        bounds: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
+      },
     })
   }, [])
 
@@ -153,14 +171,14 @@ export function MapViewPage() {
 
   const handleSelectEvent = useCallback(
     (event: MappedEvent) => {
-      setPopupEvent(event)
+      setMapState({ popupEvent: event })
       mapRef.current?.flyTo({
         center: [event.longitude, event.latitude],
         zoom: Math.max(13, viewState.zoom),
         speed: 1.4,
         essential: true,
       })
-      setMobilePane("map")
+      setMapState({ mobilePane: "map" })
     },
     [viewState.zoom]
   )
@@ -203,7 +221,7 @@ export function MapViewPage() {
           <Button
             size="sm"
             variant={showPastEvents ? "default" : "outline"}
-            onClick={() => setShowPastEvents((value) => !value)}
+            onClick={() => setMapState((state) => ({ showPastEvents: !state.showPastEvents }))}
             className="h-8 gap-1.5 text-xs"
           >
             <Clock className="size-3.5" />
@@ -218,7 +236,7 @@ export function MapViewPage() {
           <div className="flex md:hidden border border-border/60 rounded-md overflow-hidden">
             <button
               type="button"
-              onClick={() => setMobilePane("map")}
+              onClick={() => setMapState({ mobilePane: "map" })}
               className={`px-3 py-1.5 text-xs font-medium ${
                 mobilePane === "map"
                   ? "bg-primary text-primary-foreground"
@@ -229,7 +247,7 @@ export function MapViewPage() {
             </button>
             <button
               type="button"
-              onClick={() => setMobilePane("list")}
+              onClick={() => setMapState({ mobilePane: "list" })}
               className={`px-3 py-1.5 text-xs font-medium ${
                 mobilePane === "list"
                   ? "bg-primary text-primary-foreground"
@@ -281,7 +299,7 @@ export function MapViewPage() {
                   event={event}
                   active={popupEvent?.id === event.id || hoveredId === event.id}
                   userLocation={userLocation}
-                  onHover={setHoveredId}
+                  onHover={(hoveredId) => setMapState({ hoveredId })}
                   onSelect={handleSelectEvent}
                 />
               ))}
@@ -373,14 +391,14 @@ export function MapViewPage() {
                     anchor="bottom"
                     onClick={(e) => {
                       e.originalEvent.stopPropagation()
-                      setPopupEvent(event)
+                      setMapState({ popupEvent: event })
                     }}
                   >
                     <button
                       type="button"
                       aria-label={event.title}
-                      onMouseEnter={() => setHoveredId(event.id)}
-                      onMouseLeave={() => setHoveredId(null)}
+                      onMouseEnter={() => setMapState({ hoveredId: event.id })}
+                      onMouseLeave={() => setMapState({ hoveredId: null })}
                       className="block transition-transform hover:scale-110 active:scale-95"
                     >
                       <EventPin
@@ -400,7 +418,7 @@ export function MapViewPage() {
                   offset={36}
                   closeButton
                   closeOnClick={false}
-                  onClose={() => setPopupEvent(null)}
+                  onClose={() => setMapState({ popupEvent: null })}
                   maxWidth="280px"
                 >
                   <EventPopup event={popupEvent} userLocation={userLocation} />

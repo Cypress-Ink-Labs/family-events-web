@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useReducer } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Ticket } from "lucide-react"
 import { useAuth } from "@/features/auth/stores/auth-store"
@@ -16,6 +16,26 @@ import {
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
 import { toast } from "sonner"
 
+interface SignUpState {
+  name: string
+  email: string
+  password: string
+  inviteCode: string
+  loading: boolean
+}
+
+const signUpInitialState: SignUpState = {
+  name: "",
+  email: "",
+  password: "",
+  inviteCode: "",
+  loading: false,
+}
+
+function signUpReducer(state: SignUpState, patch: Partial<SignUpState>) {
+  return { ...state, ...patch }
+}
+
 export function SignUpPage() {
   const { signUp } = useAuth()
   const navigate = useNavigate()
@@ -24,11 +44,8 @@ export function SignUpPage() {
     isLoading: inviteCheckLoading,
     isError: inviteCheckFailed,
   } = useInvitesRequired()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [inviteCode, setInviteCode] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [state, setState] = useReducer(signUpReducer, signUpInitialState)
+  const { name, email, password, inviteCode, loading } = state
   const requiresInvite = resolveInviteRequirement(inviteRequired, inviteCheckFailed)
 
   async function handleSubmit(e: React.FormEvent) {
@@ -38,7 +55,7 @@ export function SignUpPage() {
       return
     }
 
-    setLoading(true)
+    setState({ loading: true })
 
     // Atomic consume of the code BEFORE creating the user. If signup fails after,
     // the code is wasted; for a beta that's acceptable and simpler than compensation.
@@ -46,7 +63,7 @@ export function SignUpPage() {
       const code = inviteCode.trim().toUpperCase()
       if (!code) {
         toast.error("An invite code is required to sign up right now.")
-        setLoading(false)
+        setState({ loading: false })
         return
       }
       let ok = false
@@ -56,18 +73,18 @@ export function SignUpPage() {
         toast.error("Couldn't verify invite code", {
           description: humanizeSupabaseError(err, "Try again."),
         })
-        setLoading(false)
+        setState({ loading: false })
         return
       }
       if (!ok) {
         toast.error("Invalid or expired invite code")
-        setLoading(false)
+        setState({ loading: false })
         return
       }
     }
 
     const { error } = await signUp(email, password, name)
-    setLoading(false)
+    setState({ loading: false })
     if (error) {
       toast.error("Sign up failed", {
         description: humanizeSupabaseError(error, "Please try again."),
@@ -113,7 +130,7 @@ export function SignUpPage() {
                     id="invite-code"
                     type="text"
                     value={inviteCode}
-                    onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                    onChange={(e) => setState({ inviteCode: e.target.value.toUpperCase() })}
                     placeholder="ABCD2345"
                     className="font-mono tracking-widest uppercase"
                     autoComplete="off"
@@ -127,7 +144,7 @@ export function SignUpPage() {
                   id="name"
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => setState({ name: e.target.value })}
                   placeholder="Sarah"
                   required
                 />
@@ -138,7 +155,7 @@ export function SignUpPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setState({ email: e.target.value })}
                   placeholder="you@example.com"
                   required
                 />
@@ -149,7 +166,7 @@ export function SignUpPage() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setState({ password: e.target.value })}
                   placeholder="Min. 6 characters"
                   required
                   minLength={6}

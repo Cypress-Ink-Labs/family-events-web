@@ -50,12 +50,11 @@ test("admin walkthrough covers decomposed admin pages", async ({ page }) => {
     },
   ]
 
-  await checks.reduce(async (previous, check) => {
-    await previous
+  for (const check of checks) {
     await page.goto(check.path)
     await expect(page.getByRole("heading", { name: check.heading }).last()).toBeVisible()
     await expect(check.control).toBeVisible()
-  }, Promise.resolve())
+  }
 })
 
 test("decomposed member pages render", async ({ page }) => {
@@ -77,10 +76,9 @@ test("decomposed member pages render", async ({ page }) => {
     },
   ]
 
-  await checks.reduce(async (previous, check) => {
-    await previous
+  for (const check of checks) {
     await page.goto(check.path)
     await expect(page.getByRole("heading", { name: check.heading }).first()).toBeVisible()
     await expect(check.control).toBeVisible()
-  }, Promise.resolve())
+  }
 })

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useReducer } from "react"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
@@ -19,6 +19,10 @@ import { Page, Stack } from "@/components/v2"
 
 const dateFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
 
+function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<string, boolean>) {
+  return { ...state, ...patch }
+}
+
 function getDayFormatter(timeZone: string) {
   let formatter = dateFormattersByTimeZone.get(timeZone)
   if (!formatter) {
@@ -36,7 +40,7 @@ function getDayFormatter(timeZone: string) {
 export function DashboardPage() {
   const { user, profile } = useAuth()
   const { selectedCity } = useApp()
-  const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({})
+  const [favoriteOverrides, setFavoriteOverrides] = useReducer(favoriteOverridesReducer, {})
   const {
     data: events = [],
     isLoading: isEventsLoading,
@@ -61,7 +65,7 @@ export function DashboardPage() {
   }
 
   function handleFavoriteToggle(eventId: string, newState: boolean) {
-    setFavoriteOverrides((prev) => ({ ...prev, [eventId]: newState }))
+    setFavoriteOverrides({ [eventId]: newState })
   }
 
   const featuredEvents = events.filter((event) => event.is_featured)

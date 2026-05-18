@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useReducer, useState } from "react"
 import {
   startOfMonth,
   endOfMonth,
@@ -27,13 +27,17 @@ import { useFavorites } from "@/features/events/hooks/use-favorites"
 import { useCalendarEvents } from "@/features/events/hooks/use-calendar-events"
 import { Page, Stack } from "@/components/v2"
 
+function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<string, boolean>) {
+  return { ...state, ...patch }
+}
+
 export function CalendarViewPage() {
   const { user } = useAuth()
   const { selectedCity } = useApp()
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [view, setView] = useState<"month" | "week">("month")
-  const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({})
+  const [favoriteOverrides, setFavoriteOverrides] = useReducer(favoriteOverridesReducer, {})
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -102,7 +106,7 @@ export function CalendarViewPage() {
   }
 
   function handleFavoriteToggle(eventId: string, newState: boolean) {
-    setFavoriteOverrides((prev) => ({ ...prev, [eventId]: newState }))
+    setFavoriteOverrides({ [eventId]: newState })
   }
 
   // Week nav intentionally also moves currentMonth so switching to month view stays aligned.

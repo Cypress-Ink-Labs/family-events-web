@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useReducer } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Ticket } from "lucide-react"
 import { useAuth } from "@/features/auth/stores/auth-store"
@@ -27,6 +27,26 @@ function resolveRedirectTarget(rawFrom: unknown): string {
 
 type Mode = "password" | "magic" | "magic-sent"
 
+interface SignInState {
+  mode: Mode
+  email: string
+  password: string
+  inviteCode: string
+  loading: boolean
+}
+
+const signInInitialState: SignInState = {
+  mode: "password",
+  email: "",
+  password: "",
+  inviteCode: "",
+  loading: false,
+}
+
+function signInReducer(state: SignInState, patch: Partial<SignInState>) {
+  return { ...state, ...patch }
+}
+
 export function SignInPage() {
   const { signIn, sendMagicLink } = useAuth()
   const navigate = useNavigate()
@@ -39,17 +59,14 @@ export function SignInPage() {
   } = useInvitesRequired()
   const requiresInvite = resolveInviteRequirement(inviteRequired, inviteCheckFailed)
 
-  const [mode, setMode] = useState<Mode>("password")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [inviteCode, setInviteCode] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [state, setState] = useReducer(signInReducer, signInInitialState)
+  const { mode, email, password, inviteCode, loading } = state
 
   async function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
+    setState({ loading: true })
     const { error } = await signIn(email, password)
-    setLoading(false)
+    setState({ loading: false })
     if (error) {
       toast.error("Sign in failed", {
         description: humanizeSupabaseError(error, "Please try again."),
@@ -73,35 +90,35 @@ export function SignInPage() {
         toast.error("An invite code is required to request a magic link right now.")
         return
       }
-      setLoading(true)
+      setState({ loading: true })
       let ok = false
       try {
         ok = await redeemInvite(code, email)
       } catch (err) {
-        setLoading(false)
+        setState({ loading: false })
         toast.error("Couldn't verify invite code", {
           description: humanizeSupabaseError(err, "Try again."),
         })
         return
       }
       if (!ok) {
-        setLoading(false)
+        setState({ loading: false })
         toast.error("Invalid or expired invite code")
         return
       }
     } else {
-      setLoading(true)
+      setState({ loading: true })
     }
 
     const { error } = await sendMagicLink(email, true)
-    setLoading(false)
+    setState({ loading: false })
     if (error) {
       toast.error("Couldn't send link", {
         description: humanizeSupabaseError(error, "Try again in a minute."),
       })
       return
     }
-    setMode("magic-sent")
+    setState({ mode: "magic-sent" })
   }
 
   return (
@@ -143,8 +160,7 @@ export function SignInPage() {
                   variant="outline"
                   className="min-h-[44px] w-full"
                   onClick={() => {
-                    setMode("password")
-                    setInviteCode("")
+                    setState({ mode: "password", inviteCode: "" })
                   }}
                 >
                   Back to sign-in
@@ -158,7 +174,7 @@ export function SignInPage() {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setState({ email: e.target.value })}
                     placeholder="you@example.com"
                     required
                   />
@@ -173,7 +189,7 @@ export function SignInPage() {
                       id="invite-code"
                       type="text"
                       value={inviteCode}
-                      onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                      onChange={(e) => setState({ inviteCode: e.target.value.toUpperCase() })}
                       placeholder="ABCD2345"
                       className="font-mono tracking-widest uppercase"
                       autoComplete="off"
@@ -193,7 +209,7 @@ export function SignInPage() {
                 </Button>
                 <button
                   type="button"
-                  onClick={() => setMode("password")}
+                  onClick={() => setState({ mode: "password" })}
                   className="block w-full text-center text-xs text-muted-foreground hover:text-primary hover:underline"
                 >
                   Use password instead
@@ -207,7 +223,7 @@ export function SignInPage() {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setState({ email: e.target.value })}
                     placeholder="you@example.com"
                     required
                   />
@@ -226,7 +242,7 @@ export function SignInPage() {
                     id="password"
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setState({ password: e.target.value })}
                     placeholder="••••••••"
                     required
                   />
@@ -236,7 +252,7 @@ export function SignInPage() {
                 </Button>
                 <button
                   type="button"
-                  onClick={() => setMode("magic")}
+                  onClick={() => setState({ mode: "magic" })}
                   className="block w-full text-center text-xs text-muted-foreground hover:text-primary hover:underline"
                 >
                   Email me a link instead

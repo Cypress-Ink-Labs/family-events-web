@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useReducer } from "react"
 import { addDays } from "date-fns"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
@@ -28,6 +28,41 @@ import type { CreatedInviteCode } from "@/lib/types"
 type ExpiryOption = "7d" | "30d" | "never"
 type Tab = "codes" | "requests"
 
+interface AdminInvitesState {
+  activeTab: Tab
+  dialogOpen: boolean
+  justCreated: CreatedInviteCode | null
+  revealCopied: boolean
+  newCode: {
+    max_uses: number
+    expires: ExpiryOption
+    notes: string
+  }
+  approvingId: string | null
+  rejectingId: string | null
+}
+
+const initialAdminInvitesState: AdminInvitesState = {
+  activeTab: "codes",
+  dialogOpen: false,
+  justCreated: null,
+  revealCopied: false,
+  newCode: {
+    max_uses: 1,
+    expires: "30d",
+    notes: "",
+  },
+  approvingId: null,
+  rejectingId: null,
+}
+
+function adminInvitesReducer(
+  state: AdminInvitesState,
+  patch: Partial<AdminInvitesState>
+): AdminInvitesState {
+  return { ...state, ...patch }
+}
+
 export function AdminInvitesPage() {
   const { data: codes = [] } = useAdminInviteCodes()
   const createCode = useCreateInviteCode()
@@ -41,17 +76,9 @@ export function AdminInvitesPage() {
   const approveRequest = useAdminApproveInviteRequest()
   const rejectRequest = useAdminRejectInviteRequest()
 
-  const [activeTab, setActiveTab] = useState<Tab>("codes")
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [justCreated, setJustCreated] = useState<CreatedInviteCode | null>(null)
-  const [revealCopied, setRevealCopied] = useState(false)
-  const [newCode, setNewCode] = useState({
-    max_uses: 1,
-    expires: "30d" as ExpiryOption,
-    notes: "",
-  })
-  const [approvingId, setApprovingId] = useState<string | null>(null)
-  const [rejectingId, setRejectingId] = useState<string | null>(null)
+  const [state, setState] = useReducer(adminInvitesReducer, initialAdminInvitesState)
+  const { activeTab, dialogOpen, justCreated, revealCopied, newCode, approvingId, rejectingId } =
+    state
 
   // History minus the ones already pending — pending get their own list above.
   const reviewedOnly = reviewedRequests.filter((r) => r.status !== "pending")
@@ -70,12 +97,14 @@ export function AdminInvitesPage() {
         expires_at: resolveExpiry(newCode.expires),
         notes: newCode.notes.trim() || null,
       })
-      setDialogOpen(false)
-      setNewCode({ max_uses: 1, expires: "30d", notes: "" })
-      setJustCreated(created)
-      setRevealCopied(false)
+      setState({
+        dialogOpen: false,
+        newCode: initialAdminInvitesState.newCode,
+        justCreated: created,
+        revealCopied: false,
+      })
       await navigator.clipboard.writeText(created.code).catch(() => {})
-      setRevealCopied(true)
+      setState({ revealCopied: true })
       toast.success("Code generated and copied to clipboard")
     } catch (err) {
       toastError(err, "Failed to create code")
@@ -86,16 +115,15 @@ export function AdminInvitesPage() {
     if (!justCreated) return
     try {
       await navigator.clipboard.writeText(justCreated.code)
-      setRevealCopied(true)
-      setTimeout(() => setRevealCopied(false), 1500)
+      setState({ revealCopied: true })
+      setTimeout(() => setState({ revealCopied: false }), 1500)
     } catch {
       toast.error("Clipboard unavailable")
     }
   }
 
   function handleDismissReveal() {
-    setJustCreated(null)
-    setRevealCopied(false)
+    setState({ justCreated: null, revealCopied: false })
   }
 
   async function handleDelete(id: string) {
@@ -111,7 +139,7 @@ export function AdminInvitesPage() {
   // request → plaintext shown once via the same reveal panel used for
   // admin_create_invite_code. The admin copies + sends manually.
   async function handleApprove(requestId: string) {
-    setApprovingId(requestId)
+    setState({ approvingId: requestId })
     try {
       const approved = await approveRequest.mutateAsync(requestId)
       const created: CreatedInviteCode = {
@@ -122,22 +150,21 @@ export function AdminInvitesPage() {
         notes: `Approved invite request: ${approved.email}`,
         created_at: approved.created_at,
       }
-      setJustCreated(created)
-      setRevealCopied(false)
+      setState({ justCreated: created, revealCopied: false })
       await navigator.clipboard.writeText(approved.code).catch(() => {})
-      setRevealCopied(true)
+      setState({ revealCopied: true })
       // Surface the code on the Codes tab so the admin can see it in context.
-      setActiveTab("codes")
+      setState({ activeTab: "codes" })
       toast.success(`Approved ${approved.email} — code copied to clipboard`)
     } catch (err) {
       toastError(err, "Failed to approve request")
     } finally {
-      setApprovingId(null)
+      setState({ approvingId: null })
     }
   }
 
   async function handleReject(requestId: string) {
-    setRejectingId(requestId)
+    setState({ rejectingId: requestId })
     try {
       const ok = await rejectRequest.mutateAsync({ requestId, notes: null })
       if (ok) toast.success("Request rejected")
@@ -145,7 +172,7 @@ export function AdminInvitesPage() {
     } catch (err) {
       toastError(err, "Failed to reject request")
     } finally {
-      setRejectingId(null)
+      setState({ rejectingId: null })
     }
   }
 
@@ -156,12 +183,12 @@ export function AdminInvitesPage() {
         dialogOpen={dialogOpen}
         newCode={newCode}
         isCreating={createCode.isPending}
-        onDialogOpenChange={setDialogOpen}
+        onDialogOpenChange={(dialogOpen) => setState({ dialogOpen })}
         onMaxUsesChange={(value) =>
-          setNewCode((prev) => ({ ...prev, max_uses: Math.max(1, Number(value)) }))
+          setState({ newCode: { ...newCode, max_uses: Math.max(1, Number(value)) } })
         }
-        onExpiryChange={(value) => setNewCode((prev) => ({ ...prev, expires: value }))}
-        onNotesChange={(value) => setNewCode((prev) => ({ ...prev, notes: value }))}
+        onExpiryChange={(value) => setState({ newCode: { ...newCode, expires: value } })}
+        onNotesChange={(value) => setState({ newCode: { ...newCode, notes: value } })}
         onCreate={handleCreate}
       />
 
@@ -174,7 +201,7 @@ export function AdminInvitesPage() {
         />
       )}
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as Tab)}>
+      <Tabs value={activeTab} onValueChange={(value) => setState({ activeTab: value as Tab })}>
         <TabsList>
           <TabsTrigger value="codes">Codes</TabsTrigger>
           <TabsTrigger value="requests" className="gap-2">

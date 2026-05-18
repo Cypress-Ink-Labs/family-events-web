@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import {
   Clock,
   Play,
@@ -131,13 +131,14 @@ interface ScheduleDialogProps {
 }
 
 function ScheduleDialog({ job, open, onOpenChange }: ScheduleDialogProps) {
-  const [schedule, setSchedule] = useState(job.schedule)
+  const [scheduleDraft, setScheduleDraft] = useState({
+    jobName: job.jobname,
+    schedule: job.schedule,
+  })
   const setScheduleMutation = useSetCronSchedule()
   const { toastError } = useAdminToast()
-
-  useEffect(() => {
-    setSchedule(job.schedule)
-  }, [job.schedule])
+  const schedule = scheduleDraft.jobName === job.jobname ? scheduleDraft.schedule : job.schedule
+  const setSchedule = (value: string) => setScheduleDraft({ jobName: job.jobname, schedule: value })
 
   async function handleSave() {
     try {

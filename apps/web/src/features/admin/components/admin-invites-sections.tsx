@@ -10,7 +10,6 @@ import {
   Ticket,
   Trash2,
 } from "lucide-react"
-import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -33,6 +32,7 @@ import {
 } from "@/components/ui/select"
 import { FormGrid, Toolbar } from "@/components/v2"
 import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
+import { useNowMs } from "@/hooks/use-now-ms"
 import type { CreatedInviteCode, InviteCode, InviteRequest } from "@/lib/types"
 
 type ExpiryOption = "7d" | "30d" | "never"
@@ -211,11 +211,7 @@ interface AdminInvitesListProps {
 }
 
 export function AdminInvitesList({ codes, onDelete }: AdminInvitesListProps) {
-  const [nowMs, setNowMs] = useState<number | null>(null)
-
-  useEffect(() => {
-    setNowMs(Date.now())
-  }, [])
+  const nowMs = useNowMs()
 
   return (
     <div className="space-y-2">

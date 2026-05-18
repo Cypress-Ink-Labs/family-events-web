@@ -38,8 +38,7 @@ setup("authenticate local admin", async ({ page }) => {
     .catch(() => false)
 
   if (isLoginFormVisible) {
-    await emailField.fill(adminEmail)
-    await passwordField.fill(adminPassword)
+    await Promise.all([emailField.fill(adminEmail), passwordField.fill(adminPassword)])
     await page.getByRole("button", { name: "Sign In" }).click()
   } else if (!page.url().match(/\/home$/)) {
     const url = page.url()

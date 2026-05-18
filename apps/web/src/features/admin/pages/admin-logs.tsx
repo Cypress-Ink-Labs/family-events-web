@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import { cn } from "@/lib/utils"
+import { useNowMs } from "@/hooks/use-now-ms"
 import { Toolbar } from "@/components/v2"
 import { useAdminSourceRuns } from "@/features/admin/hooks/use-admin-source-runs"
 import {
@@ -127,14 +128,7 @@ function ElapsedTimer({ startedAt }: { startedAt: string }) {
 
 export function AdminLogsPage() {
   const { data: logs = [] } = useAdminSourceRuns()
-  const [nowMs, setNowMs] = useState<number | null>(null)
-
-  useEffect(() => {
-    setNowMs(Date.now())
-    const id = setInterval(() => setNowMs(Date.now()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
+  const nowMs = useNowMs()
   const statusNowMs = nowMs ?? 0
   const hasRunning = logs.some(
     (r) => resolveStatus(r.status, r.started_at, statusNowMs) === "running"

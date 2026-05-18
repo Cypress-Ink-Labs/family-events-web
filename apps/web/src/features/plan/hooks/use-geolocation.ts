@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useReducer } from "react"
 import type { City } from "@/lib/types"
 
 type GeolocationSource = "browser" | "city-centroid" | "none"
@@ -38,26 +38,35 @@ function asFallbackResult(selectedCity?: City | null): GeolocationResult {
   }
 }
 
+type GeolocationAction = GeolocationResult | ((state: GeolocationResult) => GeolocationResult)
+
+function geolocationReducer(
+  state: GeolocationResult,
+  action: GeolocationAction
+): GeolocationResult {
+  return typeof action === "function" ? action(state) : action
+}
+
 export function useGeolocation(options: UseGeolocationOptions = {}): GeolocationResult {
   const { selectedCity, enabled = true, timeoutMs = DEFAULT_GEO_TIMEOUT_MS } = options
 
   const fallbackResult = useMemo(() => asFallbackResult(selectedCity), [selectedCity])
-  const [state, setState] = useState<GeolocationResult>(() =>
-    enabled ? { ...fallbackResult, status: "resolving" } : fallbackResult
+  const [state, dispatch] = useReducer(geolocationReducer, undefined, () =>
+    enabled ? { ...fallbackResult, status: "resolving" as const } : fallbackResult
   )
 
   useEffect(() => {
     if (!enabled) {
-      setState(fallbackResult)
+      dispatch(fallbackResult)
       return
     }
 
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
-      setState(fallbackResult)
+      dispatch(fallbackResult)
       return
     }
 
-    setState((current) => ({ ...current, status: "resolving" }))
+    dispatch((current) => ({ ...current, status: "resolving" }))
 
     let isClosed = false
     navigator.geolocation.getCurrentPosition(
@@ -65,7 +74,7 @@ export function useGeolocation(options: UseGeolocationOptions = {}): Geolocation
         if (isClosed) {
           return
         }
-        setState({
+        dispatch({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           source: "browser",
@@ -77,7 +86,7 @@ export function useGeolocation(options: UseGeolocationOptions = {}): Geolocation
         if (isClosed) {
           return
         }
-        setState(fallbackResult)
+        dispatch(fallbackResult)
       },
       {
         enableHighAccuracy: false,

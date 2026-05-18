@@ -1,5 +1,5 @@
 import { format, formatDistanceToNow } from "date-fns"
-import { useEffect, useState } from "react"
+import { useNowMs } from "@/hooks/use-now-ms"
 
 interface ClientDateProps {
   value: string | number | Date | null | undefined
@@ -20,12 +20,8 @@ function toDate(value: string | number | Date | null | undefined) {
 }
 
 export function ClientDate({ value, pattern, fallback = "" }: ClientDateProps) {
-  const [label, setLabel] = useState(fallback)
-
-  useEffect(() => {
-    const date = toDate(value)
-    setLabel(date ? format(date, pattern) : fallback)
-  }, [fallback, pattern, value])
+  const date = toDate(value)
+  const label = date ? format(date, pattern) : fallback
 
   return <span suppressHydrationWarning>{label}</span>
 }
@@ -35,12 +31,9 @@ export function ClientDistanceToNow({
   addSuffix = false,
   fallback = "",
 }: ClientDistanceToNowProps) {
-  const [label, setLabel] = useState(fallback)
-
-  useEffect(() => {
-    const date = toDate(value)
-    setLabel(date ? formatDistanceToNow(date, { addSuffix }) : fallback)
-  }, [addSuffix, fallback, value])
+  useNowMs(60_000)
+  const date = toDate(value)
+  const label = date ? formatDistanceToNow(date, { addSuffix }) : fallback
 
   return <span suppressHydrationWarning>{label}</span>
 }
