@@ -20,6 +20,11 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NODE_VERSION: "24"
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+  TURBO_CACHE_DIR: .turbo
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM || secrets.TURBO_TEAM }}
+  TURBO_TEAMID: ${{ vars.TURBO_TEAMID || secrets.TURBO_TEAMID }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
   changes:
@@ -150,8 +155,110 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Web check
-        run: pnpm --filter @family-events/web check
+      - name: Turbo cache proof
+        env:
+          VITE_SUPABASE_ANON_KEY: ci-anon-key
+          VITE_SUPABASE_URL: https://example.supabase.co
+        run: |
+          set -euo pipefail
+
+          proof_dir="$RUNNER_TEMP/turbo-cache-proof"
+          mkdir -p "$proof_dir"
+
+          collect_summary() {
+            local label="$1"
+            local summary
+            summary="$(find .turbo/runs -type f -name '*.json' -print 2>/dev/null | sort | tail -n 1 || true)"
+            if [ -z "$summary" ]; then
+              echo "::error::missing Turbo summary for $label"
+              exit 1
+            fi
+            cp "$summary" "$proof_dir/turbo-summary-$label.json"
+          }
+
+          rm -rf .turbo/runs
+          pnpm exec turbo run check build --filter=@family-events/web --summarize --output-logs=hash-only 2>&1 \
+            | tee "$proof_dir/turbo-check-build.log"
+          collect_summary warm
+
+          remote_expected=0
+          if [ -n "${TURBO_TOKEN:-}" ] && { [ -n "${TURBO_TEAM:-}" ] || [ -n "${TURBO_TEAMID:-}" ]; }; then
+            remote_expected=1
+            rm -rf .turbo/cache .turbo/runs
+            pnpm exec turbo run build --filter=@family-events/web --summarize --output-logs=hash-only 2>&1 \
+              | tee "$proof_dir/turbo-remote-read.log"
+            collect_summary remote
+          else
+            echo "remote cache skipped: TURBO_TOKEN plus TURBO_TEAM/TURBO_TEAMID not available" \
+              | tee "$proof_dir/turbo-remote-read.log"
+          fi
+
+          TURBO_PROOF_DIR="$proof_dir" REMOTE_EXPECTED="$remote_expected" node <<'NODE'
+          const fs = require("node:fs")
+          const path = require("node:path")
+
+          const proofDir = process.env.TURBO_PROOF_DIR
+          const remoteExpected = process.env.REMOTE_EXPECTED === "1"
+          const summaryFiles = fs
+            .readdirSync(proofDir)
+            .filter((name) => name.startsWith("turbo-summary-") && name.endsWith(".json"))
+            .sort()
+
+          const rows = []
+          let remoteWebBuild = null
+
+          for (const file of summaryFiles) {
+            const summary = JSON.parse(fs.readFileSync(path.join(proofDir, file), "utf8"))
+            for (const task of summary.tasks ?? []) {
+              const cache = task.cache ?? {}
+              rows.push({
+                summary: file.replace(/^turbo-summary-/, "").replace(/\.json$/, ""),
+                task: task.taskId,
+                status: cache.status ?? "UNKNOWN",
+                local: String(Boolean(cache.local)),
+                remote: String(Boolean(cache.remote)),
+                outputs: (task.outputs ?? []).join("<br>"),
+              })
+              if (file === "turbo-summary-remote.json" && task.taskId === "@family-events/web#build") {
+                remoteWebBuild = task
+              }
+            }
+          }
+
+          if (remoteExpected) {
+            const cache = remoteWebBuild?.cache ?? {}
+            if (cache.status !== "HIT" || cache.remote !== true) {
+              console.error(
+                `remote cache proof failed for @family-events/web#build: status=${cache.status ?? "missing"} remote=${cache.remote ?? "missing"}`
+              )
+              process.exit(1)
+            }
+          }
+
+          const lines = [
+            "# Turbo cache proof",
+            "",
+            `remote cache configured: ${remoteExpected ? "yes" : "no"}`,
+            "",
+            "| summary | task | status | local | remote | outputs |",
+            "| --- | --- | --- | --- | --- | --- |",
+            ...rows.map(
+              (row) =>
+                `| ${row.summary} | ${row.task} | ${row.status} | ${row.local} | ${row.remote} | ${row.outputs} |`
+            ),
+            "",
+          ]
+
+          fs.writeFileSync(path.join(proofDir, "turbo-cache-report.md"), lines.join("\n"))
+          NODE
+
+      - name: Upload Turbo cache proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: turbo-cache-proof
+          path: ${{ runner.temp }}/turbo-cache-proof/
+          retention-days: 7
 
   # E2E (needs local Supabase — can't run on RWX)
   verify:

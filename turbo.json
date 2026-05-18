@@ -24,7 +24,38 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "out/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
+    },
+    "@family-events/web#build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "dist/**",
+        "../../node_modules/.tmp/apps-web*.tsbuildinfo"
+      ]
+    },
+    "@family-events/design-system#build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "src/generated/**",
+        "../../apps/web/src/styles/tokens.generated.css",
+        "../../apps/ios/Packages/FEDesignSystem/Sources/FEDesignSystem/Generated/Tokens.swift",
+        "../../apps/android/designsystem/src/main/java/com/familyevents/designsystem/generated/Tokens.kt"
+      ]
+    },
+    "@family-events/android#build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "*/build/outputs/**",
+        "*/build/reports/**",
+        "*/build/test-results/**",
+        "build/reports/**"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"],
