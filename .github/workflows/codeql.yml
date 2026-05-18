@@ -7,7 +7,6 @@ on:
     paths:
       - "apps/web/**"
       - "apps/android/**"
-      - "apps/ios/**"
       - "packages/**"
       - "supabase/functions/**"
       - "package.json"
@@ -20,7 +19,6 @@ on:
     paths:
       - "apps/web/**"
       - "apps/android/**"
-      - "apps/ios/**"
       - "packages/**"
       - "supabase/functions/**"
       - "package.json"
@@ -63,6 +61,15 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            {
+              echo "android=true"
+              echo "ios=true"
+              echo "web=true"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             base="${{ github.event.pull_request.base.sha }}"
             head="${{ github.event.pull_request.head.sha }}"
@@ -100,10 +107,6 @@ jobs:
 
           if matches '^apps/android/' '^\.github/workflows/codeql\.yml$'; then
             android=true
-          fi
-
-          if matches '^apps/ios/' '^\.github/workflows/codeql\.yml$'; then
-            ios=true
           fi
 
           {
