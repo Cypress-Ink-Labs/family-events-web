@@ -66,6 +66,9 @@ test("turbo declares measurable build outputs for web, design-system, and androi
   assert.deepEqual(turbo.tasks.build.dependsOn, ["^build"])
   assert.match(turbo.tasks.build.outputs.join("\n"), /^dist\/\*\*$/m)
   assert.match(turbo.tasks.build.outputs.join("\n"), /^build\/\*\*$/m)
+  assert.match(turbo.tasks.build.outputs.join("\n"), /^out\/\*\*$/m)
+  assert.match(turbo.tasks.build.outputs.join("\n"), /^\.next\/\*\*$/m)
+  assert.match(turbo.tasks.build.outputs.join("\n"), /^!\.next\/cache\/\*\*$/m)
 
   assert.deepEqual(turbo.tasks["@family-events/web#build"].dependsOn, ["^build"])
   assert.match(
