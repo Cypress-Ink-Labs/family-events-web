@@ -1,61 +1,306 @@
 name: codeql
 
-# CodeQL SAST scan. Runs weekly + on PRs touching web/shared code, plus pushes to main.
-# Independent from ci.yml because it is slow (~5 min) and shouldn't gate
-# every PR's typical lint/test cycle. Findings appear under the repo's
-# Security tab.
-
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
     paths:
       - "apps/web/**"
+      - "apps/android/**"
+      - "apps/ios/**"
       - "packages/**"
       - "supabase/functions/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
+      - "turbo.json"
+      - ".github/workflows/codeql.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "apps/android/**"
+      - "apps/ios/**"
+      - "packages/**"
+      - "supabase/functions/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "turbo.json"
       - ".github/workflows/codeql.yml"
   schedule:
-    - cron: "0 4 * * 1" # weekly Monday 04:00 UTC
+    - cron: "0 4 * * 1"
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
-jobs:
-  analyze:
-    name: analyze ${{ matrix.language }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      security-events: write
-      packages: read
-      actions: read
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [javascript-typescript]
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  NODE_VERSION: "24"
 
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      android: ${{ steps.filter.outputs.android }}
+      ios: ${{ steps.filter.outputs.ios }}
+      web: ${{ steps.filter.outputs.web }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect changed areas
+        id: filter
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+            head="${{ github.event.pull_request.head.sha }}"
+          elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+          else
+            {
+              echo "android=true"
+              echo "ios=true"
+              echo "web=true"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          files="$(git diff --name-only "$base...$head")"
+
+          matches() {
+            local pattern
+            for pattern in "$@"; do
+              if printf '%s\n' "$files" | grep -Eq "$pattern"; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          android=false
+          ios=false
+          web=false
+
+          if matches '^(apps/web|packages|supabase/functions)/' '^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json|\.github/workflows/codeql\.yml)$'; then
+            web=true
+          fi
+
+          if matches '^apps/android/' '^\.github/workflows/codeql\.yml$'; then
+            android=true
+          fi
+
+          if matches '^apps/ios/' '^\.github/workflows/codeql\.yml$'; then
+            ios=true
+          fi
+
+          {
+            echo "android=$android"
+            echo "ios=$ios"
+            echo "web=$web"
+          } >> "$GITHUB_OUTPUT"
+
+  web:
+    name: web javascript-typescript
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@1521896cd211af95be3f02edf6f436e10b819c27 # v3.35.4
+        uses: github/codeql-action/init@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
         with:
-          languages: ${{ matrix.language }}
-          # The default query suite is "code-scanning"; security-extended adds
-          # broader CWE coverage without the false-positive churn of
-          # security-and-quality. Worth the slight extra runtime.
-          queries: security-extended
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@1521896cd211af95be3f02edf6f436e10b819c27 # v3.35.4
+          languages: javascript-typescript
+          queries: +security-extended,security-and-quality
+          source-root: .
 
       - name: Analyze
-        uses: github/codeql-action/analyze@1521896cd211af95be3f02edf6f436e10b819c27 # v3.35.4
+        uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
         with:
-          category: "/language:${{ matrix.language }}"
+          category: /language:javascript-typescript
+          output: codeql-results
+          upload: never
+          upload-database: false
+
+      - name: Upload SARIF
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-web-sarif
+          path: codeql-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  android:
+    name: android java-kotlin
+    needs: changes
+    if: needs.changes.outputs.android == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-cleanup: never
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Cache Android SDK 36
+        id: android-sdk-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/platforms/android-36
+            ${{ env.ANDROID_HOME }}/build-tools/36.0.0
+            ${{ env.ANDROID_HOME }}/licenses
+          key: ${{ runner.os }}-android-sdk-platform-36-build-tools-36.0.0
+
+      - name: Install Android SDK 36
+        if: steps.android-sdk-cache.outputs.cache-hit != 'true'
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+        with:
+          build-mode: manual
+          languages: java-kotlin
+          queries: +security-extended,security-and-quality
+          source-root: apps/android
+
+      - name: Build for CodeQL
+        run: cd apps/android && scripts/with-android-env.sh ./gradlew --build-cache --configuration-cache assembleDebug
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+        with:
+          category: /language:java-kotlin
+          output: codeql-results
+          upload: never
+          upload-database: false
+
+      - name: Upload SARIF
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-android-sarif
+          path: codeql-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  ios:
+    name: ios swift
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
+    runs-on: macos-26
+    timeout-minutes: 25
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Select Xcode 26
+        run: |
+          if [ -d /Applications/Xcode_26.4.1.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          else
+            sudo xcode-select -s /Applications/Xcode_26.5.0.app/Contents/Developer
+          fi
+          xcodebuild -version
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/family-events-swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
+
+      - name: Cache Xcode build data
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/FamilyEventsCodeQL
+          key: ${{ runner.os }}-xcode-codeql-familyevents-${{ hashFiles('apps/ios/project.yml', 'apps/ios/**/*.swift', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-codeql-familyevents-
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+        with:
+          build-mode: manual
+          languages: swift
+          queries: +security-extended,security-and-quality
+          source-root: apps/ios
+
+      - name: Generate iOS project
+        run: cd apps/ios && xcodegen generate
+
+      - name: Build for CodeQL
+        run: |
+          cd apps/ios
+          mkdir -p "$HOME/Library/Caches/family-events-swiftpm"
+          xcodebuild \
+            -project FamilyEvents.xcodeproj \
+            -scheme FamilyEvents \
+            -destination "generic/platform=iOS Simulator" \
+            -clonedSourcePackagesDirPath "$HOME/Library/Caches/family-events-swiftpm" \
+            -derivedDataPath "$HOME/Library/Developer/Xcode/DerivedData/FamilyEventsCodeQL" \
+            -quiet \
+            build
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
+        with:
+          category: /language:swift
+          output: codeql-results
+          upload: never
+          upload-database: false
+
+      - name: Upload SARIF
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-ios-sarif
+          path: codeql-results/
+          if-no-files-found: ignore
+          retention-days: 14
