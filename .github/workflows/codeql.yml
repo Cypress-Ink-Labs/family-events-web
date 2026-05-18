@@ -207,7 +207,7 @@ jobs:
           source-root: apps/android
 
       - name: Build for CodeQL
-        run: cd apps/android && scripts/with-android-env.sh ./gradlew --build-cache --configuration-cache assembleDebug
+        run: cd apps/android && scripts/with-android-env.sh ./gradlew --no-build-cache --no-configuration-cache clean assembleDebug
 
       - name: Analyze
         uses: github/codeql-action/analyze@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
