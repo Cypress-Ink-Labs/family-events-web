@@ -2,18 +2,18 @@ name: codeql
 
 on:
   workflow_dispatch:
-  push:
-    # branches: [main]
-    paths:
-      - "apps/web/**"
-      - "apps/android/**"
-      - "packages/**"
-      - "supabase/functions/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - "turbo.json"
-      - ".github/workflows/codeql.yml"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "apps/web/**"
+  #     - "apps/android/**"
+  #     - "packages/**"
+  #     - "supabase/functions/**"
+  #     - "package.json"
+  #     - "pnpm-lock.yaml"
+  #     - "pnpm-workspace.yaml"
+  #     - "turbo.json"
+  #     - ".github/workflows/codeql.yml"
   pull_request:
     branches: [main]
     paths:
