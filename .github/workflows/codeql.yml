@@ -3,7 +3,7 @@ name: codeql
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    # branches: [main]
     paths:
       - "apps/web/**"
       - "apps/android/**"
