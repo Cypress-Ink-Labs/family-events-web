@@ -49,6 +49,7 @@ describe("AdminEventsList", () => {
       status: "draft",
       ai_confidence: null,
       ai_tag_provider: null,
+      ai_tag_model: null,
       recurrence_info: null,
       is_featured: false,
       view_count: 0,

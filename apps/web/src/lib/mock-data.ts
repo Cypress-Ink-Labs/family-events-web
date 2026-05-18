@@ -207,6 +207,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.95,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: true,
     view_count: 142,
@@ -273,6 +275,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.88,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 89,
@@ -331,6 +335,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.92,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 203,
@@ -397,6 +403,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.91,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 67,
@@ -463,6 +471,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.87,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 55,
@@ -521,6 +531,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.93,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: true,
     view_count: 178,
@@ -587,6 +599,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.89,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 91,
@@ -645,6 +659,8 @@ export const MOCK_EVENTS: EventWithDetails[] = [
     status: "published",
     ai_confidence: 0.94,
     ai_tag_provider: "openai",
+
+    ai_tag_model: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 63,

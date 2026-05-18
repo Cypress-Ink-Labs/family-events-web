@@ -354,6 +354,9 @@ function EventCard({
                 <span className="flex items-center gap-1">
                   <Bot className="size-3" />
                   {formatProviderLabel(event.ai_tag_provider)}
+                  {event.ai_tag_model && (
+                    <span className="text-muted-foreground/70">· {event.ai_tag_model}</span>
+                  )}
                 </span>
               )}
             </div>
