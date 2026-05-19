@@ -127,7 +127,7 @@ test("iOS platform SDK imports stay in adapter packages", () => {
   }
 })
 
-test("Android platform SDK imports stay in data/app assembly", () => {
+test("Android platform SDK imports stay in data/admin/app assembly", () => {
   const kotlinFiles = walk(path.join(repoRoot, "apps", "android"), [".kt"])
   const dataSdkImport = /^\s*import\s+(?:io\.github\.jan\.supabase|io\.ktor)\b/m
   const roomImport = /^\s*import\s+androidx\.room\b/m
@@ -136,10 +136,11 @@ test("Android platform SDK imports stay in data/app assembly", () => {
     const rel = relative(filePath)
     const source = read(filePath)
     const inData = rel.startsWith("apps/android/data/")
+    const inAdmin = rel.startsWith("apps/android/admin/")
     const inApp = rel.startsWith("apps/android/app/")
 
-    if (!inData) {
-      assert.doesNotMatch(source, dataSdkImport, `${rel} must use :data repositories instead of data SDK imports`)
+    if (!inData && !inAdmin) {
+      assert.doesNotMatch(source, dataSdkImport, `${rel} must use :data or :admin adapters instead of data SDK imports`)
     }
 
     if (!inData && !inApp) {
@@ -165,9 +166,10 @@ test("mobile package manifests keep external data SDK dependencies in adapter mo
     const rel = relative(filePath)
     const source = read(filePath)
     const inData = rel === "apps/android/data/build.gradle.kts"
+    const inAdmin = rel === "apps/android/admin/build.gradle.kts"
     const inApp = rel === "apps/android/app/build.gradle.kts"
 
-    if (!inData) {
+    if (!inData && !inAdmin) {
       assert.doesNotMatch(source, /libs\.(?:supabase|ktor)\b/, `${rel} must not depend on Supabase/Ktor directly`)
     }
 
