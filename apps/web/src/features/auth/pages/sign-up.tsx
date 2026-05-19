@@ -50,6 +50,17 @@ export function SignUpPage() {
   const requiresInvite = resolveInviteRequirement(inviteRequired, inviteCheckFailed)
 
   async function handleProviderSignIn(provider: "apple" | "google") {
+    // Closed-beta gate: Supabase OAuth would create a user without ever
+    // touching our invite tables (pending_invite_claims). Refuse the
+    // signup path here until the server-side auth.users trigger covered
+    // in docs/auth-providers.md §4 lands.
+    if (requiresInvite) {
+      toast.error("Invite required", {
+        description:
+          "Closed beta — request an invite code, then sign up with email or use a provider on the sign-in page.",
+      })
+      return
+    }
     setState({ loading: true })
     const { error } = await signInWithProvider(provider)
     if (error) {
