@@ -279,7 +279,9 @@ export function SignInPage() {
                     <span className="w-full border-t border-border/60" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
