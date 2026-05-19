@@ -20,15 +20,6 @@ describe("useNowMs", () => {
     const listener = vi.fn()
     const intervalMs = 500
 
-    // Extract the subscribe callback from useNowMs
-    // useCallback returns (listener) => { ... }
-    const subscribe = useNowMs.bind(null, intervalMs)
-
-    // We need to get the subscribe function that useNowMs creates
-    // Since we can't easily extract it without rendering, we'll test via the actual implementation
-    // by calling setInterval directly with fake timers
-    const beforeTime = Date.now()
-
     // Simulate what the hook does internally
     const id = setInterval(() => {
       listener()
@@ -51,7 +42,6 @@ describe("useNowMs", () => {
     const intervalMs = 1000
 
     vi.setSystemTime(10000)
-    const startTime = Date.now()
 
     const id = setInterval(() => {
       listener()
