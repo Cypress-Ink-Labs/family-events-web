@@ -30,7 +30,10 @@ interface AuthStore {
   _syncSession: (session: Session | null, force?: boolean) => Promise<void>
   initAuth: () => () => void
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
-  signInWithProvider: (provider: "apple" | "google") => Promise<{ error: Error | null }>
+  signInWithProvider: (
+    provider: "apple" | "google",
+    options?: { next?: string }
+  ) => Promise<{ error: Error | null }>
   signUp: (email: string, password: string, displayName: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
@@ -205,7 +208,7 @@ export const useAuthStore = create<AuthStore>()(
         return { error }
       },
 
-      async signInWithProvider(provider) {
+      async signInWithProvider(provider, options) {
         // Hosted OAuth bounces the browser to the provider, then back to
         // /auth/callback with a #access_token URL hash. The callback page hands
         // the session to supabase-js which fires onAuthStateChange → _syncSession.
@@ -215,13 +218,16 @@ export const useAuthStore = create<AuthStore>()(
         // Production hardening is tracked in docs/auth-providers.md §4 — the
         // canonical fix is an auth.users INSERT trigger that rejects new
         // OAuth users when invites_required = true AND no claim row exists
-        // for their email. Until that lands, treat OAuth as "any Apple/Google
-        // account creates a user" — acceptable for staging, NOT for closed
-        // beta.
+        // for their email. UI callers (sign-in, sign-up) compensate by hiding
+        // the provider buttons whenever invites_required is true.
+        const callback = new URL(`${window.location.origin}/auth/callback`)
+        if (options?.next) {
+          callback.searchParams.set("next", options.next)
+        }
         const { error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
+            redirectTo: callback.toString(),
             // Apple: scopes default to "email name" — sufficient for our display_name.
             // Google: also defaults to email + profile.
             queryParams:

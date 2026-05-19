@@ -1,5 +1,5 @@
-import { useReducer } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useEffect, useReducer } from "react"
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { Ticket } from "lucide-react"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Button } from "@/components/ui/button"
@@ -63,6 +63,20 @@ export function SignInPage() {
   const [state, setState] = useReducer(signInReducer, signInInitialState)
   const { mode, email, password, inviteCode, loading } = state
 
+  // Surface the OAuth callback failure flag so users who got bounced back
+  // see why instead of staring at a silent sign-in form.
+  const [searchParams, setSearchParams] = useSearchParams()
+  useEffect(() => {
+    if (searchParams.get("oauth_failed") === "1") {
+      toast.error("Couldn't finish sign-in", {
+        description: "The provider redirect didn't complete. Try again, or use a different method.",
+      })
+      const next = new URLSearchParams(searchParams)
+      next.delete("oauth_failed")
+      setSearchParams(next, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
+
   async function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault()
     setState({ loading: true })
@@ -79,8 +93,19 @@ export function SignInPage() {
   }
 
   async function handleProviderSignIn(provider: "apple" | "google") {
+    // Closed-beta guard: even on sign-in, Supabase OAuth will silently
+    // create a brand-new user when the provider email is unknown — which
+    // would slip past pending_invite_claims. Refuse here until the
+    // server-side auth.users trigger covered in docs/auth-providers.md §4
+    // lands.
+    if (requiresInvite) {
+      toast.error("Invite required", {
+        description: "Closed beta — sign in with email after redeeming an invite code.",
+      })
+      return
+    }
     setState({ loading: true })
-    const { error } = await signInWithProvider(provider)
+    const { error } = await signInWithProvider(provider, { next: redirectTo })
     if (error) {
       setState({ loading: false })
       toast.error(`Couldn't sign in with ${provider === "apple" ? "Apple" : "Google"}`, {
@@ -272,7 +297,7 @@ export function SignInPage() {
                 </button>
               </form>
             )}
-            {mode !== "magic-sent" && (
+            {mode !== "magic-sent" && !requiresInvite && (
               <>
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">

@@ -1,9 +1,17 @@
 import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
 import { HOME_PATH } from "@/lib/access-control"
+
+// Sanitize ?next= the same way sign-in.tsx sanitizes location.state.from —
+// only accept in-app paths, never a full URL or // scheme-relative redirect.
+function safeNext(raw: string | null): string {
+  if (typeof raw !== "string") return HOME_PATH
+  if (!raw.startsWith("/") || raw.startsWith("//")) return HOME_PATH
+  return raw
+}
 
 /**
  * OAuth providers (Apple, Google) bounce back here with the session payload
@@ -13,13 +21,15 @@ import { HOME_PATH } from "@/lib/access-control"
  */
 export function OAuthCallbackPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const session = useAuth().session
+  const next = safeNext(searchParams.get("next"))
 
   useEffect(() => {
     if (session) {
-      navigate(HOME_PATH, { replace: true })
+      navigate(next, { replace: true })
     }
-  }, [session, navigate])
+  }, [session, navigate, next])
 
   // Hard fallback: if no session after 8s, send the user back to /sign-in
   // with a humanized hint instead of leaving them on an empty loader.
