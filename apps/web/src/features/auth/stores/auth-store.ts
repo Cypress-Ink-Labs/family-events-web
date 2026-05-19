@@ -30,6 +30,7 @@ interface AuthStore {
   _syncSession: (session: Session | null, force?: boolean) => Promise<void>
   initAuth: () => () => void
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
+  signInWithProvider: (provider: "apple" | "google") => Promise<{ error: Error | null }>
   signUp: (email: string, password: string, displayName: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
@@ -204,6 +205,23 @@ export const useAuthStore = create<AuthStore>()(
         return { error }
       },
 
+      async signInWithProvider(provider) {
+        // Hosted OAuth bounces the browser to the provider, then back to
+        // /auth/callback with a #access_token URL hash. The callback page hands
+        // the session to supabase-js which fires onAuthStateChange → _syncSession.
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            // Apple: scopes default to "email name" — sufficient for our display_name.
+            // Google: also defaults to email + profile.
+            queryParams:
+              provider === "google" ? { access_type: "offline", prompt: "consent" } : undefined,
+          },
+        })
+        return { error: error ?? null }
+      },
+
       async signUp(email, password, displayName) {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -279,6 +297,7 @@ export function useAuth() {
       isEnabled: s.access?.is_enabled === true,
       isLoading: s.isLoading,
       signIn: s.signIn,
+      signInWithProvider: s.signInWithProvider,
       signUp: s.signUp,
       signOut: s.signOut,
       refreshProfile: s.refreshProfile,

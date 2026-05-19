@@ -85,6 +85,11 @@ const ResetPasswordPage = lazy(() =>
     default: module.ResetPasswordPage,
   }))
 )
+const OAuthCallbackPage = lazy(() =>
+  import("@/features/auth/pages/oauth-callback").then((module) => ({
+    default: module.OAuthCallbackPage,
+  }))
+)
 
 const AdminDashboardPage = lazy(() =>
   import("@/features/admin/pages/admin-dashboard").then((module) => ({
@@ -230,9 +235,10 @@ export default function App() {
                     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   </Route>
 
-                  {/* /reset-password lives outside PublicOnlyRoute because the
-                      recovery email creates a session before the user arrives. */}
+                  {/* /reset-password and /auth/callback live outside PublicOnlyRoute because
+                      they are the landing point of a redirect that may carry a fresh session. */}
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
+                  <Route path="/auth/callback" element={<OAuthCallbackPage />} />
 
                   <Route element={<ProtectedRoute />}>
                     <Route element={<AppLayout />}>
