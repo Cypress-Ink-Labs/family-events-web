@@ -41,10 +41,17 @@ jobs:
       - name: Detect changed areas
         id: filter
         shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          PUSH_AFTER_SHA: ${{ github.event.after }}
         run: |
           set -euo pipefail
 
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
+          # workflow_dispatch always runs everything (manual override).
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             {
               echo "web=true"
               echo "verify=true"
@@ -54,9 +61,34 @@ jobs:
             exit 0
           fi
 
-          base="${{ github.event.pull_request.base.sha }}"
-          head="${{ github.event.pull_request.head.sha }}"
-          files="$(git diff --name-only "$base...$head")"
+          # Resolve diff range per event type.
+          # - pull_request: base...head
+          # - push: before...after (force-pushes still give the old tip as 'before')
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            range="${PR_BASE_SHA}...${PR_HEAD_SHA}"
+          else
+            head="$PUSH_AFTER_SHA"
+            base="$PUSH_BEFORE_SHA"
+            # First push to a branch reports an all-zero 'before'. Fall back to
+            # diffing against the parent commit so we don't accidentally
+            # short-circuit everything.
+            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+              base="$(git rev-parse "${head}^" 2>/dev/null || echo "")"
+            fi
+            if [ -z "$base" ]; then
+              # No parent (initial commit) — run everything.
+              {
+                echo "web=true"
+                echo "verify=true"
+                echo "ios=true"
+                echo "android=true"
+              } >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            range="${base}..${head}"
+          fi
+
+          files="$(git diff --name-only "$range")"
 
           matches() {
             local pattern
