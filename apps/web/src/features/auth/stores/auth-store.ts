@@ -209,6 +209,15 @@ export const useAuthStore = create<AuthStore>()(
         // Hosted OAuth bounces the browser to the provider, then back to
         // /auth/callback with a #access_token URL hash. The callback page hands
         // the session to supabase-js which fires onAuthStateChange → _syncSession.
+        //
+        // KNOWN LIMITATION: this path bypasses the invite-only gate that
+        // password/magic-link signup enforces via pending_invite_claims.
+        // Production hardening is tracked in docs/auth-providers.md §4 — the
+        // canonical fix is an auth.users INSERT trigger that rejects new
+        // OAuth users when invites_required = true AND no claim row exists
+        // for their email. Until that lands, treat OAuth as "any Apple/Google
+        // account creates a user" — acceptable for staging, NOT for closed
+        // beta.
         const { error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
