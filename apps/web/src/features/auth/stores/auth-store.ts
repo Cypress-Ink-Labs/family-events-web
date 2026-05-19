@@ -213,13 +213,10 @@ export const useAuthStore = create<AuthStore>()(
         // /auth/callback with a #access_token URL hash. The callback page hands
         // the session to supabase-js which fires onAuthStateChange → _syncSession.
         //
-        // KNOWN LIMITATION: this path bypasses the invite-only gate that
-        // password/magic-link signup enforces via pending_invite_claims.
-        // Production hardening is tracked in docs/auth-providers.md §4 — the
-        // canonical fix is an auth.users INSERT trigger that rejects new
-        // OAuth users when invites_required = true AND no claim row exists
-        // for their email. UI callers (sign-in, sign-up) compensate by hiding
-        // the provider buttons whenever invites_required is true.
+        // Closed-beta OAuth is enforced server-side by the
+        // private.enforce_invited_oauth_signup auth.users trigger. If invites are
+        // required and no pending_invite_claims row exists for this email, Supabase
+        // rejects new Google/Apple users before profile/access rows are created.
         const callback = new URL(`${window.location.origin}/auth/callback`)
         if (options?.next) {
           callback.searchParams.set("next", options.next)
