@@ -233,6 +233,7 @@ export interface Event {
   status: "draft" | "published" | "rejected" | "archived"
   ai_confidence: number | null
   ai_tag_provider: AiTagProvider | null
+  ai_tag_model: string | null
   recurrence_info: Json | null
   is_featured: boolean
   is_outdoor: boolean | null

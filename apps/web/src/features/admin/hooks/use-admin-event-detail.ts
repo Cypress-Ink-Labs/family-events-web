@@ -8,7 +8,7 @@ import { normalizeAiTrace } from "./admin-types"
 import type { EventAiTrace } from "@/lib/types"
 
 const ADMIN_EVENT_EDITOR_SELECT =
-  "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, recurrence_info, is_featured, is_outdoor, view_count, search_vector, created_at, updated_at, admin_locked_fields, admin_last_edited_at, admin_last_edited_by"
+  "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, ai_tag_model, recurrence_info, is_featured, is_outdoor, view_count, search_vector, created_at, updated_at, admin_locked_fields, admin_last_edited_at, admin_last_edited_by"
 
 export function useAdminEventDetail(eventId: string | undefined) {
   return useQuery({

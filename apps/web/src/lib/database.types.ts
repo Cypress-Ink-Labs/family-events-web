@@ -384,6 +384,7 @@ export type Database = {
           age_max: number | null
           age_min: number | null
           ai_confidence: number | null
+          ai_tag_model: string | null
           ai_tag_provider: string | null
           city_id: string | null
           created_at: string
@@ -418,6 +419,7 @@ export type Database = {
           age_max?: number | null
           age_min?: number | null
           ai_confidence?: number | null
+          ai_tag_model?: string | null
           ai_tag_provider?: string | null
           city_id?: string | null
           created_at?: string
@@ -452,6 +454,7 @@ export type Database = {
           age_max?: number | null
           age_min?: number | null
           ai_confidence?: number | null
+          ai_tag_model?: string | null
           ai_tag_provider?: string | null
           city_id?: string | null
           created_at?: string
@@ -1363,6 +1366,7 @@ export type Database = {
           age_max: number | null
           age_min: number | null
           ai_confidence: number | null
+          ai_tag_model: string | null
           ai_tag_provider: string | null
           city_id: string | null
           created_at: string

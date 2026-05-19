@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react"
+import { useCallback, useSyncExternalStore } from "react"
 
 let nowMs = Date.now()
 
@@ -11,16 +11,15 @@ function getServerSnapshot() {
 }
 
 export function useNowMs(intervalMs = 1000) {
-  return useSyncExternalStore(
-    (listener) => {
-      nowMs = Date.now()
+  const subscribe = useCallback(
+    (listener: () => void) => {
       const id = window.setInterval(() => {
         nowMs = Date.now()
         listener()
       }, intervalMs)
       return () => window.clearInterval(id)
     },
-    getSnapshot,
-    getServerSnapshot
+    [intervalMs]
   )
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 }
