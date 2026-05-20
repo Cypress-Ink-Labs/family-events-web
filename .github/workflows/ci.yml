@@ -105,7 +105,7 @@ jobs:
           ios=false
           android=false
 
-          if matches '^(apps/web|packages|supabase|scripts)/' '^(\.github/workflows/ci\.yml|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json)$'; then
+          if matches '^(apps/web|packages|supabase|scripts|tests|infra|\.spacelift)/' '^(\.github/workflows/ci\.yml|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json)$'; then
             web=true
             verify=true
           fi
