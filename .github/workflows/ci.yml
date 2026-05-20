@@ -335,6 +335,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Workspace guard tests
+        run: pnpm run workspace:test
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
