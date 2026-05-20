@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { supabase } from "@/lib/supabase"
-import type { CronJob, CronRun } from "./admin-types"
+import type { CronJob, CronRun, RailwayCronJob, RailwayCronRun } from "./admin-types"
 
 export function useAdminCronJobs() {
   return useQuery({
@@ -62,6 +62,33 @@ export function useSetCronSchedule() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.cronJobs })
     },
+  })
+}
+
+export function useAdminRailwayCronJobs() {
+  return useQuery({
+    queryKey: qk.admin.railwayCronJobs,
+    queryFn: async (): Promise<RailwayCronJob[]> => {
+      const { data, error } = await supabase.rpc("admin_list_railway_cron_jobs")
+      if (error) throw error
+      return (data ?? []) as RailwayCronJob[]
+    },
+    refetchInterval: 30_000,
+  })
+}
+
+export function useAdminRailwayCronHistory(label?: string) {
+  return useQuery({
+    queryKey: qk.admin.railwayCronHistory(label),
+    queryFn: async (): Promise<RailwayCronRun[]> => {
+      const { data, error } = await supabase.rpc("admin_railway_cron_run_history", {
+        p_label: label ?? undefined,
+        p_limit: 50,
+      })
+      if (error) throw error
+      return (data ?? []) as RailwayCronRun[]
+    },
+    refetchInterval: 30_000,
   })
 }
 

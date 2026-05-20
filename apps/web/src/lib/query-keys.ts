@@ -214,5 +214,10 @@ export const qk = {
       jobName
         ? (["admin", "cron-history", jobName] as const)
         : (["admin", "cron-history"] as const),
+    railwayCronJobs: ["admin", "railway-cron-jobs"] as const,
+    railwayCronHistory: (label?: string) =>
+      label
+        ? (["admin", "railway-cron-history", label] as const)
+        : (["admin", "railway-cron-history"] as const),
   },
 } as const

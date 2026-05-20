@@ -32,11 +32,14 @@ import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import {
   useAdminCronJobs,
   useAdminCronHistory,
+  useAdminRailwayCronJobs,
+  useAdminRailwayCronHistory,
   useToggleCronJob,
   useSetCronSchedule,
   useRunDueScrapes,
 } from "@/features/admin/hooks/use-admin-crons"
-import type { CronJob, CronRun } from "@/features/admin/hooks/admin-types"
+import type { CronJob, CronRun, RailwayCronJob } from "@/features/admin/hooks/admin-types"
+import { railwayCronRunToCronRun } from "@/features/admin/hooks/admin-types"
 
 const SCHEDULE_PRESETS = [
   { label: "Every 30 min", value: "*/30 * * * *" },
@@ -324,6 +327,58 @@ function CronJobCard({ job }: CronJobCardProps) {
   )
 }
 
+function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
+  const label = job.label
+    .split("-")
+    .map((p) => p[0].toUpperCase() + p.slice(1))
+    .join(" ")
+
+  return (
+    <Card className="@container/cron-card border-border/60">
+      <CardContent className="space-y-3 p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
+            <CalendarClock className="size-5 text-muted-foreground" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="break-all font-display text-sm font-medium text-foreground">
+                {job.label}
+              </h3>
+              <Badge variant="secondary" className="text-[10px]">
+                Railway
+              </Badge>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          {job.last_run_status ? (
+            <>
+              <RunStatusBadge status={job.last_run_status} />
+              {job.last_run_at && (
+                <span>
+                  <ClientDistanceToNow value={job.last_run_at} addSuffix />
+                </span>
+              )}
+              {job.last_run_duration_s != null && (
+                <span className="font-mono tabular-nums">{job.last_run_duration_s}s</span>
+              )}
+              {job.last_http_status != null && (
+                <span className="font-mono tabular-nums text-muted-foreground/60">
+                  HTTP {job.last_http_status}
+                </span>
+              )}
+            </>
+          ) : (
+            <span>Never run</span>
+          )}
+        </div>
+        <p className="truncate font-mono text-[10px] text-muted-foreground/60">{label}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
 function RunHistoryRow({ run }: { run: CronRun }) {
   const key = normalizeCronStatus(run.status)
   const cfg = STATUS_CONFIG[key]
@@ -447,10 +502,20 @@ function RunHistory({ history, selectedDomain }: { history: CronRun[]; selectedD
 export function AdminCronsPage() {
   const { data: jobs = [], isLoading: jobsLoading } = useAdminCronJobs()
   const { data: history = [] } = useAdminCronHistory()
+  const { data: railwayJobs = [], isLoading: railwayJobsLoading } = useAdminRailwayCronJobs()
+  const { data: railwayHistory = [] } = useAdminRailwayCronHistory()
   const runDueScrapes = useRunDueScrapes()
   const { toastError } = useAdminToast()
   const [selectedDomain, setSelectedDomain] = useState(ALL_RUNS_DOMAIN)
-  const historyGroups = useMemo(() => groupCronRunsByDomain(history), [history])
+
+  const combinedHistory = useMemo(() => {
+    const normalized = railwayHistory.map(railwayCronRunToCronRun)
+    return [...history, ...normalized].sort(
+      (a, b) => Date.parse(b.start_time) - Date.parse(a.start_time)
+    )
+  }, [history, railwayHistory])
+
+  const historyGroups = useMemo(() => groupCronRunsByDomain(combinedHistory), [combinedHistory])
 
   async function handleRunNow() {
     try {
@@ -482,7 +547,7 @@ export function AdminCronsPage() {
         }
       />
 
-      {/* Job cards */}
+      {/* pg_cron job cards */}
       <div className="space-y-3">
         {jobsLoading ? (
           <Card className="border-border/60">
@@ -502,7 +567,23 @@ export function AdminCronsPage() {
         )}
       </div>
 
-      {/* Run history */}
+      {/* Railway cron service cards */}
+      <div className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Railway Services
+        </p>
+        {railwayJobsLoading ? (
+          <Card className="border-border/60">
+            <CardContent className="p-4">
+              <div className="h-16 animate-pulse bg-muted rounded-lg" />
+            </CardContent>
+          </Card>
+        ) : (
+          railwayJobs.map((job) => <RailwayCronJobCard key={job.label} job={job} />)
+        )}
+      </div>
+
+      {/* Combined run history */}
       <Card className="border-border/60">
         <CardHeader className="space-y-3 pb-3">
           <CardTitle className="text-sm font-semibold">Recent Runs</CardTitle>
@@ -510,7 +591,7 @@ export function AdminCronsPage() {
             <FilterBar>
               <RunDomainChip
                 label="All"
-                count={history.length}
+                count={combinedHistory.length}
                 active={selectedDomain === ALL_RUNS_DOMAIN}
                 onClick={() => setSelectedDomain(ALL_RUNS_DOMAIN)}
               />
@@ -527,7 +608,7 @@ export function AdminCronsPage() {
           )}
         </CardHeader>
         <CardContent className="pt-0">
-          <RunHistory history={history} selectedDomain={selectedDomain} />
+          <RunHistory history={combinedHistory} selectedDomain={selectedDomain} />
         </CardContent>
       </Card>
     </div>

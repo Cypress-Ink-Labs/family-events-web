@@ -122,4 +122,34 @@ export interface CronRun {
   duration_ms: number | null
 }
 
+export interface RailwayCronJob {
+  label: string
+  last_run_status: string | null
+  last_run_at: string | null
+  last_run_duration_s: number | null
+  last_http_status: number | null
+}
+
+export interface RailwayCronRun {
+  id: number
+  label: string
+  status: string
+  http_status: number | null
+  duration_s: number | null
+  body: string | null
+  ran_at: string
+}
+
+export function railwayCronRunToCronRun(r: RailwayCronRun): CronRun {
+  return {
+    runid: r.id,
+    jobname: r.label,
+    status: r.status,
+    return_message: r.body ?? null,
+    start_time: r.ran_at,
+    end_time: null,
+    duration_ms: r.duration_s != null ? r.duration_s * 1000 : null,
+  }
+}
+
 export type { City }

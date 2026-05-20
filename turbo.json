@@ -34,10 +34,7 @@
     },
     "@family-events/web#build": {
       "dependsOn": ["^build"],
-      "outputs": [
-        "dist/**",
-        "../../node_modules/.tmp/apps-web*.tsbuildinfo"
-      ]
+      "outputs": ["dist/**", "../../node_modules/.tmp/apps-web*.tsbuildinfo"]
     },
     "@family-events/design-system#build": {
       "dependsOn": ["^build"],
