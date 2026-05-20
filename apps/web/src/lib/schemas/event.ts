@@ -54,7 +54,17 @@ export const eventRowSchema = z.object({
   images: z.union([z.array(z.string()), z.null()]).transform((v) => (Array.isArray(v) ? v : [])),
   status: z.enum(["draft", "published", "rejected", "archived"]),
   ai_confidence: z.coerce.number().nullable(),
-  ai_tag_provider: z.enum(["openai", "ollama", "localai", "keyword-fallback"]).nullable(),
+  ai_tag_provider: z.enum(["openai", "ollama", "localai"]).nullable(),
+  ai_tag_model: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  ai_tag_status: z
+    .enum(["success", "fallback", "error"])
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   recurrence_info: z.unknown().nullable().optional(),
   is_featured: z.boolean(),
   is_outdoor: z

@@ -107,6 +107,7 @@ interface AdminSourcesHeaderProps {
     city_id: string
   }
   isBulkPending: boolean
+  isScrapeAllPending: boolean
   onDialogOpenChange: (open: boolean) => void
   onNameChange: (value: string) => void
   onUrlChange: (value: string) => void
@@ -115,6 +116,7 @@ interface AdminSourcesHeaderProps {
   onAddSource: () => void
   onEnableAllAutoApprove: () => void
   onDisableAllAutoApprove: () => void
+  onScrapeAll: () => void
 }
 
 export function AdminSourcesHeader({
@@ -123,6 +125,7 @@ export function AdminSourcesHeader({
   dialogOpen,
   newSource,
   isBulkPending,
+  isScrapeAllPending,
   onDialogOpenChange,
   onNameChange,
   onUrlChange,
@@ -131,6 +134,7 @@ export function AdminSourcesHeader({
   onAddSource,
   onEnableAllAutoApprove,
   onDisableAllAutoApprove,
+  onScrapeAll,
 }: AdminSourcesHeaderProps) {
   return (
     <Toolbar
@@ -144,7 +148,7 @@ export function AdminSourcesHeader({
                 variant="outline"
                 size="sm"
                 className="min-h-[44px] gap-1.5"
-                disabled={isBulkPending}
+                disabled={isBulkPending || isScrapeAllPending}
                 aria-label="Bulk actions"
               >
                 <MoreHorizontal className="size-4" />
@@ -152,6 +156,10 @@ export function AdminSourcesHeader({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={onScrapeAll} disabled={isScrapeAllPending}>
+                <RefreshCw className={cn("mr-2 size-4", isScrapeAllPending && "animate-spin")} />
+                Scrape All
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={onEnableAllAutoApprove} disabled={isBulkPending}>
                 Auto-Approve All
               </DropdownMenuItem>

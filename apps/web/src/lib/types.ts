@@ -1,5 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
-export type AiTagProvider = "openai" | "ollama" | "localai" | "keyword-fallback"
+export type AiTagProvider = "openai" | "ollama" | "localai"
+export type AiTagStatus = "success" | "fallback" | "error"
 
 export interface Database {
   public: {
@@ -234,6 +235,7 @@ export interface Event {
   ai_confidence: number | null
   ai_tag_provider: AiTagProvider | null
   ai_tag_model: string | null
+  ai_tag_status: AiTagStatus | null
   recurrence_info: Json | null
   is_featured: boolean
   is_outdoor: boolean | null
@@ -266,9 +268,9 @@ export interface EventAiTrace {
   event_id: string
   source_run_id: string | null
   trigger_type: "import" | "reclassify" | "manual-review"
-  provider: AiTagProvider
+  provider: AiTagProvider | null
   model: string | null
-  status: "success" | "fallback" | "error"
+  status: AiTagStatus
   input_title: string
   input_description: string | null
   available_tag_slugs: Json | null

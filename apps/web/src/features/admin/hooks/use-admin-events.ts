@@ -19,7 +19,7 @@ export function useAdminEvents(
       let query = supabase
         .from("events")
         .select(
-          "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, ai_tag_model, recurrence_info, is_featured, view_count, search_vector, created_at, updated_at" +
+          "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, ai_tag_model, ai_tag_status, recurrence_info, is_featured, view_count, search_vector, created_at, updated_at" +
             ", admin_locked_fields, admin_last_edited_at, admin_last_edited_by"
         )
         .order("created_at", { ascending: false })

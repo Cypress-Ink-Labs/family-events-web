@@ -46,7 +46,6 @@ export function formatProviderLabel(provider: AiTagProvider | null | undefined) 
   if (provider === "openai") return "OpenAI"
   if (provider === "ollama") return "Ollama"
   if (provider === "localai") return "LocalAI"
-  if (provider === "keyword-fallback") return "Keyword fallback"
   return "Unknown"
 }
 
@@ -350,12 +349,28 @@ function EventCard({
                   AI: {Math.round((event.ai_confidence ?? 0) * 100)}%
                 </span>
               )}
-              {event.ai_tag_provider && (
+              {(event.ai_tag_provider || event.ai_tag_status) && (
                 <span className="flex items-center gap-1">
                   <Bot className="size-3" />
-                  {formatProviderLabel(event.ai_tag_provider)}
-                  {event.ai_tag_model && (
-                    <span className="text-muted-foreground/70">· {event.ai_tag_model}</span>
+                  {event.ai_tag_provider ? (
+                    <>
+                      {formatProviderLabel(event.ai_tag_provider)}
+                      {event.ai_tag_model && (
+                        <span className="text-muted-foreground/70">· {event.ai_tag_model}</span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground/70">Unknown provider</span>
+                  )}
+                  {event.ai_tag_status === "fallback" && (
+                    <span className="ml-1 rounded bg-amber-500/15 px-1 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-600">
+                      Fallback
+                    </span>
+                  )}
+                  {event.ai_tag_status === "error" && (
+                    <span className="ml-1 rounded bg-destructive/15 px-1 py-0.5 text-[10px] font-medium uppercase tracking-wide text-destructive">
+                      Error
+                    </span>
                   )}
                 </span>
               )}
@@ -537,7 +552,9 @@ export function AdminEventReviewDialog({
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary" className="gap-1">
                       <Bot className="size-3" />
-                      {formatProviderLabel(selectedEventTrace.provider)}
+                      {selectedEventTrace.provider
+                        ? formatProviderLabel(selectedEventTrace.provider)
+                        : "Unknown provider"}
                     </Badge>
                     {selectedEventTrace.model ? (
                       <Badge variant="outline">Model: {selectedEventTrace.model}</Badge>

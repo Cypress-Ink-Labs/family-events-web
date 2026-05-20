@@ -107,6 +107,24 @@ export function AdminSourcesPage() {
     }
   }
 
+  const [isScrapeAllPending, setIsScrapeAllPending] = useState(false)
+
+  async function handleScrapeAll() {
+    const activeSources = sources.filter((source) => source.is_active)
+    if (activeSources.length === 0) return
+
+    setIsScrapeAllPending(true)
+    const results = await Promise.allSettled(activeSources.map((source) => handleScrape(source.id)))
+    setIsScrapeAllPending(false)
+
+    const failed = results.filter((r) => r.status === "rejected").length
+    if (failed > 0) {
+      toast.warning(`Scrape All: ${activeSources.length - failed} queued, ${failed} failed.`)
+    } else {
+      toast.success(`All ${activeSources.length} sources queued for scraping.`)
+    }
+  }
+
   async function handleAddSource() {
     if (!newSource.name || !newSource.url) {
       toast.error("Name and URL are required")
@@ -148,6 +166,7 @@ export function AdminSourcesPage() {
         dialogOpen={dialogOpen}
         newSource={newSource}
         isBulkPending={bulkAutoApprove.isPending}
+        isScrapeAllPending={isScrapeAllPending}
         onDialogOpenChange={setDialogOpen}
         onNameChange={(value) => setNewSource((prev) => ({ ...prev, name: value }))}
         onUrlChange={(value) => setNewSource((prev) => ({ ...prev, url: value }))}
@@ -156,6 +175,7 @@ export function AdminSourcesPage() {
         onAddSource={handleAddSource}
         onEnableAllAutoApprove={() => handleBulkAutoApprove(true)}
         onDisableAllAutoApprove={() => handleBulkAutoApprove(false)}
+        onScrapeAll={handleScrapeAll}
       />
       <AdminCityFilterBar
         cities={cities}

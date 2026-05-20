@@ -32,6 +32,7 @@ function event(overrides: Partial<EventWithDetails> = {}): EventWithDetails {
     ai_confidence: null,
     ai_tag_provider: null,
     ai_tag_model: null,
+    ai_tag_status: null,
     recurrence_info: { freq: "weekly" },
     is_featured: false,
     view_count: 0,
