@@ -53,20 +53,18 @@ test("admin walkthrough covers decomposed admin pages", async ({ context }) => {
     },
   ]
 
-  await Promise.all(
-    checks.map(async (check) => {
-      const page = await context.newPage()
-      try {
-        await page.goto(check.path)
-        await Promise.all([
-          expect(page.getByRole("heading", { name: check.heading }).last()).toBeVisible(),
-          expect(check.control(page)).toBeVisible(),
-        ])
-      } finally {
-        await page.close()
-      }
-    })
-  )
+  for (const check of checks) {
+    const page = await context.newPage()
+    try {
+      await page.goto(check.path)
+      await Promise.all([
+        expect(page.getByRole("heading", { name: check.heading }).last()).toBeVisible(),
+        expect(check.control(page)).toBeVisible(),
+      ])
+    } finally {
+      await page.close()
+    }
+  }
 })
 
 test("decomposed member pages render", async ({ context }) => {
