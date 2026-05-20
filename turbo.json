@@ -67,6 +67,9 @@
     "typecheck": {
       "dependsOn": ["^typecheck"],
       "outputs": []
+    },
+    "clean": {
+      "cache": false
     }
   }
 }

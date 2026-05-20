@@ -18,7 +18,8 @@
     "check": "tsc -p tsconfig.json --noEmit && node scripts/verify-drift.mjs",
     "format": "oxfmt --config ../config-quality/oxfmt.base.json --write src scripts",
     "format:check": "oxfmt --config ../config-quality/oxfmt.base.json --check src scripts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "clean": "rm -rf src/generated dist"
   },
   "devDependencies": {
     "@family-events/config-quality": "workspace:*",

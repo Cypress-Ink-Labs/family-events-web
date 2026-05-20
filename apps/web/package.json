@@ -16,7 +16,8 @@
     "check": "tsc -b && pnpm run lint && pnpm run format:check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "clean": "rm -rf dist .next out"
   },
   "dependencies": {
     "@family-events/contracts": "workspace:*",
