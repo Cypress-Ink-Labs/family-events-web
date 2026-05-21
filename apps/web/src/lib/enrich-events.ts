@@ -6,7 +6,7 @@ interface EventTagWithTag extends EventTag {
 }
 
 interface RatingStatsRow {
-  event_id: string
+  event_id: string | null
   avg_score: number | null
   rating_count: number | null
 }
@@ -150,6 +150,7 @@ export async function enrichEvents(
 
   const ratingStatsByEvent = new Map<string, RatingStatsRow>()
   for (const row of (ratingStatsRows ?? []) as RatingStatsRow[]) {
+    if (!row.event_id) continue
     ratingStatsByEvent.set(row.event_id, row)
   }
 
