@@ -17,6 +17,36 @@ interface EnrichOptions {
   includeUserState?: boolean
 }
 
+// PostgREST encodes each UUID (~38 chars) into the query string when using
+// `.in()`. Past ~150 ids the URL crosses the upstream proxy's request-line
+// limit and the gateway returns 400 Bad Request before PostgREST sees it.
+// Chunk all eventId-keyed lookups so the admin events page (~1k events)
+// keeps working without changing the API shape.
+const EVENT_ID_CHUNK_SIZE = 100
+
+function chunk<T>(items: readonly T[], size: number): T[][] {
+  if (items.length <= size) return [items.slice()]
+  const out: T[][] = []
+  for (let i = 0; i < items.length; i += size) {
+    out.push(items.slice(i, i + size))
+  }
+  return out
+}
+
+async function fetchInChunks<Row>(
+  eventIds: readonly string[],
+  fetcher: (chunkIds: string[]) => PromiseLike<{ data: Row[] | null; error: unknown }>
+): Promise<{ data: Row[]; error: unknown }> {
+  const chunks = chunk(eventIds, EVENT_ID_CHUNK_SIZE)
+  const all: Row[] = []
+  for (const ids of chunks) {
+    const { data, error } = await fetcher(ids)
+    if (error) return { data: [], error }
+    if (data) all.push(...data)
+  }
+  return { data: all, error: null }
+}
+
 export async function enrichEvents(
   events: Event[],
   options: EnrichOptions = {}
@@ -34,10 +64,12 @@ export async function enrichEvents(
     }, new Set<string>())
   )
 
-  const tagsPromise = supabase
-    .from("event_tags")
-    .select("event_id, tag_id, confidence, is_manual_override, created_at, tag:tags(*)")
-    .in("event_id", eventIds)
+  const tagsPromise = fetchInChunks<EventTagWithTag>(eventIds, (ids) =>
+    supabase
+      .from("event_tags")
+      .select("event_id, tag_id, confidence, is_manual_override, created_at, tag:tags(*)")
+      .in("event_id", ids)
+  )
 
   const cityPromise =
     cityIds.length > 0
@@ -45,24 +77,34 @@ export async function enrichEvents(
       : Promise.resolve({ data: [] as City[], error: null })
 
   const ratingsPromise = includeRatings
-    ? supabase
-        .from("event_rating_stats")
-        .select("event_id, avg_score, rating_count")
-        .in("event_id", eventIds)
+    ? fetchInChunks<RatingStatsRow>(eventIds, (ids) =>
+        supabase
+          .from("event_rating_stats")
+          .select("event_id, avg_score, rating_count")
+          .in("event_id", ids)
+      )
     : Promise.resolve({ data: [] as RatingStatsRow[], error: null })
 
   const favoritesPromise =
     includeUserState && userId
-      ? supabase.from("favorites").select("event_id").eq("user_id", userId).in("event_id", eventIds)
+      ? fetchInChunks<{ event_id: string }>(eventIds, (ids) =>
+          supabase
+            .from("favorites")
+            .select("event_id")
+            .eq("user_id", userId)
+            .in("event_id", ids)
+        )
       : Promise.resolve({ data: [] as Array<{ event_id: string }>, error: null })
 
   const calendarPromise =
     includeUserState && userId
-      ? supabase
-          .from("user_calendar_events")
-          .select("event_id")
-          .eq("user_id", userId)
-          .in("event_id", eventIds)
+      ? fetchInChunks<{ event_id: string }>(eventIds, (ids) =>
+          supabase
+            .from("user_calendar_events")
+            .select("event_id")
+            .eq("user_id", userId)
+            .in("event_id", ids)
+        )
       : Promise.resolve({ data: [] as Array<{ event_id: string }>, error: null })
 
   const [
