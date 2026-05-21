@@ -88,11 +88,7 @@ export async function enrichEvents(
   const favoritesPromise =
     includeUserState && userId
       ? fetchInChunks<{ event_id: string }>(eventIds, (ids) =>
-          supabase
-            .from("favorites")
-            .select("event_id")
-            .eq("user_id", userId)
-            .in("event_id", ids)
+          supabase.from("favorites").select("event_id").eq("user_id", userId).in("event_id", ids)
         )
       : Promise.resolve({ data: [] as Array<{ event_id: string }>, error: null })
 
