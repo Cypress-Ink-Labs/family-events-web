@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 import { useNowMs } from "@/hooks/use-now-ms"
 import { Toolbar } from "@/components/v2"
 import { useAdminSourceRuns } from "@/features/admin/hooks/use-admin-source-runs"
+import { useAdminLogsRealtime } from "@/features/admin/hooks/use-admin-logs-realtime"
 import {
   useAdminDeadTagQueueRows,
   useAdminRetryTagQueue,
@@ -310,6 +311,7 @@ function ElapsedTimer({ startedAt }: { startedAt: string }) {
 }
 
 export function AdminLogsPage() {
+  useAdminLogsRealtime()
   const { data: logs = [] } = useAdminSourceRuns()
   const nowMs = useNowMs()
   const statusNowMs = nowMs ?? 0
