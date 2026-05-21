@@ -172,7 +172,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Cache JS build artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .turbo
@@ -319,7 +319,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Cache JS build artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .turbo
@@ -339,7 +339,7 @@ jobs:
         run: pnpm run workspace:test
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml', 'apps/web/package.json') }}
@@ -357,6 +357,9 @@ jobs:
       # edge-runtime) to cut Docker boot time on cold runners.
       # ──────────────────────────────────────────────────────────────────
       - name: Start local Supabase
+        env:
+          # This is fake so haha
+          SEND_EMAIL_HOOK_SECRET: "v1,whsec_Y2ktZHVtbXktc2VjcmV0LWZvci1lMmUtdGVzdGluZw=="
         run: |
           bash scripts/supabase.sh start \
             --exclude storage-api,imgproxy,realtime,vector,edge-runtime,studio,mailpit
@@ -505,7 +508,7 @@ jobs:
       # could carry stale SPM checkouts that miss IssueReportingTestSupport,
       # breaking the test link.
       - name: Cache Swift packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/Library/Caches/family-events-swiftpm
           key: ${{ runner.os }}-swiftpm-v2-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
@@ -513,7 +516,7 @@ jobs:
             ${{ runner.os }}-swiftpm-v2-
 
       - name: Cache Xcode build data
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/Library/Developer/Xcode/DerivedData/FamilyEvents
           key: ${{ runner.os }}-xcode-familyevents-v2-${{ hashFiles('apps/ios/project.yml', 'apps/ios/**/*.swift', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
@@ -577,7 +580,7 @@ jobs:
           java-version: "17"
 
       - name: Setup Gradle cache
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-cleanup: never
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
@@ -587,7 +590,7 @@ jobs:
 
       - name: Cache Android SDK 36
         id: android-sdk-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             /home/runner/.android/sdk/platforms/android-36

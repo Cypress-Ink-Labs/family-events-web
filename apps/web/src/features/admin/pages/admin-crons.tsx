@@ -7,7 +7,6 @@ import {
   Loader2,
   CalendarClock,
   ChevronDown,
-  Pencil,
 } from "lucide-react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
@@ -15,38 +14,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
 import { FilterBar, Toolbar } from "@/components/v2"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import {
-  useAdminCronJobs,
   useAdminCronHistory,
   useAdminRailwayCronJobs,
   useAdminRailwayCronHistory,
-  useToggleCronJob,
-  useSetCronSchedule,
   useRunDueScrapes,
 } from "@/features/admin/hooks/use-admin-crons"
-import type { CronJob, CronRun, RailwayCronJob } from "@/features/admin/hooks/admin-types"
+import type { CronRun, RailwayCronJob } from "@/features/admin/hooks/admin-types"
 import { railwayCronRunToCronRun } from "@/features/admin/hooks/admin-types"
-
-const SCHEDULE_PRESETS = [
-  { label: "Every 30 min", value: "*/30 * * * *" },
-  { label: "Hourly", value: "0 * * * *" },
-  { label: "Every 6 hours", value: "0 */6 * * *" },
-  { label: "Daily at midnight", value: "0 0 * * *" },
-] as const
 
 const ALL_RUNS_DOMAIN = "all"
 
@@ -124,206 +102,6 @@ function RunStatusBadge({ status }: { status: string | null }) {
       <cfg.icon className={cn("size-3.5", key === "running" && "animate-spin")} />
       <span className="text-xs font-medium">{cfg.label}</span>
     </div>
-  )
-}
-
-interface ScheduleDialogProps {
-  job: CronJob
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}
-
-function ScheduleDialog({ job, open, onOpenChange }: ScheduleDialogProps) {
-  const [scheduleDraft, setScheduleDraft] = useState({
-    jobName: job.jobname,
-    schedule: job.schedule,
-  })
-  const setScheduleMutation = useSetCronSchedule()
-  const { toastError } = useAdminToast()
-  const schedule = scheduleDraft.jobName === job.jobname ? scheduleDraft.schedule : job.schedule
-  const setSchedule = (value: string) => setScheduleDraft({ jobName: job.jobname, schedule: value })
-
-  async function handleSave() {
-    try {
-      await setScheduleMutation.mutateAsync({ jobName: job.jobname, schedule })
-      toast.success("Schedule updated")
-      onOpenChange(false)
-    } catch (error) {
-      toastError(error, "Failed to update schedule.")
-    }
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Schedule</DialogTitle>
-          <DialogDescription>
-            Update the cron expression for <strong>{job.jobname}</strong>. Uses standard 5-field
-            cron syntax.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-2">
-          <div className="space-y-1.5">
-            <Label>Cron Expression</Label>
-            <Input
-              value={schedule}
-              onChange={(e) => setSchedule(e.target.value)}
-              placeholder="0 * * * *"
-              className="font-mono"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Presets</Label>
-            <div className="flex flex-wrap gap-1.5">
-              {SCHEDULE_PRESETS.map((preset) => (
-                <button
-                  key={preset.value}
-                  onClick={() => setSchedule(preset.value)}
-                  className={cn(
-                    "px-3 py-1 rounded-full text-xs font-medium transition-colors",
-                    schedule === preset.value
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} disabled={setScheduleMutation.isPending || !schedule.trim()}>
-            {setScheduleMutation.isPending ? "Saving..." : "Save"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-interface CronJobCardProps {
-  job: CronJob
-}
-
-function CronJobCard({ job }: CronJobCardProps) {
-  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
-  const toggleJob = useToggleCronJob()
-  const { toastError } = useAdminToast()
-
-  async function handleToggle(active: boolean) {
-    try {
-      await toggleJob.mutateAsync({ jobName: job.jobname, active })
-      toast.success(active ? "Job resumed" : "Job paused")
-    } catch (error) {
-      toastError(error, "Failed to update job.")
-    }
-  }
-
-  return (
-    <>
-      <Card className={cn("@container/cron-card border-border/60", !job.active && "opacity-60")}>
-        <CardContent className="space-y-3 p-4">
-          {/* Identity row: icon + jobname + schedule pill + controls. Controls
-              collapse below identity when the card container falls under 420px,
-              which is the typical phone-with-admin-shell width. */}
-          <div className="flex items-start gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-              <CalendarClock className="size-5 text-muted-foreground" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="break-all font-display text-sm font-medium text-foreground">
-                  {job.jobname}
-                </h3>
-                <Badge variant="outline" className="font-mono text-[10px]">
-                  {job.schedule}
-                </Badge>
-                {!job.active && (
-                  <Badge variant="secondary" className="text-[10px]">
-                    Paused
-                  </Badge>
-                )}
-              </div>
-            </div>
-            {/* Wide-container layout — controls inline */}
-            <div className="hidden shrink-0 items-center gap-2 @[420px]/cron-card:flex">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-11 text-muted-foreground hover:text-foreground"
-                onClick={() => setScheduleDialogOpen(true)}
-                aria-label={`Edit schedule for ${job.jobname}`}
-              >
-                <Pencil className="size-4" />
-              </Button>
-              <Switch
-                checked={job.active}
-                onCheckedChange={handleToggle}
-                disabled={toggleJob.isPending}
-                aria-label={`${job.active ? "Pause" : "Resume"} ${job.jobname}`}
-              />
-            </div>
-          </div>
-
-          {/* Status row */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            {job.last_run_status ? (
-              <>
-                <RunStatusBadge status={job.last_run_status} />
-                {job.last_run_start && (
-                  <span>
-                    <ClientDistanceToNow value={job.last_run_start} addSuffix />
-                  </span>
-                )}
-                {job.last_run_start && job.last_run_end && (
-                  <span className="font-mono tabular-nums">
-                    {Math.round(
-                      (Date.parse(job.last_run_end) - Date.parse(job.last_run_start)) / 1000
-                    )}
-                    s
-                  </span>
-                )}
-              </>
-            ) : (
-              <span>Never run</span>
-            )}
-          </div>
-
-          <p className="truncate font-mono text-[10px] text-muted-foreground/60">{job.command}</p>
-
-          {/* Narrow-container layout — controls below content with min-h-44 */}
-          <div className="flex items-center justify-end gap-2 border-t border-border/60 pt-3 @[420px]/cron-card:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="min-h-[44px] gap-1.5"
-              onClick={() => setScheduleDialogOpen(true)}
-              aria-label={`Edit schedule for ${job.jobname}`}
-            >
-              <Pencil className="size-3.5" />
-              <span>Edit schedule</span>
-            </Button>
-            <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
-              <Switch
-                checked={job.active}
-                onCheckedChange={handleToggle}
-                disabled={toggleJob.isPending}
-                aria-label={`${job.active ? "Pause" : "Resume"} ${job.jobname}`}
-              />
-              <span className="text-xs text-muted-foreground">
-                {job.active ? "Active" : "Paused"}
-              </span>
-            </label>
-          </div>
-        </CardContent>
-      </Card>
-      <ScheduleDialog job={job} open={scheduleDialogOpen} onOpenChange={setScheduleDialogOpen} />
-    </>
   )
 }
 
@@ -500,7 +278,12 @@ function RunHistory({ history, selectedDomain }: { history: CronRun[]; selectedD
 }
 
 export function AdminCronsPage() {
-  const { data: jobs = [], isLoading: jobsLoading } = useAdminCronJobs()
+  // pg_cron is fully migrated off Supabase — see migration
+  // 20260601006600_consolidate_remaining_pg_cron.sql. Worker BGWorker on
+  // Supabase Cloud has been unreliable (jobs marked active fire sporadically
+  // and cron.job_run_details never matches by jobid). All cron work now runs
+  // on Railway. cron history is still pulled from cron.job_run_details for
+  // historical visibility but no editable pg_cron job cards are surfaced.
   const { data: history = [] } = useAdminCronHistory()
   const { data: railwayJobs = [], isLoading: railwayJobsLoading } = useAdminRailwayCronJobs()
   const { data: railwayHistory = [] } = useAdminRailwayCronHistory()
@@ -530,7 +313,7 @@ export function AdminCronsPage() {
     <div className="space-y-6">
       <Toolbar
         title="Scheduled Jobs"
-        subtitle="Manage pg_cron jobs and run history"
+        subtitle="Railway cron services and run history"
         actions={
           <Button
             className="min-h-[44px] gap-2"
@@ -547,26 +330,6 @@ export function AdminCronsPage() {
         }
       />
 
-      {/* pg_cron job cards */}
-      <div className="space-y-3">
-        {jobsLoading ? (
-          <Card className="border-border/60">
-            <CardContent className="p-4">
-              <div className="h-16 animate-pulse bg-muted rounded-lg" />
-            </CardContent>
-          </Card>
-        ) : jobs.length === 0 ? (
-          <Card className="border-dashed border-border/60 bg-muted/20">
-            <CardContent className="p-8 text-center">
-              <CalendarClock className="size-8 text-muted-foreground/30 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">No cron jobs found</p>
-            </CardContent>
-          </Card>
-        ) : (
-          jobs.map((job) => <CronJobCard key={job.jobid} job={job} />)
-        )}
-      </div>
-
       {/* Railway cron service cards */}
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -576,6 +339,13 @@ export function AdminCronsPage() {
           <Card className="border-border/60">
             <CardContent className="p-4">
               <div className="h-16 animate-pulse bg-muted rounded-lg" />
+            </CardContent>
+          </Card>
+        ) : railwayJobs.length === 0 ? (
+          <Card className="border-dashed border-border/60 bg-muted/20">
+            <CardContent className="p-8 text-center">
+              <CalendarClock className="size-8 text-muted-foreground/30 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">No Railway cron services found</p>
             </CardContent>
           </Card>
         ) : (
