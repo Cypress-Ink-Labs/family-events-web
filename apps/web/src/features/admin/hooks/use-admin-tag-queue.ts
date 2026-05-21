@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { supabase } from "@/lib/supabase"
 
-export type TagQueueStatus = "pending" | "processing" | "failed" | "dead"
+export type TagQueueStatus = "pending" | "processing" | "succeeded" | "failed" | "dead"
 
 export interface TagQueueSummaryRow {
   status: TagQueueStatus
@@ -11,6 +11,18 @@ export interface TagQueueSummaryRow {
   newest_enqueued_at: string | null
   last_dead_letter_at: string | null
   avg_attempts: number | null
+}
+
+export interface DeadTagQueueRow {
+  id: number
+  event_id: string
+  source_run_id: string | null
+  trigger_type: string
+  attempt_count: number
+  enqueued_at: string
+  finished_at: string | null
+  last_error: string | null
+  events: { title: string | null } | null
 }
 
 // Live observability for the tag-event durable queue. Refreshes on a 10s
@@ -46,6 +58,26 @@ export function useAdminRetryTagQueue() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.tagQueueSummary })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.deadTagQueueRows })
     },
+  })
+}
+
+export function useAdminDeadTagQueueRows() {
+  return useQuery({
+    queryKey: qk.admin.deadTagQueueRows,
+    queryFn: async (): Promise<DeadTagQueueRow[]> => {
+      const { data, error } = await supabase
+        .from("event_tag_queue")
+        .select(
+          "id, event_id, source_run_id, trigger_type, attempt_count, enqueued_at, finished_at, last_error, events(title)"
+        )
+        .eq("status", "dead")
+        .order("finished_at", { ascending: false })
+        .limit(20)
+      if (error) throw error
+      return (data ?? []) as DeadTagQueueRow[]
+    },
+    refetchInterval: 30_000,
   })
 }

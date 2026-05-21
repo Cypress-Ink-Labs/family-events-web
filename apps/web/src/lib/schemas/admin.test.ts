@@ -6,6 +6,7 @@ const baseSourceRow = {
   name: "Sample feed",
   url: "https://example.com/feed.rss",
   source_type: "rss" as const,
+  extraction_mode: "deterministic" as const,
   city_id: null,
   is_active: true,
   auto_approve: false,

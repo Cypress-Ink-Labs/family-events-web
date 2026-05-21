@@ -1,6 +1,7 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 export type AiTagProvider = "openai" | "ollama" | "localai"
 export type AiTagStatus = "success" | "fallback" | "error"
+export type ExtractionMode = "deterministic" | "llm" | "deterministic_then_llm"
 
 export interface Database {
   public: {
@@ -186,6 +187,7 @@ export interface EventSource {
   name: string
   url: string
   source_type: "website" | "ical" | "rss" | "manual" | "macaronikid"
+  extraction_mode: ExtractionMode
   city_id: string | null
   is_active: boolean
   auto_approve: boolean

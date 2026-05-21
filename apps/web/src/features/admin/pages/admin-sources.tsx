@@ -18,8 +18,13 @@ import {
 import { useAdminSourceRunErrors } from "@/features/admin/hooks/use-admin-source-runs"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
+import type { ExtractionMode } from "@/lib/types"
 
 type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid"
+
+function defaultExtractionModeForSourceType(sourceType: SourceType): ExtractionMode {
+  return sourceType === "website" ? "deterministic_then_llm" : "deterministic"
+}
 
 export function AdminSourcesPage() {
   const { data: sources = [] } = useAdminSources()
@@ -41,6 +46,7 @@ export function AdminSourcesPage() {
     name: "",
     url: "",
     source_type: "website" as SourceType,
+    extraction_mode: "deterministic_then_llm" as ExtractionMode,
     city_id: "",
   })
 
@@ -136,6 +142,7 @@ export function AdminSourcesPage() {
         name: newSource.name,
         url: newSource.url,
         source_type: newSource.source_type,
+        extraction_mode: newSource.extraction_mode,
         city_id: newSource.city_id || null,
         is_active: true,
         auto_approve: false,
@@ -146,7 +153,13 @@ export function AdminSourcesPage() {
         notes: null,
       })
       setDialogOpen(false)
-      setNewSource({ name: "", url: "", source_type: "website", city_id: "" })
+      setNewSource({
+        name: "",
+        url: "",
+        source_type: "website",
+        extraction_mode: "deterministic_then_llm",
+        city_id: "",
+      })
       toast.success("Source added!", { description: "Trigger a scrape to import events." })
     } catch (error) {
       toastError(error, "Failed to create source.")
@@ -170,7 +183,16 @@ export function AdminSourcesPage() {
         onDialogOpenChange={setDialogOpen}
         onNameChange={(value) => setNewSource((prev) => ({ ...prev, name: value }))}
         onUrlChange={(value) => setNewSource((prev) => ({ ...prev, url: value }))}
-        onTypeChange={(value) => setNewSource((prev) => ({ ...prev, source_type: value }))}
+        onTypeChange={(value) =>
+          setNewSource((prev) => ({
+            ...prev,
+            source_type: value,
+            extraction_mode: defaultExtractionModeForSourceType(value),
+          }))
+        }
+        onExtractionModeChange={(value) =>
+          setNewSource((prev) => ({ ...prev, extraction_mode: value }))
+        }
         onCityChange={(value) => setNewSource((prev) => ({ ...prev, city_id: value }))}
         onAddSource={handleAddSource}
         onEnableAllAutoApprove={() => handleBulkAutoApprove(true)}

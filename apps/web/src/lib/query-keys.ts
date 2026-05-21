@@ -186,6 +186,8 @@ export const qk = {
     eventAiTrace: (eventId: string | null | undefined) =>
       ["admin", "event-ai-trace", nil(eventId)] as const,
     sources: ["admin", "sources"] as const,
+    sourceQueueSummary: ["admin", "source-queue-summary"] as const,
+    deadSourceQueueRows: ["admin", "source-queue-dead"] as const,
     sourceRuns: ["admin", "source-runs"] as const,
     sourceRunErrors: (sourceIds: readonly string[]) =>
       ["admin", "source-run-errors", sortedUnique(sourceIds)] as const,
@@ -209,6 +211,7 @@ export const qk = {
     inviteRequests: (status?: "pending" | "approved" | "rejected" | "all") =>
       ["admin", "invite-requests", status ?? "all"] as const,
     tagQueueSummary: ["admin", "tag-queue-summary"] as const,
+    deadTagQueueRows: ["admin", "tag-queue-dead"] as const,
     cronJobs: ["admin", "cron-jobs"] as const,
     cronHistory: (jobName?: string) =>
       jobName

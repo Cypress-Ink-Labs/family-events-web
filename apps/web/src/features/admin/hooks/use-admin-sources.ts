@@ -12,7 +12,7 @@ export function useAdminSources() {
       const { data, error } = await supabase
         .from("event_sources")
         .select(
-          "id, name, url, source_type, city_id, is_active, auto_approve, scrape_interval_hours, last_scraped_at, last_status, error_count, notes, created_at, updated_at"
+          "id, name, url, source_type, extraction_mode, city_id, is_active, auto_approve, scrape_interval_hours, last_scraped_at, last_status, error_count, notes, created_at, updated_at"
         )
         .order("created_at", { ascending: false })
 
@@ -93,6 +93,7 @@ export function useTriggerSourceScrape() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.sourceQueueSummary })
       void queryClient.invalidateQueries({ queryKey: qk.admin.sourceRuns })
       void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     },

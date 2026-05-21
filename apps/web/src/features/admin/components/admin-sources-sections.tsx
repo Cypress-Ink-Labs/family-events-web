@@ -49,7 +49,7 @@ import { cn } from "@/lib/utils"
 import { groupByCity, UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
 import { FormGrid, Toolbar } from "@/components/v2"
 import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
-import type { City, EventSource } from "@/lib/types"
+import type { City, EventSource, ExtractionMode } from "@/lib/types"
 
 type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid"
 type SourceStatus = "pending" | "success" | "error" | "partial"
@@ -104,6 +104,7 @@ interface AdminSourcesHeaderProps {
     name: string
     url: string
     source_type: SourceType
+    extraction_mode: ExtractionMode
     city_id: string
   }
   isBulkPending: boolean
@@ -112,6 +113,7 @@ interface AdminSourcesHeaderProps {
   onNameChange: (value: string) => void
   onUrlChange: (value: string) => void
   onTypeChange: (value: SourceType) => void
+  onExtractionModeChange: (value: ExtractionMode) => void
   onCityChange: (value: string) => void
   onAddSource: () => void
   onEnableAllAutoApprove: () => void
@@ -130,6 +132,7 @@ export function AdminSourcesHeader({
   onNameChange,
   onUrlChange,
   onTypeChange,
+  onExtractionModeChange,
   onCityChange,
   onAddSource,
   onEnableAllAutoApprove,
@@ -220,6 +223,24 @@ export function AdminSourcesHeader({
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="space-y-1.5">
+                    <Label>Extraction</Label>
+                    <Select
+                      value={newSource.extraction_mode}
+                      onValueChange={(value) => onExtractionModeChange(value as ExtractionMode)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="deterministic">Parser</SelectItem>
+                        <SelectItem value="deterministic_then_llm">Parser + LLM</SelectItem>
+                        <SelectItem value="llm">LLM</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </FormGrid>
+                <FormGrid cols={2} gap="3">
                   <div className="space-y-1.5">
                     <Label>City</Label>
                     <Select value={newSource.city_id} onValueChange={onCityChange}>
