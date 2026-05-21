@@ -1,0 +1,18 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["MG77MU456K.com.familyevents.app"],
+        "components": [
+          {
+            "/": "/share/*",
+            "comment": "Share routes open the app"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["MG77MU456K.com.familyevents.app"]
+  }
+}
