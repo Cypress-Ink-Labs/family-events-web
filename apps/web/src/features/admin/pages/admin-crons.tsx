@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
 import { FilterBar, Toolbar } from "@/components/v2"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
@@ -22,6 +23,7 @@ import {
   useAdminRailwayCronJobs,
   useAdminRailwayCronHistory,
   useRunDueScrapes,
+  useToggleRailwayCron,
 } from "@/features/admin/hooks/use-admin-crons"
 import type { CronRun, RailwayCronJob } from "@/features/admin/hooks/admin-types"
 import { railwayCronRunToCronRun } from "@/features/admin/hooks/admin-types"
@@ -110,9 +112,25 @@ function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
     .split("-")
     .map((p) => p[0].toUpperCase() + p.slice(1))
     .join(" ")
+  const toggleRailway = useToggleRailwayCron()
+  const { toastError } = useAdminToast()
+
+  async function handleToggle(enabled: boolean) {
+    try {
+      await toggleRailway.mutateAsync({ label: job.label, enabled })
+      toast.success(enabled ? "Cron enabled" : "Cron paused")
+    } catch (error) {
+      toastError(error, "Failed to update cron.")
+    }
+  }
 
   return (
-    <Card className="@container/cron-card border-border/60">
+    <Card
+      className={cn(
+        "@container/cron-card border-border/60",
+        !job.enabled && "opacity-60"
+      )}
+    >
       <CardContent className="space-y-3 p-4">
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
@@ -126,7 +144,20 @@ function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
               <Badge variant="secondary" className="text-[10px]">
                 Railway
               </Badge>
+              {!job.enabled && (
+                <Badge variant="secondary" className="text-[10px]">
+                  Paused
+                </Badge>
+              )}
             </div>
+          </div>
+          <div className="hidden shrink-0 items-center gap-2 @[420px]/cron-card:flex">
+            <Switch
+              checked={job.enabled}
+              onCheckedChange={handleToggle}
+              disabled={toggleRailway.isPending}
+              aria-label={`${job.enabled ? "Pause" : "Resume"} ${job.label}`}
+            />
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -152,6 +183,19 @@ function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
           )}
         </div>
         <p className="truncate font-mono text-[10px] text-muted-foreground/60">{label}</p>
+        <div className="flex items-center justify-end gap-2 border-t border-border/60 pt-3 @[420px]/cron-card:hidden">
+          <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+            <Switch
+              checked={job.enabled}
+              onCheckedChange={handleToggle}
+              disabled={toggleRailway.isPending}
+              aria-label={`${job.enabled ? "Pause" : "Resume"} ${job.label}`}
+            />
+            <span className="text-xs text-muted-foreground">
+              {job.enabled ? "Active" : "Paused"}
+            </span>
+          </label>
+        </div>
       </CardContent>
     </Card>
   )

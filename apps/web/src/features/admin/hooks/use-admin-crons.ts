@@ -92,6 +92,23 @@ export function useAdminRailwayCronHistory(label?: string) {
   })
 }
 
+export function useToggleRailwayCron() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ label, enabled }: { label: string; enabled: boolean }) => {
+      const { error } = await supabase.rpc("admin_set_cron_enabled", {
+        p_label: label,
+        p_enabled: enabled,
+      })
+      if (error) throw error
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: qk.admin.railwayCronJobs })
+    },
+  })
+}
+
 export function useRunDueScrapes() {
   const queryClient = useQueryClient()
 

@@ -124,6 +124,7 @@ export interface CronRun {
 
 export interface RailwayCronJob {
   label: string
+  enabled: boolean
   last_run_status: string | null
   last_run_at: string | null
   last_run_duration_s: number | null
