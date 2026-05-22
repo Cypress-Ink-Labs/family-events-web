@@ -125,12 +125,7 @@ function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
   }
 
   return (
-    <Card
-      className={cn(
-        "@container/cron-card border-border/60",
-        !job.enabled && "opacity-60"
-      )}
-    >
+    <Card className={cn("@container/cron-card border-border/60", !job.enabled && "opacity-60")}>
       <CardContent className="space-y-3 p-4">
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">

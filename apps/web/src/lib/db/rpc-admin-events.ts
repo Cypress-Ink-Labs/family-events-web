@@ -15,7 +15,10 @@ export interface AdminEventsFilters {
   limit?: number
 }
 
-export async function fetchAdminEventsPage(filters: AdminEventsFilters, cursor?: AdminEventsCursor) {
+export async function fetchAdminEventsPage(
+  filters: AdminEventsFilters,
+  cursor?: AdminEventsCursor
+) {
   const { data, error } = await (supabase.rpc as any)("admin_events_enriched", {
     p_status: filters.status,
     p_city_id: filters.cityId,

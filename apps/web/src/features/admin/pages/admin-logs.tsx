@@ -350,7 +350,7 @@ export function AdminLogsPage() {
             !isRunning && run.completed_at
               ? Math.round((Date.parse(run.completed_at) - Date.parse(run.started_at)) / 1000)
               : isTimedOut
-                ? Math.round((statusNowMs - Date.parse(run.started_at)) / 1000)
+                ? Math.round(STALE_THRESHOLD_MS / 1000)
                 : null
 
           return (

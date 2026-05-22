@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
+import { supabase } from "@/lib/supabase"
 import { sanitizePostgrestLike } from "@/lib/utils"
 import { searchEventsPage } from "@/lib/db/rpc-events"
 import { enrichEvents } from "@/lib/enrich-events"

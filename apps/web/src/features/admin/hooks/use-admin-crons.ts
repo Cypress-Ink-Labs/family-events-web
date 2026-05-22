@@ -97,7 +97,8 @@ export function useToggleRailwayCron() {
 
   return useMutation({
     mutationFn: async ({ label, enabled }: { label: string; enabled: boolean }) => {
-      const { error } = await supabase.rpc("admin_set_cron_enabled", {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase.rpc as any)("admin_set_cron_enabled", {
         p_label: label,
         p_enabled: enabled,
       })

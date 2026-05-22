@@ -31,7 +31,11 @@ export interface SearchEventsFilters {
   offset?: number
 }
 
-export async function fetchEventsPage(filters: EventsPageFilters, cursor?: EventsCursor, limit = 24) {
+export async function fetchEventsPage(
+  filters: EventsPageFilters,
+  cursor?: EventsCursor,
+  limit = 24
+) {
   const { data, error } = await (supabase.rpc as any)("events_enriched_v2", {
     p_city_id: filters.cityId,
     p_status: filters.status ?? "published",

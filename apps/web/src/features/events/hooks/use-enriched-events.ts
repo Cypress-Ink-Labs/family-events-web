@@ -158,7 +158,7 @@ async function fetchEnrichedEvents(options: UseEnrichedEventsOptions): Promise<E
     rpcArgs.p_limit ?? 24
   )
 
-  return (data ?? []).map((row) => adaptEnrichedRow(row))
+  return (data as unknown[]).map((row) => adaptEnrichedRow(row))
 }
 
 export function useEnrichedEvents(options: UseEnrichedEventsOptions = {}) {
