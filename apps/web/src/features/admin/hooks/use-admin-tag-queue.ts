@@ -63,6 +63,23 @@ export function useAdminRetryTagQueue() {
   })
 }
 
+export function useDeleteDeadTagQueueRow() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (queueId: number): Promise<boolean> => {
+      const { data, error } = await supabase.rpc("admin_delete_dead_tag_queue", {
+        p_queue_id: queueId,
+      })
+      if (error) throw error
+      return Boolean(data)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: qk.admin.deadTagQueueRows })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.tagQueueSummary })
+    },
+  })
+}
+
 export function useAdminDeadTagQueueRows() {
   return useQuery({
     queryKey: qk.admin.deadTagQueueRows,

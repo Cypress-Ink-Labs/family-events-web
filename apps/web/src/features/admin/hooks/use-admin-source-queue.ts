@@ -78,3 +78,20 @@ export function useAdminRetrySourceQueue() {
     },
   })
 }
+
+export function useDeleteDeadSourceQueueRow() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (queueId: number): Promise<boolean> => {
+      const { data, error } = await supabase.rpc("admin_delete_dead_source_queue", {
+        p_queue_id: queueId,
+      })
+      if (error) throw error
+      return Boolean(data)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: qk.admin.deadSourceQueueRows })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.sourceQueueSummary })
+    },
+  })
+}

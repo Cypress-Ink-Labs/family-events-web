@@ -8,7 +8,19 @@ import {
   Database,
   TimerOff,
   Tag as TagIcon,
+  Trash2,
 } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,6 +33,7 @@ import { useAdminLogsRealtime } from "@/features/admin/hooks/use-admin-logs-real
 import {
   useAdminDeadTagQueueRows,
   useAdminRetryTagQueue,
+  useDeleteDeadTagQueueRow,
   type TagQueueStatus,
   useAdminTagQueueSummary,
 } from "@/features/admin/hooks/use-admin-tag-queue"
@@ -28,6 +41,7 @@ import {
   type SourceQueueStatus,
   useAdminDeadSourceQueueRows,
   useAdminRetrySourceQueue,
+  useDeleteDeadSourceQueueRow,
   useAdminSourceQueueSummary,
 } from "@/features/admin/hooks/use-admin-source-queue"
 
@@ -202,6 +216,8 @@ function DeadLettersPanel() {
   const { data: tagRows = [] } = useAdminDeadTagQueueRows()
   const retrySource = useAdminRetrySourceQueue()
   const retryTag = useAdminRetryTagQueue()
+  const deleteSource = useDeleteDeadSourceQueueRow()
+  const deleteTag = useDeleteDeadTagQueueRow()
   const hasRows = sourceRows.length > 0 || tagRows.length > 0
 
   if (!hasRows) return null
@@ -240,14 +256,46 @@ function DeadLettersPanel() {
                     </p>
                   )}
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={retrySource.isPending}
-                  onClick={() => retrySource.mutate(row.id)}
-                >
-                  Retry
-                </Button>
+                <div className="flex items-center gap-1.5 self-end sm:self-start">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={retrySource.isPending}
+                    onClick={() => retrySource.mutate(row.id)}
+                  >
+                    Retry
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-muted-foreground hover:text-destructive"
+                        disabled={deleteSource.isPending}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent size="sm">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete entry?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This dead-letter row will be permanently removed and cannot be recovered.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel size="sm">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteSource.mutate(row.id)}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             ))}
           </div>
@@ -277,14 +325,46 @@ function DeadLettersPanel() {
                     </p>
                   )}
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={retryTag.isPending}
-                  onClick={() => retryTag.mutate(row.event_id)}
-                >
-                  Retry
-                </Button>
+                <div className="flex items-center gap-1.5 self-end sm:self-start">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={retryTag.isPending}
+                    onClick={() => retryTag.mutate(row.event_id)}
+                  >
+                    Retry
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-8 p-0 text-muted-foreground hover:text-destructive"
+                        disabled={deleteTag.isPending}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent size="sm">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete entry?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This dead-letter row will be permanently removed and cannot be recovered.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel size="sm">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteTag.mutate(row.id)}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             ))}
           </div>
