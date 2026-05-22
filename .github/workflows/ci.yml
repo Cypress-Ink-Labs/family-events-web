@@ -143,6 +143,15 @@ jobs:
           head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           extra_args: --only-verified
 
+      - name: Reject committed database dumps
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -Ei '(^|/)(seed-)?(bak|backup|dump).*\.sql(\.gz)?$|\.dump$'; then
+            echo "::error::tracked database dump or backup artifact detected"
+            exit 1
+          fi
+
   web-check:
     needs: changes
     if: needs.changes.outputs.web == 'true'
@@ -457,6 +466,24 @@ jobs:
             exit 1
           fi
           echo "admin verified: role=admin, is_enabled=true"
+
+      - name: Database RLS and RPC tests
+        env:
+          DB_URL: ${{ steps.supabase.outputs.db_url }}
+        run: |
+          set -euo pipefail
+          for test_file in \
+            supabase/tests/rls_anon_read.sql \
+            supabase/tests/rls_public_events_view.sql \
+            supabase/tests/rls_access_expiry.sql \
+            supabase/tests/rls_privilege_escalation.sql \
+            supabase/tests/cron_rpc_security.sql \
+            supabase/tests/search_events_full_text.sql \
+            supabase/tests/events_enriched_parity.sql \
+            supabase/tests/reference_data.sql
+          do
+            psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$test_file"
+          done
 
       - name: E2E
         env:
