@@ -11,13 +11,7 @@ type FilterBarProps = {
 
 /**
  * Horizontal scroll-snap filter chip row on mobile, wraps on md+.
- *
- * Replaces ad-hoc filter rows (admin-city-filter-bar, explore filters)
- * that overflow the viewport or wrap mid-chip on narrow screens.
- *
- * Chip children should be the v2 `<Chip>` primitive or any inline-flex
- * element with `scroll-snap-align: start` styling — the bar applies a
- * snap container at <md.
+ * Chip children should be inline-flex elements; the bar owns the snap container.
  */
 export function FilterBar({ children, trailing, className }: FilterBarProps) {
   return (

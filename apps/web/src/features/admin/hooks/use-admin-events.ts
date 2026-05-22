@@ -32,7 +32,12 @@ export function useAdminEventsInfinite(
   }
 
   const query = useInfiniteQuery({
-    queryKey: qk.admin.events.list(sanitizedKeyword ?? "", status, cityFilter, 200),
+    queryKey: qk.admin.events.list({
+      keyword: sanitizedKeyword ?? "",
+      status,
+      cityFilter,
+      pageSize: 200,
+    }),
     queryFn: ({ pageParam }) => {
       return fetchAdminEventsPage(filters, pageParam)
     },

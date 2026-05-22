@@ -12,14 +12,8 @@ type ToolbarProps = {
 }
 
 /**
- * Page / section header that survives mobile.
- *
- * Replaces ad-hoc `flex items-center justify-between` patterns across
- * admin screens. On <md, the title + subtitle stack on top and the
- * actions wrap to a new row; on md+, actions pin to the right edge.
- *
- * Use this anywhere you currently have `justify-between` with header
- * text on the left and buttons on the right (admin-sources offender pattern).
+ * Page / section header with responsive title, subtitle, actions, and filters.
+ * On <md actions wrap below the title; on md+ they pin to the right edge.
  */
 export function Toolbar({ title, subtitle, actions, children, className }: ToolbarProps) {
   return (

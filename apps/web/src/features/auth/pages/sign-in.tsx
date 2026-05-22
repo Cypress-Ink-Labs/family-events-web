@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { HOME_PATH } from "@/lib/access-control"
+import { resolveInAppRedirectTarget } from "@/lib/access-control"
 import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
 import {
   redeemInvite,
@@ -16,15 +16,6 @@ import {
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
 import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
 import { toast } from "sonner"
-
-// Only treat string `from` values that look like in-app paths. Anything else
-// (full URL, javascript:, missing leading /) falls back to HOME_PATH — this
-// keeps a malicious referer or stale state from triggering an open redirect.
-function resolveRedirectTarget(rawFrom: unknown): string {
-  if (typeof rawFrom !== "string") return HOME_PATH
-  if (!rawFrom.startsWith("/") || rawFrom.startsWith("//")) return HOME_PATH
-  return rawFrom
-}
 
 type Mode = "password" | "magic" | "magic-sent"
 
@@ -52,7 +43,7 @@ export function SignInPage() {
   const { signIn, sendMagicLink, signInWithProvider } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const redirectTo = resolveRedirectTarget((location.state as { from?: unknown } | null)?.from)
+  const redirectTo = resolveInAppRedirectTarget((location.state as { from?: unknown } | null)?.from)
   const {
     data: inviteRequired,
     isLoading: inviteCheckLoading,

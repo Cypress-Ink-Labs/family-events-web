@@ -18,15 +18,7 @@ type ResponsiveCardProps = {
 
 /**
  * Container-query-aware card that collapses horizontal to vertical at narrow widths.
- *
- * Replaces ad-hoc `Card + flex items-start gap-4 + justify-between` patterns,
- * especially in admin source/event/comment cards where toggles wrap one-word-per-line
- * at 393pt today.
- *
- * Behavior:
- *   - Container <380px: leading + content stack vertically. Trailing wraps below.
- *   - Container ≥380px: leading + content side-by-side; trailing right-aligned.
- *   - Actions row always full-width below.
+ * Actions stay full-width below the content in both layouts.
  */
 export function ResponsiveCard({
   leading,

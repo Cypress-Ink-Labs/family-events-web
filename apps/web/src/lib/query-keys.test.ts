@@ -65,17 +65,44 @@ describe("qk.enrichedEvents", () => {
 
 describe("qk.admin.events", () => {
   it("uses sanitized keyword params for admin event search keys", () => {
-    expect(qk.admin.events.list(" storytime,or(status.eq.draft) ", "all")).toEqual(
-      qk.admin.events.list("storytime or status eq draft", "all")
-    )
+    expect(
+      qk.admin.events.list({
+        keyword: " storytime,or(status.eq.draft) ",
+        status: "all",
+      })
+    ).toEqual(qk.admin.events.list({ keyword: "storytime or status eq draft", status: "all" }))
   })
 
   it("includes page size in admin event list cache key", () => {
-    expect(qk.admin.events.list("storytime", "all", "all", 200)).toEqual(
-      qk.admin.events.list("storytime", "all", "all", 200)
+    expect(
+      qk.admin.events.list({
+        keyword: "storytime",
+        status: "all",
+        cityFilter: "all",
+        pageSize: 200,
+      })
+    ).toEqual(
+      qk.admin.events.list({
+        keyword: "storytime",
+        status: "all",
+        cityFilter: "all",
+        pageSize: 200,
+      })
     )
-    expect(qk.admin.events.list("storytime", "all", "all", 50)).not.toEqual(
-      qk.admin.events.list("storytime", "all", "all", 200)
+    expect(
+      qk.admin.events.list({
+        keyword: "storytime",
+        status: "all",
+        cityFilter: "all",
+        pageSize: 50,
+      })
+    ).not.toEqual(
+      qk.admin.events.list({
+        keyword: "storytime",
+        status: "all",
+        cityFilter: "all",
+        pageSize: 200,
+      })
     )
   })
 })

@@ -75,3 +75,15 @@ export function evaluateAccessState(
 export function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.has(pathname)
 }
+
+export function resolveInAppRedirectTarget(rawFrom: unknown, fallback = HOME_PATH): string {
+  if (typeof rawFrom !== "string") {
+    return fallback
+  }
+
+  if (!rawFrom.startsWith("/") || rawFrom.startsWith("//")) {
+    return fallback
+  }
+
+  return rawFrom
+}

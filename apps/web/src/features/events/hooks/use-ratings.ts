@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { supabase } from "@/lib/supabase"
 import type { Rating } from "@/lib/types"
+import { invalidateEventProjectionQueries } from "@/features/events/lib/event-cache"
 
 export function useRatings(eventId: string | undefined) {
   return useQuery({
@@ -90,10 +91,7 @@ export function useUpsertRating(userId: string | undefined) {
       void queryClient.invalidateQueries({
         queryKey: qk.ratings.userEvent(userId, variables.eventId),
       })
-      void queryClient.invalidateQueries({ queryKey: qk.events.all })
-      void queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all })
-      void queryClient.invalidateQueries({ queryKey: qk.events.detailById(variables.eventId) })
-      void queryClient.invalidateQueries({ queryKey: qk.events.byIdsAll })
+      invalidateEventProjectionQueries(queryClient, variables.eventId)
     },
   })
 }

@@ -39,10 +39,7 @@ type MobileTableProps<T> = {
 
 /**
  * Renders as a card-list on mobile (<md) and as a real `<table>` on md+.
- * Same data, two presentations — the kind that doesn't get cropped on a phone.
- *
- * Designed to replace every `<Table>` in admin/* that today shows
- * horizontal scroll on a 393pt screen.
+ * Same data, two presentations: scan-friendly cards and dense table rows.
  */
 export function MobileTable<T>({
   data,

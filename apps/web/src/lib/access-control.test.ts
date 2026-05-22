@@ -5,6 +5,7 @@ import {
   HOME_PATH,
   isPublicPath,
   isSessionExpired,
+  resolveInAppRedirectTarget,
 } from "./access-control"
 import type { UserAccess } from "@/lib/types"
 
@@ -77,6 +78,23 @@ describe("isPublicPath", () => {
   it("keeps the authenticated landing page off the public allowlist", () => {
     expect(HOME_PATH).toBe("/home")
     expect(isPublicPath(HOME_PATH)).toBe(false)
+  })
+})
+
+describe("resolveInAppRedirectTarget", () => {
+  it("accepts same-app absolute paths", () => {
+    expect(resolveInAppRedirectTarget("/events/event-1")).toBe("/events/event-1")
+  })
+
+  it("falls back for external, protocol-relative, and non-string values", () => {
+    expect(resolveInAppRedirectTarget("https://example.com")).toBe(HOME_PATH)
+    expect(resolveInAppRedirectTarget("//example.com")).toBe(HOME_PATH)
+    expect(resolveInAppRedirectTarget("javascript:alert(1)")).toBe(HOME_PATH)
+    expect(resolveInAppRedirectTarget(null)).toBe(HOME_PATH)
+  })
+
+  it("allows callers to provide a domain-specific fallback", () => {
+    expect(resolveInAppRedirectTarget("https://example.com", "/sign-in")).toBe("/sign-in")
   })
 })
 

@@ -29,6 +29,13 @@ type SaturdayPlanKeyOptions = {
   dateKey: string
 }
 
+type AdminEventsKeyOptions = {
+  keyword: string
+  status: Event["status"] | "all"
+  cityFilter?: "all" | "none" | string
+  pageSize?: number
+}
+
 function nil<T>(value: T | null | undefined): T | null {
   return value ?? null
 }
@@ -66,12 +73,12 @@ function normalizeEventFilters(filters: EventFilters = {}) {
   } as const
 }
 
-function normalizeAdminEventsParams(
-  keyword: string,
-  status: Event["status"] | "all",
-  cityFilter: "all" | "none" | string,
-  pageSize: number
-) {
+function normalizeAdminEventsParams({
+  keyword,
+  status,
+  cityFilter = "all",
+  pageSize = 200,
+}: AdminEventsKeyOptions) {
   return {
     keyword: sanitizePostgrestLike(keyword),
     status,
@@ -196,17 +203,8 @@ export const qk = {
     stats: ["admin", "stats"] as const,
     events: {
       all: ["admin", "events"] as const,
-      list: (
-        keyword: string,
-        status: Event["status"] | "all",
-        cityFilter: "all" | "none" | string = "all",
-        pageSize = 200
-      ) =>
-        [
-          "admin",
-          "events",
-          normalizeAdminEventsParams(keyword, status, cityFilter, pageSize),
-        ] as const,
+      list: (options: AdminEventsKeyOptions) =>
+        ["admin", "events", normalizeAdminEventsParams(options)] as const,
       detail: (eventId: string | null | undefined) =>
         ["admin", "events", "detail", nil(eventId)] as const,
       audit: (eventId: string | null | undefined) =>

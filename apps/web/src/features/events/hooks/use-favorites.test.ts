@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { qk } from "@/lib/query-keys"
 import type { Favorite } from "@/lib/types"
 import {
-  applyFavoriteStateToCacheValue,
   handleToggleFavoriteOnError,
   handleToggleFavoriteOnMutate,
   handleToggleFavoriteOnSettled,
@@ -105,23 +104,5 @@ describe("useToggleFavorite optimistic lifecycle", () => {
     expect(invalidateSpy).not.toHaveBeenCalledWith({ queryKey: qk.events.all })
     expect(invalidateSpy).not.toHaveBeenCalledWith({ queryKey: qk.enrichedEvents.all })
     expect(invalidateSpy).toHaveBeenCalledTimes(2)
-  })
-})
-
-describe("applyFavoriteStateToCacheValue", () => {
-  it("updates nested event objects without touching unrelated ids", () => {
-    const input = {
-      heroEvent: { id: "event-1", is_favorited: false, title: "Hero" },
-      secondaryEvents: [
-        { id: "event-2", is_favorited: false, title: "Secondary" },
-        { id: "event-3", is_favorited: true, title: "Other" },
-      ],
-    }
-
-    const output = applyFavoriteStateToCacheValue(input, "event-2", true)
-
-    expect(output.heroEvent.is_favorited).toBe(false)
-    expect(output.secondaryEvents[0].is_favorited).toBe(true)
-    expect(output.secondaryEvents[1].is_favorited).toBe(true)
   })
 })
