@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { enrichedEventRowSchema } from "@/lib/schemas"
-import { supabase } from "@/lib/supabase"
 import { Sentry } from "@/lib/sentry"
+import { fetchEventsPage } from "@/lib/db/rpc-events"
 import type { Event, EventTag, EventWithDetails, Tag } from "@/lib/types"
 
 interface UseEnrichedEventsOptions {
@@ -144,11 +144,19 @@ async function fetchEnrichedEvents(options: UseEnrichedEventsOptions): Promise<E
     return []
   }
 
-  const { data, error } = await supabase.rpc("events_enriched", buildEnrichedRpcArgs(options))
-
-  if (error) {
-    throw error
-  }
+  const rpcArgs = buildEnrichedRpcArgs(options)
+  const data = await fetchEventsPage(
+    {
+      cityId: rpcArgs.p_city_id,
+      status: rpcArgs.p_status,
+      userId: rpcArgs.p_user_id,
+      eventIds: rpcArgs.p_event_ids,
+      dateFrom: rpcArgs.p_date_from,
+      dateTo: rpcArgs.p_date_to,
+    },
+    undefined,
+    rpcArgs.p_limit ?? 24
+  )
 
   return (data ?? []).map((row) => adaptEnrichedRow(row))
 }

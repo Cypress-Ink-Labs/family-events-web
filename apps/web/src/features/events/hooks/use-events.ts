@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
-import { supabase } from "@/lib/supabase"
 import { sanitizePostgrestLike } from "@/lib/utils"
+import { searchEventsPage } from "@/lib/db/rpc-events"
 import { enrichEvents } from "@/lib/enrich-events"
 import type { Event, EventFilters, EventWithDetails } from "@/lib/types"
 
@@ -62,26 +62,20 @@ async function fetchEvents(
 
   // Generated Postgres RPC types require `undefined` for unset optional params.
   // Our callers still use `null` idiomatically, so normalise at the boundary.
-  const rpcArgs = {
-    p_city_id: filters.cityId ?? undefined,
-    p_date_from: filters.dateFrom ? toIsoDate(filters.dateFrom) : undefined,
-    p_date_to: filters.dateTo ? toIsoDate(filters.dateTo) : undefined,
-    p_age_min: filters.ageMin ?? undefined,
-    p_age_max: filters.ageMax ?? undefined,
-    p_is_free: filters.isFree ?? undefined,
-    p_is_featured: effectiveFeatured ?? undefined,
-    p_tag_slugs: filters.tagSlugs && filters.tagSlugs.length > 0 ? filters.tagSlugs : undefined,
-    p_keyword: keyword ?? undefined,
-    p_status: filters.status ?? "published",
-    p_limit: limit,
-    p_offset: offset,
-  }
-
-  const { data, error } = await supabase.rpc("search_events", rpcArgs)
-
-  if (error) {
-    throw error
-  }
+  const data = await searchEventsPage({
+    cityId: filters.cityId ?? undefined,
+    dateFrom: filters.dateFrom ? toIsoDate(filters.dateFrom) : undefined,
+    dateTo: filters.dateTo ? toIsoDate(filters.dateTo) : undefined,
+    ageMin: filters.ageMin ?? undefined,
+    ageMax: filters.ageMax ?? undefined,
+    isFree: filters.isFree ?? undefined,
+    isFeatured: effectiveFeatured ?? undefined,
+    tagSlugs: filters.tagSlugs && filters.tagSlugs.length > 0 ? filters.tagSlugs : undefined,
+    keyword: keyword ?? undefined,
+    status: filters.status ?? "published",
+    limit,
+    offset,
+  })
 
   return enrichEvents(
     parseRowsWithSentry(eventRowSchema, data, { area: "events.search" }) as Event[],

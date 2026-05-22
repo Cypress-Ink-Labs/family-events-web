@@ -29,3 +29,10 @@ export type CityRow = Tables<"cities">
 export type PublicEventRow = Tables<"public_events">
 export type PlanEventsRow =
   Database["public"]["Functions"]["plan_events_for_user"]["Returns"][number]
+
+export type { DbError, DbErrorKind } from "./errors"
+export { mapSupabaseError } from "./errors"
+export { fetchEventsPage, searchEventsPage } from "./rpc-events"
+export type { EventsCursor, EventsPageFilters, SearchEventsFilters } from "./rpc-events"
+export { fetchAdminEventsPage } from "./rpc-admin-events"
+export type { AdminEventsCursor, AdminEventsFilters } from "./rpc-admin-events"
