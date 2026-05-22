@@ -186,7 +186,7 @@ export interface EventSource {
   id: string
   name: string
   url: string
-  source_type: "website" | "ical" | "rss" | "manual" | "macaronikid"
+  source_type: "website" | "ical" | "rss" | "manual" | "macaronikid" | "brec"
   extraction_mode: ExtractionMode
   city_id: string | null
   is_active: boolean
