@@ -83,7 +83,7 @@ function CityChip({ label, count, active, onClick }: CityChipProps) {
       )}
     >
       {label}
-      <span className="opacity-70">({count})</span>
+      <span className="opacity-70">({count.toLocaleString()})</span>
     </button>
   )
 }

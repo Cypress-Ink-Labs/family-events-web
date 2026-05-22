@@ -26,4 +26,9 @@ export { mapSupabaseError } from "./errors"
 export { fetchEventsPage, searchEventsPage } from "./rpc-events"
 export type { EventsCursor, EventsPageFilters, SearchEventsFilters } from "./rpc-events"
 export { fetchAdminEventsPage } from "./rpc-admin-events"
-export type { AdminEventsCursor, AdminEventsFilters } from "./rpc-admin-events"
+export type {
+  AdminEventsCursor,
+  AdminEventsFilters,
+  AdminEventsPageResult,
+  AdminEventFacetRow,
+} from "./rpc-admin-events"

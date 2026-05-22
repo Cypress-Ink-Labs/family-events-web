@@ -29,6 +29,7 @@ export type EventSourceRow = z.infer<typeof eventSourceRowSchema>
 export const adminEventFacetRowSchema = z.object({
   city_id: z.string().nullable(),
   status: z.enum(["draft", "published", "rejected", "archived"]),
+  count: z.coerce.number().int().nonnegative(),
 })
 
 export type AdminEventFacetRow = z.infer<typeof adminEventFacetRowSchema>

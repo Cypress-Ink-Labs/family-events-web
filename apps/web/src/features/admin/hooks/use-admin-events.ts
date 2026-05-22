@@ -1,39 +1,74 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { adminEventFacetRowSchema, eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
+import { adminEventFacetRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import { supabase } from "@/lib/supabase"
 import { sanitizePostgrestLike } from "@/lib/utils"
-import { enrichAdminEvents } from "./admin-events-shared"
 import { UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
 import { fetchAdminEventsPage } from "@/lib/db/rpc-admin-events"
+import type { AdminEventsCursor, AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
 import type { CityFilterValue } from "./use-city-filter"
-import type { Event, EventWithDetails } from "@/lib/types"
+import type { Event } from "@/lib/types"
 
-export function useAdminEvents(
+export interface AdminEventsInfiniteData {
+  events: Event[]
+  loadedCount: number
+  totalCount: number
+  hasNextPage: boolean
+  isFetchingNextPage: boolean
+}
+
+export function useAdminEventsInfinite(
   keyword: string,
   status: Event["status"] | "all",
   cityFilter: CityFilterValue = "all"
 ) {
-  return useQuery({
-    queryKey: qk.admin.events.list(keyword, status, cityFilter),
-    queryFn: async (): Promise<EventWithDetails[]> => {
-      const data = await fetchAdminEventsPage({
-        status: status !== "all" ? status : undefined,
-        cityId: cityFilter !== "all" && cityFilter !== UNASSIGNED_CITY_KEY ? cityFilter : undefined,
-        cityIsNull: cityFilter === UNASSIGNED_CITY_KEY ? true : undefined,
-        keyword: sanitizePostgrestLike(keyword) || undefined,
-        limit: 200,
-      })
+  const sanitizedKeyword = sanitizePostgrestLike(keyword) || undefined
+  const filters = {
+    status: status !== "all" ? status : undefined,
+    cityId: cityFilter !== "all" && cityFilter !== UNASSIGNED_CITY_KEY ? cityFilter : undefined,
+    cityIsNull: cityFilter === UNASSIGNED_CITY_KEY ? true : undefined,
+    keyword: sanitizedKeyword,
+    limit: 200,
+  }
 
-      // parseRowsWithSentry drops individual malformed rows (with a Sentry
-      // report) rather than blanking the whole admin events table on drift.
-      // total_count is an extra column not in eventRowSchema — silently ignored.
-      const rows = parseRowsWithSentry(eventRowSchema, data, {
-        area: "admin.events.list",
-      })
-      return enrichAdminEvents(rows as Event[])
+  const query = useInfiniteQuery({
+    queryKey: qk.admin.events.list(sanitizedKeyword ?? "", status, cityFilter, 200),
+    queryFn: ({ pageParam }) => {
+      return fetchAdminEventsPage(filters, pageParam)
+    },
+    initialPageParam: {} as AdminEventsCursor,
+    getNextPageParam: (lastPage: AdminEventsPageResult, allPages: AdminEventsPageResult[]) => {
+      if (lastPage.rows.length === 0 || lastPage.totalCount <= 0) {
+        return undefined
+      }
+
+      const loadedCount = allPages.reduce((count, page) => count + page.rows.length, 0)
+      if (loadedCount >= lastPage.totalCount) {
+        return undefined
+      }
+
+      const finalRow = lastPage.rows[lastPage.rows.length - 1]
+      return {
+        afterCreatedAt: finalRow.created_at,
+        afterId: finalRow.id,
+      }
     },
   })
+
+  const data = query.data?.pages
+    ? {
+        events: query.data.pages.flatMap((page) => page.rows),
+        loadedCount: query.data.pages.reduce((acc, page) => acc + page.rows.length, 0),
+        totalCount:
+          query.data.pages.find((page) => page.totalCount > 0)?.totalCount ??
+          query.data.pages.at(-1)?.totalCount ??
+          0,
+        hasNextPage: query.hasNextPage,
+        isFetchingNextPage: query.isFetchingNextPage,
+      }
+    : undefined
+
+  return { ...query, data }
 }
 
 // Re-exported from the schema module so existing call sites keep working.
@@ -43,12 +78,9 @@ export function useAdminEventFacets(keyword: string) {
   return useQuery({
     queryKey: qk.admin.events.facets(keyword),
     queryFn: async () => {
-      let query = supabase.from("events").select("city_id, status")
-      const sanitized = sanitizePostgrestLike(keyword)
-      if (sanitized) {
-        query = query.or(`title.ilike.%${sanitized}%,description.ilike.%${sanitized}%`)
-      }
-      const { data, error } = await query
+      const { data, error } = await supabase.rpc("admin_event_facets", {
+        p_keyword: sanitizePostgrestLike(keyword) || undefined,
+      })
       if (error) {
         throw error
       }

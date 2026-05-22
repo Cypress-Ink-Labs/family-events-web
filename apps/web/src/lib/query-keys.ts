@@ -69,12 +69,14 @@ function normalizeEventFilters(filters: EventFilters = {}) {
 function normalizeAdminEventsParams(
   keyword: string,
   status: Event["status"] | "all",
-  cityFilter: "all" | "none" | string
+  cityFilter: "all" | "none" | string,
+  pageSize: number
 ) {
   return {
     keyword: sanitizePostgrestLike(keyword),
     status,
     cityFilter,
+    pageSize,
   } as const
 }
 
@@ -197,8 +199,14 @@ export const qk = {
       list: (
         keyword: string,
         status: Event["status"] | "all",
-        cityFilter: "all" | "none" | string = "all"
-      ) => ["admin", "events", normalizeAdminEventsParams(keyword, status, cityFilter)] as const,
+        cityFilter: "all" | "none" | string = "all",
+        pageSize = 200
+      ) =>
+        [
+          "admin",
+          "events",
+          normalizeAdminEventsParams(keyword, status, cityFilter, pageSize),
+        ] as const,
       detail: (eventId: string | null | undefined) =>
         ["admin", "events", "detail", nil(eventId)] as const,
       audit: (eventId: string | null | undefined) =>

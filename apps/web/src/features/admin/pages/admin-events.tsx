@@ -1,5 +1,4 @@
-import { useMemo } from "react"
-import type { Event } from "@/lib/types"
+import { useEffect, useMemo } from "react"
 import { useAdminStore } from "@/features/admin/stores/admin-store"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import {
@@ -10,66 +9,164 @@ import {
   AdminEventStatusFilterBar,
 } from "@/features/admin/components/admin-events-sections"
 import { AdminCityFilterBar } from "@/features/admin/components/admin-city-filter-bar"
-import {
-  useAdminEventFacets,
-  useAdminEvents,
-  useBatchUpdateAdminEventStatus,
-  useDeleteAdminEvents,
-  useUpdateAdminEventStatus,
-} from "@/features/admin/hooks/use-admin-events"
+import { useAdminEventDetail } from "@/features/admin/hooks/use-admin-event-detail"
 import {
   useAdminEventAiTrace,
   useUpdateAdminEventTags,
 } from "@/features/admin/hooks/use-admin-event-ai-trace"
+import {
+  useAdminEventFacets,
+  useAdminEventsInfinite,
+  useBatchUpdateAdminEventStatus,
+  useDeleteAdminEvents,
+  useUpdateAdminEventStatus,
+} from "@/features/admin/hooks/use-admin-events"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
 import { UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
 import { useTags } from "@/features/events/hooks/use-tags"
+import type { Event } from "@/lib/types"
 import { toast } from "sonner"
+
+import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 
 type EventStatusFilter = Event["status"] | "all"
 
-export function AdminEventsPage() {
-  const keyword = useAdminStore((s) => s.keyword)
-  const statusFilter = useAdminStore((s) => s.statusFilter)
-  const selectedEventId = useAdminStore((s) => s.selectedEventId)
-  const editingTagIds = useAdminStore((s) => s.editingTagIds)
-  const selectedIds = useAdminStore((s) => s.selectedIds)
-  const setKeyword = useAdminStore((s) => s.setKeyword)
-  const setStatusFilter = useAdminStore((s) => s.setStatusFilter)
-  const setSelectedEventId = useAdminStore((s) => s.setSelectedEventId)
-  const setEditingTagIds = useAdminStore((s) => s.setEditingTagIds)
-  const toggleSelectedId = useAdminStore((s) => s.toggleSelectedId)
-  const setSelectedIds = useAdminStore((s) => s.setSelectedIds)
-  const clearSelectedIds = useAdminStore((s) => s.clearSelectedIds)
-  const { value: cityFilter, setValue: setCityFilter } = useCityFilter()
+const STATUS_CONFIG: Record<Event["status"], { label: string; color: string }> = {
+  draft: { label: "Draft", color: "bg-muted text-muted-foreground" },
+  published: {
+    label: "Published",
+    color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  },
+  rejected: { label: "Rejected", color: "bg-destructive/10 text-destructive" },
+  archived: { label: "Archived", color: "bg-muted/50 text-muted-foreground" },
+}
 
-  const { data: events = [] } = useAdminEvents(keyword, statusFilter, cityFilter)
-  const { data: facets = [] } = useAdminEventFacets(keyword)
-  const { data: cities = [] } = useAdminCities()
+function getActiveTotal({
+  facets,
+  statusFilter,
+  cityFilter,
+}: {
+  facets: Array<{ status: string; city_id: string | null; count: number }>
+  statusFilter: EventStatusFilter
+  cityFilter: CityFilterValue
+}) {
+  return facets.reduce((acc, row) => {
+    if (statusFilter !== "all" && row.status !== statusFilter) {
+      return acc
+    }
+
+    if (cityFilter === "all") {
+      return acc + row.count
+    }
+
+    if (cityFilter === UNASSIGNED_CITY_KEY) {
+      return row.city_id === null ? acc + row.count : acc
+    }
+
+    return row.city_id === cityFilter ? acc + row.count : acc
+  }, 0)
+}
+
+function AdminEventReviewSection({
+  onUpdateStatus,
+}: {
+  onUpdateStatus: (eventId: string, status: Event["status"]) => Promise<void>
+}) {
+  const selectedEventId = useAdminStore((state) => state.selectedEventId)
+  const editingTagIds = useAdminStore((state) => state.editingTagIds)
+  const setSelectedEventId = useAdminStore((state) => state.setSelectedEventId)
+  const setEditingTagIds = useAdminStore((state) => state.setEditingTagIds)
+
+  const selectedEvent = useAdminEventDetail(selectedEventId ?? undefined)
   const { data: selectedEventTrace, isLoading: isTraceLoading } =
     useAdminEventAiTrace(selectedEventId)
   const { data: allTags = [] } = useTags()
-  const updateStatusMutation = useUpdateAdminEventStatus()
-  const batchUpdateStatusMutation = useBatchUpdateAdminEventStatus()
-  const deleteEventsMutation = useDeleteAdminEvents()
-  const updateTagsMutation = useUpdateAdminEventTags()
+  const { mutate: updateTags } = useUpdateAdminEventTags()
   const { toastError } = useAdminToast()
 
-  const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
   const tagNameById = new Map(allTags.map((tag) => [tag.id, tag.name]))
   const tagNameBySlug = new Map(allTags.map((tag) => [tag.slug, tag.name]))
-  const draftEvents = events.filter((event) => event.status === "draft")
-  const selectedDraftIds = [...selectedIds].filter((id) =>
-    draftEvents.some((event) => event.id === id)
-  )
-  const selectedVisibleIds: string[] = []
-  for (const event of events) {
-    if (selectedIds.has(event.id)) {
-      selectedVisibleIds.push(event.id)
+
+  useEffect(() => {
+    if (selectedEventId && !selectedEvent.isLoading && selectedEvent.data === null) {
+      setSelectedEventId(null)
+    }
+  }, [selectedEvent.data, selectedEvent.isLoading, selectedEventId, setSelectedEventId])
+
+  async function saveTagOverrides() {
+    if (!selectedEvent.data) return
+    try {
+      await updateTags({ eventId: selectedEvent.data.id, tagIds: editingTagIds })
+      toast.success("Tags updated")
+    } catch (error) {
+      toastError(error, "Failed to update tags.")
     }
   }
-  const allVisibleSelected = events.length > 0 && events.every((event) => selectedIds.has(event.id))
+
+  return (
+    <AdminEventReviewDialog
+      event={selectedEvent.data ?? null}
+      open={Boolean(selectedEvent.data)}
+      onOpenChange={(open) => {
+        if (!open) setSelectedEventId(null)
+      }}
+      editingTagIds={editingTagIds}
+      allTags={allTags}
+      tagNameById={tagNameById}
+      tagNameBySlug={tagNameBySlug}
+      onToggleTag={(tagId) => {
+        setEditingTagIds(
+          editingTagIds.includes(tagId)
+            ? editingTagIds.filter((id) => id !== tagId)
+            : [...editingTagIds, tagId]
+        )
+      }}
+      onSaveTags={saveTagOverrides}
+      selectedEventTrace={selectedEventTrace ?? null}
+      isTraceLoading={isTraceLoading}
+      onPublish={() => {
+        if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "published")
+      }}
+      onReject={() => {
+        if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "rejected")
+      }}
+    />
+  )
+}
+
+export function AdminEventsPage() {
+  const keyword = useAdminStore((state) => state.keyword)
+  const statusFilter = useAdminStore((state) => state.statusFilter)
+  const selectedIds = useAdminStore((state) => state.selectedIds)
+  const setKeyword = useAdminStore((state) => state.setKeyword)
+  const setStatusFilter = useAdminStore((state) => state.setStatusFilter)
+  const setSelectedEventId = useAdminStore((state) => state.setSelectedEventId)
+  const toggleSelectedId = useAdminStore((state) => state.toggleSelectedId)
+  const setSelectedIds = useAdminStore((state) => state.setSelectedIds)
+  const clearSelectedIds = useAdminStore((state) => state.clearSelectedIds)
+
+  const { value: cityFilter, setValue: setCityFilter } = useCityFilter()
+
+  const {
+    data: eventList,
+    isLoading: isEventListLoading,
+    isError: isEventListError,
+    error: eventListError,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage: listHasNextPage,
+    refetch: refetchEvents,
+  } = useAdminEventsInfinite(keyword, statusFilter, cityFilter)
+
+  const events = useMemo(() => eventList?.events ?? [], [eventList?.events])
+  const loadedCount = eventList?.loadedCount ?? 0
+  const totalCount = eventList?.totalCount ?? 0
+  const hasNextPage = eventList?.hasNextPage ?? listHasNextPage
+  const isFetchingNext = eventList?.isFetchingNextPage ?? isFetchingNextPage
+
+  const { data: facets = [] } = useAdminEventFacets(keyword)
+  const { data: cities = [] } = useAdminCities()
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -80,14 +177,15 @@ export function AdminEventsPage() {
           : cityFilter === UNASSIGNED_CITY_KEY
             ? row.city_id === null
             : row.city_id === cityFilter
+
       if (!matchesCity) continue
-      counts[row.status] = (counts[row.status] ?? 0) + 1
+      counts[row.status] = (counts[row.status] ?? 0) + row.count
     }
     return counts
-  }, [facets, cityFilter])
+  }, [cityFilter, facets])
 
   const statusTotal = useMemo(
-    () => Object.values(statusCounts).reduce((sum, n) => sum + n, 0),
+    () => Object.values(statusCounts).reduce((sum, count) => sum + count, 0),
     [statusCounts]
   )
 
@@ -95,52 +193,80 @@ export function AdminEventsPage() {
     const counts: Record<string, number> = {}
     for (const row of facets) {
       if (statusFilter !== "all" && row.status !== statusFilter) continue
+
       const key = row.city_id ?? UNASSIGNED_CITY_KEY
-      counts[key] = (counts[key] ?? 0) + 1
+      counts[key] = (counts[key] ?? 0) + row.count
     }
     return counts
   }, [facets, statusFilter])
 
   const cityTotal = useMemo(
-    () => Object.values(cityCounts).reduce((sum, n) => sum + n, 0),
+    () => Object.values(cityCounts).reduce((sum, count) => sum + count, 0),
     [cityCounts]
   )
 
-  const statusConfig: Record<Event["status"], { label: string; color: string }> = {
-    draft: { label: "Draft", color: "bg-muted text-muted-foreground" },
-    published: {
-      label: "Published",
-      color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    },
-    rejected: { label: "Rejected", color: "bg-destructive/10 text-destructive" },
-    archived: { label: "Archived", color: "bg-muted/50 text-muted-foreground" },
+  const activeTotal = useMemo(
+    () => getActiveTotal({ facets, statusFilter, cityFilter }),
+    [cityFilter, facets, statusFilter]
+  )
+
+  const totalCountForToolbar = totalCount > 0 ? totalCount : activeTotal
+
+  const selectedVisibleIds = useMemo(() => {
+    const result = new Set<string>()
+    for (const event of events) {
+      if (selectedIds.has(event.id)) result.add(event.id)
+    }
+    return result
+  }, [events, selectedIds])
+
+  const selectedLoadedIds = useMemo(() => [...selectedVisibleIds], [selectedVisibleIds])
+  const allLoadedSelected = loadedCount > 0 && selectedLoadedIds.length === events.length
+
+  const selectedDraftIds = useMemo(
+    () =>
+      selectedLoadedIds.filter((id) => events.find((event) => event.id === id)?.status === "draft"),
+    [events, selectedLoadedIds]
+  )
+
+  const { toastError } = useAdminToast()
+
+  const updateStatusMutation = useUpdateAdminEventStatus()
+  const batchUpdateStatusMutation = useBatchUpdateAdminEventStatus()
+  const deleteEventsMutation = useDeleteAdminEvents()
+
+  function handleKeywordChange(nextKeyword: string) {
+    setKeyword(nextKeyword)
+    clearSelectedIds()
   }
 
-  function toggleSelect(id: string) {
-    toggleSelectedId(id)
+  function handleStatusFilterChange(nextStatus: EventStatusFilter) {
+    setStatusFilter(nextStatus)
+    clearSelectedIds()
   }
 
-  function handleStatusFilterChange(status: EventStatusFilter) {
-    setStatusFilter(status)
+  function handleCityFilterChange(nextCityFilter: typeof cityFilter) {
+    setCityFilter(nextCityFilter)
     clearSelectedIds()
   }
 
   function toggleSelectAll() {
-    if (allVisibleSelected) {
+    if (allLoadedSelected) {
       clearSelectedIds()
     } else {
       setSelectedIds(new Set(events.map((event) => event.id)))
     }
   }
 
-  async function batchUpdateStatus(newStatus: Event["status"]) {
+  async function batchUpdateStatus(nextStatus: Event["status"]) {
     if (selectedDraftIds.length === 0) return
+
     try {
       const { count } = await batchUpdateStatusMutation.mutateAsync({
         eventIds: selectedDraftIds,
-        status: newStatus,
+        status: nextStatus,
       })
-      toast.success(`${count} event${count === 1 ? "" : "s"} ${newStatus}`)
+      toast.success(`${count} event${count === 1 ? "" : "s"} ${nextStatus}`)
       clearSelectedIds()
     } catch (error) {
       toastError(error, "Bulk update failed.")
@@ -148,19 +274,22 @@ export function AdminEventsPage() {
   }
 
   async function deleteSelectedEvents() {
-    if (selectedVisibleIds.length === 0) return
-    const confirmed = window.confirm(
-      `Delete ${selectedVisibleIds.length} event${
-        selectedVisibleIds.length === 1 ? "" : "s"
-      }? This cannot be undone.`
-    )
-    if (!confirmed) return
+    if (selectedLoadedIds.length === 0) return
+
+    if (
+      !window.confirm(
+        `Delete ${selectedLoadedIds.length} event${selectedLoadedIds.length === 1 ? "" : "s"}? This cannot be undone.`
+      )
+    ) {
+      return
+    }
 
     try {
-      const { count } = await deleteEventsMutation.mutateAsync(selectedVisibleIds)
+      const { count } = await deleteEventsMutation.mutateAsync(selectedLoadedIds)
       toast.success(`${count} event${count === 1 ? "" : "s"} deleted`)
       clearSelectedIds()
-      if (selectedEventId && selectedVisibleIds.includes(selectedEventId)) {
+      const selectedEventId = useAdminStore.getState().selectedEventId
+      if (selectedEventId && selectedLoadedIds.includes(selectedEventId)) {
         setSelectedEventId(null)
       }
     } catch (error) {
@@ -168,23 +297,13 @@ export function AdminEventsPage() {
     }
   }
 
-  async function updateStatus(id: string, newStatus: Event["status"]) {
+  async function updateStatus(eventId: string, nextStatus: Event["status"]) {
     try {
-      await updateStatusMutation.mutateAsync({ eventId: id, status: newStatus })
-      toast.success(`Event ${newStatus}`)
+      await updateStatusMutation.mutateAsync({ eventId, status: nextStatus })
+      toast.success(`Event ${nextStatus}`)
       setSelectedEventId(null)
     } catch (error) {
       toastError(error, "Failed to update event status.")
-    }
-  }
-
-  async function saveTagOverrides() {
-    if (!selectedEvent) return
-    try {
-      await updateTagsMutation.mutateAsync({ eventId: selectedEvent.id, tagIds: editingTagIds })
-      toast.success("Tags updated")
-    } catch (error) {
-      toastError(error, "Failed to update tags.")
     }
   }
 
@@ -201,61 +320,52 @@ export function AdminEventsPage() {
         counts={cityCounts}
         total={cityTotal}
         value={cityFilter}
-        onChange={setCityFilter}
+        onChange={handleCityFilterChange}
       />
       <AdminEventsToolbar
         keyword={keyword}
-        onKeywordChange={setKeyword}
-        eventCount={events.length}
-        allVisibleSelected={allVisibleSelected}
+        onKeywordChange={handleKeywordChange}
+        loadedCount={loadedCount}
+        totalCount={totalCountForToolbar}
+        allLoadedSelected={allLoadedSelected}
         onToggleSelectAll={toggleSelectAll}
       />
+
       <AdminEventsBulkBar
-        selectedCount={selectedVisibleIds.length}
+        selectedCount={selectedLoadedIds.length}
         selectedDraftCount={selectedDraftIds.length}
         isStatusPending={batchUpdateStatusMutation.isPending}
         isDeletePending={deleteEventsMutation.isPending}
         onPublish={() => batchUpdateStatus("published")}
         onReject={() => batchUpdateStatus("rejected")}
         onDelete={deleteSelectedEvents}
-        onClear={() => clearSelectedIds()}
+        onClear={clearSelectedIds}
       />
+
       <AdminEventsList
         events={events}
         selectedIds={selectedIds}
-        statusConfig={statusConfig}
+        statusConfig={STATUS_CONFIG}
         cities={cities}
-        cityFilter={cityFilter}
-        onToggleSelect={toggleSelect}
+        queryState={{
+          hasNextPage,
+          isLoading: isEventListLoading,
+          isError: isEventListError,
+          error: eventListError,
+          isFetchingNextPage: isFetchingNext,
+        }}
+        onFetchNextPage={fetchNextPage}
+        onRetry={() => {
+          void refetchEvents()
+        }}
+        onToggleSelect={toggleSelectedId}
         onOpenReview={(event) => {
           setSelectedEventId(event.id)
-          setEditingTagIds((event.tags ?? []).map((tag) => tag.tag_id))
         }}
         onUpdateStatus={updateStatus}
       />
-      <AdminEventReviewDialog
-        event={selectedEvent}
-        open={Boolean(selectedEvent)}
-        onOpenChange={(open) => {
-          if (!open) setSelectedEventId(null)
-        }}
-        editingTagIds={editingTagIds}
-        allTags={allTags}
-        tagNameById={tagNameById}
-        tagNameBySlug={tagNameBySlug}
-        onToggleTag={(tagId) =>
-          setEditingTagIds(
-            editingTagIds.includes(tagId)
-              ? editingTagIds.filter((id) => id !== tagId)
-              : [...editingTagIds, tagId]
-          )
-        }
-        onSaveTags={saveTagOverrides}
-        selectedEventTrace={selectedEventTrace ?? null}
-        isTraceLoading={isTraceLoading}
-        onPublish={() => selectedEvent && updateStatus(selectedEvent.id, "published")}
-        onReject={() => selectedEvent && updateStatus(selectedEvent.id, "rejected")}
-      />
+
+      <AdminEventReviewSection onUpdateStatus={updateStatus} />
     </div>
   )
 }

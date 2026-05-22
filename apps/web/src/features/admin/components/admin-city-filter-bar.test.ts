@@ -78,4 +78,30 @@ describe("AdminCityFilterBar", () => {
     expect(html).toContain("Chicago")
     expect(html).toContain("(0)")
   })
+
+  it("formats large counts with locale separators", () => {
+    const html = renderToStaticMarkup(
+      createElement(AdminCityFilterBar, {
+        cities,
+        counts: { ny: 1234 },
+        total: 1234,
+        value: "all",
+        onChange: vi.fn(),
+      })
+    )
+    expect(html).toContain(`(${(1234).toLocaleString()})`)
+  })
+
+  it("renders Unassigned when selected with zero count", () => {
+    const html = renderToStaticMarkup(
+      createElement(AdminCityFilterBar, {
+        cities,
+        counts: { ny: 2 },
+        total: 2,
+        value: UNASSIGNED_CITY_KEY,
+        onChange: vi.fn(),
+      })
+    )
+    expect(html).toContain("Unassigned")
+  })
 })

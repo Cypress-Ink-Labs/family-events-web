@@ -23,7 +23,20 @@ env:
   TURBO_CACHE_DIR: .turbo
 
 jobs:
+  optimize_ci:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check_skip.outputs.skip }}
+    steps:
+      - name: Optimize CI
+        id: check_skip
+        uses: withgraphite/graphite-ci-action@main
+        with:
+          graphite_token: ${{ secrets.GRAPHITE_TOKEN }}
+
   changes:
+    needs: optimize_ci
+    if: needs.optimize_ci.outputs.skip == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -126,6 +139,8 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   secret-scan:
+    needs: optimize_ci
+    if: needs.optimize_ci.outputs.skip == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -153,8 +168,8 @@ jobs:
           fi
 
   web-check:
-    needs: changes
-    if: needs.changes.outputs.web == 'true'
+    needs: [optimize_ci, changes]
+    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -304,8 +319,8 @@ jobs:
 
   # E2E (needs local Supabase — can't run on RWX)
   verify:
-    needs: changes
-    if: needs.changes.outputs.verify == 'true'
+    needs: [optimize_ci, changes]
+    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.verify == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -375,6 +390,8 @@ jobs:
 
       - name: Read Supabase env
         id: supabase
+        env:
+          SEND_EMAIL_HOOK_SECRET: "v1,whsec_Y2ktZHVtbXktc2VjcmV0LWZvci1lMmUtdGVzdGluZw=="
         run: |
           STATUS=$(bash scripts/supabase.sh status --output env)
           api_url=$(echo "$STATUS" | grep '^API_URL='          | cut -d'"' -f2)
@@ -446,6 +463,8 @@ jobs:
           echo "admin_password=$ADMIN_PASSWORD" >> "$GITHUB_OUTPUT"
 
       - name: Promote admin via setup-local
+        env:
+          SEND_EMAIL_HOOK_SECRET: "v1,whsec_Y2ktZHVtbXktc2VjcmV0LWZvci1lMmUtdGVzdGluZw=="
         run: bash scripts/setup-local.sh
 
       - name: Verify admin is enabled
@@ -513,8 +532,8 @@ jobs:
 
   # iOS simulator tests (needs macOS — can't run on RWX)
   ios:
-    needs: changes
-    if: needs.changes.outputs.ios == 'true'
+    needs: [optimize_ci, changes]
+    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.ios == 'true'
     runs-on: macos-26
     timeout-minutes: 12
     steps:
@@ -593,8 +612,8 @@ jobs:
           retention-days: 7
 
   android:
-    needs: changes
-    if: needs.changes.outputs.android == 'true'
+    needs: [optimize_ci, changes]
+    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.android == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:

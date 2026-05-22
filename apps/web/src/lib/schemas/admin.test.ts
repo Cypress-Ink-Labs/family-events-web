@@ -48,10 +48,15 @@ describe("eventSourceRowSchema", () => {
 })
 
 describe("adminEventFacetRowSchema", () => {
-  it("accepts a row with null city_id (unassigned)", () => {
-    const parsed = adminEventFacetRowSchema.parse({ city_id: null, status: "draft" })
-    expect(parsed.city_id).toBeNull()
-    expect(parsed.status).toBe("draft")
+  it("accepts a row with null city_id and count string coercion", () => {
+    const withStringCount = adminEventFacetRowSchema.parse({
+      city_id: null,
+      status: "draft",
+      count: "1001",
+    })
+    expect(withStringCount.count).toBe(1001)
+    expect(withStringCount.city_id).toBeNull()
+    expect(withStringCount.status).toBe("draft")
   })
 
   it("rejects an unknown status", () => {

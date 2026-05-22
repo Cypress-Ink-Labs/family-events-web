@@ -5,7 +5,7 @@ import { ClientDate } from "@/components/client-date"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import type { Event, EventAiTraceWithParsed } from "@/lib/types"
-import { formatProviderLabel } from "./admin-events-sections"
+import { formatProviderLabel } from "@/features/admin/utils/format-provider-label"
 import { formatEventFieldLabel } from "@/features/admin/lib/event-field-locks"
 
 export function AdminEventEditSection({

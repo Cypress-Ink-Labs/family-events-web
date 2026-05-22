@@ -69,4 +69,13 @@ describe("qk.admin.events", () => {
       qk.admin.events.list("storytime or status eq draft", "all")
     )
   })
+
+  it("includes page size in admin event list cache key", () => {
+    expect(qk.admin.events.list("storytime", "all", "all", 200)).toEqual(
+      qk.admin.events.list("storytime", "all", "all", 200)
+    )
+    expect(qk.admin.events.list("storytime", "all", "all", 50)).not.toEqual(
+      qk.admin.events.list("storytime", "all", "all", 200)
+    )
+  })
 })
