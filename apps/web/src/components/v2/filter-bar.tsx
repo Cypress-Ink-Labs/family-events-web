@@ -2,9 +2,7 @@ import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 type FilterBarProps = {
-  /** Render chips inline. On mobile they scroll-snap horizontally; on md+ they wrap. */
   children: ReactNode
-  /** Optional trailing action (e.g., "Clear filters"). Pinned to the right on md+. */
   trailing?: ReactNode
   className?: string
 }

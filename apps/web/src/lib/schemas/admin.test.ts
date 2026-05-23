@@ -7,6 +7,7 @@ const baseSourceRow = {
   url: "https://example.com/feed.rss",
   source_type: "rss" as const,
   extraction_mode: "deterministic" as const,
+  processing_mode: "manual_review" as const,
   city_id: null,
   is_active: true,
   auto_approve: false,
@@ -37,6 +38,14 @@ describe("eventSourceRowSchema", () => {
     const result = eventSourceRowSchema.safeParse({
       ...baseSourceRow,
       source_type: "spreadsheet",
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it("rejects an unknown processing_mode", () => {
+    const result = eventSourceRowSchema.safeParse({
+      ...baseSourceRow,
+      processing_mode: "human",
     })
     expect(result.success).toBe(false)
   })

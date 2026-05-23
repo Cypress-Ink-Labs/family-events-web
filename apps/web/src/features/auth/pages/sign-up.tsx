@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { HOME_PATH } from "@/lib/access-control"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { resolveInviteRequirement, useInvitesRequired } from "@/features/auth/hooks/use-invites"
 import {
-  redeemInvite,
-  resolveInviteRequirement,
-  useInvitesRequired,
-} from "@/features/auth/hooks/use-invites"
+  getProviderInviteBlockMessage,
+  redeemInviteOrToast,
+} from "@/features/auth/lib/auth-closed-beta"
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
 import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
 import { toast } from "sonner"
@@ -50,14 +50,9 @@ export function SignUpPage() {
   const requiresInvite = resolveInviteRequirement(inviteRequired, inviteCheckFailed)
 
   async function handleProviderSignIn(provider: "apple" | "google") {
-    // Closed-beta gate: Supabase OAuth would create a user without ever
-    // touching our invite tables (pending_invite_claims). Refuse the
-    // signup path here until the server-side auth.users trigger covered
-    // in docs/auth-providers.md §4 lands.
     if (requiresInvite) {
       toast.error("Invite required", {
-        description:
-          "Closed beta — request an invite code, then sign up with email or use a provider on the sign-in page.",
+        description: getProviderInviteBlockMessage("sign-up"),
       })
       return
     }
@@ -81,28 +76,11 @@ export function SignUpPage() {
 
     setState({ loading: true })
 
-    // Atomic consume of the code BEFORE creating the user. If signup fails after,
-    // the code is wasted; for a beta that's acceptable and simpler than compensation.
     if (requiresInvite) {
-      const code = inviteCode.trim().toUpperCase()
-      if (!code) {
-        toast.error("An invite code is required to sign up right now.")
-        setState({ loading: false })
-        return
-      }
-      let ok = false
-      try {
-        ok = await redeemInvite(code, email)
-      } catch (err) {
-        toast.error("Couldn't verify invite code", {
-          description: humanizeSupabaseError(err, "Try again."),
-        })
-        setState({ loading: false })
-        return
-      }
+      const ok = await redeemInviteOrToast(inviteCode, email, (loading) => {
+        setState({ loading })
+      })
       if (!ok) {
-        toast.error("Invalid or expired invite code")
-        setState({ loading: false })
         return
       }
     }

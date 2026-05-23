@@ -6,7 +6,15 @@ import test from "node:test"
 const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..")
 const contractsPkgPath = path.join(repoRoot, "packages", "contracts", "package.json")
 const sharedPkgPath = path.join(repoRoot, "packages", "shared", "package.json")
-const webBridgePath = path.join(repoRoot, "apps", "web", "src", "lib", "workspace-packages.ts")
+const webBridgePath = path.join(
+  repoRoot,
+  "apps",
+  "web",
+  "src",
+  "lib",
+  "smoke",
+  "workspace-packages.ts",
+)
 const contractsIndexPath = path.join(repoRoot, "packages", "contracts", "src", "index.ts")
 const contractsDatabaseTypesPath = path.join(
   repoRoot,

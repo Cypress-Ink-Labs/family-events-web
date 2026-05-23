@@ -25,7 +25,7 @@ import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useTheme } from "@/app/providers/theme-provider"
 import { useUpdateProfile } from "@/features/profile/hooks/use-profile"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack } from "@/components/v2"
 

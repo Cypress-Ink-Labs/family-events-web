@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import type { Comment } from "@/lib/types"
-import type { AdminComment } from "./admin-types"
+import type { AdminComment } from "@/features/admin/types"
 
-export type { AdminComment } from "./admin-types"
+export type { AdminComment } from "@/features/admin/types"
 
 export function useAdminComments() {
   return useQuery({

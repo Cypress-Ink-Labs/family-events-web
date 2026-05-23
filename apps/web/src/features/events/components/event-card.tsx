@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { MapPin, Clock } from "lucide-react"
 import { format } from "date-fns"
-import { safeImageSrc } from "@/lib/safe-url"
+import { safeImageSrc } from "@/lib/platform/safe-url"
 import { cn, formatEventPrice } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"

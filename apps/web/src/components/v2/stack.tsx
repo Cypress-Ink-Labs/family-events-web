@@ -65,7 +65,6 @@ export function Stack({ gap = "4", align, justify, as, className, children }: St
 }
 
 type RowProps = StackProps & {
-  /** Wrap to next line by default. Set `nowrap` to keep single-line. */
   nowrap?: boolean
 }
 

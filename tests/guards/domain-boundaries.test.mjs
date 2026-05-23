@@ -91,7 +91,15 @@ test("shared and contracts packages remain platform neutral", () => {
 
 test("web runtime Supabase SDK imports stay behind the web adapter", () => {
   const webFiles = walk(path.join(repoRoot, "apps", "web", "src"), [".ts", ".tsx"])
-  const allowedRuntimeImport = path.join(repoRoot, "apps", "web", "src", "lib", "supabase.ts")
+  const allowedRuntimeImport = path.join(
+    repoRoot,
+    "apps",
+    "web",
+    "src",
+    "lib",
+    "supabase",
+    "client.ts",
+  )
   const runtimeSupabaseImport = /^\s*import\s+(?!type\b)[^\n]*from ["']@supabase\/supabase-js["']/m
 
   for (const filePath of webFiles) {

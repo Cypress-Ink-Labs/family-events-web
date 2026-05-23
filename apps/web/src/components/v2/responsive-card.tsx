@@ -3,15 +3,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 type ResponsiveCardProps = {
-  /** Leading media or icon block. Stays compact on mobile. */
   leading?: ReactNode
-  /** Title row content. */
   title?: ReactNode
-  /** Body / metadata row. */
   body?: ReactNode
-  /** Trailing toggles / overflow / status. Wraps below body on narrow containers. */
   trailing?: ReactNode
-  /** Action row at the bottom (chips, buttons). Always full-width below content. */
   actions?: ReactNode
   className?: string
 }

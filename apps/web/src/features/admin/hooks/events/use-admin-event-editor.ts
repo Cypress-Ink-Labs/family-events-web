@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import type { Event, Json } from "@/lib/types"
 import type { AdminEventPatch } from "@/features/admin/lib/event-editor-mappers"
 

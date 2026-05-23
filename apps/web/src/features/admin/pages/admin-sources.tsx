@@ -2,27 +2,27 @@ import { useMemo, useState } from "react"
 import {
   AdminSourcesHeader,
   AdminSourcesList,
+  type SourceDraft,
 } from "@/features/admin/components/admin-sources-sections"
+import type { AdminSourceType } from "@/features/admin/lib/source-types"
 import { AdminCityFilterBar } from "@/features/admin/components/admin-city-filter-bar"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
-import { UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
+import { UNASSIGNED_CITY_KEY } from "@/lib/events/group-by-city"
 import { useAdminStore } from "@/features/admin/stores/admin-store"
 import {
   useAdminSources,
   useCreateAdminSource,
   useTriggerSourceScrape,
   useUpdateAdminSource,
-  useAdminBulkSetAutoApprove,
-} from "@/features/admin/hooks/use-admin-sources"
-import { useAdminSourceRunErrors } from "@/features/admin/hooks/use-admin-source-runs"
+  useAdminBulkSetProcessingMode,
+} from "@/features/admin/hooks/sources/use-admin-sources"
+import { useAdminSourceRunErrors } from "@/features/admin/hooks/sources/use-admin-source-runs"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
-import type { ExtractionMode } from "@/lib/types"
+import type { EventProcessingMode, ExtractionMode } from "@/lib/types"
 
-type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid"
-
-function defaultExtractionModeForSourceType(sourceType: SourceType): ExtractionMode {
+function defaultExtractionModeForSourceType(sourceType: AdminSourceType): ExtractionMode {
   return sourceType === "website" ? "deterministic_then_llm" : "deterministic"
 }
 
@@ -36,17 +36,18 @@ export function AdminSourcesPage() {
   const triggerScrape = useTriggerSourceScrape()
   const { value: cityFilter, setValue: setCityFilter } = useCityFilter()
   const { toastError } = useAdminToast()
-  const bulkAutoApprove = useAdminBulkSetAutoApprove()
+  const bulkProcessingMode = useAdminBulkSetProcessingMode()
 
   const scrapingSourceIds = useAdminStore((s) => s.scrapingSourceIds)
   const addScrapingId = useAdminStore((s) => s.addScrapingId)
   const removeScrapingId = useAdminStore((s) => s.removeScrapingId)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [newSource, setNewSource] = useState({
+  const [newSource, setNewSource] = useState<SourceDraft>({
     name: "",
     url: "",
-    source_type: "website" as SourceType,
+    source_type: "website",
     extraction_mode: "deterministic_then_llm" as ExtractionMode,
+    processing_mode: "manual_review",
     city_id: "",
   })
 
@@ -76,8 +77,10 @@ export function AdminSourcesPage() {
     try {
       await triggerScrape.mutateAsync({ sourceId })
       toast.success("Scrape started!", { description: "Ingestion run queued." })
+      return true
     } catch (error) {
       toastError(error, "Failed to trigger scrape.")
+      return false
     } finally {
       removeScrapingId(sourceId)
     }
@@ -94,20 +97,24 @@ export function AdminSourcesPage() {
     }
   }
 
-  async function handleToggleAutoApprove(sourceId: string, autoApprove: boolean) {
+  async function handleSetProcessingMode(sourceId: string, mode: EventProcessingMode) {
     try {
-      await updateSource.mutateAsync({ sourceId, updates: { auto_approve: autoApprove } })
+      await updateSource.mutateAsync({
+        sourceId,
+        updates: {
+          processing_mode: mode,
+          auto_approve: mode === "auto_approve",
+        },
+      })
     } catch (error) {
       toastError(error, "Failed to update source.")
     }
   }
 
-  async function handleBulkAutoApprove(enable: boolean) {
+  async function handleBulkSetProcessingMode(mode: EventProcessingMode) {
     try {
-      await bulkAutoApprove.mutateAsync(enable)
-      toast.success(
-        enable ? "Auto-approve enabled for all sources" : "Auto-approve disabled for all sources"
-      )
+      await bulkProcessingMode.mutateAsync(mode)
+      toast.success(`Set all sources to ${mode.replaceAll("_", " ")}`)
     } catch (error) {
       toastError(error, "Failed to update sources.")
     }
@@ -120,10 +127,10 @@ export function AdminSourcesPage() {
     if (activeSources.length === 0) return
 
     setIsScrapeAllPending(true)
-    const results = await Promise.allSettled(activeSources.map((source) => handleScrape(source.id)))
+    const results = await Promise.all(activeSources.map((source) => handleScrape(source.id)))
     setIsScrapeAllPending(false)
 
-    const failed = results.filter((r) => r.status === "rejected").length
+    const failed = results.filter((queued) => !queued).length
     if (failed > 0) {
       toast.warning(`Scrape All: ${activeSources.length - failed} queued, ${failed} failed.`)
     } else {
@@ -143,9 +150,10 @@ export function AdminSourcesPage() {
         url: newSource.url,
         source_type: newSource.source_type,
         extraction_mode: newSource.extraction_mode,
+        processing_mode: newSource.processing_mode,
         city_id: newSource.city_id || null,
         is_active: true,
-        auto_approve: false,
+        auto_approve: newSource.processing_mode === "auto_approve",
         scrape_interval_hours: 24,
         last_scraped_at: null,
         last_status: "pending",
@@ -158,6 +166,7 @@ export function AdminSourcesPage() {
         url: "",
         source_type: "website",
         extraction_mode: "deterministic_then_llm",
+        processing_mode: "manual_review",
         city_id: "",
       })
       toast.success("Source added!", { description: "Trigger a scrape to import events." })
@@ -171,6 +180,17 @@ export function AdminSourcesPage() {
     setDialogOpen(true)
   }
 
+  function handleSourceDraftPatch(patch: Partial<SourceDraft>) {
+    setNewSource((prev) => ({
+      ...prev,
+      ...patch,
+      extraction_mode:
+        patch.source_type && patch.source_type !== prev.source_type && !patch.extraction_mode
+          ? defaultExtractionModeForSourceType(patch.source_type)
+          : (patch.extraction_mode ?? prev.extraction_mode),
+    }))
+  }
+
   return (
     <div className="space-y-6">
       <AdminSourcesHeader
@@ -178,25 +198,12 @@ export function AdminSourcesPage() {
         cities={cities}
         dialogOpen={dialogOpen}
         newSource={newSource}
-        isBulkPending={bulkAutoApprove.isPending}
+        isBulkPending={bulkProcessingMode.isPending}
         isScrapeAllPending={isScrapeAllPending}
         onDialogOpenChange={setDialogOpen}
-        onNameChange={(value) => setNewSource((prev) => ({ ...prev, name: value }))}
-        onUrlChange={(value) => setNewSource((prev) => ({ ...prev, url: value }))}
-        onTypeChange={(value) =>
-          setNewSource((prev) => ({
-            ...prev,
-            source_type: value,
-            extraction_mode: defaultExtractionModeForSourceType(value),
-          }))
-        }
-        onExtractionModeChange={(value) =>
-          setNewSource((prev) => ({ ...prev, extraction_mode: value }))
-        }
-        onCityChange={(value) => setNewSource((prev) => ({ ...prev, city_id: value }))}
+        onSourceDraftPatch={handleSourceDraftPatch}
         onAddSource={handleAddSource}
-        onEnableAllAutoApprove={() => handleBulkAutoApprove(true)}
-        onDisableAllAutoApprove={() => handleBulkAutoApprove(false)}
+        onBulkSetProcessingMode={handleBulkSetProcessingMode}
         onScrapeAll={handleScrapeAll}
       />
       <AdminCityFilterBar
@@ -213,7 +220,7 @@ export function AdminSourcesPage() {
         latestErrorBySourceId={latestErrorBySourceId}
         scrapingSourceIds={scrapingSourceIds}
         onToggleActive={handleToggleActive}
-        onToggleAutoApprove={handleToggleAutoApprove}
+        onSetProcessingMode={handleSetProcessingMode}
         onScrape={handleScrape}
         onAddSourceForCity={openAddDialogForCity}
       />

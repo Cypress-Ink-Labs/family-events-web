@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { resolveInAppRedirectTarget } from "@/lib/access-control"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { resolveInviteRequirement, useInvitesRequired } from "@/features/auth/hooks/use-invites"
 import {
-  redeemInvite,
-  resolveInviteRequirement,
-  useInvitesRequired,
-} from "@/features/auth/hooks/use-invites"
+  getProviderInviteBlockMessage,
+  redeemInviteOrToast,
+} from "@/features/auth/lib/auth-closed-beta"
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
 import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
 import { toast } from "sonner"
@@ -40,7 +40,7 @@ function signInReducer(state: SignInState, patch: Partial<SignInState>) {
 }
 
 export function SignInPage() {
-  const { signIn, sendMagicLink, signInWithProvider } = useAuth()
+  const { signIn, sendMagicLink, signInWithProvider, authError, clearAuthError } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const redirectTo = resolveInAppRedirectTarget((location.state as { from?: unknown } | null)?.from)
@@ -68,6 +68,12 @@ export function SignInPage() {
     }
   }, [searchParams, setSearchParams])
 
+  useEffect(() => {
+    if (!authError) return
+    toast.error("Sign in interrupted", { description: authError })
+    clearAuthError()
+  }, [authError, clearAuthError])
+
   async function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault()
     setState({ loading: true })
@@ -84,14 +90,9 @@ export function SignInPage() {
   }
 
   async function handleProviderSignIn(provider: "apple" | "google") {
-    // Closed-beta guard: even on sign-in, Supabase OAuth will silently
-    // create a brand-new user when the provider email is unknown — which
-    // would slip past pending_invite_claims. Refuse here until the
-    // server-side auth.users trigger covered in docs/auth-providers.md §4
-    // lands.
     if (requiresInvite) {
       toast.error("Invite required", {
-        description: "Closed beta — sign in with email after redeeming an invite code.",
+        description: getProviderInviteBlockMessage("sign-in"),
       })
       return
     }
@@ -109,30 +110,12 @@ export function SignInPage() {
   async function handleMagicLinkSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    // Atomic invite consume happens BEFORE Supabase Auth dispatches the email
-    // — mirrors the sign-up policy. shouldCreateUser is always true on this
-    // path because the email might be a brand-new account; an existing user
-    // is unaffected (the call is idempotent for known emails).
     if (requiresInvite) {
-      const code = inviteCode.trim().toUpperCase()
-      if (!code) {
-        toast.error("An invite code is required to request a magic link right now.")
-        return
-      }
       setState({ loading: true })
-      let ok = false
-      try {
-        ok = await redeemInvite(code, email)
-      } catch (err) {
-        setState({ loading: false })
-        toast.error("Couldn't verify invite code", {
-          description: humanizeSupabaseError(err, "Try again."),
-        })
-        return
-      }
+      const ok = await redeemInviteOrToast(inviteCode, email, (loading) => {
+        setState({ loading })
+      })
       if (!ok) {
-        setState({ loading: false })
-        toast.error("Invalid or expired invite code")
         return
       }
     } else {

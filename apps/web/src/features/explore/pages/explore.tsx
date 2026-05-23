@@ -3,7 +3,7 @@ import { useApp } from "@/app/stores/app-store"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useExploreStore } from "@/features/explore/stores/explore-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
-import { matchesAgeFilter } from "@/features/events/hooks/use-events"
+import { matchesAgeFilter } from "@/features/events/lib/event-filters"
 import { useTags } from "@/features/events/hooks/use-tags"
 import {
   AGE_OPTIONS,

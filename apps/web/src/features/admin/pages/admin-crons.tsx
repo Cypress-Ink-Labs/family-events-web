@@ -24,9 +24,9 @@ import {
   useAdminRailwayCronHistory,
   useRunDueScrapes,
   useToggleRailwayCron,
-} from "@/features/admin/hooks/use-admin-crons"
-import type { CronRun, RailwayCronJob } from "@/features/admin/hooks/admin-types"
-import { railwayCronRunToCronRun } from "@/features/admin/hooks/admin-types"
+} from "@/features/admin/hooks/operations/use-admin-crons"
+import type { CronRun, RailwayCronJob } from "@/features/admin/types"
+import { railwayCronRunToCronRun } from "@/features/admin/types"
 
 const ALL_RUNS_DOMAIN = "all"
 

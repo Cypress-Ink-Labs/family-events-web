@@ -2,7 +2,7 @@ import { useRef } from "react"
 import type { QueryClient } from "@tanstack/react-query"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import type { Favorite } from "@/lib/types"
 import {
   applyFavoriteStateToEventProjectionCaches,

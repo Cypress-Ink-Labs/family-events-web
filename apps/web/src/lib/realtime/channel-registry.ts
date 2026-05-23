@@ -1,5 +1,5 @@
 import type { RealtimeChannel } from "@supabase/supabase-js"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 
 type Listener = () => void
 type StatusCallback = (status: string) => void

@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Toolbar } from "@/components/v2"
-import type { AdminUserAccessRecord } from "@/features/admin/hooks/admin-types"
+import type { AdminUserAccessRecord } from "@/features/admin/types"
 
 interface AdminAccessHeaderProps {
   query: string

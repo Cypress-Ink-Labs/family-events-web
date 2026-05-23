@@ -4,9 +4,7 @@ import { cn } from "@/lib/utils"
 type ToolbarProps = {
   title?: ReactNode
   subtitle?: ReactNode
-  /** Primary action(s) — pinned to the right on md+, stacks below title on mobile. */
   actions?: ReactNode
-  /** Persistent inline content (filters, search). Wraps under title on mobile. */
   children?: ReactNode
   className?: string
 }

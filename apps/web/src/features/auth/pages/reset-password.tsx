@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { HOME_PATH } from "@/lib/access-control"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
-import { supabase } from "@/lib/supabase"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { supabase } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 export function ResetPasswordPage() {

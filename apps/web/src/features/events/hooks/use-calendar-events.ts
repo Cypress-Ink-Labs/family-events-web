@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import type { UserCalendarEvent } from "@/lib/types"
 import { invalidateEventProjectionQueries } from "@/features/events/lib/event-cache"
 

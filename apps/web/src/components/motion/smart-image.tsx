@@ -2,9 +2,7 @@ import { useEffect, useRef, useState, type ImgHTMLAttributes } from "react"
 import { cn } from "@/lib/utils"
 
 interface SmartImageProps extends ImgHTMLAttributes<HTMLImageElement> {
-  /** Optional skeleton overlay color. Defaults to bg-muted. */
   placeholderClassName?: string
-  /** Whether to render a skeleton behind the image while it loads. */
   showPlaceholder?: boolean
   alt: string
 }

@@ -28,22 +28,22 @@ import { ClientDate, ClientDistanceToNow } from "@/components/client-date"
 import { cn } from "@/lib/utils"
 import { useNowMs } from "@/hooks/use-now-ms"
 import { Toolbar } from "@/components/v2"
-import { useAdminSourceRuns } from "@/features/admin/hooks/use-admin-source-runs"
-import { useAdminLogsRealtime } from "@/features/admin/hooks/use-admin-logs-realtime"
+import { useAdminSourceRuns } from "@/features/admin/hooks/sources/use-admin-source-runs"
+import { useAdminLogsRealtime } from "@/features/admin/hooks/operations/use-admin-logs-realtime"
 import {
   useAdminDeadTagQueueRows,
   useAdminRetryTagQueue,
   useDeleteDeadTagQueueRow,
   type TagQueueStatus,
   useAdminTagQueueSummary,
-} from "@/features/admin/hooks/use-admin-tag-queue"
+} from "@/features/admin/hooks/operations/use-admin-tag-queue"
 import {
   type SourceQueueStatus,
   useAdminDeadSourceQueueRows,
   useAdminRetrySourceQueue,
   useDeleteDeadSourceQueueRow,
   useAdminSourceQueueSummary,
-} from "@/features/admin/hooks/use-admin-source-queue"
+} from "@/features/admin/hooks/sources/use-admin-source-queue"
 
 type RunStatus = "success" | "error" | "partial" | "running" | "timed_out"
 
@@ -101,22 +101,56 @@ const SOURCE_QUEUE_STATUS_TONE: Record<SourceQueueStatus, string> = {
   dead: "border-destructive/40 bg-destructive/5 text-destructive",
 }
 
-function SourceQueueSummaryPanel() {
-  const { data: rows = [], isLoading } = useAdminSourceQueueSummary()
-  const byStatus = new Map(rows.map((row) => [row.status, row]))
-  const order: SourceQueueStatus[] = ["pending", "processing", "retrying", "succeeded", "dead"]
-  const dead = byStatus.get("dead")
+const SOURCE_QUEUE_ORDER: SourceQueueStatus[] = [
+  "pending",
+  "processing",
+  "retrying",
+  "succeeded",
+  "dead",
+]
+const TAG_QUEUE_ORDER: TagQueueStatus[] = ["pending", "processing", "succeeded", "failed", "dead"]
 
-  if (isLoading && rows.length === 0) {
-    return null
-  }
+interface QueueSummaryRow<Status extends string> {
+  status: Status
+  row_count: number
+  oldest_enqueued_at: string | null
+  oldest_processing_started_at?: string | null
+}
+
+interface QueueSummaryPanelProps<Status extends string> {
+  title: string
+  icon: React.ElementType
+  rows: QueueSummaryRow<Status>[]
+  isLoading: boolean
+  order: Status[]
+  labels: Record<Status, string>
+  tones: Record<Status, string>
+  deadStatus: Status
+  activeTimestampKey?: "oldest_processing_started_at"
+}
+
+function QueueSummaryPanel<Status extends string>({
+  title,
+  icon: Icon,
+  rows,
+  isLoading,
+  order,
+  labels,
+  tones,
+  deadStatus,
+  activeTimestampKey,
+}: QueueSummaryPanelProps<Status>) {
+  const byStatus = new Map<Status, QueueSummaryRow<Status>>(rows.map((row) => [row.status, row]))
+  const dead = byStatus.get(deadStatus)
+
+  if (isLoading && rows.length === 0) return null
 
   return (
     <Card className="border-border/60">
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <Database className="size-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold text-foreground">Source scrape queue</h2>
+          <Icon className="size-4 text-muted-foreground" />
+          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
           {dead && dead.row_count > 0 && (
             <Badge variant="destructive" className="text-[10px]">
               {dead.row_count} dead-lettered
@@ -129,14 +163,10 @@ function SourceQueueSummaryPanel() {
             return (
               <div
                 key={status}
-                className={cn(
-                  "rounded-md border px-3 py-2",
-                  SOURCE_QUEUE_STATUS_TONE[status],
-                  !row && "opacity-60"
-                )}
+                className={cn("rounded-md border px-3 py-2", tones[status], !row && "opacity-60")}
               >
                 <div className="text-[10px] uppercase tracking-wide font-semibold">
-                  {SOURCE_QUEUE_STATUS_LABELS[status]}
+                  {labels[status]}
                 </div>
                 <div className="text-lg font-bold tabular-nums">{row?.row_count ?? 0}</div>
                 {row?.oldest_enqueued_at && (
@@ -144,10 +174,9 @@ function SourceQueueSummaryPanel() {
                     oldest <ClientDistanceToNow value={row.oldest_enqueued_at} addSuffix />
                   </div>
                 )}
-                {row?.oldest_processing_started_at && (
+                {activeTimestampKey && row?.[activeTimestampKey] && (
                   <div className="text-[10px] mt-0.5">
-                    active{" "}
-                    <ClientDistanceToNow value={row.oldest_processing_started_at} addSuffix />
+                    active <ClientDistanceToNow value={row[activeTimestampKey]} addSuffix />
                   </div>
                 )}
               </div>
@@ -159,55 +188,139 @@ function SourceQueueSummaryPanel() {
   )
 }
 
-function TagQueueSummaryPanel() {
-  const { data: rows = [], isLoading } = useAdminTagQueueSummary()
-  const byStatus = new Map(rows.map((row) => [row.status, row]))
-  const order: TagQueueStatus[] = ["pending", "processing", "succeeded", "failed", "dead"]
-  const dead = byStatus.get("dead")
-
-  if (isLoading && rows.length === 0) {
-    return null
-  }
+function SourceQueueSummaryPanel() {
+  const { data: rows = [], isLoading } = useAdminSourceQueueSummary()
 
   return (
-    <Card className="border-border/60">
-      <CardContent className="p-4 space-y-3">
-        <div className="flex items-center gap-2">
-          <TagIcon className="size-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold text-foreground">Tag-event queue</h2>
-          {dead && dead.row_count > 0 && (
-            <Badge variant="destructive" className="text-[10px]">
-              {dead.row_count} dead-lettered
-            </Badge>
-          )}
+    <QueueSummaryPanel
+      title="Source scrape queue"
+      icon={Database}
+      rows={rows}
+      isLoading={isLoading}
+      order={SOURCE_QUEUE_ORDER}
+      labels={SOURCE_QUEUE_STATUS_LABELS}
+      tones={SOURCE_QUEUE_STATUS_TONE}
+      deadStatus="dead"
+      activeTimestampKey="oldest_processing_started_at"
+    />
+  )
+}
+
+function TagQueueSummaryPanel() {
+  const { data: rows = [], isLoading } = useAdminTagQueueSummary()
+
+  return (
+    <QueueSummaryPanel
+      title="Tag-event queue"
+      icon={TagIcon}
+      rows={rows}
+      isLoading={isLoading}
+      order={TAG_QUEUE_ORDER}
+      labels={QUEUE_STATUS_LABELS}
+      tones={QUEUE_STATUS_TONE}
+      deadStatus="dead"
+    />
+  )
+}
+
+interface DeadLetterBaseRow {
+  id: number
+  attempt_count: number
+  finished_at: string | null
+  last_error: string | null
+}
+
+interface DeadLetterSectionProps<Row extends DeadLetterBaseRow, RetryId extends string | number> {
+  heading: string
+  rows: Row[]
+  keyPrefix: string
+  retryPending: boolean
+  deletePending: boolean
+  titleForRow: (row: Row) => string
+  retryIdForRow: (row: Row) => RetryId
+  onRetry: (id: RetryId) => void
+  onDelete: (id: number) => void
+}
+
+function DeadLetterSection<Row extends DeadLetterBaseRow, RetryId extends string | number>({
+  heading,
+  rows,
+  keyPrefix,
+  retryPending,
+  deletePending,
+  titleForRow,
+  retryIdForRow,
+  onRetry,
+  onDelete,
+}: DeadLetterSectionProps<Row, RetryId>) {
+  if (rows.length === 0) return null
+
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-semibold uppercase text-muted-foreground">{heading}</h3>
+      {rows.map((row) => (
+        <div
+          key={`${keyPrefix}-${row.id}`}
+          className="flex flex-col gap-2 rounded-md border border-border/60 p-3 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div className="min-w-0 space-y-1">
+            <div className="text-sm font-medium">{titleForRow(row)}</div>
+            <div className="text-xs text-muted-foreground">
+              {row.attempt_count} attempts
+              {row.finished_at ? (
+                <>
+                  {" "}
+                  · <ClientDistanceToNow value={row.finished_at} addSuffix />
+                </>
+              ) : null}
+            </div>
+            {row.last_error && (
+              <p className="line-clamp-2 font-mono text-xs text-destructive">{row.last_error}</p>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 self-end sm:self-start">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={retryPending}
+              onClick={() => onRetry(retryIdForRow(row))}
+            >
+              Retry
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="size-8 p-0 text-muted-foreground hover:text-destructive"
+                  disabled={deletePending}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent size="sm">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete entry?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This dead-letter row will be permanently removed and cannot be recovered.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel size="sm">Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => onDelete(row.id)}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-          {order.map((status) => {
-            const row = byStatus.get(status)
-            return (
-              <div
-                key={status}
-                className={cn(
-                  "rounded-md border px-3 py-2",
-                  QUEUE_STATUS_TONE[status],
-                  !row && "opacity-60"
-                )}
-              >
-                <div className="text-[10px] uppercase tracking-wide font-semibold">
-                  {QUEUE_STATUS_LABELS[status]}
-                </div>
-                <div className="text-lg font-bold tabular-nums">{row?.row_count ?? 0}</div>
-                {row?.oldest_enqueued_at && (
-                  <div className="text-[10px] mt-0.5">
-                    oldest <ClientDistanceToNow value={row.oldest_enqueued_at} addSuffix />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   )
 }
 
@@ -229,146 +342,28 @@ function DeadLettersPanel() {
           <AlertTriangle className="size-4 text-destructive" />
           <h2 className="text-sm font-semibold text-foreground">Dead letters</h2>
         </div>
-        {sourceRows.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase text-muted-foreground">Sources</h3>
-            {sourceRows.map((row) => (
-              <div
-                key={`source-${row.id}`}
-                className="flex flex-col gap-2 rounded-md border border-border/60 p-3 sm:flex-row sm:items-start sm:justify-between"
-              >
-                <div className="min-w-0 space-y-1">
-                  <div className="text-sm font-medium">
-                    {row.event_sources?.name ?? row.source_id ?? "Unknown source"}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {row.attempt_count} attempts
-                    {row.finished_at ? (
-                      <>
-                        {" "}
-                        · <ClientDistanceToNow value={row.finished_at} addSuffix />
-                      </>
-                    ) : null}
-                  </div>
-                  {row.last_error && (
-                    <p className="line-clamp-2 font-mono text-xs text-destructive">
-                      {row.last_error}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5 self-end sm:self-start">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={retrySource.isPending}
-                    onClick={() => retrySource.mutate(row.id)}
-                  >
-                    Retry
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="size-8 p-0 text-muted-foreground hover:text-destructive"
-                        disabled={deleteSource.isPending}
-                      >
-                        <Trash2 className="size-3.5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent size="sm">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete entry?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This dead-letter row will be permanently removed and cannot be recovered.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel size="sm">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => deleteSource.mutate(row.id)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        {tagRows.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase text-muted-foreground">Tags</h3>
-            {tagRows.map((row) => (
-              <div
-                key={`tag-${row.id}`}
-                className="flex flex-col gap-2 rounded-md border border-border/60 p-3 sm:flex-row sm:items-start sm:justify-between"
-              >
-                <div className="min-w-0 space-y-1">
-                  <div className="text-sm font-medium">{row.events?.title ?? row.event_id}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {row.attempt_count} attempts
-                    {row.finished_at ? (
-                      <>
-                        {" "}
-                        · <ClientDistanceToNow value={row.finished_at} addSuffix />
-                      </>
-                    ) : null}
-                  </div>
-                  {row.last_error && (
-                    <p className="line-clamp-2 font-mono text-xs text-destructive">
-                      {row.last_error}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5 self-end sm:self-start">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={retryTag.isPending}
-                    onClick={() => retryTag.mutate(row.event_id)}
-                  >
-                    Retry
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="size-8 p-0 text-muted-foreground hover:text-destructive"
-                        disabled={deleteTag.isPending}
-                      >
-                        <Trash2 className="size-3.5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent size="sm">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete entry?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This dead-letter row will be permanently removed and cannot be recovered.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel size="sm">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => deleteTag.mutate(row.id)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <DeadLetterSection
+          heading="Sources"
+          rows={sourceRows}
+          keyPrefix="source"
+          retryPending={retrySource.isPending}
+          deletePending={deleteSource.isPending}
+          titleForRow={(row) => row.event_sources?.name ?? row.source_id ?? "Unknown source"}
+          retryIdForRow={(row) => row.id}
+          onRetry={(queueId) => retrySource.mutate(queueId)}
+          onDelete={(queueId) => deleteSource.mutate(queueId)}
+        />
+        <DeadLetterSection
+          heading="Tags"
+          rows={tagRows}
+          keyPrefix="tag"
+          retryPending={retryTag.isPending}
+          deletePending={deleteTag.isPending}
+          titleForRow={(row) => row.events?.title ?? row.event_id}
+          retryIdForRow={(row) => row.event_id}
+          onRetry={(eventId) => retryTag.mutate(eventId)}
+          onDelete={(queueId) => deleteTag.mutate(queueId)}
+        />
       </CardContent>
     </Card>
   )

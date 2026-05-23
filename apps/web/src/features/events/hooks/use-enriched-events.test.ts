@@ -113,24 +113,22 @@ describe("buildEnrichedRpcArgs", () => {
     vi.useRealTimers()
   })
 
-  it("elides city/status/limit/offset when eventIds is set (RPC ignores them)", () => {
+  it("elides city/status/limit when eventIds is set (RPC ignores them)", () => {
     const args = buildEnrichedRpcArgs({
       eventIds: ["a", "b"],
       cityId: "city-1",
       status: "draft",
       limit: 50,
-      offset: 10,
       userId: "user-1",
     })
     expect(args.p_event_ids).toEqual(["a", "b"])
     expect(args.p_city_id).toBeUndefined()
     expect(args.p_status).toBeUndefined()
     expect(args.p_limit).toBeUndefined()
-    expect(args.p_offset).toBeUndefined()
     expect(args.p_user_id).toBe("user-1")
   })
 
-  it("passes city/status/pagination on the list path and serializes date bounds", () => {
+  it("passes city/status/limit on the list path and serializes date bounds", () => {
     const dateFrom = new Date("2026-05-01T00:00:00Z")
     const dateTo = new Date("2026-05-31T23:59:59Z")
     const args = buildEnrichedRpcArgs({ cityId: "city-1", dateFrom, dateTo })
@@ -138,7 +136,6 @@ describe("buildEnrichedRpcArgs", () => {
     expect(args.p_city_id).toBe("city-1")
     expect(args.p_status).toBe("published")
     expect(args.p_limit).toBe(100)
-    expect(args.p_offset).toBe(0)
     expect(args.p_event_ids).toBeUndefined()
     expect(args.p_date_from).toBe(dateFrom.toISOString())
     expect(args.p_date_to).toBe(dateTo.toISOString())
@@ -217,6 +214,7 @@ describe("buildEnrichedQueryKey", () => {
         cityId: null,
         status: "published",
         userId: null,
+        limit: 100,
         dateFrom: start.toISOString(),
         dateTo: null,
       },
@@ -226,7 +224,18 @@ describe("buildEnrichedQueryKey", () => {
   it("uses a distinct list-path key when past events are included", () => {
     expect(buildEnrichedQueryKey({ includePast: true })).toEqual([
       "events-enriched",
-      { cityId: null, status: "published", userId: null, dateFrom: null, dateTo: null },
+      {
+        cityId: null,
+        status: "published",
+        userId: null,
+        limit: 100,
+        dateFrom: null,
+        dateTo: null,
+      },
     ])
+  })
+
+  it("separates list-path keys by limit", () => {
+    expect(buildEnrichedQueryKey({ limit: 24 })).not.toEqual(buildEnrichedQueryKey({ limit: 48 }))
   })
 })

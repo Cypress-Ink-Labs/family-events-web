@@ -24,8 +24,24 @@ const baseEventRow = {
   status: "published",
   ai_confidence: null,
   ai_tag_provider: null,
+  ai_tag_model: null,
+  ai_tag_status: null,
+  llm_review_status: "not_required",
+  llm_review_decision: null,
+  llm_review_confidence: null,
+  llm_review_reason: null,
+  llm_review_flags: [],
+  llm_review_provider: null,
+  llm_review_model: null,
+  llm_review_prompt_version: null,
+  llm_reviewed_at: null,
+  llm_review_error: null,
   recurrence_info: null,
   is_featured: false,
+  is_outdoor: null,
+  admin_locked_fields: [],
+  admin_last_edited_at: null,
+  admin_last_edited_by: null,
   view_count: 0,
   search_vector: null,
   created_at: "2026-05-12T00:00:00Z",
@@ -58,6 +74,25 @@ describe("eventRowSchema", () => {
   it("accepts local model tagging providers", () => {
     const parsed = eventRowSchema.parse({ ...baseEventRow, ai_tag_provider: "ollama" })
     expect(parsed.ai_tag_provider).toBe("ollama")
+  })
+
+  it("parses llm review metadata when present", () => {
+    const parsed = eventRowSchema.parse({
+      ...baseEventRow,
+      llm_review_status: "succeeded",
+      llm_review_decision: "approve",
+      llm_review_confidence: 0.91,
+      llm_review_reason: "High confidence family event",
+      llm_review_flags: ["verified"],
+      llm_review_provider: "openai-compatible",
+      llm_review_model: "gpt-4o-mini",
+      llm_review_prompt_version: "event-review-v1",
+      llm_reviewed_at: "2026-05-12T01:00:00Z",
+      llm_review_error: null,
+    })
+    expect(parsed.llm_review_status).toBe("succeeded")
+    expect(parsed.llm_review_decision).toBe("approve")
+    expect(parsed.llm_review_confidence).toBe(0.91)
   })
 
   it("rejects non-boolean is_free", () => {

@@ -9,18 +9,18 @@ import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import {
   useAdminEventDetail,
   useAdminEventLatestTrace,
-} from "@/features/admin/hooks/use-admin-event-detail"
+} from "@/features/admin/hooks/events/use-admin-event-detail"
 import {
   useCreateAdminEvent,
   useUpdateAdminEvent,
   useUnlockAdminEventFields,
-} from "@/features/admin/hooks/use-admin-event-editor"
-import { useDeleteAdminEvents } from "@/features/admin/hooks/use-admin-events"
-import { useAdminSources } from "@/features/admin/hooks/use-admin-sources"
+} from "@/features/admin/hooks/events/use-admin-event-editor"
+import { useDeleteAdminEvents } from "@/features/admin/hooks/events/use-admin-events"
+import { useAdminSources } from "@/features/admin/hooks/sources/use-admin-sources"
 import { AdminEventEditForm, type AdminEventEditSubmit } from "../components/admin-event-edit-form"
 import { EventStatusBadge } from "../components/admin-event-edit-sections"
 import { useTags } from "@/features/events/hooks/use-tags"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
 import type { Event } from "@/lib/types"
 
 export function AdminEventEditPage() {

@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import { sanitizePostgrestLike } from "@/lib/utils"
 import type { Event, Json } from "@/lib/types"
 
@@ -15,6 +15,8 @@ export interface AdminEventsFilters {
   cityId?: string
   cityIsNull?: boolean
   keyword?: string
+  llmReviewStatus?: Event["llm_review_status"]
+  llmReviewDecision?: Event["llm_review_decision"]
   limit?: number
 }
 
@@ -74,6 +76,8 @@ export async function fetchAdminEventsPage(
     p_after_created_at: cursor?.afterCreatedAt,
     p_after_id: cursor?.afterId,
     p_limit: limit,
+    p_llm_review_status: filters.llmReviewStatus ?? undefined,
+    p_llm_review_decision: filters.llmReviewDecision ?? undefined,
   })
   if (error) {
     throw error

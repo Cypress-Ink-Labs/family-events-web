@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
-import type { AdminRating } from "./admin-types"
+import { supabase } from "@/lib/supabase/client"
+import type { AdminRating } from "@/features/admin/types"
 
 export function useAdminRatings() {
   return useQuery({

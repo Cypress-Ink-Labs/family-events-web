@@ -105,4 +105,22 @@ describe("qk.admin.events", () => {
       })
     )
   })
+
+  it("changes key when llm review filter changes", () => {
+    expect(
+      qk.admin.events.list({
+        keyword: "storytime",
+        status: "all",
+        cityFilter: "all",
+        llmReviewFilter: "failed",
+      })
+    ).not.toEqual(
+      qk.admin.events.list({
+        keyword: "storytime",
+        status: "all",
+        cityFilter: "all",
+        llmReviewFilter: "all",
+      })
+    )
+  })
 })

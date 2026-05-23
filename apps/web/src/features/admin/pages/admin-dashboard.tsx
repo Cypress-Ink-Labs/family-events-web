@@ -6,8 +6,8 @@ import {
   AdminDashboardRecentRuns,
   AdminDashboardStatsGrid,
 } from "@/features/admin/components/admin-dashboard-sections"
-import { useAdminSourceRuns } from "@/features/admin/hooks/use-admin-source-runs"
-import { useAdminStats } from "@/features/admin/hooks/use-admin-stats"
+import { useAdminSourceRuns } from "@/features/admin/hooks/sources/use-admin-source-runs"
+import { useAdminStats } from "@/features/admin/hooks/operations/use-admin-stats"
 
 export function AdminDashboardPage() {
   const { data: stats, isLoading: isStatsLoading } = useAdminStats()

@@ -1,12 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  type Dispatch,
-  type RefObject,
-} from "react"
+import { useCallback, useEffect, useMemo, useReducer, useRef, type RefObject } from "react"
 import { Link } from "react-router-dom"
 import {
   Map as MapGL,
@@ -66,7 +58,6 @@ interface MapViewState {
 }
 
 type MapViewStatePatch = Partial<MapViewState> | ((state: MapViewState) => Partial<MapViewState>)
-type MapBodyKey = "map-city-loading" | "map-events-loading" | "map-empty" | "map-content"
 type UserLocation = ReturnType<typeof useUserLocation>["location"]
 type SelectedCity = ReturnType<typeof useApp>["selectedCity"]
 type LocationStatus = ReturnType<typeof useUserLocation>["status"]
@@ -223,39 +214,52 @@ export function MapViewPage() {
         mappableCount={mappable.length}
         mobilePane={mapState.mobilePane}
         selectedCity={selectedCity}
-        setMapState={setMapState}
         showPastEvents={showPastEvents}
+        onShowList={() => setMapState({ mobilePane: "list" })}
+        onShowMap={() => setMapState({ mobilePane: "map" })}
+        onTogglePastEvents={() =>
+          setMapState((state) => ({ showPastEvents: !state.showPastEvents }))
+        }
       />
-      <MapViewBody
-        bodyKey={bodyKey}
-        canvasProps={{
-          centerLat,
-          centerLng,
-          clusters,
-          eventById,
-          expand,
-          handleLoad,
-          handleMove,
-          hoveredId,
-          locationStatus,
-          mapRef,
-          mapStyle,
-          mobilePane: mapState.mobilePane,
-          popupEvent,
-          requestLocation,
-          setMapState,
-          userLocation,
-        }}
-        eventListProps={{
-          handleSelectEvent,
-          hoveredId,
-          mobilePane: mapState.mobilePane,
-          popupEvent,
-          setMapState,
-          sortedList,
-          userLocation,
-        }}
-      />
+      {bodyKey === "map-city-loading" ? (
+        <div className="p-4 lg:p-6 flex-1 min-h-0">
+          <Skeleton className="size-full min-h-[400px] rounded-2xl" />
+        </div>
+      ) : bodyKey === "map-empty" ? (
+        <MapEmptyState />
+      ) : (
+        <div className="flex-1 min-h-0 grid md:grid-cols-[minmax(280px,360px)_1fr]">
+          <MapEventList
+            handleSelectEvent={handleSelectEvent}
+            hoveredId={hoveredId}
+            mobilePane={mapState.mobilePane}
+            popupEvent={popupEvent}
+            sortedList={sortedList}
+            userLocation={userLocation}
+            onHoverEvent={(hoveredId) => setMapState({ hoveredId })}
+          />
+          <MapCanvas
+            centerLat={centerLat}
+            centerLng={centerLng}
+            clusters={clusters}
+            eventById={eventById}
+            expand={expand}
+            handleLoad={handleLoad}
+            handleMove={handleMove}
+            hoveredId={hoveredId}
+            locationStatus={locationStatus}
+            mapRef={mapRef}
+            mapStyle={mapStyle}
+            mobilePane={mapState.mobilePane}
+            popupEvent={popupEvent}
+            requestLocation={requestLocation}
+            userLocation={userLocation}
+            onClosePopup={() => setMapState({ popupEvent: null })}
+            onHoverEvent={(hoveredId) => setMapState({ hoveredId })}
+            onSelectEvent={(popupEvent) => setMapState({ popupEvent })}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -267,14 +271,10 @@ interface MapViewHeaderProps {
   mappableCount: number
   mobilePane: MapViewState["mobilePane"]
   selectedCity: SelectedCity
-  setMapState: Dispatch<MapViewStatePatch>
   showPastEvents: boolean
-}
-
-interface MapViewBodyProps {
-  bodyKey: MapBodyKey
-  canvasProps: MapCanvasProps
-  eventListProps: MapEventListProps
+  onShowList: () => void
+  onShowMap: () => void
+  onTogglePastEvents: () => void
 }
 
 interface MapEventListProps {
@@ -282,9 +282,9 @@ interface MapEventListProps {
   hoveredId: string | null
   mobilePane: MapViewState["mobilePane"]
   popupEvent: MappedEvent | null
-  setMapState: Dispatch<MapViewStatePatch>
   sortedList: MappedEvent[]
   userLocation: UserLocation
+  onHoverEvent: (eventId: string | null) => void
 }
 
 interface MapCanvasProps {
@@ -302,8 +302,10 @@ interface MapCanvasProps {
   mobilePane: MapViewState["mobilePane"]
   popupEvent: MappedEvent | null
   requestLocation: () => void
-  setMapState: Dispatch<MapViewStatePatch>
   userLocation: UserLocation
+  onClosePopup: () => void
+  onHoverEvent: (eventId: string | null) => void
+  onSelectEvent: (event: MappedEvent) => void
 }
 
 interface MapLocationControlProps {
@@ -322,13 +324,14 @@ interface MapClusterMarkersProps {
   hoveredId: string | null
   mapRef: RefObject<MapRef | null>
   popupEvent: MappedEvent | null
-  setMapState: Dispatch<MapViewStatePatch>
+  onHoverEvent: (eventId: string | null) => void
+  onSelectEvent: (event: MappedEvent) => void
 }
 
 interface MapEventPopupProps {
   popupEvent: MappedEvent | null
-  setMapState: Dispatch<MapViewStatePatch>
   userLocation: UserLocation
+  onClose: () => void
 }
 
 function MapViewHeader({
@@ -338,8 +341,10 @@ function MapViewHeader({
   mappableCount,
   mobilePane,
   selectedCity,
-  setMapState,
   showPastEvents,
+  onShowList,
+  onShowMap,
+  onTogglePastEvents,
 }: MapViewHeaderProps) {
   return (
     <div className="px-4 lg:px-6 py-3 flex items-center justify-between gap-4 border-b border-border/60 shrink-0">
@@ -359,7 +364,7 @@ function MapViewHeader({
         <Button
           size="sm"
           variant={showPastEvents ? "default" : "outline"}
-          onClick={() => setMapState((state) => ({ showPastEvents: !state.showPastEvents }))}
+          onClick={onTogglePastEvents}
           className="h-8 gap-1.5 text-xs"
         >
           <Clock className="size-3.5" />
@@ -371,16 +376,8 @@ function MapViewHeader({
           </Badge>
         )}
         <div className="flex md:hidden border border-border/60 rounded-md overflow-hidden">
-          <MapPaneToggle
-            isActive={mobilePane === "map"}
-            label="Map"
-            onClick={() => setMapState({ mobilePane: "map" })}
-          />
-          <MapPaneToggle
-            isActive={mobilePane === "list"}
-            label="List"
-            onClick={() => setMapState({ mobilePane: "list" })}
-          />
+          <MapPaneToggle isActive={mobilePane === "map"} label="Map" onClick={onShowMap} />
+          <MapPaneToggle isActive={mobilePane === "list"} label="List" onClick={onShowList} />
         </div>
       </div>
     </div>
@@ -409,27 +406,6 @@ function MapPaneToggle({
   )
 }
 
-function MapViewBody({ bodyKey, canvasProps, eventListProps }: MapViewBodyProps) {
-  if (bodyKey === "map-city-loading") {
-    return (
-      <div className="p-4 lg:p-6 flex-1 min-h-0">
-        <Skeleton className="size-full min-h-[400px] rounded-2xl" />
-      </div>
-    )
-  }
-
-  if (bodyKey === "map-empty") {
-    return <MapEmptyState />
-  }
-
-  return (
-    <div className="flex-1 min-h-0 grid md:grid-cols-[minmax(280px,360px)_1fr]">
-      <MapEventList {...eventListProps} />
-      <MapCanvas {...canvasProps} />
-    </div>
-  )
-}
-
 function MapEmptyState() {
   return (
     <div className="p-4 lg:p-6 flex-1 min-h-0 overflow-auto">
@@ -455,9 +431,9 @@ function MapEventList({
   hoveredId,
   mobilePane,
   popupEvent,
-  setMapState,
   sortedList,
   userLocation,
+  onHoverEvent,
 }: MapEventListProps) {
   return (
     <aside
@@ -474,7 +450,7 @@ function MapEventList({
             event={event}
             active={popupEvent?.id === event.id || hoveredId === event.id}
             userLocation={userLocation}
-            onHover={(hoveredId) => setMapState({ hoveredId })}
+            onHover={onHoverEvent}
             onSelect={handleSelectEvent}
           />
         ))}
@@ -498,8 +474,10 @@ function MapCanvas({
   mobilePane,
   popupEvent,
   requestLocation,
-  setMapState,
   userLocation,
+  onClosePopup,
+  onHoverEvent,
+  onSelectEvent,
 }: MapCanvasProps) {
   const clusterMarkerProps: MapClusterMarkersProps = {
     clusters,
@@ -508,7 +486,8 @@ function MapCanvas({
     hoveredId,
     mapRef,
     popupEvent,
-    setMapState,
+    onHoverEvent,
+    onSelectEvent,
   }
 
   return (
@@ -530,11 +509,7 @@ function MapCanvas({
         <MapLocationControl locationStatus={locationStatus} requestLocation={requestLocation} />
         <MapUserLocationMarker userLocation={userLocation} />
         <MapClusterMarkers {...clusterMarkerProps} />
-        <MapEventPopup
-          popupEvent={popupEvent}
-          setMapState={setMapState}
-          userLocation={userLocation}
-        />
+        <MapEventPopup popupEvent={popupEvent} userLocation={userLocation} onClose={onClosePopup} />
       </MapGL>
     </div>
   )
@@ -582,7 +557,8 @@ function MapClusterMarkers({
   hoveredId,
   mapRef,
   popupEvent,
-  setMapState,
+  onHoverEvent,
+  onSelectEvent,
 }: MapClusterMarkersProps) {
   return (
     <>
@@ -624,14 +600,14 @@ function MapClusterMarkers({
             anchor="bottom"
             onClick={(e) => {
               e.originalEvent.stopPropagation()
-              setMapState({ popupEvent: event })
+              onSelectEvent(event)
             }}
           >
             <button
               type="button"
               aria-label={event.title}
-              onMouseEnter={() => setMapState({ hoveredId: event.id })}
-              onMouseLeave={() => setMapState({ hoveredId: null })}
+              onMouseEnter={() => onHoverEvent(event.id)}
+              onMouseLeave={() => onHoverEvent(null)}
               className="block transition-transform hover:scale-110 active:scale-95"
             >
               <EventPin
@@ -646,7 +622,7 @@ function MapClusterMarkers({
   )
 }
 
-function MapEventPopup({ popupEvent, setMapState, userLocation }: MapEventPopupProps) {
+function MapEventPopup({ popupEvent, userLocation, onClose }: MapEventPopupProps) {
   if (!popupEvent) {
     return null
   }
@@ -659,7 +635,7 @@ function MapEventPopup({ popupEvent, setMapState, userLocation }: MapEventPopupP
       offset={36}
       closeButton
       closeOnClick={false}
-      onClose={() => setMapState({ popupEvent: null })}
+      onClose={onClose}
       maxWidth="280px"
     >
       <EventPopup event={popupEvent} userLocation={userLocation} />

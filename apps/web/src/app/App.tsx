@@ -8,7 +8,7 @@ import { PublicOnlyRoute } from "@/features/auth/components/public-only-route"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
 import { Toaster } from "@/components/ui/sonner"
 import { HOME_PATH } from "@/lib/access-control"
-import { queryClient } from "@/lib/query-client"
+import { queryClient } from "@/lib/platform/query-client"
 import { AppMotionProvider, FadeSwap } from "@/components/motion"
 
 import { AppLayout } from "@/app/layouts/app-layout"

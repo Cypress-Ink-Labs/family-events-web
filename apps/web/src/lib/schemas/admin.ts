@@ -10,6 +10,7 @@ export const eventSourceRowSchema = z.object({
   url: z.string(),
   source_type: z.enum(["website", "ical", "rss", "manual", "macaronikid", "brec"]),
   extraction_mode: z.enum(["deterministic", "llm", "deterministic_then_llm"]),
+  processing_mode: z.enum(["manual_review", "auto_approve", "llm_review"]),
   city_id: z.string().nullable(),
   is_active: z.boolean(),
   auto_approve: z.boolean(),
@@ -33,6 +34,26 @@ export const adminEventFacetRowSchema = z.object({
 })
 
 export type AdminEventFacetRow = z.infer<typeof adminEventFacetRowSchema>
+
+export const llmReviewStatusSchema = z.enum([
+  "not_required",
+  "pending",
+  "succeeded",
+  "failed",
+  "skipped",
+])
+
+export const llmReviewDecisionSchema = z.enum(["approve", "reject", "needs_admin_review"])
+
+export const adminEventFilterSchema = z.object({
+  status: z.enum(["draft", "published", "rejected", "archived"]).optional(),
+  city_id: z.string().nullable().optional(),
+  keyword: z.string().optional(),
+  llm_review_status: llmReviewStatusSchema.optional(),
+  llm_review_decision: llmReviewDecisionSchema.optional(),
+})
+
+export type AdminEventFilters = z.infer<typeof adminEventFilterSchema>
 
 // Re-export eventRowSchema so admin hooks that want the full event row can
 // import the entire admin namespace from one place.

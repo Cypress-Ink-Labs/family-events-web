@@ -1,16 +1,64 @@
 import * as Sentry from "@sentry/react"
-import { env } from "@/env"
-
-const SENTRY_DSN = env.VITE_SENTRY_DSN
-const APP_ENV = env.VITE_APP_ENV ?? import.meta.env.MODE
-const SENTRY_TRACES_SAMPLE_RATE = env.VITE_SENTRY_TRACES_SAMPLE_RATE ?? 0
-const SENTRY_REPLAYS_SESSION_SAMPLE_RATE = env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE ?? 0
-const SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE = env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE ?? 0
 
 interface RedactedSentryUserContext {
   id: string
   role?: string | null
   accessEnabled?: boolean | null
+}
+
+interface SentryEnv {
+  dsn?: string
+  appEnv: string
+  release?: string
+  tracesSampleRate: number
+  replaysSessionSampleRate: number
+  replaysOnErrorSampleRate: number
+}
+
+function readOptionalEnv(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim().length > 0 ? value : undefined
+}
+
+function readOptionalUrlEnv(value: unknown, name: string): string | undefined {
+  const raw = readOptionalEnv(value)
+  if (!raw) return undefined
+
+  try {
+    return new URL(raw).toString()
+  } catch {
+    throw new Error(`Invalid ${name}`)
+  }
+}
+
+function readSampleRate(value: unknown, name: string): number {
+  const raw = readOptionalEnv(value)
+  if (!raw) return 0
+
+  const rate = Number(raw)
+  if (!Number.isFinite(rate) || rate < 0 || rate > 1) {
+    throw new Error(`Invalid ${name}`)
+  }
+  return rate
+}
+
+function readSentryEnv(): SentryEnv {
+  return {
+    dsn: readOptionalUrlEnv(import.meta.env.VITE_SENTRY_DSN, "VITE_SENTRY_DSN"),
+    appEnv: readOptionalEnv(import.meta.env.VITE_APP_ENV) ?? import.meta.env.MODE,
+    release: readOptionalEnv(import.meta.env.VITE_SENTRY_RELEASE),
+    tracesSampleRate: readSampleRate(
+      import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE,
+      "VITE_SENTRY_TRACES_SAMPLE_RATE"
+    ),
+    replaysSessionSampleRate: readSampleRate(
+      import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE,
+      "VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE"
+    ),
+    replaysOnErrorSampleRate: readSampleRate(
+      import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE,
+      "VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE"
+    ),
+  }
 }
 
 function hasSentryDsn(value: string | undefined): value is string {
@@ -36,14 +84,15 @@ function redactUrl(url: string): string {
 }
 
 export function initSentry() {
-  if (!hasSentryDsn(SENTRY_DSN)) {
+  const sentryEnv = readSentryEnv()
+  if (!hasSentryDsn(sentryEnv.dsn)) {
     return
   }
 
   Sentry.init({
-    dsn: SENTRY_DSN,
-    environment: APP_ENV,
-    release: env.VITE_SENTRY_RELEASE,
+    dsn: sentryEnv.dsn,
+    environment: sentryEnv.appEnv,
+    release: sentryEnv.release,
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
@@ -56,9 +105,9 @@ export function initSentry() {
       Sentry.dedupeIntegration(),
     ],
     tracePropagationTargets: ["localhost"],
-    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
-    replaysSessionSampleRate: SENTRY_REPLAYS_SESSION_SAMPLE_RATE,
-    replaysOnErrorSampleRate: SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE,
+    tracesSampleRate: sentryEnv.tracesSampleRate,
+    replaysSessionSampleRate: sentryEnv.replaysSessionSampleRate,
+    replaysOnErrorSampleRate: sentryEnv.replaysOnErrorSampleRate,
     sendDefaultPii: false,
     enableLogs: false,
     ignoreErrors: [

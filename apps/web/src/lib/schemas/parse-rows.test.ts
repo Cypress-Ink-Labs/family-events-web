@@ -3,7 +3,7 @@ import { z } from "zod"
 
 const captureExceptionSpy = vi.fn()
 
-vi.mock("@/lib/sentry", () => ({
+vi.mock("@/lib/platform/sentry", () => ({
   Sentry: {
     captureException: (...args: unknown[]) => captureExceptionSpy(...args),
   },

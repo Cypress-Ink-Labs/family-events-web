@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import { subscribeToCommentChanges } from "@/features/events/lib/comments-channel-registry"
 import type { CommentWithProfile } from "@/lib/types"
 

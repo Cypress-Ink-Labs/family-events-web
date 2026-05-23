@@ -4,7 +4,8 @@ import { MemoryRouter } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
 import type { Event } from "@/lib/types"
 
-import { AdminEventsList, AdminEventsToolbar } from "./admin-events-sections"
+import { AdminEventsList } from "./admin-events-list"
+import { AdminEventsToolbar, AdminLlmReviewFilterBar } from "./admin-events-sections"
 
 vi.mock("@tanstack/react-virtual", () => ({
   useWindowVirtualizer: vi.fn((options: { count: number; estimateSize: () => number }) => ({
@@ -48,6 +49,16 @@ function adminEvent(overrides: Partial<Event> = {}): Event {
     ai_tag_provider: "openai",
     ai_tag_model: "gpt-4o-mini",
     ai_tag_status: "success",
+    llm_review_status: "not_required",
+    llm_review_decision: null,
+    llm_review_confidence: null,
+    llm_review_reason: null,
+    llm_review_flags: [],
+    llm_review_provider: null,
+    llm_review_model: null,
+    llm_review_prompt_version: null,
+    llm_reviewed_at: null,
+    llm_review_error: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 0,
@@ -90,6 +101,23 @@ describe("AdminEventsToolbar", () => {
     )
 
     expect(html).toContain("Deselect loaded")
+  })
+})
+
+describe("AdminLlmReviewFilterBar", () => {
+  it("renders all expected llm review filters", () => {
+    const html = renderToStaticMarkup(
+      createElement(AdminLlmReviewFilterBar, {
+        llmReviewFilter: "all",
+        onChange: vi.fn(),
+      })
+    )
+
+    expect(html).toContain("LLM reviewed")
+    expect(html).toContain("LLM approved")
+    expect(html).toContain("LLM rejected")
+    expect(html).toContain("Needs admin review")
+    expect(html).toContain("LLM failed")
   })
 })
 
@@ -165,6 +193,95 @@ describe("AdminVirtualEventsList", () => {
 
     expect(html).toContain("gpt-4o-mini")
     expect(html).not.toContain("https://picsum.photos")
+  })
+
+  it("renders LLM approved badge with confidence", () => {
+    const event = adminEvent({
+      llm_review_status: "succeeded",
+      llm_review_decision: "approve",
+      llm_review_confidence: 0.92,
+      llm_review_reason: "High confidence family-safe event",
+    })
+
+    const html = renderToStaticMarkup(
+      createElement(
+        MemoryRouter,
+        null,
+        createElement(AdminEventsList, {
+          events: [event],
+          selectedIds: new Set<string>(),
+          statusConfig: {
+            draft: { label: "Draft", color: "draft" },
+            published: { label: "Published", color: "published" },
+            rejected: { label: "Rejected", color: "rejected" },
+            archived: { label: "Archived", color: "archived" },
+          },
+          cities: [],
+          queryState: {
+            hasNextPage: false,
+            isLoading: false,
+            isError: false,
+            isFetchingNextPage: false,
+          },
+          onFetchNextPage: vi.fn(),
+          onRetry: vi.fn(),
+          onToggleSelect: vi.fn(),
+          onOpenReview: vi.fn(),
+          onUpdateStatus: vi.fn(),
+        })
+      )
+    )
+
+    expect(html).toContain("LLM approved · 0.92")
+  })
+
+  it("renders needs-review and failed LLM states", () => {
+    const failed = adminEvent({
+      id: "failed",
+      llm_review_status: "failed",
+      llm_review_decision: "needs_admin_review",
+      llm_review_error: "provider timeout",
+    })
+    const lowConfidence = adminEvent({
+      id: "low-confidence",
+      llm_review_status: "succeeded",
+      llm_review_decision: "needs_admin_review",
+      llm_review_confidence: 0.61,
+      llm_review_reason: "Missing source details",
+    })
+
+    const html = renderToStaticMarkup(
+      createElement(
+        MemoryRouter,
+        null,
+        createElement(AdminEventsList, {
+          events: [failed, lowConfidence],
+          selectedIds: new Set<string>(),
+          statusConfig: {
+            draft: { label: "Draft", color: "draft" },
+            published: { label: "Published", color: "published" },
+            rejected: { label: "Rejected", color: "rejected" },
+            archived: { label: "Archived", color: "archived" },
+          },
+          cities: [],
+          queryState: {
+            hasNextPage: false,
+            isLoading: false,
+            isError: false,
+            isFetchingNextPage: false,
+          },
+          onFetchNextPage: vi.fn(),
+          onRetry: vi.fn(),
+          onToggleSelect: vi.fn(),
+          onOpenReview: vi.fn(),
+          onUpdateStatus: vi.fn(),
+        })
+      )
+    )
+
+    expect(html).toContain("LLM failed")
+    expect(html).toContain("Needs review · 0.61")
+    expect(html).toContain("provider timeout")
   })
 
   it("renders fetch-next loader when a next page is available", () => {

@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
-
-export type CityFilterValue = "all" | "none" | string
+import type { CityFilterValue } from "@/lib/events/group-by-city"
 
 const PARAM = "city"
 

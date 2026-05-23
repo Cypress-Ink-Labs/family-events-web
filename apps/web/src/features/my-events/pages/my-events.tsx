@@ -19,7 +19,7 @@ import {
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useUpsertRating } from "@/features/events/hooks/use-ratings"
 import type { Favorite, UserCalendarEvent } from "@/lib/types"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack, Toolbar } from "@/components/v2"
 

@@ -7,6 +7,7 @@ type EnrichedEventsKeyOptions = {
   cityId?: string
   userId?: string
   status?: Event["status"]
+  limit?: number
   eventIds?: string[]
   dateFrom?: string | Date
   dateTo?: string | Date
@@ -33,6 +34,7 @@ type AdminEventsKeyOptions = {
   keyword: string
   status: Event["status"] | "all"
   cityFilter?: "all" | "none" | string
+  llmReviewFilter?: "all" | "reviewed" | "approved" | "rejected" | "needs_admin_review" | "failed"
   pageSize?: number
 }
 
@@ -77,18 +79,28 @@ function normalizeAdminEventsParams({
   keyword,
   status,
   cityFilter = "all",
+  llmReviewFilter = "all",
   pageSize = 200,
 }: AdminEventsKeyOptions) {
   return {
     keyword: sanitizePostgrestLike(keyword),
     status,
     cityFilter,
+    llmReviewFilter,
     pageSize,
   } as const
 }
 
 function enrichedEvents(options: EnrichedEventsKeyOptions = {}) {
-  const { cityId, userId, status = DEFAULT_EVENT_STATUS, eventIds, dateFrom, dateTo } = options
+  const {
+    cityId,
+    userId,
+    status = DEFAULT_EVENT_STATUS,
+    limit,
+    eventIds,
+    dateFrom,
+    dateTo,
+  } = options
 
   if (eventIds) {
     return ["events-enriched", "by-ids", sortedUnique(eventIds), nil(userId)] as const
@@ -100,6 +112,7 @@ function enrichedEvents(options: EnrichedEventsKeyOptions = {}) {
       cityId: nil(cityId),
       status,
       userId: nil(userId),
+      limit: nil(limit),
       dateFrom: toIsoDate(dateFrom),
       dateTo: toIsoDate(dateTo),
     },

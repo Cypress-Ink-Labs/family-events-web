@@ -24,7 +24,6 @@ type BottomSheetProps = {
   title?: ReactNode
   description?: ReactNode
   children: ReactNode
-  /** Force one variant regardless of breakpoint. */
   variant?: "auto" | "sheet" | "dialog"
   className?: string
 }

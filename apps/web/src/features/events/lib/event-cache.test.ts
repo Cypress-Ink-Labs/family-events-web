@@ -33,6 +33,14 @@ describe("applyFavoriteStateToCacheValue", () => {
     expect(output.secondaryEvents[0].is_favorited).toBe(true)
     expect(output.secondaryEvents[1].is_favorited).toBe(true)
   })
+
+  it("does not match non-string ids", () => {
+    const input = { id: 123, is_favorited: false, title: "Numeric id" }
+
+    const output = applyFavoriteStateToCacheValue(input, "123", true)
+
+    expect(output.is_favorited).toBe(false)
+  })
 })
 
 describe("buildOptimisticFavorites", () => {

@@ -11,8 +11,8 @@ setup.setTimeout(60_000)
 setup("authenticate local admin", async ({ page }) => {
   await mkdir(dirname(authFile), { recursive: true })
 
-  // Surface app boot crashes (e.g. missing VITE_SUPABASE_URL fails the env
-  // schema at module load) as diagnostic test failures instead of generic
+  // Surface app boot crashes (e.g. missing VITE_SUPABASE_URL fails Supabase
+  // client initialization) as diagnostic test failures instead of generic
   // "element not found" timeouts.
   const consoleErrors: string[] = []
   page.on("pageerror", (error) => {
@@ -47,8 +47,8 @@ setup("authenticate local admin", async ({ page }) => {
     throw new Error(
       `Sign-in form did not render and we are not on /home (url=${url}). ` +
         `Most likely cause: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY ` +
-        `is missing or invalid, so the env schema in src/env.ts threw at ` +
-        `module load. Console:${errors}`
+        `is missing or invalid, so Supabase client initialization failed. ` +
+        `Console:${errors}`
     )
   }
 

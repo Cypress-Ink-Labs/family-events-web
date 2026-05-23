@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { env } from "@/env"
 import { qk } from "@/lib/query-keys"
-import { Sentry } from "@/lib/sentry"
+import { Sentry } from "@/lib/platform/sentry"
 
 const OPENWEATHER_ENDPOINT = "https://api.openweathermap.org/data/2.5/weather"
 
@@ -57,6 +56,11 @@ function weatherFitFromConditions(
 
 function shouldRetry(status: number): boolean {
   return status === 429 || status >= 500
+}
+
+function readWeatherApiKey(): string | undefined {
+  const value = import.meta.env.VITE_OPENWEATHER_API_KEY
+  return typeof value === "string" && value.trim().length > 0 ? value : undefined
 }
 
 async function fetchWeatherSnapshot(
@@ -118,7 +122,7 @@ async function fetchWeatherSnapshot(
 
 export function useWeather(options: UseWeatherOptions = {}) {
   const { latitude, longitude, enabled = true } = options
-  const apiKey = env.VITE_OPENWEATHER_API_KEY
+  const apiKey = readWeatherApiKey()
 
   return useQuery({
     queryKey: qk.weather.byCoordinates(latitude, longitude),

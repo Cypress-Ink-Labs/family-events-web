@@ -1,34 +1,34 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useAdminStore } from "@/features/admin/stores/admin-store"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
+import { AdminEventReviewDialog } from "@/features/admin/components/admin-event-review-panel"
+import { AdminEventsList } from "@/features/admin/components/admin-events-list"
 import {
-  AdminEventReviewDialog,
   AdminEventsBulkBar,
-  AdminEventsList,
+  AdminLlmReviewFilterBar,
   AdminEventsToolbar,
   AdminEventStatusFilterBar,
+  type AdminLlmReviewFilter,
 } from "@/features/admin/components/admin-events-sections"
 import { AdminCityFilterBar } from "@/features/admin/components/admin-city-filter-bar"
-import { useAdminEventDetail } from "@/features/admin/hooks/use-admin-event-detail"
+import { useAdminEventDetail } from "@/features/admin/hooks/events/use-admin-event-detail"
 import {
   useAdminEventAiTrace,
   useUpdateAdminEventTags,
-} from "@/features/admin/hooks/use-admin-event-ai-trace"
+} from "@/features/admin/hooks/events/use-admin-event-ai-trace"
 import {
   useAdminEventFacets,
   useAdminEventsInfinite,
   useBatchUpdateAdminEventStatus,
   useDeleteAdminEvents,
   useUpdateAdminEventStatus,
-} from "@/features/admin/hooks/use-admin-events"
+} from "@/features/admin/hooks/events/use-admin-events"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
-import { UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
+import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import { useTags } from "@/features/events/hooks/use-tags"
 import type { Event } from "@/lib/types"
 import { toast } from "sonner"
-
-import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 
 type EventStatusFilter = Event["status"] | "all"
 
@@ -131,6 +131,9 @@ function AdminEventReviewSection({
       onReject={() => {
         if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "rejected")
       }}
+      onSetDraft={() => {
+        if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "draft")
+      }}
     />
   )
 }
@@ -145,6 +148,7 @@ export function AdminEventsPage() {
   const toggleSelectedId = useAdminStore((state) => state.toggleSelectedId)
   const setSelectedIds = useAdminStore((state) => state.setSelectedIds)
   const clearSelectedIds = useAdminStore((state) => state.clearSelectedIds)
+  const [llmReviewFilter, setLlmReviewFilter] = useState<AdminLlmReviewFilter>("all")
 
   const { value: cityFilter, setValue: setCityFilter } = useCityFilter()
 
@@ -157,7 +161,7 @@ export function AdminEventsPage() {
     isFetchingNextPage,
     hasNextPage: listHasNextPage,
     refetch: refetchEvents,
-  } = useAdminEventsInfinite(keyword, statusFilter, cityFilter)
+  } = useAdminEventsInfinite({ keyword, status: statusFilter, cityFilter, llmReviewFilter })
 
   const events = useMemo(() => eventList?.events ?? [], [eventList?.events])
   const loadedCount = eventList?.loadedCount ?? 0
@@ -250,6 +254,11 @@ export function AdminEventsPage() {
     clearSelectedIds()
   }
 
+  function handleLlmReviewFilterChange(nextFilter: AdminLlmReviewFilter) {
+    setLlmReviewFilter(nextFilter)
+    clearSelectedIds()
+  }
+
   function toggleSelectAll() {
     if (allLoadedSelected) {
       clearSelectedIds()
@@ -321,6 +330,10 @@ export function AdminEventsPage() {
         total={cityTotal}
         value={cityFilter}
         onChange={handleCityFilterChange}
+      />
+      <AdminLlmReviewFilterBar
+        llmReviewFilter={llmReviewFilter}
+        onChange={handleLlmReviewFilterChange}
       />
       <AdminEventsToolbar
         keyword={keyword}

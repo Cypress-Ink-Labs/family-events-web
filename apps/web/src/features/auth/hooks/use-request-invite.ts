@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 
 // Anon-callable: submits an invite request. Rate-limited server-side
 // (3 attempts per 10 min per email_hash). Idempotent on the same email

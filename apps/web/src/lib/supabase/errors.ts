@@ -1,4 +1,4 @@
-import { Sentry } from "@/lib/sentry"
+import { Sentry } from "@/lib/platform/sentry"
 
 interface ErrorDetails {
   message: string | null

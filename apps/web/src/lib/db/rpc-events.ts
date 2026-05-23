@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import type { Database } from "@/lib/db"
 
 const EVENTS_RPC = {
@@ -25,6 +25,7 @@ export interface EventsPageFilters {
   eventIds?: string[]
   dateFrom?: string
   dateTo?: string
+  limit?: number
 }
 
 export interface SearchEventsFilters {
@@ -42,11 +43,7 @@ export interface SearchEventsFilters {
   offset?: number
 }
 
-export async function fetchEventsPage(
-  filters: EventsPageFilters,
-  cursor?: EventsCursor,
-  limit = 24
-) {
+export async function fetchEventsPage(filters: EventsPageFilters, cursor?: EventsCursor) {
   const args: EventsEnrichedArgs = {
     p_city_id: filters.cityId,
     p_status: filters.status ?? DEFAULT_EVENT_STATUS,
@@ -56,7 +53,7 @@ export async function fetchEventsPage(
     p_date_to: filters.dateTo,
     p_after_start_datetime: cursor?.afterStartDatetime,
     p_after_id: cursor?.afterId,
-    p_limit: limit,
+    p_limit: filters.limit ?? 24,
   }
   const { data, error } = await supabase.rpc(EVENTS_RPC.enrichedPage, args)
   if (error) throw error

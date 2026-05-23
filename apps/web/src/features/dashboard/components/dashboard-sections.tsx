@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { MapPin, Clock, Lightbulb, Calendar, Sparkles, TrendingUp, ArrowRight } from "lucide-react"
-import { safeImageSrc } from "@/lib/safe-url"
+import { safeImageSrc } from "@/lib/platform/safe-url"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"

@@ -29,7 +29,7 @@ channelObj.on.mockReturnValue(channelObj)
 const mockRemoveChannel = vi.fn().mockResolvedValue("ok")
 const mockChannel = vi.fn().mockReturnValue(channelObj)
 
-vi.mock("@/lib/supabase", () => ({
+vi.mock("@/lib/supabase/client", () => ({
   supabase: {
     channel: mockChannel,
     removeChannel: mockRemoveChannel,
@@ -82,15 +82,15 @@ describe("useComments Realtime subscription", () => {
 
   it("creates a channel scoped to the eventId on mount", async () => {
     const useComments = await loadHook()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     expect(capturedEffects).toHaveLength(1)
     capturedEffects[0]()
-    expect(mockChannel).toHaveBeenCalledWith("comments:event-abc")
+    expect(mockChannel).toHaveBeenCalledWith("comments:11111111-1111-4111-8111-111111111111")
   })
 
   it("subscribes with event:'*' and the correct filter", async () => {
     const useComments = await loadHook()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[0]()
     expect(channelObj.on).toHaveBeenCalledWith(
       "postgres_changes",
@@ -98,16 +98,23 @@ describe("useComments Realtime subscription", () => {
         event: "*",
         schema: "public",
         table: "comments",
-        filter: "event_id=eq.event-abc",
+        filter: "event_id=eq.11111111-1111-4111-8111-111111111111",
       },
       expect.any(Function)
     )
     expect(channelObj.subscribe).toHaveBeenCalled()
   })
 
-  it("calls invalidateQueries when a postgres_changes event fires (INSERT/UPDATE/DELETE)", async () => {
+  it("rejects invalid event ids before creating a channel", async () => {
     const useComments = await loadHook()
     useComments("event-abc")
+    expect(() => capturedEffects[0]()).toThrow("Comment subscription eventId must be a UUID.")
+    expect(mockChannel).not.toHaveBeenCalled()
+  })
+
+  it("calls invalidateQueries when a postgres_changes event fires (INSERT/UPDATE/DELETE)", async () => {
+    const useComments = await loadHook()
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[0]()
 
     // Extract the postgres_changes callback registered via .on()
@@ -115,13 +122,13 @@ describe("useComments Realtime subscription", () => {
     onCallback({})
 
     expect(mockInvalidateQueries).toHaveBeenCalledWith({
-      queryKey: qk.comments.byEvent("event-abc"),
+      queryKey: qk.comments.byEvent("11111111-1111-4111-8111-111111111111"),
     })
   })
 
   it("calls removeChannel on unmount", async () => {
     const useComments = await loadHook()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     const cleanup = capturedEffects[0]()
     if (typeof cleanup === "function") cleanup()
     expect(mockRemoveChannel).toHaveBeenCalledWith(channelObj)
@@ -130,11 +137,13 @@ describe("useComments Realtime subscription", () => {
   it("warns and schedules reconnect when CHANNEL_ERROR fires", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
     const useComments = await loadHook()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[0]()
     mockStatusCallback.current("CHANNEL_ERROR")
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('subscription status "CHANNEL_ERROR" for event event-abc')
+      expect.stringContaining(
+        'subscription status "CHANNEL_ERROR" for event 11111111-1111-4111-8111-111111111111'
+      )
     )
     warnSpy.mockRestore()
   })
@@ -142,7 +151,7 @@ describe("useComments Realtime subscription", () => {
   it("does not warn on SUBSCRIBED status", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
     const useComments = await loadHook()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[0]()
     mockStatusCallback.current("SUBSCRIBED")
     expect(warnSpy).not.toHaveBeenCalled()
@@ -151,9 +160,9 @@ describe("useComments Realtime subscription", () => {
 
   it("shares one channel across two subscribers for the same event id", async () => {
     const useComments = await loadHook()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[0]()
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[1]()
     // Two mounts, same event id → only ONE Supabase channel created.
     expect(mockChannel).toHaveBeenCalledTimes(1)
@@ -166,14 +175,14 @@ describe("useComments Realtime subscription", () => {
   it("StrictMode remount: removeChannel called on first cleanup before second mount", async () => {
     const useComments = await loadHook()
     // First mount
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     const cleanup1 = capturedEffects[0]()
     // StrictMode unmounts immediately
     if (typeof cleanup1 === "function") cleanup1()
     expect(mockRemoveChannel).toHaveBeenCalledTimes(1)
     // Second mount
     capturedEffects.length = 0
-    useComments("event-abc")
+    useComments("11111111-1111-4111-8111-111111111111")
     capturedEffects[0]()
     // Two mounts = two channel creations
     expect(mockChannel).toHaveBeenCalledTimes(2)
@@ -182,16 +191,16 @@ describe("useComments Realtime subscription", () => {
   it("resubscribes when eventId changes", async () => {
     const useComments = await loadHook()
     // Mount with first eventId
-    useComments("event-1")
+    useComments("11111111-1111-4111-8111-111111111111")
     const cleanup1 = capturedEffects[0]()
     if (typeof cleanup1 === "function") cleanup1()
 
     // Mount with second eventId (simulates deps change → cleanup → re-run)
     capturedEffects.length = 0
-    useComments("event-2")
+    useComments("22222222-2222-4222-8222-222222222222")
     capturedEffects[0]()
 
-    expect(mockChannel).toHaveBeenNthCalledWith(1, "comments:event-1")
-    expect(mockChannel).toHaveBeenNthCalledWith(2, "comments:event-2")
+    expect(mockChannel).toHaveBeenNthCalledWith(1, "comments:11111111-1111-4111-8111-111111111111")
+    expect(mockChannel).toHaveBeenNthCalledWith(2, "comments:22222222-2222-4222-8222-222222222222")
   })
 })

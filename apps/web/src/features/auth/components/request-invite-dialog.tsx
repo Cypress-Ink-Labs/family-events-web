@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useRequestInvite } from "@/features/auth/hooks/use-request-invite"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
 import { toast } from "sonner"
 
 const MESSAGE_MAX_LENGTH = 500

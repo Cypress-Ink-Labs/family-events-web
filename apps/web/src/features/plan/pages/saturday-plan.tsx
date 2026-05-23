@@ -10,7 +10,7 @@ import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { usePlanForToday } from "@/features/plan/hooks/use-plan-for-today"
-import { humanizeSupabaseError } from "@/lib/humanize-supabase-error"
+import { humanizeSupabaseError } from "@/lib/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack } from "@/components/v2"
 

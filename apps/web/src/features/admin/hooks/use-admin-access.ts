@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
-import type { AdminUserAccessRecord } from "./admin-types"
+import { supabase } from "@/lib/supabase/client"
+import type { AdminUserAccessRecord } from "@/features/admin/types"
 
 export function useAdminUserAccess() {
   return useQuery({
@@ -37,21 +37,14 @@ export function useUpdateAdminUserAccess() {
       disabledReason?: string | null
     }) => {
       const payload = isEnabled
-        ? {
-            is_enabled: true,
-            enabled_at: new Date().toISOString(),
-            disabled_at: null,
-            disabled_reason: null,
-            updated_at: new Date().toISOString(),
-          }
-        : {
-            is_enabled: false,
-            disabled_at: new Date().toISOString(),
-            disabled_reason: disabledReason?.trim() || null,
-            updated_at: new Date().toISOString(),
-          }
+        ? { p_disabled_reason: null }
+        : { p_disabled_reason: disabledReason?.trim() || null }
 
-      const { error } = await supabase.from("user_access").update(payload).eq("user_id", userId)
+      const { error } = await supabase.rpc("admin_set_user_access", {
+        p_user_id: userId,
+        p_is_enabled: isEnabled,
+        ...payload,
+      })
       if (error) {
         throw error
       }

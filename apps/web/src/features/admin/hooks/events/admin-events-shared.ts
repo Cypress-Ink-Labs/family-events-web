@@ -1,4 +1,4 @@
-import { enrichEvents } from "@/lib/enrich-events"
+import { enrichEvents } from "@/lib/events/enrich-events"
 import type { Event, EventWithDetails } from "@/lib/types"
 
 export async function enrichAdminEvents(events: Event[]): Promise<EventWithDetails[]> {

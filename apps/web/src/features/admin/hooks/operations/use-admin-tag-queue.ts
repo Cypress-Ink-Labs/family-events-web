@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
+import type { TagQueueStatus as DbTagQueueStatus } from "@/lib/types"
 
-export type TagQueueStatus = "pending" | "processing" | "succeeded" | "failed" | "dead"
+export type TagQueueStatus = DbTagQueueStatus
 
 export interface TagQueueSummaryRow {
   status: TagQueueStatus

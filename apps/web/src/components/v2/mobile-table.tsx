@@ -13,11 +13,8 @@ import {
 export type MobileTableColumn<T> = {
   key: string
   header: ReactNode
-  /** Cell renderer used for both card-list (mobile) and table (md+). */
   cell: (row: T) => ReactNode
-  /** Optional accessor for sorting/value comparisons. */
   value?: (row: T) => string | number | null | undefined
-  /** Hide on mobile card view (only visible in table mode). */
   desktopOnly?: boolean
   className?: string
 }
@@ -25,15 +22,11 @@ export type MobileTableColumn<T> = {
 type MobileTableProps<T> = {
   data: readonly T[]
   columns: readonly MobileTableColumn<T>[]
-  /** Stable key from each row. */
   getId: (row: T) => string
-  /** Optional row click handler (whole card / row becomes interactive). */
   onRowClick?: (row: T) => void
   empty?: ReactNode
   className?: string
-  /** Optional title + subtitle rendered above each card (uses the first column). */
   cardTitle?: (row: T) => ReactNode
-  /** Optional subtitle / metadata under the card title. */
   cardSubtitle?: (row: T) => ReactNode
 }
 
@@ -64,7 +57,6 @@ export function MobileTable<T>({
 
   return (
     <div className={className}>
-      {/* Mobile: card-list */}
       <ul className="space-y-3 md:hidden">
         {data.map((row) => {
           const id = getId(row)
@@ -103,7 +95,6 @@ export function MobileTable<T>({
         })}
       </ul>
 
-      {/* Desktop: real table */}
       <div className="hidden md:block">
         <Table>
           <TableHeader>

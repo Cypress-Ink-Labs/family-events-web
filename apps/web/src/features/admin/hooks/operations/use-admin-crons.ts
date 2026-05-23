@@ -5,8 +5,8 @@ import {
   ADMIN_CRON_RPCS,
 } from "@/features/admin/constants/cron"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
-import type { CronJob, CronRun, RailwayCronJob, RailwayCronRun } from "./admin-types"
+import { supabase } from "@/lib/supabase/client"
+import type { CronJob, CronRun, RailwayCronJob, RailwayCronRun } from "@/features/admin/types"
 
 export function useAdminCronJobs() {
   return useQuery({

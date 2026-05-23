@@ -2,33 +2,56 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { useShallow } from "zustand/react/shallow"
 import type { Session, User } from "@supabase/supabase-js"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import {
   evaluateAccessState,
   getSessionExpiryTimeoutMs,
   isSessionExpired,
 } from "@/lib/access-control"
-import { queryClient, registerAuthErrorHandler } from "@/lib/query-client"
-import { clearSentryUserContext, Sentry, setSentryUserContext } from "@/lib/sentry"
+import { subscribeExpiredAuthToken } from "@/lib/auth-events"
+import { queryClient } from "@/lib/platform/query-client"
+import { clearSentryUserContext, Sentry, setSentryUserContext } from "@/lib/platform/sentry"
 import type { UserAccess, UserProfile } from "@/lib/types"
 
 const PROFILE_REFRESH_INTERVAL_MS = 5 * 60_000
 
-// Module-level refs replace useRef — store is a module-level singleton.
-let expiryTimer: ReturnType<typeof setTimeout> | null = null
-let lastSyncedAccessToken: string | null = null
-let lastProfileFetchAt = 0
+function createAuthStoreRuntime() {
+  return {
+    expiryTimer: null as ReturnType<typeof setTimeout> | null,
+    lastSyncedAccessToken: null as string | null,
+    lastProfileFetchAt: 0,
+    clearExpiryTimer() {
+      if (this.expiryTimer) {
+        clearTimeout(this.expiryTimer)
+        this.expiryTimer = null
+      }
+    },
+    reset() {
+      this.clearExpiryTimer()
+      this.lastSyncedAccessToken = null
+      this.lastProfileFetchAt = 0
+    },
+  }
+}
+
+const authRuntime = createAuthStoreRuntime()
+
+function authSyncFailureMessage(error: unknown): string {
+  return error instanceof Error ? error.message : "Unable to restore your session."
+}
 
 interface AuthStore {
   session: Session | null
   user: User | null
   profile: UserProfile | null
   access: UserAccess | null
+  authError: string | null
   isLoading: boolean
 
   _resetAuthState: () => void
   _syncSession: (session: Session | null, force?: boolean) => Promise<void>
   initAuth: () => () => void
+  clearAuthError: () => void
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
   signInWithProvider: (
     provider: "apple" | "google",
@@ -49,16 +72,12 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       profile: null,
       access: null,
+      authError: null,
       isLoading: true,
 
       _resetAuthState() {
-        if (expiryTimer) {
-          clearTimeout(expiryTimer)
-          expiryTimer = null
-        }
-        lastSyncedAccessToken = null
-        lastProfileFetchAt = 0
-        set({ session: null, user: null, profile: null, access: null })
+        authRuntime.reset()
+        set({ session: null, user: null, profile: null, access: null, authError: null })
         clearSentryUserContext()
         // Drop the previous user's cached data so the next user never sees it.
         queryClient.clear()
@@ -76,22 +95,20 @@ export const useAuthStore = create<AuthStore>()(
         }
 
         // Refresh expiry timer on every sync (cheap).
-        if (expiryTimer) {
-          clearTimeout(expiryTimer)
-          expiryTimer = null
-        }
+        authRuntime.clearExpiryTimer()
         const timeoutMs = getSessionExpiryTimeoutMs(sessionValue)
         if (timeoutMs !== null) {
-          expiryTimer = setTimeout(() => {
+          authRuntime.expiryTimer = setTimeout(() => {
             void get().signOut()
           }, timeoutMs)
         }
 
         // Always reflect the freshest session/user — keeps token expiry tracking current.
-        set({ session: sessionValue, user: sessionValue.user })
+        set({ session: sessionValue, user: sessionValue.user, authError: null })
 
-        const isNewToken = sessionValue.access_token !== lastSyncedAccessToken
-        const profileStale = Date.now() - lastProfileFetchAt >= PROFILE_REFRESH_INTERVAL_MS
+        const isNewToken = sessionValue.access_token !== authRuntime.lastSyncedAccessToken
+        const profileStale =
+          Date.now() - authRuntime.lastProfileFetchAt >= PROFILE_REFRESH_INTERVAL_MS
 
         // Cheap path: same token, fresh data, not forced.
         // Skips profile/access RPCs on hourly TOKEN_REFRESHED events.
@@ -143,8 +160,8 @@ export const useAuthStore = create<AuthStore>()(
           )
         }
 
-        lastSyncedAccessToken = sessionValue.access_token
-        lastProfileFetchAt = Date.now()
+        authRuntime.lastSyncedAccessToken = sessionValue.access_token
+        authRuntime.lastProfileFetchAt = Date.now()
         set({ profile, access })
         setSentryUserContext({
           id: sessionValue.user.id,
@@ -155,16 +172,16 @@ export const useAuthStore = create<AuthStore>()(
 
       initAuth() {
         let destroyed = false
-        const unregisterAuthErrorHandler = registerAuthErrorHandler(() => {
-          // PGRST301 / expired JWT from any query/mutation → single sign-out path.
-          void get().signOut()
-        })
 
         void supabase.auth.getSession().then(({ data: { session } }) => {
           if (destroyed) return
           get()
             ._syncSession(session)
-            .catch(() => {})
+            .catch((error) => {
+              if (destroyed) return
+              get()._resetAuthState()
+              set({ authError: authSyncFailureMessage(error) })
+            })
             .finally(() => set({ isLoading: false }))
         })
 
@@ -179,16 +196,23 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true })
           void get()
             ._syncSession(session)
-            .catch(() => {})
+            .catch((error) => {
+              if (destroyed) return
+              get()._resetAuthState()
+              set({ authError: authSyncFailureMessage(error) })
+            })
             .finally(() => set({ isLoading: false }))
         })
 
         return () => {
           destroyed = true
-          if (expiryTimer) clearTimeout(expiryTimer)
-          unregisterAuthErrorHandler()
+          authRuntime.clearExpiryTimer()
           subscription.unsubscribe()
         }
+      },
+
+      clearAuthError() {
+        set({ authError: null })
       },
 
       async signIn(email, password) {
@@ -298,6 +322,10 @@ export const useAuthStore = create<AuthStore>()(
   )
 )
 
+subscribeExpiredAuthToken(() => {
+  void useAuthStore.getState().signOut()
+})
+
 export function useAuth() {
   return useAuthStore(
     useShallow((s) => ({
@@ -305,9 +333,11 @@ export function useAuth() {
       user: s.user,
       profile: s.profile,
       access: s.access,
+      authError: s.authError,
       isAdmin: s.profile?.role === "admin",
       isEnabled: s.access?.is_enabled === true,
       isLoading: s.isLoading,
+      clearAuthError: s.clearAuthError,
       signIn: s.signIn,
       signInWithProvider: s.signInWithProvider,
       signUp: s.signUp,

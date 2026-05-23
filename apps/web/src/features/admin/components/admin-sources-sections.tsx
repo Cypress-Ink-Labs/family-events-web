@@ -8,6 +8,7 @@ import {
   FileText,
   Globe,
   HelpCircle,
+  MapPin,
   MoreHorizontal,
   Plus,
   RefreshCw,
@@ -46,24 +47,37 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { groupByCity, UNASSIGNED_CITY_KEY } from "@/lib/group-by-city"
+import { groupByCity, UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import { FormGrid, Toolbar } from "@/components/v2"
-import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
-import type { City, EventSource, ExtractionMode } from "@/lib/types"
+import {
+  ADMIN_SOURCE_TYPE_LABELS,
+  ADMIN_SOURCE_TYPE_OPTIONS,
+  type AdminSourceType,
+} from "@/features/admin/lib/source-types"
+import type { City, EventProcessingMode, EventSource, ExtractionMode } from "@/lib/types"
 
-type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid"
 type SourceStatus = "pending" | "success" | "error" | "partial"
 
-const SOURCE_TYPE_ICONS: Record<SourceType, ElementType> = {
+export interface SourceDraft {
+  name: string
+  url: string
+  source_type: AdminSourceType
+  extraction_mode: ExtractionMode
+  processing_mode: EventProcessingMode
+  city_id: string
+}
+
+const SOURCE_TYPE_ICONS: Record<AdminSourceType, ElementType> = {
   website: Globe,
   rss: Rss,
   ical: Calendar,
   manual: FileText,
   macaronikid: Sparkles,
+  brec: MapPin,
 }
 
 function getSourceIcon(sourceType: string): ElementType {
-  return SOURCE_TYPE_ICONS[sourceType as SourceType] ?? HelpCircle
+  return SOURCE_TYPE_ICONS[sourceType as AdminSourceType] ?? HelpCircle
 }
 
 function getSourceStatus(lastStatus: string | null | undefined): SourceStatus {
@@ -100,24 +114,13 @@ interface AdminSourcesHeaderProps {
   activeSourceCount: number
   cities: City[]
   dialogOpen: boolean
-  newSource: {
-    name: string
-    url: string
-    source_type: SourceType
-    extraction_mode: ExtractionMode
-    city_id: string
-  }
+  newSource: SourceDraft
   isBulkPending: boolean
   isScrapeAllPending: boolean
   onDialogOpenChange: (open: boolean) => void
-  onNameChange: (value: string) => void
-  onUrlChange: (value: string) => void
-  onTypeChange: (value: SourceType) => void
-  onExtractionModeChange: (value: ExtractionMode) => void
-  onCityChange: (value: string) => void
+  onSourceDraftPatch: (patch: Partial<SourceDraft>) => void
   onAddSource: () => void
-  onEnableAllAutoApprove: () => void
-  onDisableAllAutoApprove: () => void
+  onBulkSetProcessingMode: (mode: EventProcessingMode) => void
   onScrapeAll: () => void
 }
 
@@ -129,14 +132,9 @@ export function AdminSourcesHeader({
   isBulkPending,
   isScrapeAllPending,
   onDialogOpenChange,
-  onNameChange,
-  onUrlChange,
-  onTypeChange,
-  onExtractionModeChange,
-  onCityChange,
+  onSourceDraftPatch,
   onAddSource,
-  onEnableAllAutoApprove,
-  onDisableAllAutoApprove,
+  onBulkSetProcessingMode,
   onScrapeAll,
 }: AdminSourcesHeaderProps) {
   return (
@@ -163,112 +161,178 @@ export function AdminSourcesHeader({
                 <RefreshCw className={cn("mr-2 size-4", isScrapeAllPending && "animate-spin")} />
                 Scrape All
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onEnableAllAutoApprove} disabled={isBulkPending}>
-                Auto-Approve All
+              <DropdownMenuItem
+                onClick={() => onBulkSetProcessingMode("manual_review")}
+                disabled={isBulkPending}
+              >
+                Set Manual Review
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDisableAllAutoApprove} disabled={isBulkPending}>
-                Disable Auto-Approve All
+              <DropdownMenuItem
+                onClick={() => onBulkSetProcessingMode("auto_approve")}
+                disabled={isBulkPending}
+              >
+                Set Auto Approve
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onBulkSetProcessingMode("llm_review")}
+                disabled={isBulkPending}
+              >
+                Set LLM Review
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
-            <DialogTrigger asChild>
-              <Button className="min-h-[44px] gap-2">
-                <Plus className="size-4" />
-                <span>Add Source</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add Event Source</DialogTitle>
-                <DialogDescription>
-                  Create a source, then trigger a scrape to import events into the review queue.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="new-source-name">Source Name</Label>
-                  <Input
-                    id="new-source-name"
-                    value={newSource.name}
-                    onChange={(event) => onNameChange(event.target.value)}
-                    placeholder="e.g. NYC Parks Family Events"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="new-source-url">URL</Label>
-                  <Input
-                    id="new-source-url"
-                    value={newSource.url}
-                    onChange={(event) => onUrlChange(event.target.value)}
-                    placeholder="https://..."
-                  />
-                </div>
-                <FormGrid cols={2} gap="3">
-                  <div className="space-y-1.5">
-                    <Label>Type</Label>
-                    <Select
-                      value={newSource.source_type}
-                      onValueChange={(value) => onTypeChange(value as SourceType)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="website">Website</SelectItem>
-                        <SelectItem value="ical">iCal Feed</SelectItem>
-                        <SelectItem value="rss">RSS Feed</SelectItem>
-                        <SelectItem value="macaronikid">Macaroni Kid</SelectItem>
-                        <SelectItem value="manual">Manual</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label>Extraction</Label>
-                    <Select
-                      value={newSource.extraction_mode}
-                      onValueChange={(value) => onExtractionModeChange(value as ExtractionMode)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="deterministic">Parser</SelectItem>
-                        <SelectItem value="deterministic_then_llm">Parser + LLM</SelectItem>
-                        <SelectItem value="llm">LLM</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </FormGrid>
-                <FormGrid cols={2} gap="3">
-                  <div className="space-y-1.5">
-                    <Label>City</Label>
-                    <Select value={newSource.city_id} onValueChange={onCityChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {cities.map((city) => (
-                          <SelectItem key={city.id} value={city.id}>
-                            {city.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </FormGrid>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => onDialogOpenChange(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={onAddSource}>Add Source</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <AddSourceDialog
+            open={dialogOpen}
+            cities={cities}
+            newSource={newSource}
+            onOpenChange={onDialogOpenChange}
+            onSourceDraftPatch={onSourceDraftPatch}
+            onAddSource={onAddSource}
+          />
         </>
       }
     />
+  )
+}
+
+interface AddSourceDialogProps {
+  open: boolean
+  cities: City[]
+  newSource: SourceDraft
+  onOpenChange: (open: boolean) => void
+  onSourceDraftPatch: (patch: Partial<SourceDraft>) => void
+  onAddSource: () => void
+}
+
+function AddSourceDialog({
+  open,
+  cities,
+  newSource,
+  onOpenChange,
+  onSourceDraftPatch,
+  onAddSource,
+}: AddSourceDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <Button className="min-h-[44px] gap-2">
+          <Plus className="size-4" />
+          <span>Add Source</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Event Source</DialogTitle>
+          <DialogDescription>
+            Create a source, then trigger a scrape to import events into the review queue.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="new-source-name">Source Name</Label>
+            <Input
+              id="new-source-name"
+              value={newSource.name}
+              onChange={(event) => onSourceDraftPatch({ name: event.target.value })}
+              placeholder="e.g. NYC Parks Family Events"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="new-source-url">URL</Label>
+            <Input
+              id="new-source-url"
+              value={newSource.url}
+              onChange={(event) => onSourceDraftPatch({ url: event.target.value })}
+              placeholder="https://..."
+            />
+          </div>
+          <FormGrid cols={2} gap="3">
+            <div className="space-y-1.5">
+              <Label>Type</Label>
+              <Select
+                value={newSource.source_type}
+                onValueChange={(value) =>
+                  onSourceDraftPatch({ source_type: value as AdminSourceType })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ADMIN_SOURCE_TYPE_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Extraction</Label>
+              <Select
+                value={newSource.extraction_mode}
+                onValueChange={(value) =>
+                  onSourceDraftPatch({ extraction_mode: value as ExtractionMode })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="deterministic">Parser</SelectItem>
+                  <SelectItem value="deterministic_then_llm">Parser + LLM</SelectItem>
+                  <SelectItem value="llm">LLM</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </FormGrid>
+          <FormGrid cols={2} gap="3">
+            <div className="space-y-1.5">
+              <Label>Processing</Label>
+              <Select
+                value={newSource.processing_mode}
+                onValueChange={(value) =>
+                  onSourceDraftPatch({ processing_mode: value as EventProcessingMode })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="manual_review">Manual review</SelectItem>
+                  <SelectItem value="auto_approve">Auto approve</SelectItem>
+                  <SelectItem value="llm_review">LLM review</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>City</Label>
+              <Select
+                value={newSource.city_id}
+                onValueChange={(value) => onSourceDraftPatch({ city_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select city" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map((city) => (
+                    <SelectItem key={city.id} value={city.id}>
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </FormGrid>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={onAddSource}>Add Source</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -279,7 +343,7 @@ interface AdminSourcesListProps {
   latestErrorBySourceId: ReadonlyMap<string, string>
   scrapingSourceIds: Set<string>
   onToggleActive: (sourceId: string, isActive: boolean) => void
-  onToggleAutoApprove: (sourceId: string, autoApprove: boolean) => void
+  onSetProcessingMode: (sourceId: string, mode: EventProcessingMode) => void
   onScrape: (sourceId: string) => void
   onAddSourceForCity: (cityId: string) => void
 }
@@ -291,7 +355,7 @@ export function AdminSourcesList({
   latestErrorBySourceId,
   scrapingSourceIds,
   onToggleActive,
-  onToggleAutoApprove,
+  onSetProcessingMode,
   onScrape,
   onAddSourceForCity,
 }: AdminSourcesListProps) {
@@ -311,7 +375,7 @@ export function AdminSourcesList({
             errorMessage={latestErrorBySourceId.get(source.id)}
             scrapingSourceIds={scrapingSourceIds}
             onToggleActive={onToggleActive}
-            onToggleAutoApprove={onToggleAutoApprove}
+            onSetProcessingMode={onSetProcessingMode}
             onScrape={onScrape}
           />
         ))}
@@ -357,7 +421,7 @@ export function AdminSourcesList({
                       errorMessage={latestErrorBySourceId.get(source.id)}
                       scrapingSourceIds={scrapingSourceIds}
                       onToggleActive={onToggleActive}
-                      onToggleAutoApprove={onToggleAutoApprove}
+                      onSetProcessingMode={onSetProcessingMode}
                       onScrape={onScrape}
                     />
                   ))}
@@ -377,7 +441,7 @@ interface SourceCardProps {
   errorMessage?: string
   scrapingSourceIds: Set<string>
   onToggleActive: (sourceId: string, isActive: boolean) => void
-  onToggleAutoApprove: (sourceId: string, autoApprove: boolean) => void
+  onSetProcessingMode: (sourceId: string, mode: EventProcessingMode) => void
   onScrape: (sourceId: string) => void
 }
 
@@ -387,19 +451,20 @@ function SourceCard({
   errorMessage,
   scrapingSourceIds,
   onToggleActive,
-  onToggleAutoApprove,
+  onSetProcessingMode,
   onScrape,
 }: SourceCardProps) {
   const TypeIcon = getSourceIcon(source.source_type)
   const cityLabel = cities.find((city) => city.id === source.city_id)?.name ?? "Unassigned"
   const safeStatus = getSourceStatus(source.last_status)
+  const sourceTypeLabel =
+    ADMIN_SOURCE_TYPE_LABELS[source.source_type as AdminSourceType] ?? source.source_type
   const lastRunDate = source.last_scraped_at ? new Date(source.last_scraped_at) : null
   const isScraping = scrapingSourceIds.has(source.id)
 
   return (
     <Card className="@container/src-card border-border/60">
       <CardContent className="space-y-3 p-4">
-        {/* Identity row: icon + title + meta. Always vertical-friendly. */}
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
             <TypeIcon className="size-5 text-muted-foreground" />
@@ -408,7 +473,7 @@ function SourceCard({
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-semibold text-foreground">{source.name}</h3>
               <Badge variant="outline" className="text-[10px] capitalize">
-                {source.source_type}
+                {sourceTypeLabel}
               </Badge>
               <span className="text-[10px] text-muted-foreground">{cityLabel}</span>
             </div>
@@ -416,7 +481,6 @@ function SourceCard({
           </div>
         </div>
 
-        {/* Status row: status + last-run + error count. Compact metadata. */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground">
           <StatusIndicator status={safeStatus} />
           {lastRunDate ? <span>Last run {formatLastRunCompact(lastRunDate)}</span> : null}
@@ -445,23 +509,28 @@ function SourceCard({
             />
             <span className="text-xs text-muted-foreground">Active</span>
           </label>
-          <label
-            htmlFor={`source-${source.id}-auto-approve`}
-            className={cn(
-              "inline-flex min-h-[44px] cursor-pointer items-center gap-2",
-              !source.is_active && "pointer-events-none opacity-40"
-            )}
-            title={!source.is_active ? "Enable the source to configure auto-approve" : undefined}
-          >
-            <Switch
-              id={`source-${source.id}-auto-approve`}
-              checked={source.auto_approve}
+          <div className={cn("space-y-1", !source.is_active && "opacity-40")}>
+            <span className="text-[11px] text-muted-foreground">Processing</span>
+            <Select
+              value={source.processing_mode}
               disabled={!source.is_active}
-              onCheckedChange={(checked) => onToggleAutoApprove(source.id, checked)}
-              aria-label={`Toggle ${source.name} auto-approve`}
-            />
-            <span className="text-xs text-muted-foreground">Auto-approve</span>
-          </label>
+              onValueChange={(value) =>
+                onSetProcessingMode(source.id, value as EventProcessingMode)
+              }
+            >
+              <SelectTrigger className="h-9 min-h-[44px] text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="manual_review">Manual review</SelectItem>
+                <SelectItem value="auto_approve">Auto approve</SelectItem>
+                <SelectItem value="llm_review">LLM review</SelectItem>
+              </SelectContent>
+            </Select>
+            <span className="text-[10px] text-muted-foreground capitalize">
+              Extraction: {source.extraction_mode.replaceAll("_", " ")}
+            </span>
+          </div>
           <Button
             variant="outline"
             size="sm"

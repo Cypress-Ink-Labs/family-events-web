@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { enrichedEventRowSchema } from "@/lib/schemas"
-import { Sentry } from "@/lib/sentry"
+import { Sentry } from "@/lib/platform/sentry"
 import { fetchEventsPage } from "@/lib/db/rpc-events"
 import type { Event, EventTag, EventWithDetails, Tag } from "@/lib/types"
 
@@ -10,12 +10,11 @@ interface UseEnrichedEventsOptions {
   userId?: string
   status?: Event["status"]
   limit?: number
-  offset?: number
   enabled?: boolean
   includePast?: boolean
   /**
    * When set, the RPC returns exactly those events, bypassing the
-   * city/status/limit/offset filters. Used by my-events and event-detail
+   * city/status/limit filters. Used by my-events and event-detail
    * so saved-ids and single-id fetches share the enriched path.
    */
   eventIds?: string[]
@@ -26,7 +25,6 @@ interface UseEnrichedEventsOptions {
 }
 
 const DEFAULT_LIMIT = 100
-const DEFAULT_OFFSET = 0
 const DEFAULT_STATUS: Event["status"] = "published"
 
 function toIsoDate(value: string | Date): string {
@@ -104,7 +102,7 @@ export function adaptEnrichedRow(row: unknown): EventWithDetails {
 }
 
 // Exported for unit tests. Mirrors the RPC signature exactly — when
-// p_event_ids is set the server ignores city/status/limit/offset, so we
+// p_event_ids is set the server ignores city/status/limit, so we
 // elide those keys client-side to keep the payload honest.
 export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
   const {
@@ -112,7 +110,6 @@ export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
     userId,
     status = DEFAULT_STATUS,
     limit = DEFAULT_LIMIT,
-    offset = DEFAULT_OFFSET,
     eventIds,
     dateTo,
   } = options
@@ -122,7 +119,6 @@ export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
     p_city_id: eventIds ? undefined : (cityId ?? undefined),
     p_status: eventIds ? undefined : status,
     p_limit: eventIds ? undefined : limit,
-    p_offset: eventIds ? undefined : offset,
     p_user_id: userId ?? undefined,
     p_event_ids: eventIds,
     p_date_from: resolvedDateFrom ? toIsoDate(resolvedDateFrom) : undefined,
@@ -135,7 +131,11 @@ export function buildEnrichedRpcArgs(options: UseEnrichedEventsOptions) {
 //  - list:     ["events-enriched", { cityId, status, userId, dateFrom, dateTo }]
 // IDs are sorted so caller insertion-order does not fragment the cache.
 export function buildEnrichedQueryKey(options: UseEnrichedEventsOptions) {
-  return qk.enrichedEvents.key({ ...options, dateFrom: effectiveDateFrom(options) })
+  return qk.enrichedEvents.key({
+    ...options,
+    limit: options.eventIds ? undefined : (options.limit ?? DEFAULT_LIMIT),
+    dateFrom: effectiveDateFrom(options),
+  })
 }
 
 async function fetchEnrichedEvents(options: UseEnrichedEventsOptions): Promise<EventWithDetails[]> {
@@ -145,18 +145,15 @@ async function fetchEnrichedEvents(options: UseEnrichedEventsOptions): Promise<E
   }
 
   const rpcArgs = buildEnrichedRpcArgs(options)
-  const data = await fetchEventsPage(
-    {
-      cityId: rpcArgs.p_city_id,
-      status: rpcArgs.p_status,
-      userId: rpcArgs.p_user_id,
-      eventIds: rpcArgs.p_event_ids,
-      dateFrom: rpcArgs.p_date_from,
-      dateTo: rpcArgs.p_date_to,
-    },
-    undefined,
-    rpcArgs.p_limit ?? 24
-  )
+  const data = await fetchEventsPage({
+    cityId: rpcArgs.p_city_id,
+    status: rpcArgs.p_status,
+    userId: rpcArgs.p_user_id,
+    eventIds: rpcArgs.p_event_ids,
+    dateFrom: rpcArgs.p_date_from,
+    dateTo: rpcArgs.p_date_to,
+    limit: rpcArgs.p_limit ?? 24,
+  })
 
   return (data as unknown[]).map((row) => adaptEnrichedRow(row))
 }

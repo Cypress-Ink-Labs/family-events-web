@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest"
 
 import { fetchAdminEventsPage } from "./rpc-admin-events"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 
-vi.mock("@/lib/supabase", () => ({
+vi.mock("@/lib/supabase/client", () => ({
   supabase: {
     rpc: vi.fn(),
   },
@@ -46,6 +46,16 @@ describe("fetchAdminEventsPage", () => {
     ai_tag_provider: null,
     ai_tag_model: null,
     ai_tag_status: null,
+    llm_review_status: "not_required" as const,
+    llm_review_decision: null,
+    llm_review_confidence: null,
+    llm_review_reason: null,
+    llm_review_flags: [],
+    llm_review_provider: null,
+    llm_review_model: null,
+    llm_review_prompt_version: null,
+    llm_reviewed_at: null,
+    llm_review_error: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 0,
@@ -84,6 +94,8 @@ describe("fetchAdminEventsPage", () => {
       p_after_created_at: undefined,
       p_after_id: undefined,
       p_limit: 200,
+      p_llm_review_status: undefined,
+      p_llm_review_decision: undefined,
     })
 
     mockRpc.mockResolvedValueOnce(
@@ -110,6 +122,36 @@ describe("fetchAdminEventsPage", () => {
       p_after_created_at: "2026-05-01T00:00:00Z",
       p_after_id: "first-event",
       p_limit: 25,
+      p_llm_review_status: undefined,
+      p_llm_review_decision: undefined,
+    })
+  })
+
+  it("passes llm review filters to admin_events_enriched", async () => {
+    mockRpc.mockResolvedValueOnce(
+      mockRpcResponse([
+        {
+          ...event({ id: "filtered", total_count: 1 }),
+        },
+      ])
+    )
+
+    await fetchAdminEventsPage({
+      llmReviewStatus: "failed",
+      llmReviewDecision: "needs_admin_review",
+      limit: 20,
+    })
+
+    expect(mockRpc).toHaveBeenLastCalledWith("admin_events_enriched", {
+      p_status: undefined,
+      p_city_id: undefined,
+      p_city_is_null: undefined,
+      p_keyword: undefined,
+      p_after_created_at: undefined,
+      p_after_id: undefined,
+      p_limit: 20,
+      p_llm_review_status: "failed",
+      p_llm_review_decision: "needs_admin_review",
     })
   })
 

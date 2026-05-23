@@ -1,7 +1,7 @@
 import type { City } from "@/lib/types"
-import type { CityFilterValue } from "@/features/admin/hooks/use-city-filter"
 
 export const UNASSIGNED_CITY_KEY = "none"
+export type CityFilterValue = "all" | typeof UNASSIGNED_CITY_KEY | string
 
 export interface CityGroup<T> {
   key: string

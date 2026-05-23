@@ -1,8 +1,40 @@
-import type { EventWithDetails, Json } from "@/lib/types"
+import type { Event, EventWithDetails, Json } from "@/lib/types"
 import type { AdminEventEditorValues } from "./event-editor-schema"
-import { ADMIN_EDITABLE_EVENT_FIELDS } from "./event-field-locks"
+import { ADMIN_EDITABLE_EVENT_FIELDS, type AdminEditableEventField } from "./event-field-locks"
 
-export type AdminEventPatch = Partial<Record<(typeof ADMIN_EDITABLE_EVENT_FIELDS)[number], unknown>>
+interface EventPatchFields {
+  title: string
+  description: string | null
+  start_datetime: string | null
+  end_datetime: string | null
+  timezone: string
+  venue_name: string | null
+  address: string | null
+  city_id: string | null
+  latitude: number | null
+  longitude: number | null
+  age_min: number | null
+  age_max: number | null
+  price: number | null
+  is_free: boolean
+  is_outdoor: boolean | null
+  source_url: string | null
+  source_name: string | null
+  source_id: string | null
+  images: string[]
+  status: Event["status"]
+  recurrence_info: Json | null
+  is_featured: boolean
+}
+export type AdminEventPatch = Partial<EventPatchFields>
+
+function assignEventPatchField<Field extends AdminEditableEventField>(
+  patch: AdminEventPatch,
+  field: Field,
+  value: EventPatchFields[Field]
+) {
+  patch[field] = value
+}
 
 function toLocalDateTimeInput(value: string | null): string {
   if (!value) return ""
@@ -63,7 +95,7 @@ export function eventToEditorValues(event: EventWithDetails): AdminEventEditorVa
   }
 }
 
-export function editorValuesToEventPatch(values: AdminEventEditorValues): AdminEventPatch {
+export function editorValuesToEventPatch(values: AdminEventEditorValues): EventPatchFields {
   const endDatetime = fromLocalDateTimeInput(values.end_datetime)
   return {
     title: values.title.trim(),
@@ -103,7 +135,7 @@ export function changedEventPatch(
   const changed: AdminEventPatch = {}
   for (const field of ADMIN_EDITABLE_EVENT_FIELDS) {
     if (JSON.stringify(initialPatch[field]) !== JSON.stringify(nextPatch[field])) {
-      changed[field] = nextPatch[field]
+      assignEventPatchField(changed, field, nextPatch[field])
     }
   }
   return changed

@@ -2,7 +2,6 @@ import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 type FormGridProps = {
-  /** Column count at md+ (mobile is always 1). Default 2. */
   cols?: 1 | 2 | 3
   gap?: "3" | "4" | "5"
   className?: string

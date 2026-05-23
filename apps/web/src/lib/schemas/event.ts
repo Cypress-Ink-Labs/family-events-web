@@ -65,6 +65,52 @@ export const eventRowSchema = z.object({
     .nullable()
     .optional()
     .transform((v) => v ?? null),
+  llm_review_status: z
+    .enum(["not_required", "pending", "succeeded", "failed", "skipped"])
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_decision: z
+    .enum(["approve", "reject", "needs_admin_review"])
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_confidence: z.coerce
+    .number()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_reason: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_flags: z.array(z.string()).optional().default([]),
+  llm_review_provider: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_model: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_prompt_version: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_reviewed_at: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  llm_review_error: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   recurrence_info: z.unknown().nullable().optional(),
   is_featured: z.boolean(),
   is_outdoor: z

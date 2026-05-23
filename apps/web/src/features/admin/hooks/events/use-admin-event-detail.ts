@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase/client"
 import type { Event, EventWithDetails } from "@/lib/types"
 import { enrichAdminEvents } from "./admin-events-shared"
-import { normalizeAiTrace } from "./admin-types"
+import { normalizeAiTrace } from "@/features/admin/types"
 import type { EventAiTrace } from "@/lib/types"
 
 const ADMIN_EVENT_EDITOR_SELECT =

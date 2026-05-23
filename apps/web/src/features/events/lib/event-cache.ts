@@ -24,7 +24,11 @@ export function applyFavoriteStateToCacheValue<T>(
       }
     }
 
-    if (record.id === eventId && typeof record.is_favorited === "boolean") {
+    if (
+      typeof record.id === "string" &&
+      record.id === eventId &&
+      typeof record.is_favorited === "boolean"
+    ) {
       nextRecord.is_favorited = isFavorited
       changed = true
     }

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { ClientDate } from "@/components/client-date"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/components/motion"
-import { safeImageSrc } from "@/lib/safe-url"
+import { safeImageSrc } from "@/lib/platform/safe-url"
 import { formatEventPrice } from "@/lib/utils"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 

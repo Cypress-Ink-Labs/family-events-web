@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase"
-import type { AdminStats } from "./admin-types"
+import { supabase } from "@/lib/supabase/client"
+import type { AdminStats } from "@/features/admin/types"
 
 export function useAdminStats() {
   return useQuery({

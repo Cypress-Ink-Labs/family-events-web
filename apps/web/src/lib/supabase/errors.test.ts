@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { humanizeSupabaseError } from "./humanize-supabase-error"
+import { humanizeSupabaseError } from "./errors"
 
 const { captureException, setTag, setContext } = vi.hoisted(() => ({
   captureException: vi.fn(),
@@ -7,7 +7,7 @@ const { captureException, setTag, setContext } = vi.hoisted(() => ({
   setContext: vi.fn(),
 }))
 
-vi.mock("@/lib/sentry", () => ({
+vi.mock("@/lib/platform/sentry", () => ({
   Sentry: {
     withScope(callback: (scope: { setTag: typeof setTag; setContext: typeof setContext }) => void) {
       callback({ setTag, setContext })
