@@ -1,16 +1,18 @@
 import { supabase } from "@/lib/supabase/client"
 import { Sentry } from "@/lib/platform/sentry"
+import { userAccessRowSchema, userProfileRowSchema } from "@/lib/schemas"
 import type { UserAccess, UserProfile } from "@/lib/types"
 
 /**
  * Fetches the current user's profile + access rows in parallel.
  *
- * Captures any Supabase error to Sentry under the `auth.syncSession` area tag
- * and rethrows so callers can decide whether to fail-soft (already-loaded
- * state) or surface the error (first sync).
+ * Each row is run through its Zod schema so an unexpected payload fails
+ * loudly here (with a tagged Sentry capture) instead of being cast to
+ * `UserProfile | null` and producing confusing downstream errors.
  *
- * PR 4 will move this under `features/auth/api/` with a Zod parse at the
- * boundary; today the cast preserves the pre-refactor behavior.
+ * Captures any error to Sentry under the `auth.syncSession` area tag and
+ * rethrows so callers can decide whether to fail-soft (already-loaded state)
+ * or surface the error (first sync).
  */
 export async function loadProfileAndAccess(userId: string): Promise<{
   profile: UserProfile | null
@@ -23,10 +25,15 @@ export async function loadProfileAndAccess(userId: string): Promise<{
     ])
     if (profileResult.error) throw profileResult.error
     if (accessResult.error) throw accessResult.error
-    return {
-      profile: (profileResult.data ?? null) as UserProfile | null,
-      access: (accessResult.data ?? null) as UserAccess | null,
-    }
+
+    const profile = profileResult.data
+      ? (userProfileRowSchema.parse(profileResult.data) as unknown as UserProfile)
+      : null
+    const access = accessResult.data
+      ? (userAccessRowSchema.parse(accessResult.data) as unknown as UserAccess)
+      : null
+
+    return { profile, access }
   } catch (error) {
     Sentry.captureException(error, { tags: { area: "auth.syncSession" } })
     throw error instanceof Error ? error : new Error("Failed to load profile")

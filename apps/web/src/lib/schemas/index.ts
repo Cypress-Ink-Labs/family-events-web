@@ -19,3 +19,9 @@ export {
   type EventSourceRow,
 } from "./admin"
 export { parseRowsWithSentry } from "./parse-rows"
+export {
+  userAccessRowSchema,
+  userProfileRowSchema,
+  type UserAccessRow,
+  type UserProfileRow,
+} from "./auth"
