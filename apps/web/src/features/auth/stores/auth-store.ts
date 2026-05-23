@@ -10,10 +10,15 @@ import {
 } from "@/lib/access-control"
 import { subscribeExpiredAuthToken } from "@/lib/auth-events"
 import { queryClient } from "@/lib/platform/query-client"
-import { clearSentryUserContext, Sentry, setSentryUserContext } from "@/lib/platform/sentry"
+import { clearSentryUserContext, setSentryUserContext } from "@/lib/platform/sentry"
 import type { UserAccess, UserProfile } from "@/lib/types"
 import { PROFILE_REFRESH_INTERVAL_MS } from "@/shared/constants/time"
 import { AUTH_ERROR_MESSAGES } from "@/features/auth/constants/messages"
+import {
+  claimPendingInviteAccess,
+  loadProfileAndAccess,
+} from "@/features/auth/api/load-profile-and-access"
+import { accessDeniedMessage } from "@/features/auth/utils/access-denied-message"
 
 function createAuthStoreRuntime() {
   return {
@@ -116,11 +121,7 @@ export const useAuthStore = create<AuthStore>()(
 
         // First sync of a new token: best-effort invite claim.
         if (isNewToken) {
-          try {
-            await supabase.rpc("claim_pending_invite_access")
-          } catch {
-            // Non-fatal; auth state should still load if this RPC fails.
-          }
+          await claimPendingInviteAccess()
         }
 
         // Fetch profile + access. On network failure, fail-soft if we have
@@ -129,35 +130,17 @@ export const useAuthStore = create<AuthStore>()(
         let profile: UserProfile | null = null
         let access: UserAccess | null = null
         try {
-          const [profileResult, accessResult] = await Promise.all([
-            supabase.from("user_profiles").select("*").eq("id", sessionValue.user.id).maybeSingle(),
-            supabase
-              .from("user_access")
-              .select("*")
-              .eq("user_id", sessionValue.user.id)
-              .maybeSingle(),
-          ])
-          if (profileResult.error) throw profileResult.error
-          if (accessResult.error) throw accessResult.error
-          profile = (profileResult.data ?? null) as UserProfile | null
-          access = (accessResult.data ?? null) as UserAccess | null
+          ;({ profile, access } = await loadProfileAndAccess(sessionValue.user.id))
         } catch (error) {
-          Sentry.captureException(error, { tags: { area: "auth.syncSession" } })
           if (get().profile !== null) return
-          throw error instanceof Error ? error : new Error("Failed to load profile")
+          throw error
         }
 
         // Access revocation is NOT fail-soft — sign out immediately.
         const accessState = evaluateAccessState({ user: { id: sessionValue.user.id } }, access)
         if (!accessState.isAllowed) {
           await get().signOut()
-          throw new Error(
-            accessState.reason === "disabled"
-              ? "Your account has been disabled."
-              : accessState.reason === "missing-access"
-                ? "Your account does not have access yet."
-                : "Sign in required."
-          )
+          throw new Error(accessDeniedMessage(accessState.reason))
         }
 
         authRuntime.lastSyncedAccessToken = sessionValue.access_token
