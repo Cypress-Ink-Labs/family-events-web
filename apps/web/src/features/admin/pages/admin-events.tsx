@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
+import { toast } from "sonner"
 import { useAdminStore } from "@/features/admin/stores/admin-store"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
-import { AdminEventReviewDialog } from "@/features/admin/components/admin-event-review-panel"
 import { AdminEventsList } from "@/features/admin/components/admin-events-list"
 import {
   AdminEventsBulkBar,
@@ -11,11 +11,7 @@ import {
   type AdminLlmReviewFilter,
 } from "@/features/admin/components/admin-events-sections"
 import { AdminCityFilterBar } from "@/features/admin/components/admin-city-filter-bar"
-import { useAdminEventDetail } from "@/features/admin/hooks/events/use-admin-event-detail"
-import {
-  useAdminEventAiTrace,
-  useUpdateAdminEventTags,
-} from "@/features/admin/hooks/events/use-admin-event-ai-trace"
+import { AdminEventReviewSection } from "@/features/admin/components/admin-events/review-section"
 import {
   useAdminEventFacets,
   useAdminEventsInfinite,
@@ -23,120 +19,13 @@ import {
   useDeleteAdminEvents,
   useUpdateAdminEventStatus,
 } from "@/features/admin/hooks/events/use-admin-events"
+import { useAdminEventFacetCounts } from "@/features/admin/hooks/events/use-admin-event-facet-counts"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
-import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
-import { useTags } from "@/features/events/hooks/use-tags"
+import { ADMIN_EVENT_STATUS_DISPLAY } from "@/features/admin/constants/event-status-display"
 import type { Event } from "@/lib/types"
-import { toast } from "sonner"
 
 type EventStatusFilter = Event["status"] | "all"
-
-const STATUS_CONFIG: Record<Event["status"], { label: string; color: string }> = {
-  draft: { label: "Draft", color: "bg-muted text-muted-foreground" },
-  published: {
-    label: "Published",
-    color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  },
-  rejected: { label: "Rejected", color: "bg-destructive/10 text-destructive" },
-  archived: { label: "Archived", color: "bg-muted/50 text-muted-foreground" },
-}
-
-function getActiveTotal({
-  facets,
-  statusFilter,
-  cityFilter,
-}: {
-  facets: Array<{ status: string; city_id: string | null; count: number }>
-  statusFilter: EventStatusFilter
-  cityFilter: CityFilterValue
-}) {
-  return facets.reduce((acc, row) => {
-    if (statusFilter !== "all" && row.status !== statusFilter) {
-      return acc
-    }
-
-    if (cityFilter === "all") {
-      return acc + row.count
-    }
-
-    if (cityFilter === UNASSIGNED_CITY_KEY) {
-      return row.city_id === null ? acc + row.count : acc
-    }
-
-    return row.city_id === cityFilter ? acc + row.count : acc
-  }, 0)
-}
-
-function AdminEventReviewSection({
-  onUpdateStatus,
-}: {
-  onUpdateStatus: (eventId: string, status: Event["status"]) => Promise<void>
-}) {
-  const selectedEventId = useAdminStore((state) => state.selectedEventId)
-  const editingTagIds = useAdminStore((state) => state.editingTagIds)
-  const setSelectedEventId = useAdminStore((state) => state.setSelectedEventId)
-  const setEditingTagIds = useAdminStore((state) => state.setEditingTagIds)
-
-  const selectedEvent = useAdminEventDetail(selectedEventId ?? undefined)
-  const { data: selectedEventTrace, isLoading: isTraceLoading } =
-    useAdminEventAiTrace(selectedEventId)
-  const { data: allTags = [] } = useTags()
-  const { mutate: updateTags } = useUpdateAdminEventTags()
-  const { toastError } = useAdminToast()
-
-  const tagNameById = new Map(allTags.map((tag) => [tag.id, tag.name]))
-  const tagNameBySlug = new Map(allTags.map((tag) => [tag.slug, tag.name]))
-
-  useEffect(() => {
-    if (selectedEventId && !selectedEvent.isLoading && selectedEvent.data === null) {
-      setSelectedEventId(null)
-    }
-  }, [selectedEvent.data, selectedEvent.isLoading, selectedEventId, setSelectedEventId])
-
-  async function saveTagOverrides() {
-    if (!selectedEvent.data) return
-    try {
-      await updateTags({ eventId: selectedEvent.data.id, tagIds: editingTagIds })
-      toast.success("Tags updated")
-    } catch (error) {
-      toastError(error, "Failed to update tags.")
-    }
-  }
-
-  return (
-    <AdminEventReviewDialog
-      event={selectedEvent.data ?? null}
-      open={Boolean(selectedEvent.data)}
-      onOpenChange={(open) => {
-        if (!open) setSelectedEventId(null)
-      }}
-      editingTagIds={editingTagIds}
-      allTags={allTags}
-      tagNameById={tagNameById}
-      tagNameBySlug={tagNameBySlug}
-      onToggleTag={(tagId) => {
-        setEditingTagIds(
-          editingTagIds.includes(tagId)
-            ? editingTagIds.filter((id) => id !== tagId)
-            : [...editingTagIds, tagId]
-        )
-      }}
-      onSaveTags={saveTagOverrides}
-      selectedEventTrace={selectedEventTrace ?? null}
-      isTraceLoading={isTraceLoading}
-      onPublish={() => {
-        if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "published")
-      }}
-      onReject={() => {
-        if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "rejected")
-      }}
-      onSetDraft={() => {
-        if (selectedEvent.data) void onUpdateStatus(selectedEvent.data.id, "draft")
-      }}
-    />
-  )
-}
 
 export function AdminEventsPage() {
   const keyword = useAdminStore((state) => state.keyword)
@@ -172,47 +61,8 @@ export function AdminEventsPage() {
   const { data: facets = [] } = useAdminEventFacets(keyword)
   const { data: cities = [] } = useAdminCities()
 
-  const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = {}
-    for (const row of facets) {
-      const matchesCity =
-        cityFilter === "all"
-          ? true
-          : cityFilter === UNASSIGNED_CITY_KEY
-            ? row.city_id === null
-            : row.city_id === cityFilter
-
-      if (!matchesCity) continue
-      counts[row.status] = (counts[row.status] ?? 0) + row.count
-    }
-    return counts
-  }, [cityFilter, facets])
-
-  const statusTotal = useMemo(
-    () => Object.values(statusCounts).reduce((sum, count) => sum + count, 0),
-    [statusCounts]
-  )
-
-  const cityCounts = useMemo(() => {
-    const counts: Record<string, number> = {}
-    for (const row of facets) {
-      if (statusFilter !== "all" && row.status !== statusFilter) continue
-
-      const key = row.city_id ?? UNASSIGNED_CITY_KEY
-      counts[key] = (counts[key] ?? 0) + row.count
-    }
-    return counts
-  }, [facets, statusFilter])
-
-  const cityTotal = useMemo(
-    () => Object.values(cityCounts).reduce((sum, count) => sum + count, 0),
-    [cityCounts]
-  )
-
-  const activeTotal = useMemo(
-    () => getActiveTotal({ facets, statusFilter, cityFilter }),
-    [cityFilter, facets, statusFilter]
-  )
+  const { statusCounts, statusTotal, cityCounts, cityTotal, activeTotal } =
+    useAdminEventFacetCounts({ facets, statusFilter, cityFilter })
 
   const totalCountForToolbar = totalCount > 0 ? totalCount : activeTotal
 
@@ -269,7 +119,6 @@ export function AdminEventsPage() {
 
   async function batchUpdateStatus(nextStatus: Event["status"]) {
     if (selectedDraftIds.length === 0) return
-
     try {
       const { count } = await batchUpdateStatusMutation.mutateAsync({
         eventIds: selectedDraftIds,
@@ -284,7 +133,6 @@ export function AdminEventsPage() {
 
   async function deleteSelectedEvents() {
     if (selectedLoadedIds.length === 0) return
-
     if (
       !window.confirm(
         `Delete ${selectedLoadedIds.length} event${selectedLoadedIds.length === 1 ? "" : "s"}? This cannot be undone.`
@@ -292,7 +140,6 @@ export function AdminEventsPage() {
     ) {
       return
     }
-
     try {
       const { count } = await deleteEventsMutation.mutateAsync(selectedLoadedIds)
       toast.success(`${count} event${count === 1 ? "" : "s"} deleted`)
@@ -358,7 +205,7 @@ export function AdminEventsPage() {
       <AdminEventsList
         events={events}
         selectedIds={selectedIds}
-        statusConfig={STATUS_CONFIG}
+        statusConfig={ADMIN_EVENT_STATUS_DISPLAY}
         cities={cities}
         queryState={{
           hasNextPage,
