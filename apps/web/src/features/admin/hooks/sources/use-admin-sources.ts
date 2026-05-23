@@ -1,30 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { eventSourceRowSchema, parseRowsWithSentry } from "@/lib/schemas"
-import type { Json } from "@/lib/db"
-import { supabase } from "@/lib/supabase/client"
-import { validateExternalUrl } from "@family-events/shared"
+import {
+  bulkSetProcessingMode,
+  createAdminSource,
+  listAdminSources,
+  markSourceScrapeFailed,
+  triggerSourceScrape,
+  updateAdminSource,
+} from "@/features/admin/api/sources"
 import type { EventSource } from "@/lib/types"
 
 export function useAdminSources() {
   return useQuery({
     queryKey: qk.admin.sources,
-    queryFn: async (): Promise<EventSource[]> => {
-      const { data, error } = await supabase
-        .from("event_sources")
-        .select(
-          "id, name, url, source_type, extraction_mode, processing_mode, city_id, is_active, auto_approve, scrape_interval_hours, last_scraped_at, last_status, error_count, notes, created_at, updated_at"
-        )
-        .order("created_at", { ascending: false })
-        .order("id")
-
-      if (error) {
-        throw error
-      }
-      return parseRowsWithSentry(eventSourceRowSchema, data, {
-        area: "admin.sources.list",
-      }) as EventSource[]
-    },
+    queryFn: listAdminSources,
   })
 }
 
@@ -32,20 +21,8 @@ export function useCreateAdminSource() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (payload: Omit<EventSource, "id" | "created_at" | "updated_at">) => {
-      if (payload.source_type !== "manual") {
-        const validation = validateExternalUrl(payload.url)
-        if (!validation.ok) {
-          throw new Error(validation.reason ?? "Invalid source URL")
-        }
-      }
-      const { error } = await supabase.rpc("admin_create_source", {
-        p_source: payload as unknown as Json,
-      })
-      if (error) {
-        throw error
-      }
-    },
+    mutationFn: (payload: Omit<EventSource, "id" | "created_at" | "updated_at">) =>
+      createAdminSource(payload),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
     },
@@ -56,27 +33,13 @@ export function useUpdateAdminSource() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       sourceId,
       updates,
     }: {
       sourceId: string
       updates: Partial<Omit<EventSource, "id" | "created_at">>
-    }) => {
-      if (updates.url !== undefined && updates.source_type !== "manual") {
-        const validation = validateExternalUrl(updates.url)
-        if (!validation.ok) {
-          throw new Error(validation.reason ?? "Invalid source URL")
-        }
-      }
-      const { error } = await supabase.rpc("admin_update_source", {
-        p_source_id: sourceId,
-        p_patch: updates as unknown as Json,
-      })
-      if (error) {
-        throw error
-      }
-    },
+    }) => updateAdminSource(sourceId, updates),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
     },
@@ -87,17 +50,7 @@ export function useTriggerSourceScrape() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ sourceId }: { sourceId: string }) => {
-      const { data, error } = await supabase.functions.invoke("scrape-source", {
-        body: { source_id: sourceId },
-      })
-
-      if (error) {
-        throw error
-      }
-
-      return data
-    },
+    mutationFn: ({ sourceId }: { sourceId: string }) => triggerSourceScrape(sourceId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
       void queryClient.invalidateQueries({ queryKey: qk.admin.sourceQueueSummary })
@@ -108,13 +61,9 @@ export function useTriggerSourceScrape() {
       // The edge function failed before it could update last_status (e.g. BOOT_ERROR).
       // Write 'error' from the client so the card shows Failed instead of staying Pending.
       try {
-        const { error } = await supabase.rpc("admin_update_source", {
-          p_source_id: variables.sourceId,
-          p_patch: { last_status: "error" },
-        })
-        if (error) {
-          console.error("Failed to mark source last_status=error after scrape failure", error)
-        }
+        await markSourceScrapeFailed(variables.sourceId)
+      } catch (error) {
+        console.error("Failed to mark source last_status=error after scrape failure", error)
       } finally {
         void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
       }
@@ -136,10 +85,7 @@ export function useAdminBulkSetProcessingMode() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (mode: EventSource["processing_mode"]) => {
-      const { error } = await supabase.rpc("admin_bulk_set_processing_mode", { p_mode: mode })
-      if (error) throw error
-    },
+    mutationFn: (mode: EventSource["processing_mode"]) => bulkSetProcessingMode(mode),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
     },

@@ -1,12 +1,16 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { adminEventFacetRowSchema, parseRowsWithSentry } from "@/lib/schemas"
-import { supabase } from "@/lib/supabase/client"
 import { sanitizePostgrestLike } from "@/lib/utils"
 import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import { fetchAdminEventsPage } from "@/lib/db/rpc-admin-events"
 import type { AdminEventsCursor, AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
 import type { Event } from "@/lib/types"
+import {
+  batchUpdateAdminEventStatus,
+  deleteAdminEvents,
+  fetchAdminEventFacets,
+  updateAdminEventStatus,
+} from "@/features/admin/api/events"
 
 export interface AdminEventsInfiniteData {
   events: Event[]
@@ -116,17 +120,7 @@ export type { AdminEventFacetRow } from "@/lib/schemas"
 export function useAdminEventFacets(keyword: string) {
   return useQuery({
     queryKey: qk.admin.events.facets(keyword),
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("admin_event_facets", {
-        p_keyword: sanitizePostgrestLike(keyword) || undefined,
-      })
-      if (error) {
-        throw error
-      }
-      return parseRowsWithSentry(adminEventFacetRowSchema, data, {
-        area: "admin.events.facets",
-      })
-    },
+    queryFn: () => fetchAdminEventFacets(keyword),
   })
 }
 
@@ -134,7 +128,7 @@ export function useUpdateAdminEventStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       eventId,
       status,
       reason,
@@ -142,17 +136,7 @@ export function useUpdateAdminEventStatus() {
       eventId: string
       status: Event["status"]
       reason?: string | null
-    }) => {
-      const { error } = await supabase.rpc("admin_update_event_status", {
-        p_event_id: eventId,
-        p_status: status,
-        p_reason: reason ?? null,
-      })
-      if (error) {
-        throw error
-      }
-      return status
-    },
+    }) => updateAdminEventStatus(eventId, status, reason ?? null),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.all })
@@ -165,16 +149,8 @@ export function useBatchUpdateAdminEventStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ eventIds, status }: { eventIds: string[]; status: Event["status"] }) => {
-      const { data, error } = await supabase.rpc("admin_batch_set_event_status", {
-        p_event_ids: eventIds,
-        p_status: status,
-      })
-      if (error) {
-        throw error
-      }
-      return { count: data ?? 0, status }
-    },
+    mutationFn: ({ eventIds, status }: { eventIds: string[]; status: Event["status"] }) =>
+      batchUpdateAdminEventStatus(eventIds, status),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.all })
@@ -187,15 +163,7 @@ export function useDeleteAdminEvents() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (eventIds: string[]) => {
-      const { data, error } = await supabase.rpc("admin_delete_events", {
-        p_event_ids: eventIds,
-      })
-      if (error) {
-        throw error
-      }
-      return { count: data ?? 0 }
-    },
+    mutationFn: (eventIds: string[]) => deleteAdminEvents(eventIds),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.all })
