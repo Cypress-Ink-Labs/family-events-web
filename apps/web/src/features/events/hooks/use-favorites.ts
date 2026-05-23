@@ -2,8 +2,8 @@ import { useRef } from "react"
 import type { QueryClient } from "@tanstack/react-query"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase/client"
 import type { Favorite } from "@/lib/types"
+import { addFavorite, listFavoritesForUser, removeFavorite } from "@/features/events/api/favorites"
 import {
   applyFavoriteStateToEventProjectionCaches,
   buildOptimisticFavorites,
@@ -14,21 +14,8 @@ export function useFavorites(userId: string | undefined) {
   return useQuery({
     queryKey: qk.favorites.byUser(userId),
     queryFn: async (): Promise<Favorite[]> => {
-      if (!userId) {
-        return []
-      }
-
-      const { data, error } = await supabase
-        .from("favorites")
-        .select("id, user_id, event_id, created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-
-      if (error) {
-        throw error
-      }
-
-      return data ?? []
+      if (!userId) return []
+      return listFavoritesForUser(userId)
     },
     enabled: Boolean(userId),
   })
@@ -112,23 +99,10 @@ export function useToggleFavorite(userId: string | undefined) {
 
       try {
         if (isFavorited) {
-          const { error } = await supabase
-            .from("favorites")
-            .delete()
-            .eq("user_id", userId)
-            .eq("event_id", eventId)
-          if (error) {
-            throw error
-          }
+          await removeFavorite(userId, eventId)
           return false
         }
-
-        const { error } = await supabase
-          .from("favorites")
-          .insert({ user_id: userId, event_id: eventId })
-        if (error) {
-          throw error
-        }
+        await addFavorite(userId, eventId)
         return true
       } finally {
         inFlightEventIdsRef.current.delete(eventId)

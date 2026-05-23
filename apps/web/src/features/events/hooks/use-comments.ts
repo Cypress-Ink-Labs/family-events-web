@@ -1,9 +1,8 @@
 import { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase/client"
 import { subscribeToCommentChanges } from "@/features/events/lib/comments-channel-registry"
-import type { CommentWithProfile } from "@/lib/types"
+import { addEventComment, listEventComments } from "@/features/events/api/comments"
 
 export function useComments(eventId: string | undefined) {
   const queryClient = useQueryClient()
@@ -21,25 +20,9 @@ export function useComments(eventId: string | undefined) {
 
   return useQuery({
     queryKey: qk.comments.byEvent(eventId),
-    queryFn: async (): Promise<CommentWithProfile[]> => {
-      if (!eventId) {
-        return []
-      }
-
-      const { data, error } = await supabase
-        .from("comments")
-        .select(
-          "id, user_id, event_id, body, is_approved, is_flagged, created_at, updated_at, user_profiles(display_name, avatar_url)"
-        )
-        .eq("event_id", eventId)
-        .eq("is_approved", true)
-        .order("created_at", { ascending: false })
-
-      if (error) {
-        throw error
-      }
-
-      return (data ?? []) as CommentWithProfile[]
+    queryFn: async () => {
+      if (!eventId) return []
+      return listEventComments(eventId)
     },
     enabled: Boolean(eventId),
   })
@@ -54,28 +37,11 @@ export function useAddComment(userId: string | undefined) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ eventId, body }: AddCommentInput) => {
+    mutationFn: ({ eventId, body }: AddCommentInput) => {
       if (!userId) {
         throw new Error("You must be signed in to comment.")
       }
-
-      const { data, error } = await supabase
-        .from("comments")
-        .insert({
-          user_id: userId,
-          event_id: eventId,
-          body,
-          is_approved: true,
-          is_flagged: false,
-        })
-        .select("id, user_id, event_id, body, is_approved, is_flagged, created_at, updated_at")
-        .single()
-
-      if (error) {
-        throw error
-      }
-
-      return data
+      return addEventComment({ userId, eventId, body })
     },
     onSuccess: (_comment, variables) => {
       void queryClient.invalidateQueries({ queryKey: qk.comments.byEvent(variables.eventId) })
