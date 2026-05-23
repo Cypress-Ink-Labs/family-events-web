@@ -16,6 +16,7 @@ export function useAdminSources() {
           "id, name, url, source_type, extraction_mode, processing_mode, city_id, is_active, auto_approve, scrape_interval_hours, last_scraped_at, last_status, error_count, notes, created_at, updated_at"
         )
         .order("created_at", { ascending: false })
+        .order("id")
 
       if (error) {
         throw error
