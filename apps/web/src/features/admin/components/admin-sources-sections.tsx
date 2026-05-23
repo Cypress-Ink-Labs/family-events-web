@@ -75,10 +75,7 @@ function formatLastRunCompact(date: Date): string {
   return format(date, "M/d/yy")
 }
 
-const SOURCE_HEALTH_BADGE: Record<
-  SourceHealthStatus,
-  { icon: ElementType; label: string }
-> = {
+const SOURCE_HEALTH_BADGE: Record<SourceHealthStatus, { icon: ElementType; label: string }> = {
   success: { icon: CheckCircle, label: "Healthy" },
   error: { icon: XCircle, label: "Error" },
   partial: { icon: AlertTriangle, label: "Partial" },

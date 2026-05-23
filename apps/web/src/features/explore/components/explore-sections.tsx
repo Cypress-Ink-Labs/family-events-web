@@ -382,7 +382,9 @@ export function ExploreEventsSection({
   isEventsError,
   onClearAllFilters,
 }: ExploreEventsSectionProps) {
-  const activeCategoryLabel = EXPLORE_CATEGORIES.find((category) => category.slug === activeCategory)?.label
+  const activeCategoryLabel = EXPLORE_CATEGORIES.find(
+    (category) => category.slug === activeCategory
+  )?.label
 
   return (
     <section>
