@@ -96,7 +96,7 @@ test("web runtime Supabase SDK imports stay behind the web adapter", () => {
     "apps",
     "web",
     "src",
-    "lib",
+    "infrastructure",
     "supabase",
     "client.ts",
   )

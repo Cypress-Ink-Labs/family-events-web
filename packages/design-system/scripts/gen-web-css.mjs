@@ -9,9 +9,23 @@ function emitColors(mode, palette) {
   for (const [name, t] of Object.entries(palette)) {
     lines.push(`  --color-${name}: oklch(${t.oklch});`)
   }
-  return mode === "light"
-    ? `@theme inline {\n${lines.join("\n")}\n}`
-    : `.dark {\n${lines.join("\n")}\n}`
+  // Light values live on :root so .dark can override them at runtime. The
+  // dark block has the same shape so the cascade flips every token at once.
+  const selector = mode === "light" ? ":root" : ".dark"
+  return `${selector} {\n${lines.join("\n")}\n}`
+}
+
+function emitThemeColorBindings(palette) {
+  // Tailwind v4: @theme inline { --color-X: var(--color-X) } makes the utility
+  // class output `background-color: var(--color-X)` — so :root vs .dark
+  // cascade controls dark-mode swaps. Without this re-binding, `@theme inline`
+  // bakes the literal oklch() value into the utility CSS and dark-mode
+  // overrides never apply (the bug that produced unreadable text on selected
+  // map-list rows: bg-accent-primary-soft stayed pastel in dark mode).
+  const lines = Object.keys(palette).map(
+    (name) => `  --color-${name}: var(--color-${name});`
+  )
+  return `@theme inline {\n${lines.join("\n")}\n}`
 }
 
 function emitSpace(space) {
@@ -86,9 +100,11 @@ export function buildCss(tokens) {
   return [
     GENERATED_BANNER,
     "",
-    "/* @theme inline binds these to Tailwind utilities (bg-*, text-*, font-*). */",
-    "/* All names are v2-specific to avoid colliding with shadcn / Tailwind defaults. */",
+    "/* Light + dark token values. .dark overrides :root so Tailwind utilities */",
+    "/* bound below via `var(--color-*)` flip on dark-mode class. */",
     emitColors("light", tokens.color.light),
+    "",
+    emitThemeColorBindings(tokens.color.light),
     "",
     "@theme inline {",
     emitTypeFamiliesForTheme(tokens.typography.family),

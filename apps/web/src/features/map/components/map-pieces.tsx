@@ -157,7 +157,7 @@ export function EventListItem({
       onClick={() => onSelect(event)}
       className={`w-full text-left rounded-lg border px-3 py-2.5 transition-all ${
         active
-          ? "border-accent-primary bg-accent-primary-soft shadow-sm"
+          ? "border-accent-primary bg-accent-primary-soft text-accent-primary shadow-sm"
           : "border-border/60 hover:border-accent-primary/40 hover:bg-surface-raised/50"
       }`}
     >
@@ -166,13 +166,23 @@ export function EventListItem({
           <EventPin bucket={bucket} highlighted={false} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground leading-tight truncate">
+          <p
+            className={`text-sm font-semibold leading-tight truncate ${
+              active ? "text-accent-primary" : "text-foreground"
+            }`}
+          >
             {event.title}
           </p>
           {event.venue_name && (
-            <p className="text-xs text-muted-foreground truncate">{event.venue_name}</p>
+            <p
+              className={`text-xs truncate ${
+                active ? "text-accent-primary/80" : "text-muted-foreground"
+              }`}
+            >
+              {event.venue_name}
+            </p>
           )}
-          <p className="text-xs text-muted-foreground">
+          <p className={`text-xs ${active ? "text-accent-primary/80" : "text-muted-foreground"}`}>
             <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
             {distance !== null && <> · {formatDistance(distance)}</>}
           </p>

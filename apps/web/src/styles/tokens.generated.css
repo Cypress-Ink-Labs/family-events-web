@@ -4,9 +4,9 @@
  * Regenerate: pnpm --filter @family-events/design-system build
  */
 
-/* @theme inline binds these to Tailwind utilities (bg-*, text-*, font-*). */
-/* All names are v2-specific to avoid colliding with shadcn / Tailwind defaults. */
-@theme inline {
+/* Light + dark token values. .dark overrides :root so Tailwind utilities */
+/* bound below via `var(--color-*)` flip on dark-mode class. */
+:root {
   --color-bg: oklch(97.5% 0.018 88);
   --color-surface: oklch(100% 0 0);
   --color-surface-raised: oklch(94.5% 0.025 88);
@@ -25,6 +25,27 @@
   --color-warning: oklch(60% 0.13 70);
   --color-error: oklch(55% 0.16 25);
   --color-info: oklch(56% 0.1 245);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-accent-primary: var(--color-accent-primary);
+  --color-accent-primary-soft: var(--color-accent-primary-soft);
+  --color-accent-secondary: var(--color-accent-secondary);
+  --color-accent-secondary-soft: var(--color-accent-secondary-soft);
+  --color-accent-tertiary: var(--color-accent-tertiary);
+  --color-accent-tertiary-soft: var(--color-accent-tertiary-soft);
+  --color-accent-kid: var(--color-accent-kid);
+  --color-accent-kid-soft: var(--color-accent-kid-soft);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --color-info: var(--color-info);
 }
 
 @theme inline {

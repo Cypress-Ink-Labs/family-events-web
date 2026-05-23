@@ -11,7 +11,7 @@ const webBridgePath = path.join(
   "apps",
   "web",
   "src",
-  "lib",
+  "infrastructure",
   "smoke",
   "workspace-packages.ts",
 )
