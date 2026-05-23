@@ -284,41 +284,48 @@ function AdminVirtualEventRow({
             <span>{event.venue_name ?? "No venue"}</span>
           </div>
 
-          <div className="flex items-center gap-3 flex-wrap text-xs">
-            <span className="inline-flex items-center gap-1 text-muted-foreground">
-              <Bot className="size-3" />
-              <span>
-                {providerLabel}
-                {event.ai_tag_model ? ` • ${event.ai_tag_model}` : ""}
-              </span>
-            </span>
-            <span className="inline-flex items-center gap-1 text-muted-foreground">
-              <Tag className="size-3" />
-              {aiConfidence ? `Confidence ${aiConfidence}` : "Confidence n/a"}
-            </span>
-            <span
-              className={cn(
-                "rounded-full border border-border px-2 py-0.5 text-[10px]",
-                event.ai_tag_status === "success" ? "text-emerald-700" : "text-amber-600"
-              )}
-            >
-              AI {event.ai_tag_status ?? "pending"}
-            </span>
-            {llmBadge ? (
-              <span
-                className={cn("rounded-full border px-2 py-0.5 text-[10px]", llmBadge.className)}
-                title={event.llm_review_reason ?? undefined}
-              >
-                {llmBadge.text}
-              </span>
-            ) : null}
-          </div>
-          {event.llm_review_status === "failed" ||
-          event.llm_review_decision === "needs_admin_review" ? (
-            <p className="text-[11px] text-muted-foreground line-clamp-1">
-              {event.llm_review_error ?? event.llm_review_reason ?? "Routed to admin review"}
-            </p>
-          ) : null}
+          {event.status === "draft" && (
+            <>
+              <div className="flex items-center gap-3 flex-wrap text-xs">
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <Bot className="size-3" />
+                  <span>
+                    {providerLabel}
+                    {event.ai_tag_model ? ` • ${event.ai_tag_model}` : ""}
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <Tag className="size-3" />
+                  {aiConfidence ? `Confidence ${aiConfidence}` : "Confidence n/a"}
+                </span>
+                <span
+                  className={cn(
+                    "rounded-full border border-border px-2 py-0.5 text-[10px]",
+                    event.ai_tag_status === "success" ? "text-emerald-700" : "text-amber-600"
+                  )}
+                >
+                  AI {event.ai_tag_status ?? "pending"}
+                </span>
+                {llmBadge ? (
+                  <span
+                    className={cn(
+                      "rounded-full border px-2 py-0.5 text-[10px]",
+                      llmBadge.className
+                    )}
+                    title={event.llm_review_reason ?? undefined}
+                  >
+                    {llmBadge.text}
+                  </span>
+                ) : null}
+              </div>
+              {event.llm_review_status === "failed" ||
+              event.llm_review_decision === "needs_admin_review" ? (
+                <p className="text-[11px] text-muted-foreground line-clamp-1">
+                  {event.llm_review_error ?? event.llm_review_reason ?? "Routed to admin review"}
+                </p>
+              ) : null}
+            </>
+          )}
 
           <div className="flex items-center gap-1.5">
             <AgeRangeBadge ageMin={event.age_min} ageMax={event.age_max} />
