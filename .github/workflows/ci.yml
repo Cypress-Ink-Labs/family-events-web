@@ -489,26 +489,7 @@ jobs:
       - name: Database RLS and RPC tests
         env:
           DB_URL: ${{ steps.supabase.outputs.db_url }}
-        run: |
-          set -euo pipefail
-          for test_file in \
-            supabase/tests/rls_anon_read.sql \
-            supabase/tests/rls_public_events_view.sql \
-            supabase/tests/rls_access_expiry.sql \
-            supabase/tests/rls_privilege_escalation.sql \
-            supabase/tests/cron_rpc_security.sql \
-            supabase/tests/cron_toggle.sql \
-            supabase/tests/search_events_full_text.sql \
-            supabase/tests/events_cursor_pagination.sql \
-            supabase/tests/admin_events_rpc.sql \
-            supabase/tests/role_smoke.sql \
-            supabase/tests/admin_db_health.sql \
-            supabase/tests/trace_retention.sql \
-            supabase/tests/events_enriched_parity.sql \
-            supabase/tests/reference_data.sql
-          do
-            psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$test_file"
-          done
+        run: bash scripts/test.sh
 
       - name: E2E
         env:
