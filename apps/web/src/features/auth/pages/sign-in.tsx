@@ -1,10 +1,6 @@
 import { useEffect, useReducer } from "react"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
-import { Ticket } from "lucide-react"
 import { useAuth } from "@/features/auth/stores/auth-store"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { resolveInAppRedirectTarget } from "@/lib/access-control"
 import { resolveInviteRequirement, useInvitesRequired } from "@/features/auth/hooks/use-invites"
@@ -13,7 +9,10 @@ import {
   redeemInviteOrToast,
 } from "@/features/auth/lib/auth-closed-beta"
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
-import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
+import { MagicLinkForm } from "@/features/auth/components/sign-in/magic-link-form"
+import { MagicLinkSentPanel } from "@/features/auth/components/sign-in/magic-link-sent"
+import { OAuthButtons } from "@/features/auth/components/sign-in/oauth-buttons"
+import { PasswordSignInForm } from "@/features/auth/components/sign-in/password-form"
 import { notifyError, notifySuccess, toast } from "@/shared/utils/toast"
 import { AUTH_ERROR_MESSAGES, OAUTH_CALLBACK_FAILED_FLAG } from "@/features/auth/constants/messages"
 
@@ -115,9 +114,7 @@ export function SignInPage() {
       const ok = await redeemInviteOrToast(inviteCode, email, (loading) => {
         setState({ loading })
       })
-      if (!ok) {
-        return
-      }
+      if (!ok) return
     } else {
       setState({ loading: true })
     }
@@ -160,152 +157,38 @@ export function SignInPage() {
         <Card className="border-border/60">
           <CardContent className="p-6">
             {mode === "magic-sent" ? (
-              <div className="space-y-3 text-sm">
-                <p className="text-foreground font-medium">Link sent</p>
-                <p className="text-muted-foreground">
-                  If an account exists (or can be created) for{" "}
-                  <span className="font-medium">{email}</span>, the link is on its way. It expires
-                  in 1 hour.
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="min-h-[44px] w-full"
-                  onClick={() => {
-                    setState({ mode: "password", inviteCode: "" })
-                  }}
-                >
-                  Back to sign-in
-                </Button>
-              </div>
+              <MagicLinkSentPanel
+                email={email}
+                onBack={() => setState({ mode: "password", inviteCode: "" })}
+              />
             ) : mode === "magic" ? (
-              <form onSubmit={handleMagicLinkSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setState({ email: e.target.value })}
-                    placeholder="you@example.com"
-                    required
-                  />
-                </div>
-                {requiresInvite && (
-                  <div className="space-y-1.5">
-                    <Label htmlFor="invite-code" className="flex items-center gap-1.5">
-                      <Ticket className="size-3.5 text-primary" />
-                      Invite code
-                    </Label>
-                    <Input
-                      id="invite-code"
-                      type="text"
-                      value={inviteCode}
-                      onChange={(e) => setState({ inviteCode: e.target.value.toUpperCase() })}
-                      placeholder="ABCD2345"
-                      className="font-mono tracking-widest uppercase"
-                      autoComplete="off"
-                      required
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Required while we're in closed beta.
-                    </p>
-                  </div>
-                )}
-                <Button
-                  type="submit"
-                  className="min-h-[44px] w-full"
-                  disabled={loading || inviteCheckLoading}
-                >
-                  {loading ? "Sending..." : "Send magic link"}
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => setState({ mode: "password" })}
-                  className="block w-full text-center text-xs text-muted-foreground hover:text-primary hover:underline"
-                >
-                  Use password instead
-                </button>
-              </form>
+              <MagicLinkForm
+                email={email}
+                inviteCode={inviteCode}
+                loading={loading}
+                inviteCheckLoading={inviteCheckLoading}
+                requiresInvite={requiresInvite}
+                onEmailChange={(value) => setState({ email: value })}
+                onInviteCodeChange={(value) => setState({ inviteCode: value })}
+                onSubmit={handleMagicLinkSubmit}
+                onSwitchToPassword={() => setState({ mode: "password" })}
+              />
             ) : (
-              <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setState({ email: e.target.value })}
-                    placeholder="you@example.com"
-                    required
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Link
-                      to="/forgot-password"
-                      className="text-xs text-muted-foreground hover:text-primary hover:underline"
-                    >
-                      Forgot?
-                    </Link>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setState({ password: e.target.value })}
-                    placeholder="••••••••"
-                    required
-                  />
-                </div>
-                <Button type="submit" className="min-h-[44px] w-full" disabled={loading}>
-                  {loading ? "Signing in..." : "Sign In"}
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => setState({ mode: "magic" })}
-                  className="block w-full text-center text-xs text-muted-foreground hover:text-primary hover:underline"
-                >
-                  Email me a link instead
-                </button>
-              </form>
+              <PasswordSignInForm
+                email={email}
+                password={password}
+                loading={loading}
+                onEmailChange={(value) => setState({ email: value })}
+                onPasswordChange={(value) => setState({ password: value })}
+                onSubmit={handlePasswordSubmit}
+                onSwitchToMagic={() => setState({ mode: "magic" })}
+              />
             )}
             {mode !== "magic-sent" && !requiresInvite && (
-              <>
-                <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-border/60" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="min-h-[44px] gap-2"
-                    disabled={loading || inviteCheckLoading}
-                    onClick={() => handleProviderSignIn("apple")}
-                  >
-                    <AppleIcon className="size-4" />
-                    Apple
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="min-h-[44px] gap-2"
-                    disabled={loading || inviteCheckLoading}
-                    onClick={() => handleProviderSignIn("google")}
-                  >
-                    <GoogleIcon className="size-4" />
-                    Google
-                  </Button>
-                </div>
-              </>
+              <OAuthButtons
+                disabled={loading || inviteCheckLoading}
+                onProviderClick={handleProviderSignIn}
+              />
             )}
           </CardContent>
         </Card>
