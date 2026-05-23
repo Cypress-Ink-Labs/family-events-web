@@ -1,5 +1,5 @@
 import { toast } from "sonner"
-import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { redeemInvite } from "@/features/auth/hooks/use-invites"
 
 type ProviderInviteMode = "sign-in" | "sign-up"

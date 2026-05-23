@@ -1,7 +1,7 @@
 import { Check, Pencil, X, XCircle } from "lucide-react"
 import { Link } from "react-router-dom"
 import type { EventAiTraceWithParsed, EventWithDetails, Tag as EventTag } from "@/lib/types"
-import { safeImageSrc } from "@/lib/platform/safe-url"
+import { safeImageSrc } from "@/infrastructure/safe-url"
 import { formatEventPrice } from "@/lib/utils"
 import { cleanDescription } from "@family-events/shared"
 import { Button } from "@/components/ui/button"

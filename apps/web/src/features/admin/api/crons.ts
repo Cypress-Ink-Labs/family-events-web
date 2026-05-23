@@ -1,5 +1,5 @@
 import { ADMIN_CRON_HISTORY_LIMIT, ADMIN_CRON_RPCS } from "@/features/admin/constants/cron"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { CronJob, CronRun, RailwayCronJob, RailwayCronRun } from "@/features/admin/types"
 
 export async function listCronJobs(): Promise<CronJob[]> {

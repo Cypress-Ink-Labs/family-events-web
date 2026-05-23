@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { listTags } from "@/features/events/api/tags"
 
 export const TAGS_QUERY_KEY = qk.tags.all

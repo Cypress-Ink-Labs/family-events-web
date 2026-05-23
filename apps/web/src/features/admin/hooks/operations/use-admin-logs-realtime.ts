@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { subscribeToAdminLogTableChanges } from "@/features/admin/lib/admin-logs-channel-registry"
 
 export function useAdminLogsRealtime() {

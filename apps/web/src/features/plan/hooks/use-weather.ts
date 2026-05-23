@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
-import { Sentry } from "@/lib/platform/sentry"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { Sentry } from "@/infrastructure/observability/sentry"
 
 const OPENWEATHER_ENDPOINT = "https://api.openweathermap.org/data/2.5/weather"
 

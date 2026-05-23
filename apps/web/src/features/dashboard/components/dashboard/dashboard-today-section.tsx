@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ClientDate } from "@/components/client-date"
 import { SmartImage } from "@/components/motion"
-import { safeImageSrc } from "@/lib/platform/safe-url"
+import { safeImageSrc } from "@/infrastructure/safe-url"
 import { cn } from "@/lib/utils"
 import type { EventWithDetails } from "@/lib/types"
 

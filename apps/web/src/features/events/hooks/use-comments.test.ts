@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 
 // Capture useEffect callbacks so we can invoke them synchronously in tests,
 // bypassing the need for a DOM environment or React rendering infrastructure.
@@ -29,7 +29,7 @@ channelObj.on.mockReturnValue(channelObj)
 const mockRemoveChannel = vi.fn().mockResolvedValue("ok")
 const mockChannel = vi.fn().mockReturnValue(channelObj)
 
-vi.mock("@/lib/supabase/client", () => ({
+vi.mock("@/infrastructure/supabase/client", () => ({
   supabase: {
     channel: mockChannel,
     removeChannel: mockRemoveChannel,

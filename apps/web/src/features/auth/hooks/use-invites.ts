@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase/client"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { CreatedInviteCode, InviteCode } from "@/lib/types"
 
 export function resolveInviteRequirement(

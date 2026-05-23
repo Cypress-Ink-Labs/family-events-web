@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import {
   createAdminEvent,
   type CreateAdminEventInput,

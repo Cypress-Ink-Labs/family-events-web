@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { City, Event, EventTag, EventWithDetails, Tag } from "@/lib/types"
 
 interface EventTagWithTag extends EventTag {

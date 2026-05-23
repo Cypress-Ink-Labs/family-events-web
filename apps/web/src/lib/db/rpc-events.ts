@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { Database } from "@/lib/db"
 
 const EVENTS_RPC = {

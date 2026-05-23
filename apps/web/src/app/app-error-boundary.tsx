@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom"
 import { AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Sentry } from "@/lib/platform/sentry"
+import { Sentry } from "@/infrastructure/observability/sentry"
 
 type InnerProps = {
   children: ReactNode

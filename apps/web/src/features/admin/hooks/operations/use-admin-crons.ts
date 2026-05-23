@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ADMIN_CRON_REFETCH_INTERVAL_MS } from "@/features/admin/constants/cron"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import {
   fetchCronHistory,
   fetchRailwayCronHistory,

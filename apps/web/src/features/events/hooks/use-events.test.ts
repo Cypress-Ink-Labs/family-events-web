@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { matchesAgeFilter, normalizeKeyword } from "./use-events"
 import type { Event } from "@/lib/types"
 

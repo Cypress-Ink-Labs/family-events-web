@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { ADMIN_CRON_HISTORY_LIMIT, ADMIN_CRON_RPCS } from "@/features/admin/constants/cron"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 
 const { mockRpc, mockInvalidateQueries, mockUseMutation, mockUseQuery } = vi.hoisted(() => ({
   mockRpc: vi.fn(),
@@ -9,7 +9,7 @@ const { mockRpc, mockInvalidateQueries, mockUseMutation, mockUseQuery } = vi.hoi
   mockUseQuery: vi.fn((options: unknown) => options),
 }))
 
-vi.mock("@/lib/supabase/client", () => ({
+vi.mock("@/infrastructure/supabase/client", () => ({
   supabase: { rpc: mockRpc },
 }))
 

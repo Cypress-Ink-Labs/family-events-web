@@ -1,7 +1,7 @@
 import { validateExternalUrl } from "@family-events/shared"
 import { eventSourceRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import type { Json } from "@/lib/db"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { EventSource } from "@/lib/types"
 
 const EVENT_SOURCE_COLUMNS =

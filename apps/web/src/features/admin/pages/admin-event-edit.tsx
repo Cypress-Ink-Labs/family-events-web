@@ -20,7 +20,7 @@ import { useAdminSources } from "@/features/admin/hooks/sources/use-admin-source
 import { AdminEventEditForm, type AdminEventEditSubmit } from "../components/admin-event-edit-form"
 import { EventStatusBadge } from "../components/admin-event-edit-sections"
 import { useTags } from "@/features/events/hooks/use-tags"
-import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import type { Event } from "@/lib/types"
 
 export function AdminEventEditPage() {

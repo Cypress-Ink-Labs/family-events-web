@@ -1,7 +1,7 @@
 import { CalendarPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatEventDate, formatEventTime } from "@/shared/utils/dates"
-import { safeHref } from "@/lib/platform/safe-url"
+import { safeHref } from "@/infrastructure/safe-url"
 import { cn } from "@/lib/utils"
 import type { EventWithDetails } from "@/lib/types"
 

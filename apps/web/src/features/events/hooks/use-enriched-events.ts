@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { enrichedEventRowSchema } from "@/lib/schemas"
-import { Sentry } from "@/lib/platform/sentry"
+import { Sentry } from "@/infrastructure/observability/sentry"
 import { fetchEventsPage } from "@/lib/db/rpc-events"
 import type { Event, EventTag, EventWithDetails, Tag } from "@/lib/types"
 

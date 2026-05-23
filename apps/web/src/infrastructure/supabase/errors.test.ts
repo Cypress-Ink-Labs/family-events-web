@@ -7,7 +7,7 @@ const { captureException, setTag, setContext } = vi.hoisted(() => ({
   setContext: vi.fn(),
 }))
 
-vi.mock("@/lib/platform/sentry", () => ({
+vi.mock("@/infrastructure/observability/sentry", () => ({
   Sentry: {
     withScope(callback: (scope: { setTag: typeof setTag; setContext: typeof setContext }) => void) {
       callback({ setTag, setContext })

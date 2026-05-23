@@ -1,5 +1,5 @@
-import { supabase } from "@/lib/supabase/client"
-import { Sentry } from "@/lib/platform/sentry"
+import { supabase } from "@/infrastructure/supabase/client"
+import { Sentry } from "@/infrastructure/observability/sentry"
 import { userAccessRowSchema, userProfileRowSchema } from "@/lib/schemas"
 import type { UserAccess, UserProfile } from "@/lib/types"
 

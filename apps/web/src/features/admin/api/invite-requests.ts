@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { ApprovedInviteRequest, InviteRequest, InviteRequestStatus } from "@/lib/types"
 
 const INVITE_REQUEST_COLUMNS =

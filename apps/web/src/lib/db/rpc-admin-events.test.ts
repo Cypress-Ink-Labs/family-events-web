@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest"
 
 import { fetchAdminEventsPage } from "./rpc-admin-events"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 
-vi.mock("@/lib/supabase/client", () => ({
+vi.mock("@/infrastructure/supabase/client", () => ({
   supabase: {
     rpc: vi.fn(),
   },

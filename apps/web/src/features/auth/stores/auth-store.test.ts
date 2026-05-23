@@ -39,7 +39,7 @@ const {
   }
 })
 
-vi.mock("@/lib/supabase/client", () => ({
+vi.mock("@/infrastructure/supabase/client", () => ({
   supabase: {
     auth: {
       getSession: mockGetSession,
@@ -51,13 +51,13 @@ vi.mock("@/lib/supabase/client", () => ({
   },
 }))
 
-vi.mock("@/lib/platform/query-client", () => ({
+vi.mock("@/infrastructure/queries/query-client", () => ({
   queryClient: {
     clear: mockClearQueryCache,
   },
 }))
 
-vi.mock("@/lib/platform/sentry", () => ({
+vi.mock("@/infrastructure/observability/sentry", () => ({
   Sentry: {
     captureException: mockCaptureException,
   },

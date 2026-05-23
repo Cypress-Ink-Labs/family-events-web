@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { deleteAdminRating, listAdminRatings } from "@/features/admin/api/ratings"
 
 export function useAdminRatings() {

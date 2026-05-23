@@ -1,5 +1,5 @@
-import { supabase } from "@/lib/supabase/client"
-import { createRealtimeChannelRegistry } from "@/lib/realtime/channel-registry"
+import { supabase } from "@/infrastructure/supabase/client"
+import { createRealtimeChannelRegistry } from "@/infrastructure/realtime/channel-registry"
 
 type Listener = () => void
 

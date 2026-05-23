@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { fetchEventAiTrace, updateAdminEventTags } from "@/features/admin/api/event-ai-trace"
 
 export function useAdminEventAiTrace(eventId: string | null) {

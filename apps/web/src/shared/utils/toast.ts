@@ -1,5 +1,5 @@
 import { toast } from "sonner"
-import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 
 export { toast }
 

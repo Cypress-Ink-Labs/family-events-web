@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Heart } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
-import { humanizeSupabaseError } from "@/lib/supabase/errors"
+import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth/stores/auth-store"

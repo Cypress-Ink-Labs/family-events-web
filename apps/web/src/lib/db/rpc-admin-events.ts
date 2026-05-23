@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import { sanitizePostgrestLike } from "@/lib/utils"
 import type { Event, Json } from "@/lib/types"
 

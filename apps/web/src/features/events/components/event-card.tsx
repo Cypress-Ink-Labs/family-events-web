@@ -1,4 +1,4 @@
-import { safeImageSrc } from "@/lib/platform/safe-url"
+import { safeImageSrc } from "@/infrastructure/safe-url"
 import type { EventWithDetails } from "@/lib/types"
 import { CompactEventCard } from "@/features/events/components/event-card/compact-card"
 import { DefaultEventCard } from "@/features/events/components/event-card/default-card"

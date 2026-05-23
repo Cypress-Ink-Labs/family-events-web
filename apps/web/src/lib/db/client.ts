@@ -1,2 +1,2 @@
-export { supabase } from "@/lib/supabase/client"
-export { humanizeSupabaseError } from "@/lib/supabase/errors"
+export { supabase } from "@/infrastructure/supabase/client"
+export { humanizeSupabaseError } from "@/infrastructure/supabase/errors"

@@ -1,6 +1,6 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
-import { emitExpiredAuthToken } from "@/lib/auth-events"
-import { Sentry } from "@/lib/platform/sentry"
+import { emitExpiredAuthToken } from "@/infrastructure/auth/auth-events"
+import { Sentry } from "@/infrastructure/observability/sentry"
 
 // PostgREST PGRST301 = JWTExpired; GoTrue returns "invalid or expired token".
 // Both mean the session is dead.

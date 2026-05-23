@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { Comment } from "@/lib/types"
 import type { AdminComment } from "@/features/admin/types"
 

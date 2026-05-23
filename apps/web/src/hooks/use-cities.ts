@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase/client"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { City } from "@/lib/types"
 
 export const ACTIVE_CITIES_QUERY_KEY = qk.cities.active

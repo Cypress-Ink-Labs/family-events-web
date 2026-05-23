@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import { subscribeToCommentChanges } from "@/features/events/lib/comments-channel-registry"
 import { addEventComment, listEventComments } from "@/features/events/api/comments"
 import { useRealtimeInvalidation } from "@/shared/hooks/use-realtime-invalidation"

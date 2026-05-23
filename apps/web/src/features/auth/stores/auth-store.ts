@@ -2,15 +2,15 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { useShallow } from "zustand/react/shallow"
 import type { Session, User } from "@supabase/supabase-js"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import {
   evaluateAccessState,
   getSessionExpiryTimeoutMs,
   isSessionExpired,
 } from "@/lib/access-control"
-import { subscribeExpiredAuthToken } from "@/lib/auth-events"
-import { queryClient } from "@/lib/platform/query-client"
-import { clearSentryUserContext, setSentryUserContext } from "@/lib/platform/sentry"
+import { subscribeExpiredAuthToken } from "@/infrastructure/auth/auth-events"
+import { queryClient } from "@/infrastructure/queries/query-client"
+import { clearSentryUserContext, setSentryUserContext } from "@/infrastructure/observability/sentry"
 import type { UserAccess, UserProfile } from "@/lib/types"
 import { PROFILE_REFRESH_INTERVAL_MS } from "@/shared/constants/time"
 import { AUTH_ERROR_MESSAGES } from "@/features/auth/constants/messages"

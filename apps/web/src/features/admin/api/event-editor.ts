@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { Event, Json } from "@/lib/types"
 import type { AdminEventPatch } from "@/features/admin/lib/event-editor-mappers"
 

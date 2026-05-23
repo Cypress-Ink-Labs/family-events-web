@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase/client"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { AdminSourceRun } from "@/features/admin/types"
 
 const SOURCE_RUN_ERRORS_MAX_LIMIT = 500

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { qk } from "@/lib/query-keys"
-import { supabase } from "@/lib/supabase/client"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { UserProfile } from "@/lib/types"
 
 interface UpdateProfileInput {

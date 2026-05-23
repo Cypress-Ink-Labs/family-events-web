@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { AdminUserAccessRecord } from "@/features/admin/types"
 
 const ADMIN_USER_ACCESS_COLUMNS =

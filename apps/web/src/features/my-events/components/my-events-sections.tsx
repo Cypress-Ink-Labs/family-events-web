@@ -9,7 +9,7 @@ import { StarRating } from "@/features/events/components/star-rating"
 import { SmartImage, StaggerItem, StaggerList } from "@/components/motion"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
 import type { EventWithDetails } from "@/lib/types"
-import { safeImageSrc } from "@/lib/platform/safe-url"
+import { safeImageSrc } from "@/infrastructure/safe-url"
 import { formatEventPrice } from "@/lib/utils"
 
 export function LoadingRows() {

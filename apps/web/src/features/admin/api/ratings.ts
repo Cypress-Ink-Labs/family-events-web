@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { AdminRating } from "@/features/admin/types"
 
 const ADMIN_RATING_COLUMNS =

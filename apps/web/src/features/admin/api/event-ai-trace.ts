@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import { normalizeAiTrace } from "@/features/admin/types"
 import type { EventAiTrace, EventAiTraceWithParsed, Json } from "@/lib/types"
 

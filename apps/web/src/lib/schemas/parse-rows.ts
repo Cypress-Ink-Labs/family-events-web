@@ -1,5 +1,5 @@
 import type { ZodType, output } from "zod"
-import { Sentry } from "@/lib/platform/sentry"
+import { Sentry } from "@/infrastructure/observability/sentry"
 
 interface ParseRowsOptions {
   /** Sentry `area` tag to scope captured errors. */

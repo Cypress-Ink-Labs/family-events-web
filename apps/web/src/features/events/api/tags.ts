@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/infrastructure/supabase/client"
 import type { Tag } from "@/lib/types"
 
 const TAG_COLUMNS = "id, name, slug, color, category, is_system, created_at"

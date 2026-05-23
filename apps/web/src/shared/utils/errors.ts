@@ -1,4 +1,4 @@
-import { Sentry } from "@/lib/platform/sentry"
+import { Sentry } from "@/infrastructure/observability/sentry"
 
 /**
  * Wraps an async operation in a Sentry-reporting try/catch.

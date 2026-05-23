@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { qk } from "@/lib/query-keys"
+import { qk } from "@/infrastructure/queries/query-keys"
 import type { Favorite } from "@/lib/types"
 import {
   handleToggleFavoriteOnError,

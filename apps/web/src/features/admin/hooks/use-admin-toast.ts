@@ -1,6 +1,6 @@
 import { toast } from "sonner"
 import { useAuth } from "@/features/auth/stores/auth-store"
-import { getAdminErrorDetail, humanizeSupabaseError } from "@/lib/supabase/errors"
+import { getAdminErrorDetail, humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 
 export function useAdminToast() {
   const { isAdmin } = useAuth()
