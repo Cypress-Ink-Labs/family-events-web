@@ -18,9 +18,9 @@ export type MappedEvent = EventWithDetails & { latitude: number; longitude: numb
 // Single-event pin — color + pulse keyed to date urgency.
 // =============================================
 const PIN_COLORS: Record<DateBucket, string> = {
-  today: "oklch(0.62 0.215 12)",
-  soon: "oklch(0.54 0.215 12)",
-  future: "oklch(0.45 0.04 220)",
+  today: "var(--color-accent-secondary)",
+  soon: "var(--color-accent-primary)",
+  future: "var(--color-accent-tertiary)",
 }
 
 interface EventPinProps {
@@ -69,8 +69,15 @@ export function ClusterBubble({ count }: ClusterBubbleProps) {
   const size = count < 10 ? 36 : count < 50 ? 44 : 52
   return (
     <div
-      style={{ width: size, height: size }}
-      className="rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm shadow-lg ring-4 ring-primary/30 transition-transform hover:scale-110"
+      style={{
+        width: size,
+        height: size,
+        background: "var(--color-accent-primary)",
+        color: "var(--color-surface)",
+        boxShadow:
+          "0 10px 20px -10px oklch(0 0 0 / 0.45), 0 0 0 4px color-mix(in oklch, var(--color-accent-primary) 30%, transparent)",
+      }}
+      className="rounded-full flex items-center justify-center font-bold text-sm transition-transform hover:scale-110"
     >
       {count}
     </div>
@@ -105,7 +112,7 @@ export function EventPopup({ event, userLocation }: EventPopupProps) {
     <div className="space-y-1.5 min-w-[220px]">
       <Link
         to={`/events/${event.id}`}
-        className="font-semibold text-sm text-foreground hover:text-primary block leading-tight"
+        className="font-semibold text-sm text-foreground hover:text-accent-primary block leading-tight"
       >
         {event.title}
       </Link>
@@ -135,14 +142,19 @@ export function EventPopup({ event, userLocation }: EventPopupProps) {
         )}
       </div>
       <div className="grid grid-cols-2 gap-1 mt-2">
-        <Button asChild size="sm" className="h-7 text-xs">
+        <Button
+          asChild
+          size="sm"
+          variant="outline"
+          className="h-7 text-xs border-accent-primary bg-accent-primary text-surface hover:bg-accent-primary/90 hover:text-surface focus-visible:border-accent-primary focus-visible:ring-accent-primary/30"
+        >
           <Link to={`/events/${event.id}`}>Details</Link>
         </Button>
         <Button
           asChild
           size="sm"
           variant="outline"
-          className="h-7 text-xs gap-1"
+          className="h-7 text-xs gap-1 border-accent-tertiary/40 text-accent-tertiary hover:bg-accent-tertiary-soft hover:text-accent-tertiary focus-visible:border-accent-tertiary focus-visible:ring-accent-tertiary/30"
           // External link → open in new tab; rel="noopener" for security.
         >
           <a
@@ -189,8 +201,8 @@ export function EventListItem({
       onClick={() => onSelect(event)}
       className={`w-full text-left rounded-lg border px-3 py-2.5 transition-all ${
         active
-          ? "border-primary bg-primary/5 shadow-sm"
-          : "border-border/60 hover:border-primary/40 hover:bg-muted/50"
+          ? "border-accent-primary bg-accent-primary-soft shadow-sm"
+          : "border-border/60 hover:border-accent-primary/40 hover:bg-surface-raised/50"
       }`}
     >
       <div className="flex items-start gap-2">

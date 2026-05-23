@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
+import { cn } from "@/lib/utils"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useMapStyle } from "@/hooks/use-map-style"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -29,7 +30,7 @@ import {
 } from "@/features/map/components/map-pieces"
 import { useClusters, type ClusterOrPoint } from "@/features/map/hooks/use-clusters"
 import { useUserLocation } from "@/features/map/hooks/use-user-location"
-import { dateBucket } from "@/features/map/lib/map-helpers"
+import { dateBucket, isCityCentroidCoordinate } from "@/features/map/lib/map-helpers"
 import type { PointFeature } from "supercluster"
 
 function hasCoords(
@@ -100,7 +101,11 @@ export function MapViewPage() {
     enabled: Boolean(selectedCity?.id),
   })
 
-  const mappable: MappedEvent[] = useMemo(() => events.filter(hasCoords), [events])
+  const eventsWithCoords: MappedEvent[] = useMemo(() => events.filter(hasCoords), [events])
+  const mappable: MappedEvent[] = useMemo(
+    () => eventsWithCoords.filter((event) => !isCityCentroidCoordinate(event, selectedCity)),
+    [eventsWithCoords, selectedCity]
+  )
 
   // Convert events → GeoJSON for supercluster. Memoised so the index isn't
   // rebuilt on every viewport tick.
@@ -208,9 +213,9 @@ export function MapViewPage() {
   return (
     <div className="flex flex-col h-[calc(100dvh-3.5rem-5rem)] md:h-[calc(100dvh-3.5rem-3rem)] overflow-hidden">
       <MapViewHeader
-        eventsCount={events.length}
         isCitiesLoading={isCitiesLoading}
         isEventsLoading={isEventsLoading}
+        unmappedCount={events.length - mappable.length}
         mappableCount={mappable.length}
         mobilePane={mapState.mobilePane}
         selectedCity={selectedCity}
@@ -265,10 +270,10 @@ export function MapViewPage() {
 }
 
 interface MapViewHeaderProps {
-  eventsCount: number
   isCitiesLoading: boolean
   isEventsLoading: boolean
   mappableCount: number
+  unmappedCount: number
   mobilePane: MapViewState["mobilePane"]
   selectedCity: SelectedCity
   showPastEvents: boolean
@@ -335,10 +340,10 @@ interface MapEventPopupProps {
 }
 
 function MapViewHeader({
-  eventsCount,
   isCitiesLoading,
   isEventsLoading,
   mappableCount,
+  unmappedCount,
   mobilePane,
   selectedCity,
   showPastEvents,
@@ -363,16 +368,21 @@ function MapViewHeader({
       <div className="flex items-center gap-2">
         <Button
           size="sm"
-          variant={showPastEvents ? "default" : "outline"}
+          variant="outline"
           onClick={onTogglePastEvents}
-          className="h-8 gap-1.5 text-xs"
+          className={cn(
+            "h-8 gap-1.5 text-xs focus-visible:border-accent-secondary focus-visible:ring-accent-secondary/30",
+            showPastEvents
+              ? "border-accent-secondary bg-accent-secondary text-surface hover:bg-accent-secondary/90 hover:text-surface"
+              : "border-border/70 bg-surface hover:bg-accent-secondary-soft hover:text-accent-secondary"
+          )}
         >
           <Clock className="size-3.5" />
           Past events
         </Button>
-        {eventsCount > mappableCount && (
+        {unmappedCount > 0 && (
           <Badge variant="outline" className="text-xs hidden sm:inline-flex">
-            {eventsCount - mappableCount} missing coords
+            {unmappedCount} need precise coords
           </Badge>
         )}
         <div className="flex md:hidden border border-border/60 rounded-md overflow-hidden">
@@ -398,7 +408,7 @@ function MapPaneToggle({
       type="button"
       onClick={onClick}
       className={`px-3 py-1.5 text-xs font-medium ${
-        isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+        isActive ? "bg-accent-primary text-surface" : "text-muted-foreground"
       }`}
     >
       {label}
@@ -412,12 +422,16 @@ function MapEmptyState() {
       <Card className="border-border/60">
         <CardContent className="p-8 text-center space-y-3">
           <MapPin className="size-8 mx-auto text-muted-foreground" />
-          <h2 className="text-lg font-semibold">No events with locations yet</h2>
+          <h2 className="text-lg font-semibold">No events with precise locations yet</h2>
           <p className="text-sm text-muted-foreground">
-            Published events need latitude + longitude to appear on the map. Try a different city or
-            switch to the explore view.
+            Published events need venue-level latitude + longitude to appear on the map. Try a
+            different city or switch to the explore view.
           </p>
-          <Button asChild>
+          <Button
+            asChild
+            variant="outline"
+            className="border-accent-primary bg-accent-primary text-surface hover:bg-accent-primary/90 hover:text-surface focus-visible:border-accent-primary focus-visible:ring-accent-primary/30"
+          >
             <Link to="/explore">Browse Explore</Link>
           </Button>
         </CardContent>
@@ -520,10 +534,15 @@ function MapLocationControl({ locationStatus, requestLocation }: MapLocationCont
     <div className="absolute top-2 right-2 z-10">
       <Button
         size="sm"
-        variant={locationStatus === "granted" ? "default" : "outline"}
+        variant="outline"
         onClick={requestLocation}
         disabled={locationStatus === "loading"}
-        className="gap-1.5 h-8 text-xs shadow"
+        className={cn(
+          "gap-1.5 h-8 text-xs shadow focus-visible:border-accent-tertiary focus-visible:ring-accent-tertiary/30",
+          locationStatus === "granted"
+            ? "border-accent-tertiary bg-accent-tertiary text-surface hover:bg-accent-tertiary/90 hover:text-surface"
+            : "border-border/70 bg-surface/90 hover:bg-accent-tertiary-soft hover:text-accent-tertiary"
+        )}
       >
         <Locate className="size-3.5" />
         {locationStatus === "loading"

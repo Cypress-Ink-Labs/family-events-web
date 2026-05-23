@@ -3,6 +3,32 @@
 // brand color, anything further out fades back so eyes can triage at-a-glance.
 export type DateBucket = "today" | "soon" | "future"
 
+const CITY_CENTROID_EPSILON = 0.000001
+
+interface CoordinatePair {
+  latitude: number | null | undefined
+  longitude: number | null | undefined
+}
+
+export function isCityCentroidCoordinate(
+  event: CoordinatePair,
+  city: CoordinatePair | null | undefined
+): boolean {
+  if (
+    event.latitude == null ||
+    event.longitude == null ||
+    city?.latitude == null ||
+    city.longitude == null
+  ) {
+    return false
+  }
+
+  return (
+    Math.abs(event.latitude - city.latitude) < CITY_CENTROID_EPSILON &&
+    Math.abs(event.longitude - city.longitude) < CITY_CENTROID_EPSILON
+  )
+}
+
 export function dateBucket(start: string | Date, now: Date = new Date()): DateBucket {
   const startDate = typeof start === "string" ? new Date(start) : start
   const startMs = startDate.getTime()
