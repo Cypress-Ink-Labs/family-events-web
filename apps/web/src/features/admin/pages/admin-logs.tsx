@@ -44,6 +44,9 @@ import {
   useDeleteDeadSourceQueueRow,
   useAdminSourceQueueSummary,
 } from "@/features/admin/hooks/sources/use-admin-source-queue"
+import { useTriggerSourceScrape } from "@/features/admin/hooks/sources/use-admin-sources"
+import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
+import { toast } from "sonner"
 
 type RunStatus = "success" | "error" | "partial" | "running" | "timed_out"
 
@@ -67,6 +70,10 @@ function resolveStatus(status: string, startedAt: string, nowMs: number): RunSta
   if (normalized !== "running") return normalized
   const elapsed = nowMs - Date.parse(startedAt)
   return elapsed > STALE_THRESHOLD_MS ? "timed_out" : "running"
+}
+
+export function canRetrySourceRunStatus(status: RunStatus): boolean {
+  return status === "error" || status === "partial" || status === "timed_out"
 }
 
 const QUEUE_STATUS_LABELS: Record<TagQueueStatus, string> = {
@@ -388,11 +395,30 @@ function ElapsedTimer({ startedAt }: { startedAt: string }) {
 export function AdminLogsPage() {
   useAdminLogsRealtime()
   const { data: logs = [] } = useAdminSourceRuns()
+  const triggerScrape = useTriggerSourceScrape()
+  const { toastError } = useAdminToast()
+  const [retryingSourceIds, setRetryingSourceIds] = useState(() => new Set<string>())
   const nowMs = useNowMs()
   const statusNowMs = nowMs ?? 0
   const hasRunning = logs.some(
     (r) => resolveStatus(r.status, r.started_at, statusNowMs) === "running"
   )
+
+  async function handleRetryRun(sourceId: string) {
+    setRetryingSourceIds((prev) => new Set(prev).add(sourceId))
+    try {
+      await triggerScrape.mutateAsync({ sourceId })
+      toast.success("Retry queued.", { description: "A new ingestion run was started." })
+    } catch (error) {
+      toastError(error, "Failed to retry source run.")
+    } finally {
+      setRetryingSourceIds((prev) => {
+        const next = new Set(prev)
+        next.delete(sourceId)
+        return next
+      })
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -421,6 +447,8 @@ export function AdminLogsPage() {
           const status = STATUS_CONFIG[resolvedStatus]
           const isRunning = resolvedStatus === "running"
           const isTimedOut = resolvedStatus === "timed_out"
+          const canRetry = Boolean(run.source_id) && canRetrySourceRunStatus(resolvedStatus)
+          const isRetrying = run.source_id ? retryingSourceIds.has(run.source_id) : false
           const duration =
             !isRunning && run.completed_at
               ? Math.round((Date.parse(run.completed_at) - Date.parse(run.started_at)) / 1000)
@@ -443,26 +471,40 @@ export function AdminLogsPage() {
                     <status.icon className={cn("size-5", isRunning && "animate-spin")} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-sm text-foreground">
-                        {run.event_sources?.name || "Unknown source"}
-                      </h3>
-                      <Badge
-                        variant={
-                          resolvedStatus === "success"
-                            ? "secondary"
-                            : resolvedStatus === "error" || resolvedStatus === "timed_out"
-                              ? "destructive"
-                              : "outline"
-                        }
-                        className={cn(
-                          "text-[10px]",
-                          isRunning && "border-blue-500/40 text-blue-600",
-                          isTimedOut && "border-amber-500/40 text-amber-600"
-                        )}
-                      >
-                        {status.label}
-                      </Badge>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <h3 className="font-semibold text-sm text-foreground">
+                          {run.event_sources?.name || "Unknown source"}
+                        </h3>
+                        <Badge
+                          variant={
+                            resolvedStatus === "success"
+                              ? "secondary"
+                              : resolvedStatus === "error" || resolvedStatus === "timed_out"
+                                ? "destructive"
+                                : "outline"
+                          }
+                          className={cn(
+                            "text-[10px]",
+                            isRunning && "border-blue-500/40 text-blue-600",
+                            isTimedOut && "border-amber-500/40 text-amber-600"
+                          )}
+                        >
+                          {status.label}
+                        </Badge>
+                      </div>
+                      {canRetry && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="min-h-8 shrink-0 gap-1.5 self-start"
+                          disabled={isRetrying}
+                          onClick={() => run.source_id && void handleRetryRun(run.source_id)}
+                        >
+                          <RefreshCw className={cn("size-3.5", isRetrying && "animate-spin")} />
+                          {isRetrying ? "Retrying..." : "Retry"}
+                        </Button>
+                      )}
                     </div>
                     <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground flex-wrap">
                       <span className="flex items-center gap-1">
