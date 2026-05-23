@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { resolveInAppRedirectTarget } from "@/shared/access-control"
-import { FadeSwap } from "@/components/motion"
+import { FadeSwap } from "@/shared/components/motion"
 
 export function PublicOnlyRoute() {
   const { user, isEnabled, isLoading } = useAuth()

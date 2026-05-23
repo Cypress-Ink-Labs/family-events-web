@@ -1,8 +1,14 @@
 import { Check, Search, SlidersHorizontal, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Switch } from "@/components/ui/switch"
+import { Button } from "@/shared/components/ui/button"
+import { Input } from "@/shared/components/ui/input"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/shared/components/ui/sheet"
+import { Switch } from "@/shared/components/ui/switch"
 import { cn } from "@/shared/utils/format"
 import type { Tag } from "@/shared/types"
 import {

@@ -1,5 +1,5 @@
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/shared/components/ui/label"
+import { Textarea } from "@/shared/components/ui/textarea"
 import { safeImageSrc } from "@/infrastructure/safe-url"
 import {
   AdminEventEditSection,

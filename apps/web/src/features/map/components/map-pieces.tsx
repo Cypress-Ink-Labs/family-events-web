@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
 import { Calendar, MapPin, Navigation } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ClientDate } from "@/components/client-date"
+import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
+import { ClientDate } from "@/shared/components/client-date"
 import type { EventWithDetails } from "@/shared/types"
 import {
   dateBucket,

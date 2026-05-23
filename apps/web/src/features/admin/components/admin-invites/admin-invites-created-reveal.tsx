@@ -1,6 +1,6 @@
 import { Check, Copy, KeyRound } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import type { CreatedInviteCode } from "@/shared/types"
 
 interface AdminInvitesCreatedRevealProps {

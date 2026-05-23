@@ -1,5 +1,5 @@
 import { CalendarDays, List } from "lucide-react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 
 interface PageHeaderProps {
   view: "month" | "week"

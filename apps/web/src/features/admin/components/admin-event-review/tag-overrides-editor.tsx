@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 import { TagBadge } from "@/features/events/components/tag-badge"
 import { cn } from "@/shared/utils/format"
 import type { EventWithDetails, Tag as EventTag } from "@/shared/types"

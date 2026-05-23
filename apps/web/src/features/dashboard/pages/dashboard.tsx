@@ -2,7 +2,7 @@ import { useMemo, useReducer } from "react"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
-import { FadeSwap } from "@/components/motion"
+import { FadeSwap } from "@/shared/components/motion"
 import {
   DashboardCarouselSection,
   DashboardEmptyState,

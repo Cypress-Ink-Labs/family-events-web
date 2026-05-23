@@ -1,15 +1,15 @@
 import { RefreshCw } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+} from "@/shared/components/ui/select"
+import { Switch } from "@/shared/components/ui/switch"
 import { cn } from "@/shared/utils/format"
 import { formatLastRun } from "@/shared/utils/dates"
 import {

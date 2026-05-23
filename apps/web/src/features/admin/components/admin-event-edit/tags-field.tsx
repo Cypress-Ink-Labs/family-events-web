@@ -1,5 +1,5 @@
 import { Controller } from "react-hook-form"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Checkbox } from "@/shared/components/ui/checkbox"
 import { cn } from "@/shared/utils/format"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
 import type { Tag } from "@/shared/types"

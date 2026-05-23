@@ -6,12 +6,12 @@ import {
   CircleCheck as CheckCircle,
   Circle as XCircle,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/shared/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/components/ui/chart"
+import { Progress } from "@/shared/components/ui/progress"
 import { Toolbar } from "@/components/v2"
-import type { ChartConfig } from "@/components/ui/chart"
+import type { ChartConfig } from "@/shared/components/ui/chart"
 
 const chartConfig: ChartConfig = {
   imported: { label: "Imported", color: "var(--chart-1)" },

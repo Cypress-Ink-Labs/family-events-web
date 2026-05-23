@@ -1,9 +1,13 @@
 import { useMemo } from "react"
 import { ChevronDown } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { ClientDate } from "@/components/client-date"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Badge } from "@/shared/components/ui/badge"
+import { Card } from "@/shared/components/ui/card"
+import { ClientDate } from "@/shared/components/client-date"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/shared/components/ui/collapsible"
 import { cn } from "@/shared/utils/format"
 import type { CronRun } from "@/features/admin/types"
 import {

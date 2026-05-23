@@ -1,13 +1,13 @@
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react"
 import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"
+} from "@/shared/components/ui/carousel"
 import { EventCard } from "@/features/events/components/event-card"
 import type { EventWithDetails } from "@/shared/types"
 

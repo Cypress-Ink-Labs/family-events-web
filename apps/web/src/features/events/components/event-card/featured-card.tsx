@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import { Card, CardContent } from "@/components/ui/card"
-import { SmartImage } from "@/components/motion"
+import { Card, CardContent } from "@/shared/components/ui/card"
+import { SmartImage } from "@/shared/components/motion"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { StarRating } from "@/features/events/components/star-rating"
 import { formatEventDate } from "@/shared/utils/dates"

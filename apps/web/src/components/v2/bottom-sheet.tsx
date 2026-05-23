@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/shared/components/ui/sheet"
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useIsMobile } from "@/hooks/use-mobile"
+} from "@/shared/components/ui/dialog"
+import { useIsMobile } from "@/shared/hooks/use-mobile"
 
 type BottomSheetProps = {
   open?: boolean

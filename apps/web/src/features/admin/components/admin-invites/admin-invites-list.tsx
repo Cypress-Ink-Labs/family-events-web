@@ -1,9 +1,9 @@
 import { Inbox, Ticket, Trash2 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { ClientDate } from "@/components/client-date"
-import { useNowMs } from "@/hooks/use-now-ms"
+import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
+import { ClientDate } from "@/shared/components/client-date"
+import { useNowMs } from "@/shared/hooks/use-now-ms"
 import type { InviteCode } from "@/shared/types"
 
 interface AdminInvitesListProps {

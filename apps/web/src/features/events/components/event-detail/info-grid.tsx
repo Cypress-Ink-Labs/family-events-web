@@ -1,5 +1,5 @@
 import type { Clock } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import { FormGrid } from "@/components/v2"
 
 export interface EventDetailInfoItem {

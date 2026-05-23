@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { StyleSpecification } from "maplibre-gl"
-import { useResolvedTheme } from "@/hooks/use-resolved-theme"
+import { useResolvedTheme } from "@/shared/hooks/use-resolved-theme"
 import { LIBERTY_STYLE_URL, getDarkLibertyStyle } from "@/shared/map-styles"
 
 /**

@@ -1,5 +1,5 @@
 import { TriangleAlert as AlertTriangle } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import {
   useAdminDeadTagQueueRows,
   useAdminRetryTagQueue,

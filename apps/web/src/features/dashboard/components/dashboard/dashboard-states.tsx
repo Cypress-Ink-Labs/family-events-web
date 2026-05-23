@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { StaggerItem, StaggerList } from "@/components/motion"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
+import { StaggerItem, StaggerList } from "@/shared/components/motion"
 import { EventCardSkeleton } from "@/features/events/components/event-card"
 
 export function DashboardErrorState() {

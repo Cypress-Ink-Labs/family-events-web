@@ -1,4 +1,4 @@
-import { useBreakpoint } from "@/hooks/use-breakpoint"
+import { useBreakpoint } from "@/shared/hooks/use-breakpoint"
 
 /**
  * Backward-compatible alias kept for existing callers (sidebar, app-layout).

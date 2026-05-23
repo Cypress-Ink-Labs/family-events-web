@@ -1,13 +1,13 @@
 import { Controller } from "react-hook-form"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/shared/components/ui/input"
+import { Label } from "@/shared/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/shared/components/ui/select"
 import { FormGrid } from "@/components/v2"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
 import type { City } from "@/shared/types"

@@ -4,8 +4,8 @@ import { CalendarDays, MapPin } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import type { PublicEventRow } from "@/lib/db"
 import { supabase } from "@/infrastructure/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import { cleanDescription } from "@family-events/shared"
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i

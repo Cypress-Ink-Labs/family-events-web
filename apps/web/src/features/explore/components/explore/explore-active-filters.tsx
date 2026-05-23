@@ -1,7 +1,7 @@
 import { X } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
-import { Badge } from "@/components/ui/badge"
-import { popInVariants } from "@/components/motion"
+import { Badge } from "@/shared/components/ui/badge"
+import { popInVariants } from "@/shared/components/motion"
 import type { Tag } from "@/shared/types"
 
 interface ExploreActiveFiltersProps {

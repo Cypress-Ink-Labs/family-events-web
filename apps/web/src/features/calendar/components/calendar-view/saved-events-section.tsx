@@ -1,8 +1,8 @@
 import { Bookmark } from "lucide-react"
 import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
+import { Button } from "@/shared/components/ui/button"
+import { Separator } from "@/shared/components/ui/separator"
+import { FadeSwap, StaggerItem, StaggerList } from "@/shared/components/motion"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
 import type { EventWithDetails } from "@/shared/types"
 

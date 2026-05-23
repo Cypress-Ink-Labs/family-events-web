@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
 import { ArrowRight, CalendarDays, MapPinned, ShieldCheck, Ticket } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/shared/components/ui/button"
+import { Badge } from "@/shared/components/ui/badge"
+import { Card, CardContent } from "@/shared/components/ui/card"
 
 const HIGHLIGHTS = [
   {

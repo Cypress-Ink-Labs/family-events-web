@@ -1,5 +1,5 @@
 import { Save } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 
 export function AdminEventSaveBar({ isSaving }: { isSaving: boolean }) {
   return (

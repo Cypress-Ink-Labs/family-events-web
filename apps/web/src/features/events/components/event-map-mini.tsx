@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import { Map as MapGL, Marker, NavigationControl, Popup, type MapRef } from "react-map-gl/maplibre"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useMapStyle } from "@/hooks/use-map-style"
+import { useMapStyle } from "@/shared/hooks/use-map-style"
 import { EventPin } from "@/features/events/components/event-pin"
 import { dateBucket } from "@/features/map/lib/map-helpers"
 

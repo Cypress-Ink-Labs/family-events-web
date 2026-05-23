@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { cn } from "@/shared/utils/format"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/shared/components/ui/table"
 
 export type MobileTableColumn<T> = {
   key: string

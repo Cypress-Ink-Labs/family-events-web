@@ -1,11 +1,11 @@
 import { useMemo } from "react"
 import { Check, Flag, Trash2, MessageSquare } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { ClientDate } from "@/components/client-date"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/shared/components/ui/button"
+import { Badge } from "@/shared/components/ui/badge"
+import { Card, CardContent } from "@/shared/components/ui/card"
+import { ClientDate } from "@/shared/components/client-date"
+import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import {
   useAdminComments,
   useDeleteAdminComment,

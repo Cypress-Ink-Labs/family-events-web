@@ -1,7 +1,11 @@
 import { ChevronDown } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Badge } from "@/shared/components/ui/badge"
+import { Card } from "@/shared/components/ui/card"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/shared/components/ui/collapsible"
 import { groupByCity, UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import type { City, EventProcessingMode, EventSource } from "@/shared/types"
 import { EmptyCityCard } from "@/features/admin/components/admin-sources/empty-city-card"

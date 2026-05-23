@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/badge"
-import { ClientDate } from "@/components/client-date"
+import { Badge } from "@/shared/components/ui/badge"
+import { ClientDate } from "@/shared/components/client-date"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
 import type { EventWithDetails } from "@/shared/types"
 

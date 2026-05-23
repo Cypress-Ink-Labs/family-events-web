@@ -2,9 +2,9 @@ import { ArrowLeft, Archive, Check, Trash2, XCircle } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { ClientDate } from "@/components/client-date"
+import { Button } from "@/shared/components/ui/button"
+import { Skeleton } from "@/shared/components/ui/skeleton"
+import { ClientDate } from "@/shared/components/client-date"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import {
   useAdminEventDetail,

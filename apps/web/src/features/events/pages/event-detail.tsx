@@ -5,7 +5,7 @@ import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { safeImageSrc } from "@/infrastructure/safe-url"
 import { formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/shared/components/ui/separator"
 import {
   EventDetailAbout,
   EventDetailBooking,
@@ -23,7 +23,7 @@ import { useToggleCalendarEvent } from "@/features/events/hooks/use-calendar-eve
 import { useComments, useAddComment } from "@/features/events/hooks/use-comments"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useUpsertRating, useUserRating } from "@/features/events/hooks/use-ratings"
-import { FadeSwap } from "@/components/motion"
+import { FadeSwap } from "@/shared/components/motion"
 import { toast } from "sonner"
 
 interface EventDetailUiState {

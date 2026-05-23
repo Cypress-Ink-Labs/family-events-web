@@ -1,5 +1,5 @@
 import { format, formatDistanceToNow } from "date-fns"
-import { useNowMs } from "@/hooks/use-now-ms"
+import { useNowMs } from "@/shared/hooks/use-now-ms"
 
 interface ClientDateProps {
   value: string | number | Date | null | undefined

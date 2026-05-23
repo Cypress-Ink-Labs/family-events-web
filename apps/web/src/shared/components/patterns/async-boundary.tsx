@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/shared/components/ui/card"
 
 /**
  * Standardizes the `isLoading ? <Skeleton /> : isError ? <ErrorCard /> : isEmpty ? <Empty /> : <Content />`

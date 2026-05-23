@@ -27,10 +27,10 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
-} from "@/components/ui/sidebar"
+} from "@/shared/components/ui/sidebar"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { HOME_PATH } from "@/shared/access-control"
-import { FadeSwap, PageTransition } from "@/components/motion"
+import { FadeSwap, PageTransition } from "@/shared/components/motion"
 
 const ADMIN_NAV = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },

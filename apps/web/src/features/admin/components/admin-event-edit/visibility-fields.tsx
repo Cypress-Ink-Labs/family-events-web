@@ -1,13 +1,13 @@
 import { Controller } from "react-hook-form"
-import { Label } from "@/components/ui/label"
+import { Label } from "@/shared/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+} from "@/shared/components/ui/select"
+import { Switch } from "@/shared/components/ui/switch"
 import { FormGrid } from "@/components/v2"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
 import { EVENT_STATUS_OPTIONS } from "@/features/events/constants/status"

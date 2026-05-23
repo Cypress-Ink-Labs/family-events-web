@@ -1,6 +1,6 @@
 import { format, isSameDay, isToday } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 import { cn } from "@/shared/utils/format"
 import type { EventWithDetails } from "@/shared/types"
 import { WEEKDAY_LABELS } from "@/features/calendar/components/calendar-view/_shared"

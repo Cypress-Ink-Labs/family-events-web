@@ -1,5 +1,5 @@
 import type { ElementType, ReactNode } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import { cn } from "@/shared/utils/format"
 
 /**

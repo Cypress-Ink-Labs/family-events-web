@@ -1,15 +1,15 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Bookmark, Clock, Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
+import { Badge } from "@/shared/components/ui/badge"
 import {
   EmptyState,
   EventRow,
   LoadingRows,
 } from "@/features/my-events/components/my-events-sections"
-import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
+import { FadeSwap, StaggerItem, StaggerList } from "@/shared/components/motion"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useFavorites, useToggleFavorite } from "@/features/events/hooks/use-favorites"
 import {

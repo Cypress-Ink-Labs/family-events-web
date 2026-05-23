@@ -1,11 +1,11 @@
 import { MoreHorizontal, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/shared/components/ui/dropdown-menu"
 import { cn } from "@/shared/utils/format"
 import { Toolbar } from "@/components/v2"
 import type { City, EventProcessingMode } from "@/shared/types"

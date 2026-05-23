@@ -14,8 +14,8 @@ import {
   User,
 } from "lucide-react"
 import { cn } from "@/shared/utils/format"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/shared/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar"
 import { HOME_PATH } from "@/shared/access-control"
 import {
   DropdownMenu,
@@ -23,18 +23,18 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/shared/components/ui/dropdown-menu"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/shared/components/ui/select"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
-import { useBreakpoint } from "@/hooks/use-breakpoint"
-import { PageTransition } from "@/components/motion"
+import { useBreakpoint } from "@/shared/hooks/use-breakpoint"
+import { PageTransition } from "@/shared/components/motion"
 
 const PRIMARY_TABS = [
   { to: HOME_PATH, label: "Plan", icon: Home },

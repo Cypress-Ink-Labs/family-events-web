@@ -1,8 +1,8 @@
 import { Component, type ErrorInfo, type ReactNode } from "react"
 import { useLocation } from "react-router-dom"
 import { AlertTriangle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import { Sentry } from "@/infrastructure/observability/sentry"
 
 type InnerProps = {

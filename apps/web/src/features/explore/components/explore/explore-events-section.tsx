@@ -1,8 +1,8 @@
 import { Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
-import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
+import { FadeSwap, StaggerItem, StaggerList } from "@/shared/components/motion"
 import type { EventWithDetails } from "@/shared/types"
 import { EXPLORE_CATEGORIES } from "@/features/explore/constants/categories"
 

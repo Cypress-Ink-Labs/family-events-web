@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
 
 interface OAuthButtonsProps {

@@ -9,9 +9,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { ClientDistanceToNow } from "@/components/client-date"
+} from "@/shared/components/ui/alert-dialog"
+import { Button } from "@/shared/components/ui/button"
+import { ClientDistanceToNow } from "@/shared/components/client-date"
 
 export interface DeadLetterBaseRow {
   id: number

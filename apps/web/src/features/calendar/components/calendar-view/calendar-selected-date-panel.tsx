@@ -1,9 +1,9 @@
 import { format, isToday } from "date-fns"
 import { CalendarDays } from "lucide-react"
 import { Link } from "react-router-dom"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
+import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
+import { FadeSwap, StaggerItem, StaggerList } from "@/shared/components/motion"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
 import type { EventWithDetails } from "@/shared/types"
 

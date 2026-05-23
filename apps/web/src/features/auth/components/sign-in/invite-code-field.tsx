@@ -1,6 +1,6 @@
 import { Ticket } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/shared/components/ui/input"
+import { Label } from "@/shared/components/ui/label"
 
 interface InviteCodeFieldProps {
   value: string

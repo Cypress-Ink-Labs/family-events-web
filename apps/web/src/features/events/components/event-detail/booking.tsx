@@ -1,5 +1,5 @@
 import { CalendarPlus } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/components/ui/button"
 import { formatEventDate, formatEventTime } from "@/shared/utils/dates"
 import { safeHref } from "@/infrastructure/safe-url"
 import { cn } from "@/shared/utils/format"
