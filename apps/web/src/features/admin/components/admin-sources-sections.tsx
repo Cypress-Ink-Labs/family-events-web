@@ -9,7 +9,7 @@ import {
   RefreshCw,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
-import { format, isToday, isThisYear } from "date-fns"
+import { formatLastRun } from "@/shared/utils/dates"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -67,12 +67,6 @@ function getSourceStatus(lastStatus: string | null | undefined): SourceHealthSta
     return lastStatus as SourceHealthStatus
   }
   return "pending"
-}
-
-function formatLastRunCompact(date: Date): string {
-  if (isToday(date)) return format(date, "h:mma").toLowerCase()
-  if (isThisYear(date)) return format(date, "M/d h:mma").toLowerCase()
-  return format(date, "M/d/yy")
 }
 
 const SOURCE_HEALTH_BADGE: Record<SourceHealthStatus, { icon: ElementType; label: string }> = {
@@ -465,7 +459,7 @@ function SourceCard({
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground">
           <StatusIndicator status={safeStatus} />
-          {lastRunDate ? <span>Last run {formatLastRunCompact(lastRunDate)}</span> : null}
+          {lastRunDate ? <span>Last run {formatLastRun(lastRunDate)}</span> : null}
           {source.error_count > 0 ? (
             <span className="text-destructive">{source.error_count} errors</span>
           ) : null}

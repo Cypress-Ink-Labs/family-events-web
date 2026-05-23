@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { Link } from "react-router-dom"
 import { format } from "date-fns"
 import { ArrowLeft, CalendarPlus, Clock, Info, MapPin, Share2 } from "lucide-react"
+import { formatEventDate, formatEventTime } from "@/shared/utils/dates"
 import type { CommentWithProfile, EventWithDetails } from "@/lib/types"
 import { safeHref } from "@/lib/platform/safe-url"
 import { cn } from "@/lib/utils"
@@ -275,11 +276,11 @@ export function EventDetailBooking({
       <div className="space-y-3 mb-5">
         <div className="flex items-center justify-between py-3 border-b border-border/40">
           <span className="text-sm text-muted-foreground">Date</span>
-          <span className="text-sm font-semibold">{format(startDate, "EEE, MMM d")}</span>
+          <span className="text-sm font-semibold">{formatEventDate(startDate)}</span>
         </div>
         <div className="flex items-center justify-between py-3 border-b border-border/40">
           <span className="text-sm text-muted-foreground">Time</span>
-          <span className="text-sm font-semibold">{format(startDate, "h:mm a")}</span>
+          <span className="text-sm font-semibold">{formatEventTime(startDate)}</span>
         </div>
         <div className="flex items-center justify-between py-3">
           <span className="text-sm text-muted-foreground">Attendees</span>

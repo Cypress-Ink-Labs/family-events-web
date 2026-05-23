@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { resolveInAppRedirectTarget } from "@/lib/access-control"
-import { humanizeSupabaseError } from "@/lib/supabase/errors"
 import { resolveInviteRequirement, useInvitesRequired } from "@/features/auth/hooks/use-invites"
 import {
   getProviderInviteBlockMessage,
@@ -15,7 +14,8 @@ import {
 } from "@/features/auth/lib/auth-closed-beta"
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
 import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
-import { toast } from "sonner"
+import { notifyError, notifySuccess, toast } from "@/shared/utils/toast"
+import { AUTH_ERROR_MESSAGES, OAUTH_CALLBACK_FAILED_FLAG } from "@/features/auth/constants/messages"
 
 type Mode = "password" | "magic" | "magic-sent"
 
@@ -58,19 +58,19 @@ export function SignInPage() {
   // see why instead of staring at a silent sign-in form.
   const [searchParams, setSearchParams] = useSearchParams()
   useEffect(() => {
-    if (searchParams.get("oauth_failed") === "1") {
-      toast.error("Couldn't finish sign-in", {
-        description: "The provider redirect didn't complete. Try again, or use a different method.",
+    if (searchParams.get(OAUTH_CALLBACK_FAILED_FLAG) === "1") {
+      toast.error(AUTH_ERROR_MESSAGES.oauthFailedTitle, {
+        description: AUTH_ERROR_MESSAGES.oauthFailedDescription,
       })
       const next = new URLSearchParams(searchParams)
-      next.delete("oauth_failed")
+      next.delete(OAUTH_CALLBACK_FAILED_FLAG)
       setSearchParams(next, { replace: true })
     }
   }, [searchParams, setSearchParams])
 
   useEffect(() => {
     if (!authError) return
-    toast.error("Sign in interrupted", { description: authError })
+    toast.error(AUTH_ERROR_MESSAGES.signInInterruptedTitle, { description: authError })
     clearAuthError()
   }, [authError, clearAuthError])
 
@@ -80,18 +80,18 @@ export function SignInPage() {
     const { error } = await signIn(email, password)
     setState({ loading: false })
     if (error) {
-      toast.error("Sign in failed", {
-        description: humanizeSupabaseError(error, "Please try again."),
+      notifyError(error, AUTH_ERROR_MESSAGES.signInFallback, {
+        title: AUTH_ERROR_MESSAGES.signInFailedTitle,
       })
     } else {
-      toast.success("Welcome back!")
+      notifySuccess(AUTH_ERROR_MESSAGES.welcomeBack)
       navigate(redirectTo, { replace: true })
     }
   }
 
   async function handleProviderSignIn(provider: "apple" | "google") {
     if (requiresInvite) {
-      toast.error("Invite required", {
+      toast.error(AUTH_ERROR_MESSAGES.providerInviteRequiredTitle, {
         description: getProviderInviteBlockMessage("sign-in"),
       })
       return
@@ -100,8 +100,8 @@ export function SignInPage() {
     const { error } = await signInWithProvider(provider, { next: redirectTo })
     if (error) {
       setState({ loading: false })
-      toast.error(`Couldn't sign in with ${provider === "apple" ? "Apple" : "Google"}`, {
-        description: humanizeSupabaseError(error, "Try again or use a different method."),
+      notifyError(error, AUTH_ERROR_MESSAGES.oauthProviderFailedFallback, {
+        title: `Couldn't sign in with ${provider === "apple" ? "Apple" : "Google"}`,
       })
     }
     // On success the browser navigates to the provider; we never reach here.
@@ -125,8 +125,8 @@ export function SignInPage() {
     const { error } = await sendMagicLink(email, true)
     setState({ loading: false })
     if (error) {
-      toast.error("Couldn't send link", {
-        description: humanizeSupabaseError(error, "Try again in a minute."),
+      notifyError(error, AUTH_ERROR_MESSAGES.magicLinkSendFailedFallback, {
+        title: AUTH_ERROR_MESSAGES.magicLinkSendFailedTitle,
       })
       return
     }

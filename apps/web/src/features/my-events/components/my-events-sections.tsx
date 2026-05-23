@@ -1,7 +1,7 @@
 import type { ElementType } from "react"
 import { Link } from "react-router-dom"
-import { format } from "date-fns"
 import { Clock, Trash2 } from "lucide-react"
+import { formatEventDateTime } from "@/shared/utils/dates"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -84,7 +84,7 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
 
             <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
               <Clock className="size-3" />
-              <span>{format(startDate, "EEE, MMM d · h:mm a")}</span>
+              <span>{formatEventDateTime(startDate)}</span>
             </div>
 
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">

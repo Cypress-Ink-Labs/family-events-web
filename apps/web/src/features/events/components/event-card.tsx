@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { MapPin, Clock } from "lucide-react"
-import { format } from "date-fns"
+import { formatEventDate, formatEventDateTime, formatEventDayHour } from "@/shared/utils/dates"
 import { safeImageSrc } from "@/lib/platform/safe-url"
 import { cn, formatEventPrice } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
@@ -51,7 +51,7 @@ export function EventCard({
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-foreground truncate">{event.title}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {format(startDate, "EEE, MMM d")}
+              {formatEventDate(startDate)}
               {event.venue_name ? ` · ${event.venue_name}` : ""}
             </p>
             <div className="flex items-center gap-1.5 mt-1">
@@ -131,7 +131,7 @@ export function EventCard({
             </h3>
             <div className="flex items-center gap-1.5 mt-1.5 text-muted-foreground text-xs">
               <Clock className="size-3" />
-              <span>{format(startDate, "EEE, MMM d · h:mm a")}</span>
+              <span>{formatEventDateTime(startDate)}</span>
             </div>
             {event.venue_name && (
               <div className="flex items-center gap-1.5 mt-1 text-muted-foreground text-xs">
@@ -194,7 +194,7 @@ export function EventCard({
                 {event.title}
               </p>
               <p className="text-white/80 text-xs mt-0.5">
-                {format(startDate, "EEE, MMM d")}
+                {formatEventDate(startDate)}
                 {event.venue_name ? ` · ${event.venue_name}` : ""}
               </p>
             </div>
@@ -257,7 +257,7 @@ export function EventCard({
           </h3>
           <div className="flex items-center gap-1 mt-1 text-muted-foreground text-xs">
             <Clock className="size-3" />
-            <span>{format(startDate, "MMM d · h a")}</span>
+            <span>{formatEventDayHour(startDate)}</span>
           </div>
           {event.venue_name && (
             <div className="flex items-center gap-1 mt-0.5 text-muted-foreground text-xs">
