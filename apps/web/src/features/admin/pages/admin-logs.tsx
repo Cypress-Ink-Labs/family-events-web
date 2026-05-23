@@ -34,11 +34,9 @@ import {
   useAdminDeadTagQueueRows,
   useAdminRetryTagQueue,
   useDeleteDeadTagQueueRow,
-  type TagQueueStatus,
   useAdminTagQueueSummary,
 } from "@/features/admin/hooks/operations/use-admin-tag-queue"
 import {
-  type SourceQueueStatus,
   useAdminDeadSourceQueueRows,
   useAdminRetrySourceQueue,
   useDeleteDeadSourceQueueRow,
@@ -48,74 +46,41 @@ import { useTriggerSourceScrape } from "@/features/admin/hooks/sources/use-admin
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
 
-type RunStatus = "success" | "error" | "partial" | "running" | "timed_out"
+import { SOURCE_STALE_THRESHOLD_MS } from "@/shared/constants/time"
+import {
+  QUEUE_STATUS_TONE,
+  RUN_STATUS_TEXT_CLASS,
+  type RunStatus,
+} from "@/shared/constants/status-colors"
+import {
+  SOURCE_QUEUE_ORDER,
+  SOURCE_QUEUE_STATUS_LABELS,
+  TAG_QUEUE_ORDER,
+  TAG_QUEUE_STATUS_LABELS,
+} from "@/features/admin/constants/queue"
 
-const STALE_THRESHOLD_MS = 15 * 60 * 1000
-
-const STATUS_CONFIG: Record<RunStatus, { icon: React.ElementType; color: string; label: string }> =
-  {
-    success: { icon: CheckCircle, color: "text-green-600", label: "Success" },
-    error: { icon: XCircle, color: "text-destructive", label: "Error" },
-    partial: { icon: AlertTriangle, color: "text-amber-500", label: "Partial" },
-    running: { icon: RefreshCw, color: "text-blue-600", label: "Running" },
-    timed_out: { icon: TimerOff, color: "text-amber-500", label: "Timed Out" },
-  }
+const RUN_STATUS_BADGE: Record<RunStatus, { icon: React.ElementType; label: string }> = {
+  success: { icon: CheckCircle, label: "Success" },
+  error: { icon: XCircle, label: "Error" },
+  partial: { icon: AlertTriangle, label: "Partial" },
+  running: { icon: RefreshCw, label: "Running" },
+  timed_out: { icon: TimerOff, label: "Timed Out" },
+}
 
 function isRunStatus(status: string): status is RunStatus {
-  return status in STATUS_CONFIG
+  return status in RUN_STATUS_BADGE
 }
 
 function resolveStatus(status: string, startedAt: string, nowMs: number): RunStatus {
   const normalized: RunStatus = isRunStatus(status) ? status : "error"
   if (normalized !== "running") return normalized
   const elapsed = nowMs - Date.parse(startedAt)
-  return elapsed > STALE_THRESHOLD_MS ? "timed_out" : "running"
+  return elapsed > SOURCE_STALE_THRESHOLD_MS ? "timed_out" : "running"
 }
 
 export function canRetrySourceRunStatus(status: RunStatus): boolean {
   return status === "error" || status === "partial" || status === "timed_out"
 }
-
-const QUEUE_STATUS_LABELS: Record<TagQueueStatus, string> = {
-  pending: "Pending",
-  processing: "Processing",
-  succeeded: "Succeeded",
-  failed: "Legacy Done",
-  dead: "Dead-letter",
-}
-
-const QUEUE_STATUS_TONE: Record<TagQueueStatus, string> = {
-  pending: "border-blue-500/40 bg-blue-500/5 text-blue-700 dark:text-blue-300",
-  processing: "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300",
-  succeeded: "border-green-500/40 bg-green-500/5 text-green-700 dark:text-green-300",
-  failed: "border-border/60 bg-card text-muted-foreground",
-  dead: "border-destructive/40 bg-destructive/5 text-destructive",
-}
-
-const SOURCE_QUEUE_STATUS_LABELS: Record<SourceQueueStatus, string> = {
-  pending: "Pending",
-  processing: "Processing",
-  retrying: "Retrying",
-  succeeded: "Succeeded",
-  dead: "Dead-letter",
-}
-
-const SOURCE_QUEUE_STATUS_TONE: Record<SourceQueueStatus, string> = {
-  pending: "border-blue-500/40 bg-blue-500/5 text-blue-700 dark:text-blue-300",
-  processing: "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300",
-  retrying: "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-300",
-  succeeded: "border-green-500/40 bg-green-500/5 text-green-700 dark:text-green-300",
-  dead: "border-destructive/40 bg-destructive/5 text-destructive",
-}
-
-const SOURCE_QUEUE_ORDER: SourceQueueStatus[] = [
-  "pending",
-  "processing",
-  "retrying",
-  "succeeded",
-  "dead",
-]
-const TAG_QUEUE_ORDER: TagQueueStatus[] = ["pending", "processing", "succeeded", "failed", "dead"]
 
 interface QueueSummaryRow<Status extends string> {
   status: Status
@@ -129,7 +94,7 @@ interface QueueSummaryPanelProps<Status extends string> {
   icon: React.ElementType
   rows: QueueSummaryRow<Status>[]
   isLoading: boolean
-  order: Status[]
+  order: readonly Status[]
   labels: Record<Status, string>
   tones: Record<Status, string>
   deadStatus: Status
@@ -206,7 +171,7 @@ function SourceQueueSummaryPanel() {
       isLoading={isLoading}
       order={SOURCE_QUEUE_ORDER}
       labels={SOURCE_QUEUE_STATUS_LABELS}
-      tones={SOURCE_QUEUE_STATUS_TONE}
+      tones={QUEUE_STATUS_TONE}
       deadStatus="dead"
       activeTimestampKey="oldest_processing_started_at"
     />
@@ -223,7 +188,7 @@ function TagQueueSummaryPanel() {
       rows={rows}
       isLoading={isLoading}
       order={TAG_QUEUE_ORDER}
-      labels={QUEUE_STATUS_LABELS}
+      labels={TAG_QUEUE_STATUS_LABELS}
       tones={QUEUE_STATUS_TONE}
       deadStatus="dead"
     />
@@ -444,7 +409,8 @@ export function AdminLogsPage() {
       <div className="space-y-3">
         {logs.map((run) => {
           const resolvedStatus = resolveStatus(run.status, run.started_at, statusNowMs)
-          const status = STATUS_CONFIG[resolvedStatus]
+          const status = RUN_STATUS_BADGE[resolvedStatus]
+          const statusColor = RUN_STATUS_TEXT_CLASS[resolvedStatus]
           const isRunning = resolvedStatus === "running"
           const isTimedOut = resolvedStatus === "timed_out"
           const canRetry = Boolean(run.source_id) && canRetrySourceRunStatus(resolvedStatus)
@@ -453,7 +419,7 @@ export function AdminLogsPage() {
             !isRunning && run.completed_at
               ? Math.round((Date.parse(run.completed_at) - Date.parse(run.started_at)) / 1000)
               : isTimedOut
-                ? Math.round(STALE_THRESHOLD_MS / 1000)
+                ? Math.round(SOURCE_STALE_THRESHOLD_MS / 1000)
                 : null
 
           return (
@@ -467,7 +433,7 @@ export function AdminLogsPage() {
             >
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className={cn("mt-0.5 shrink-0", status.color)}>
+                  <div className={cn("mt-0.5 shrink-0", statusColor)}>
                     <status.icon className={cn("size-5", isRunning && "animate-spin")} />
                   </div>
                   <div className="flex-1 min-w-0">

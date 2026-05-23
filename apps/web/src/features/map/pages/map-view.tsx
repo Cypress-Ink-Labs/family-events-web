@@ -23,11 +23,11 @@ import type { EventWithDetails } from "@/lib/types"
 import {
   ClusterBubble,
   EventListItem,
-  EventPin,
   EventPopup,
   UserLocationDot,
   type MappedEvent,
 } from "@/features/map/components/map-pieces"
+import { EventPin } from "@/features/events/components/event-pin"
 import { useClusters, type ClusterOrPoint } from "@/features/map/hooks/use-clusters"
 import { useUserLocation } from "@/features/map/hooks/use-user-location"
 import { dateBucket, isCityCentroidCoordinate } from "@/features/map/lib/map-helpers"

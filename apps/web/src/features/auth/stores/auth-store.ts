@@ -12,8 +12,8 @@ import { subscribeExpiredAuthToken } from "@/lib/auth-events"
 import { queryClient } from "@/lib/platform/query-client"
 import { clearSentryUserContext, Sentry, setSentryUserContext } from "@/lib/platform/sentry"
 import type { UserAccess, UserProfile } from "@/lib/types"
-
-const PROFILE_REFRESH_INTERVAL_MS = 5 * 60_000
+import { PROFILE_REFRESH_INTERVAL_MS } from "@/shared/constants/time"
+import { AUTH_ERROR_MESSAGES } from "@/features/auth/constants/messages"
 
 function createAuthStoreRuntime() {
   return {
@@ -37,7 +37,7 @@ function createAuthStoreRuntime() {
 const authRuntime = createAuthStoreRuntime()
 
 function authSyncFailureMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unable to restore your session."
+  return error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.sessionRestoreFailed
 }
 
 interface AuthStore {

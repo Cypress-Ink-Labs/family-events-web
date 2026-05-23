@@ -1,9 +1,9 @@
 import type { DateBucket } from "@/features/map/lib/map-helpers"
 
 const PIN_COLORS: Record<DateBucket, string> = {
-  today: "oklch(0.62 0.215 12)",
-  soon: "oklch(0.54 0.215 12)",
-  future: "oklch(0.45 0.04 220)",
+  today: "var(--color-accent-secondary)",
+  soon: "var(--color-accent-primary)",
+  future: "var(--color-accent-tertiary)",
 }
 
 interface EventPinProps {

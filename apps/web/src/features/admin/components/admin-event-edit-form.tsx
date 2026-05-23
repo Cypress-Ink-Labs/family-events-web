@@ -35,6 +35,7 @@ import {
   FieldError,
   LockedFieldsSummary,
 } from "./admin-event-edit-sections"
+import { EVENT_STATUS_OPTIONS } from "@/features/events/constants/status"
 
 const NONE_VALUE = "__none__"
 
@@ -458,10 +459,11 @@ function AdminEventVisibilityFields({ form }: { form: AdminEventEditorForm }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
+                  {EVENT_STATUS_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             )}

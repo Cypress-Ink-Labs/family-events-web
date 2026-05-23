@@ -1,19 +1,12 @@
 import type { ElementType } from "react"
 import {
-  Calendar,
   ChevronDown,
   Circle as XCircle,
   CircleCheck as CheckCircle,
   Clock,
-  FileText,
-  Globe,
-  HelpCircle,
-  MapPin,
   MoreHorizontal,
   Plus,
   RefreshCw,
-  Rss,
-  Sparkles,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
 import { format, isToday, isThisYear } from "date-fns"
@@ -53,10 +46,10 @@ import {
   ADMIN_SOURCE_TYPE_LABELS,
   ADMIN_SOURCE_TYPE_OPTIONS,
   type AdminSourceType,
-} from "@/features/admin/lib/source-types"
+  getAdminSourceIcon,
+} from "@/features/admin/constants/source-types"
+import { SOURCE_HEALTH_TEXT_CLASS, type SourceHealthStatus } from "@/shared/constants/status-colors"
 import type { City, EventProcessingMode, EventSource, ExtractionMode } from "@/lib/types"
-
-type SourceStatus = "pending" | "success" | "error" | "partial"
 
 export interface SourceDraft {
   name: string
@@ -67,23 +60,11 @@ export interface SourceDraft {
   city_id: string
 }
 
-const SOURCE_TYPE_ICONS: Record<AdminSourceType, ElementType> = {
-  website: Globe,
-  rss: Rss,
-  ical: Calendar,
-  manual: FileText,
-  macaronikid: Sparkles,
-  brec: MapPin,
-}
+const SOURCE_HEALTH_VALUES: SourceHealthStatus[] = ["pending", "success", "error", "partial"]
 
-function getSourceIcon(sourceType: string): ElementType {
-  return SOURCE_TYPE_ICONS[sourceType as AdminSourceType] ?? HelpCircle
-}
-
-function getSourceStatus(lastStatus: string | null | undefined): SourceStatus {
-  const validStatuses: SourceStatus[] = ["pending", "success", "error", "partial"]
-  if (lastStatus && validStatuses.includes(lastStatus as SourceStatus)) {
-    return lastStatus as SourceStatus
+function getSourceStatus(lastStatus: string | null | undefined): SourceHealthStatus {
+  if (lastStatus && SOURCE_HEALTH_VALUES.includes(lastStatus as SourceHealthStatus)) {
+    return lastStatus as SourceHealthStatus
   }
   return "pending"
 }
@@ -94,16 +75,20 @@ function formatLastRunCompact(date: Date): string {
   return format(date, "M/d/yy")
 }
 
-function StatusIndicator({ status }: { status: SourceStatus }) {
-  const config = {
-    success: { icon: CheckCircle, color: "text-green-600", label: "Healthy" },
-    error: { icon: XCircle, color: "text-destructive", label: "Error" },
-    partial: { icon: AlertTriangle, color: "text-amber-500", label: "Partial" },
-    pending: { icon: Clock, color: "text-muted-foreground", label: "Pending" },
-  }[status]
+const SOURCE_HEALTH_BADGE: Record<
+  SourceHealthStatus,
+  { icon: ElementType; label: string }
+> = {
+  success: { icon: CheckCircle, label: "Healthy" },
+  error: { icon: XCircle, label: "Error" },
+  partial: { icon: AlertTriangle, label: "Partial" },
+  pending: { icon: Clock, label: "Pending" },
+}
 
+function StatusIndicator({ status }: { status: SourceHealthStatus }) {
+  const config = SOURCE_HEALTH_BADGE[status]
   return (
-    <div className={cn("inline-flex items-center gap-1", config.color)}>
+    <div className={cn("inline-flex items-center gap-1", SOURCE_HEALTH_TEXT_CLASS[status])}>
       <config.icon className="size-3.5" />
       <span className="text-xs font-medium">{config.label}</span>
     </div>
@@ -454,7 +439,7 @@ function SourceCard({
   onSetProcessingMode,
   onScrape,
 }: SourceCardProps) {
-  const TypeIcon = getSourceIcon(source.source_type)
+  const TypeIcon = getAdminSourceIcon(source.source_type)
   const cityLabel = cities.find((city) => city.id === source.city_id)?.name ?? "Unassigned"
   const safeStatus = getSourceStatus(source.last_status)
   const sourceTypeLabel =

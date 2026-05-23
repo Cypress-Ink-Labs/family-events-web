@@ -244,6 +244,7 @@ export function EventDetailLocation({ event }: { event: EventWithDetails }) {
         longitude={event.longitude}
         venueName={event.venue_name}
         address={event.address}
+        startDatetime={event.start_datetime}
       />
     </div>
   )

@@ -1,0 +1,21 @@
+/**
+ * Time-based magic numbers used across the app, centralized so the intent
+ * (refresh cadence, freshness window, retry delay) is named at every call site.
+ */
+
+export const ONE_MINUTE_MS = 60_000
+export const FIVE_MINUTES_MS = 5 * ONE_MINUTE_MS
+export const FIFTEEN_MINUTES_MS = 15 * ONE_MINUTE_MS
+export const ONE_HOUR_MS = 60 * ONE_MINUTE_MS
+
+/** How often to refetch the auth user profile while the session is active. */
+export const PROFILE_REFRESH_INTERVAL_MS = FIVE_MINUTES_MS
+
+/**
+ * Cron/source run is considered stuck if it has been "running" for longer than
+ * this window. Drives the `timed_out` badge in admin-logs.
+ */
+export const SOURCE_STALE_THRESHOLD_MS = FIFTEEN_MINUTES_MS
+
+/** Delay before re-subscribing a dropped realtime channel. */
+export const REALTIME_RECONNECT_DELAY_MS = 2_000

@@ -1,14 +1,4 @@
-import {
-  Search,
-  SlidersHorizontal,
-  X,
-  Music,
-  TreePine,
-  BookOpen,
-  Users,
-  Map,
-  Check,
-} from "lucide-react"
+import { Search, SlidersHorizontal, X, Map, Check } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -20,49 +10,19 @@ import { Card, CardContent } from "@/components/ui/card"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
 import { FadeSwap, StaggerItem, StaggerList, popInVariants } from "@/components/motion"
 import type { EventWithDetails, Tag } from "@/lib/types"
+import {
+  EXPLORE_AGE_OPTIONS,
+  EXPLORE_CATEGORIES,
+  EXPLORE_DATE_QUICK_FILTERS,
+} from "@/features/explore/constants/categories"
 
-export const CATEGORIES = [
-  {
-    label: "Playgroups",
-    icon: Users,
-    slug: "playgroup",
-    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  },
-  {
-    label: "Music & Movement",
-    icon: Music,
-    slug: "music",
-    color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
-  },
-  {
-    label: "Outdoor Fun",
-    icon: TreePine,
-    slug: "outdoor",
-    color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  },
-  {
-    label: "Indoor Storytime",
-    icon: BookOpen,
-    slug: "storytime",
-    color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
-  },
-] as const
-
-export const DATE_QUICK_FILTERS = [
-  { label: "Today", value: "today" },
-  { label: "This Weekend", value: "weekend" },
-  { label: "This Week", value: "week" },
-  { label: "This Month", value: "month" },
-  { label: "Past Events", value: "past" },
-] as const
-
-export const AGE_OPTIONS = [
-  { label: "0-1 yr", min: 0, max: 1 },
-  { label: "1-3 yrs", min: 1, max: 3 },
-  { label: "2-4 yrs", min: 2, max: 4 },
-  { label: "5-8 yrs", min: 5, max: 8 },
-  { label: "9+ yrs", min: 9, max: null },
-] as const
+// Re-exports keep existing call-site imports stable; canonical home is
+// `@/features/explore/constants/categories`.
+export {
+  EXPLORE_AGE_OPTIONS as AGE_OPTIONS,
+  EXPLORE_CATEGORIES as CATEGORIES,
+  EXPLORE_DATE_QUICK_FILTERS as DATE_QUICK_FILTERS,
+}
 
 interface ExploreHeaderProps {
   cityName?: string | null
@@ -175,7 +135,7 @@ export function ExploreSearchFilters({
                   When
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {DATE_QUICK_FILTERS.map((filter) => (
+                  {EXPLORE_DATE_QUICK_FILTERS.map((filter) => (
                     <button
                       key={filter.value}
                       onClick={() =>
@@ -200,7 +160,7 @@ export function ExploreSearchFilters({
                   Kid&apos;s Age
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {AGE_OPTIONS.map((option) => (
+                  {EXPLORE_AGE_OPTIONS.map((option) => (
                     <button
                       key={option.label}
                       onClick={() =>
@@ -383,7 +343,7 @@ export function ExploreCategoryGrid({
       </p>
       <p className="text-xs text-muted-foreground mb-3">Whatever they're into today</p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {CATEGORIES.map(({ label, icon: Icon, slug, color }) => (
+        {EXPLORE_CATEGORIES.map(({ label, icon: Icon, slug, color }) => (
           <button
             key={slug}
             onClick={() => onActiveCategoryChange(activeCategory === slug ? null : slug)}
@@ -422,7 +382,7 @@ export function ExploreEventsSection({
   isEventsError,
   onClearAllFilters,
 }: ExploreEventsSectionProps) {
-  const activeCategoryLabel = CATEGORIES.find((category) => category.slug === activeCategory)?.label
+  const activeCategoryLabel = EXPLORE_CATEGORIES.find((category) => category.slug === activeCategory)?.label
 
   return (
     <section>
