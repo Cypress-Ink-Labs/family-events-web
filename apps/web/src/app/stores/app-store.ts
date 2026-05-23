@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react"
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
 import { useShallow } from "zustand/react/shallow"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 import { useCities } from "@/hooks/use-cities"
 
 interface AppStore {

@@ -7,11 +7,11 @@ import {
   evaluateAccessState,
   getSessionExpiryTimeoutMs,
   isSessionExpired,
-} from "@/lib/access-control"
+} from "@/shared/access-control"
 import { subscribeExpiredAuthToken } from "@/infrastructure/auth/auth-events"
 import { queryClient } from "@/infrastructure/queries/query-client"
 import { clearSentryUserContext, setSentryUserContext } from "@/infrastructure/observability/sentry"
-import type { UserAccess, UserProfile } from "@/lib/types"
+import type { UserAccess, UserProfile } from "@/shared/types"
 import { PROFILE_REFRESH_INTERVAL_MS } from "@/shared/constants/time"
 import { AUTH_ERROR_MESSAGES } from "@/features/auth/constants/messages"
 import {

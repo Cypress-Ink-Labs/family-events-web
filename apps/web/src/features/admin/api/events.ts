@@ -1,7 +1,7 @@
 import { adminEventFacetRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import { supabase } from "@/infrastructure/supabase/client"
-import { sanitizePostgrestLike } from "@/lib/utils"
-import type { Event } from "@/lib/types"
+import { sanitizePostgrestLike } from "@/shared/utils/format"
+import type { Event } from "@/shared/types"
 
 export async function fetchAdminEventFacets(keyword: string) {
   const { data, error } = await supabase.rpc("admin_event_facets", {

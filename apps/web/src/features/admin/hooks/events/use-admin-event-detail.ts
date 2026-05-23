@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import { supabase } from "@/infrastructure/supabase/client"
-import type { Event, EventWithDetails } from "@/lib/types"
+import type { Event, EventWithDetails } from "@/shared/types"
 import { enrichAdminEvents } from "./admin-events-shared"
 import { normalizeAiTrace } from "@/features/admin/types"
-import type { EventAiTrace } from "@/lib/types"
+import type { EventAiTrace } from "@/shared/types"
 
 const ADMIN_EVENT_EDITOR_SELECT =
   "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, ai_tag_model, ai_tag_status, recurrence_info, is_featured, is_outdoor, view_count, search_vector, created_at, updated_at, admin_locked_fields, admin_last_edited_at, admin_last_edited_by"

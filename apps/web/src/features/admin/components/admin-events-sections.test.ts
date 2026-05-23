@@ -2,7 +2,7 @@ import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { MemoryRouter } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 import { AdminEventsList } from "./admin-events-list"
 import { AdminEventsToolbar, AdminLlmReviewFilterBar } from "./admin-events-sections"

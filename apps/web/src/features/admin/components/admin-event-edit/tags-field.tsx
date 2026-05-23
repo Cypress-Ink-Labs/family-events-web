@@ -1,8 +1,8 @@
 import { Controller } from "react-hook-form"
 import { Checkbox } from "@/components/ui/checkbox"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
-import type { Tag } from "@/lib/types"
+import type { Tag } from "@/shared/types"
 import type { AdminEventEditorForm } from "@/features/admin/components/admin-event-edit/_shared"
 
 export function AdminEventTagsField({ form, tags }: { form: AdminEventEditorForm; tags: Tag[] }) {

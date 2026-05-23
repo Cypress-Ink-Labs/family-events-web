@@ -1,7 +1,7 @@
 import { supabase } from "@/infrastructure/supabase/client"
 import { Sentry } from "@/infrastructure/observability/sentry"
 import { userAccessRowSchema, userProfileRowSchema } from "@/lib/schemas"
-import type { UserAccess, UserProfile } from "@/lib/types"
+import type { UserAccess, UserProfile } from "@/shared/types"
 
 /**
  * Fetches the current user's profile + access rows in parallel.

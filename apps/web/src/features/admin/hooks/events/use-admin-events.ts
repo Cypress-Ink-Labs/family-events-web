@@ -1,10 +1,10 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
-import { sanitizePostgrestLike } from "@/lib/utils"
+import { sanitizePostgrestLike } from "@/shared/utils/format"
 import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import { fetchAdminEventsPage } from "@/lib/db/rpc-admin-events"
 import type { AdminEventsCursor, AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 import {
   batchUpdateAdminEventStatus,
   deleteAdminEvents,

@@ -4,7 +4,7 @@ import { SmartImage } from "@/components/motion"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { StarRating } from "@/features/events/components/star-rating"
 import { formatEventDate } from "@/shared/utils/dates"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
 
 export function FeaturedEventCard({

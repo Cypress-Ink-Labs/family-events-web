@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { ApprovedInviteRequest, InviteRequest, InviteRequestStatus } from "@/lib/types"
+import type { ApprovedInviteRequest, InviteRequest, InviteRequestStatus } from "@/shared/types"
 
 const INVITE_REQUEST_COLUMNS =
   "id, email, message, status, invite_code_id, admin_notes, created_at, reviewed_at, reviewed_by"

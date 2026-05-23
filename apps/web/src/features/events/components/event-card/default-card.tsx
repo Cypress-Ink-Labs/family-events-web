@@ -6,7 +6,7 @@ import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { StarRating } from "@/features/events/components/star-rating"
 import { formatEventDayHour } from "@/shared/utils/dates"
-import { cn, formatEventPrice } from "@/lib/utils"
+import { cn, formatEventPrice } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
 
 export function DefaultEventCard({

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { TagBadge } from "@/features/events/components/tag-badge"
-import { cn } from "@/lib/utils"
-import type { EventWithDetails, Tag as EventTag } from "@/lib/types"
+import { cn } from "@/shared/utils/format"
+import type { EventWithDetails, Tag as EventTag } from "@/shared/types"
 
 interface TagOverridesEditorProps {
   event: EventWithDetails

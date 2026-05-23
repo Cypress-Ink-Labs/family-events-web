@@ -3,7 +3,7 @@ import { qk } from "@/infrastructure/queries/query-keys"
 import { enrichedEventRowSchema } from "@/lib/schemas"
 import { Sentry } from "@/infrastructure/observability/sentry"
 import { fetchEventsPage } from "@/lib/db/rpc-events"
-import type { Event, EventTag, EventWithDetails, Tag } from "@/lib/types"
+import type { Event, EventTag, EventWithDetails, Tag } from "@/shared/types"
 
 interface UseEnrichedEventsOptions {
   cityId?: string

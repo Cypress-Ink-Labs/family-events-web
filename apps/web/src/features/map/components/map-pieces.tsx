@@ -3,7 +3,7 @@ import { Calendar, MapPin, Navigation } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ClientDate } from "@/components/client-date"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 import {
   dateBucket,
   directionsUrl,

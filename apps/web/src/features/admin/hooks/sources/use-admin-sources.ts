@@ -8,7 +8,7 @@ import {
   triggerSourceScrape,
   updateAdminSource,
 } from "@/features/admin/api/sources"
-import type { EventSource } from "@/lib/types"
+import type { EventSource } from "@/shared/types"
 
 export function useAdminSources() {
   return useQuery({

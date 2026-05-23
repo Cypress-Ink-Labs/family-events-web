@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { Comment } from "@/lib/types"
+import type { Comment } from "@/shared/types"
 import type { AdminComment } from "@/features/admin/types"
 
 const ADMIN_COMMENT_COLUMNS =

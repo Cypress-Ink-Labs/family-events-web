@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 interface SavedEventsSectionProps {
   savedEvents: EventWithDetails[]

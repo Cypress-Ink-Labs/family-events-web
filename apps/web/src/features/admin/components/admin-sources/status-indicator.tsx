@@ -5,7 +5,7 @@ import {
   Clock,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { SOURCE_HEALTH_TEXT_CLASS, type SourceHealthStatus } from "@/shared/constants/status-colors"
 
 const SOURCE_HEALTH_VALUES: SourceHealthStatus[] = ["pending", "success", "error", "partial"]

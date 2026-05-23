@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react"
 import { EventMapMini } from "@/features/events/components/event-map-mini"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 export function EventDetailLocation({ event }: { event: EventWithDetails }) {
   return (

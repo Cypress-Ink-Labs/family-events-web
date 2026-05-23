@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ClientDistanceToNow } from "@/components/client-date"
-import type { InviteRequest } from "@/lib/types"
+import type { InviteRequest } from "@/shared/types"
 
 interface AdminInviteRequestsListProps {
   requests: InviteRequest[]

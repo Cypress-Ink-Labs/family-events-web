@@ -6,7 +6,7 @@ import {
   buildOptimisticFavorites,
   invalidateEventProjectionQueries,
 } from "./event-cache"
-import type { Favorite } from "@/lib/types"
+import type { Favorite } from "@/shared/types"
 
 function makeQueryClient() {
   return new QueryClient({

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { SmartImage } from "@/components/motion"
 import { AgeRangeBadge } from "@/features/events/components/tag-badge"
 import { formatEventDate } from "@/shared/utils/dates"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
 
 export function CompactEventCard({ event, imageUrl, startDate, className }: EventCardVariantProps) {

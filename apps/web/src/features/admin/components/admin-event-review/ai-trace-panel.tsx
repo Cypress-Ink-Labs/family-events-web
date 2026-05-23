@@ -3,8 +3,8 @@ import { Badge } from "@/components/ui/badge"
 import { ClientDate } from "@/components/client-date"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatProviderLabel } from "@/features/admin/utils/format-provider-label"
-import { formatEventPrice } from "@/lib/utils"
-import type { EventAiTraceWithParsed } from "@/lib/types"
+import { formatEventPrice } from "@/shared/utils/format"
+import type { EventAiTraceWithParsed } from "@/shared/types"
 
 interface AiTracePanelProps {
   trace: EventAiTraceWithParsed | null

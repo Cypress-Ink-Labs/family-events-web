@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 type EventStatusFilter = Event["status"] | "all"
 

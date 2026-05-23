@@ -1,4 +1,4 @@
-import type { UserAccess } from "@/lib/types"
+import type { UserAccess } from "@/shared/types"
 
 export const HOME_PATH = "/home"
 

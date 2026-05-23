@@ -3,7 +3,7 @@ import { ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SmartImage } from "@/components/motion"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 interface EventDetailHeroProps {
   event: EventWithDetails

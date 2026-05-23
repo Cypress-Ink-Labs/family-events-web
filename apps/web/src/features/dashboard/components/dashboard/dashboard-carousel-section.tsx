@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { EventCard } from "@/features/events/components/event-card"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 interface DashboardCarouselSectionProps {
   title: string

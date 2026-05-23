@@ -7,7 +7,7 @@ import { ProtectedRoute } from "@/features/auth/components/protected-route"
 import { PublicOnlyRoute } from "@/features/auth/components/public-only-route"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
 import { Toaster } from "@/components/ui/sonner"
-import { HOME_PATH } from "@/lib/access-control"
+import { HOME_PATH } from "@/shared/access-control"
 import { queryClient } from "@/infrastructure/queries/query-client"
 import { AppMotionProvider, FadeSwap } from "@/components/motion"
 

@@ -1,6 +1,6 @@
 import type { Session } from "@supabase/supabase-js"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { UserAccess, UserProfile } from "@/lib/types"
+import type { UserAccess, UserProfile } from "@/shared/types"
 
 const {
   mockAuthSignOut,

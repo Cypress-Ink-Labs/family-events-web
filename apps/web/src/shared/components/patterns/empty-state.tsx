@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 
 /**
  * Compact "nothing here yet" card. Used wherever a feature would otherwise

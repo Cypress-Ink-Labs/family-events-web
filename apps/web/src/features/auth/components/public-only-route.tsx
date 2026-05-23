@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "@/features/auth/stores/auth-store"
-import { resolveInAppRedirectTarget } from "@/lib/access-control"
+import { resolveInAppRedirectTarget } from "@/shared/access-control"
 import { FadeSwap } from "@/components/motion"
 
 export function PublicOnlyRoute() {

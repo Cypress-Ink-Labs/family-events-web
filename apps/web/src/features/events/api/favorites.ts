@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { Favorite } from "@/lib/types"
+import type { Favorite } from "@/shared/types"
 
 /**
  * Data-access layer for the `favorites` table. Hooks call into these

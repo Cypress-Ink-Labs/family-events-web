@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { SourceQueueStatus as DbSourceQueueStatus } from "@/lib/types"
+import type { SourceQueueStatus as DbSourceQueueStatus } from "@/shared/types"
 
 export type SourceQueueStatus = DbSourceQueueStatus
 

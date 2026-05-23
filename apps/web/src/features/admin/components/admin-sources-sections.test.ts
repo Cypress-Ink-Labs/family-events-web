@@ -1,7 +1,7 @@
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it, vi } from "vitest"
-import type { City, EventSource } from "@/lib/types"
+import type { City, EventSource } from "@/shared/types"
 
 import { AdminSourcesHeader, AdminSourcesList, type SourceDraft } from "./admin-sources-sections"
 

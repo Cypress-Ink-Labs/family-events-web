@@ -2,8 +2,8 @@ import { z } from "zod"
 
 import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import { supabase } from "@/infrastructure/supabase/client"
-import { sanitizePostgrestLike } from "@/lib/utils"
-import type { Event, Json } from "@/lib/types"
+import { sanitizePostgrestLike } from "@/shared/utils/format"
+import type { Event, Json } from "@/shared/types"
 
 export interface AdminEventsCursor {
   afterCreatedAt?: string

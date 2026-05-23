@@ -6,8 +6,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ClientDate } from "@/components/client-date"
 import { SmartImage } from "@/components/motion"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { cn } from "@/lib/utils"
-import type { EventWithDetails } from "@/lib/types"
+import { cn } from "@/shared/utils/format"
+import type { EventWithDetails } from "@/shared/types"
 
 interface DashboardTodaySectionProps {
   todayEvents: EventWithDetails[]

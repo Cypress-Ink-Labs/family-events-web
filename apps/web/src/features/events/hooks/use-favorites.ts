@@ -2,7 +2,7 @@ import { useRef } from "react"
 import type { QueryClient } from "@tanstack/react-query"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
-import type { Favorite } from "@/lib/types"
+import type { Favorite } from "@/shared/types"
 import { addFavorite, listFavoritesForUser, removeFavorite } from "@/features/events/api/favorites"
 import {
   applyFavoriteStateToEventProjectionCaches,

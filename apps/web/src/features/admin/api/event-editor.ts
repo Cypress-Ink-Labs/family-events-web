@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { Event, Json } from "@/lib/types"
+import type { Event, Json } from "@/shared/types"
 import type { AdminEventPatch } from "@/features/admin/lib/event-editor-mappers"
 
 export interface UpdateAdminEventInput {

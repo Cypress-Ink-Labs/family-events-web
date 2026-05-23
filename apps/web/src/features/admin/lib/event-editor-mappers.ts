@@ -1,4 +1,4 @@
-import type { Event, EventWithDetails, Json } from "@/lib/types"
+import type { Event, EventWithDetails, Json } from "@/shared/types"
 import type { AdminEventEditorValues } from "./event-editor-schema"
 import { ADMIN_EDITABLE_EVENT_FIELDS, type AdminEditableEventField } from "./event-field-locks"
 

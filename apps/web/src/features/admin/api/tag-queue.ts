@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { TagQueueStatus as DbTagQueueStatus } from "@/lib/types"
+import type { TagQueueStatus as DbTagQueueStatus } from "@/shared/types"
 
 export type TagQueueStatus = DbTagQueueStatus
 

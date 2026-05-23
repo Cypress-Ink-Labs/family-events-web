@@ -1,7 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useMemo, type MutableRefObject } from "react"
 import { useForm } from "react-hook-form"
-import type { City, EventAiTraceWithParsed, EventSource, EventWithDetails, Tag } from "@/lib/types"
+import type {
+  City,
+  EventAiTraceWithParsed,
+  EventSource,
+  EventWithDetails,
+  Tag,
+} from "@/shared/types"
 import {
   adminEventEditorSchema,
   type AdminEventEditorInput,

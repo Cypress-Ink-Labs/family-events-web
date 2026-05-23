@@ -1,4 +1,4 @@
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 export const UNASSIGNED_CITY_KEY = "none"
 export type CityFilterValue = "all" | typeof UNASSIGNED_CITY_KEY | string

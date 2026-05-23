@@ -21,7 +21,7 @@ import { AdminEventEditForm, type AdminEventEditSubmit } from "../components/adm
 import { EventStatusBadge } from "../components/admin-event-edit-sections"
 import { useTags } from "@/features/events/hooks/use-tags"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 export function AdminEventEditPage() {
   const { eventId } = useParams()

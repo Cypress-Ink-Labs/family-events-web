@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { formatEventPrice, sanitizePostgrestLike } from "./utils"
+import { formatEventPrice, sanitizePostgrestLike } from "./format"
 
 describe("formatEventPrice", () => {
   it("returns 'Free' when isFree is true regardless of price", () => {

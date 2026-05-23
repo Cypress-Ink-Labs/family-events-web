@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ClientDate } from "@/components/client-date"
 import { Textarea } from "@/components/ui/textarea"
 import { StarRating } from "@/features/events/components/star-rating"
-import type { CommentWithProfile } from "@/lib/types"
+import type { CommentWithProfile } from "@/shared/types"
 
 interface EventDetailReviewsProps {
   canReview: boolean

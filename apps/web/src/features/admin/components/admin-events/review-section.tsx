@@ -9,7 +9,7 @@ import {
   useUpdateAdminEventTags,
 } from "@/features/admin/hooks/events/use-admin-event-ai-trace"
 import { useTags } from "@/features/events/hooks/use-tags"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 /**
  * Wires the admin-store-selected event id to the review dialog. Owned by

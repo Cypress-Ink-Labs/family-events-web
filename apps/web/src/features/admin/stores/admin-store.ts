@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 type EventStatus = Event["status"]
 

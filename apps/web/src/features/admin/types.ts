@@ -7,7 +7,7 @@ import type {
   SourceRun,
   UserAccess,
   UserProfile,
-} from "@/lib/types"
+} from "@/shared/types"
 
 export interface AdminComment extends Comment {
   user_profiles: { display_name: string | null } | null

@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 const CITY_COLUMNS =
   "id, name, state, country, slug, is_active, latitude, longitude, timezone, created_at"

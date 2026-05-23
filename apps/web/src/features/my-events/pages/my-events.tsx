@@ -18,7 +18,7 @@ import {
 } from "@/features/events/hooks/use-calendar-events"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useUpsertRating } from "@/features/events/hooks/use-ratings"
-import type { Favorite, UserCalendarEvent } from "@/lib/types"
+import type { Favorite, UserCalendarEvent } from "@/shared/types"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack, Toolbar } from "@/components/v2"

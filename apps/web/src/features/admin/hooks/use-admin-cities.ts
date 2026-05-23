@@ -6,7 +6,7 @@ import {
   listAdminCities,
   updateAdminCity,
 } from "@/features/admin/api/cities"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 export function useAdminCities() {
   return useQuery({

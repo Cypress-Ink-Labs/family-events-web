@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { filterByCity, groupByCity, UNASSIGNED_CITY_KEY } from "./group-by-city"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 function city(id: string, name: string): City {
   return {

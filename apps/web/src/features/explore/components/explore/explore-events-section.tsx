@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
 import { FadeSwap, StaggerItem, StaggerList } from "@/components/motion"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 import { EXPLORE_CATEGORIES } from "@/features/explore/constants/categories"
 
 interface ExploreEventsSectionProps {

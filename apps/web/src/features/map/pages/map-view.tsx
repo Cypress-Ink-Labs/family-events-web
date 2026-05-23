@@ -15,11 +15,11 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useMapStyle } from "@/hooks/use-map-style"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 import {
   ClusterBubble,
   EventListItem,

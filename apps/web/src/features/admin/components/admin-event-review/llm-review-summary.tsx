@@ -1,6 +1,6 @@
 import { Bot } from "lucide-react"
 import { ClientDate } from "@/components/client-date"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 export function LlmReviewSummary({ event }: { event: EventWithDetails }) {
   return (

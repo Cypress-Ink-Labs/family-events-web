@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react"
 import { m } from "motion/react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { staggerContainerVariants, staggerItemVariants } from "./motion-presets"
 
 type DivProps = ComponentPropsWithoutRef<typeof m.div>

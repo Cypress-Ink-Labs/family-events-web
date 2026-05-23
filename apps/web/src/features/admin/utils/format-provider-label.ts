@@ -1,4 +1,4 @@
-import type { AiTagProvider } from "@/lib/types"
+import type { AiTagProvider } from "@/shared/types"
 
 export function formatProviderLabel(provider: AiTagProvider | null | undefined) {
   if (provider === "openai") return "OpenAI"

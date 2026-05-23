@@ -1,6 +1,6 @@
 import { Check, CheckCheck, Search, Trash2, XCircle } from "lucide-react"
-import type { Event } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import type { Event } from "@/shared/types"
+import { cn } from "@/shared/utils/format"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { FilterBar } from "@/components/v2"

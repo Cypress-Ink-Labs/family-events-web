@@ -1,4 +1,4 @@
-import type { EventStatus } from "@/lib/types"
+import type { EventStatus } from "@/shared/types"
 
 /**
  * Single source of truth for event-status enum values + their human labels.

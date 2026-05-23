@@ -7,7 +7,7 @@ import {
   isSessionExpired,
   resolveInAppRedirectTarget,
 } from "./access-control"
-import type { UserAccess } from "@/lib/types"
+import type { UserAccess } from "@/shared/types"
 
 function accessRow(overrides: Partial<UserAccess> = {}): UserAccess {
   return {

@@ -1,4 +1,4 @@
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 /**
  * Display config (Tailwind classes + label) for each event status. Lives in

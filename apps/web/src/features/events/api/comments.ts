@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { CommentWithProfile } from "@/lib/types"
+import type { CommentWithProfile } from "@/shared/types"
 
 const COMMENT_COLUMNS =
   "id, user_id, event_id, body, is_approved, is_flagged, created_at, updated_at, user_profiles(display_name, avatar_url)"

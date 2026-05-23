@@ -1,4 +1,4 @@
-import type { evaluateAccessState } from "@/lib/access-control"
+import type { evaluateAccessState } from "@/shared/access-control"
 
 type AccessState = ReturnType<typeof evaluateAccessState>
 

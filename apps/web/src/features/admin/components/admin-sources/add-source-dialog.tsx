@@ -23,7 +23,7 @@ import {
   ADMIN_SOURCE_TYPE_OPTIONS,
   type AdminSourceType,
 } from "@/features/admin/constants/source-types"
-import type { City, EventProcessingMode, ExtractionMode } from "@/lib/types"
+import type { City, EventProcessingMode, ExtractionMode } from "@/shared/types"
 
 export interface SourceDraft {
   name: string

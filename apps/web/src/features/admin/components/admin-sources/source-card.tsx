@@ -10,14 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { formatLastRun } from "@/shared/utils/dates"
 import {
   ADMIN_SOURCE_TYPE_LABELS,
   type AdminSourceType,
   getAdminSourceIcon,
 } from "@/features/admin/constants/source-types"
-import type { City, EventProcessingMode, EventSource } from "@/lib/types"
+import type { City, EventProcessingMode, EventSource } from "@/shared/types"
 import {
   getSourceHealthStatus,
   SourceStatusIndicator,

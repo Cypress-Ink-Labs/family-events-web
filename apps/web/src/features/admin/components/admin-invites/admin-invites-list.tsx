@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ClientDate } from "@/components/client-date"
 import { useNowMs } from "@/hooks/use-now-ms"
-import type { InviteCode } from "@/lib/types"
+import type { InviteCode } from "@/shared/types"
 
 interface AdminInvitesListProps {
   codes: InviteCode[]

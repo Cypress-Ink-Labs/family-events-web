@@ -1,7 +1,7 @@
 import { format } from "date-fns"
 import { cleanDescription } from "@family-events/shared"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 interface EventDetailSummaryProps {
   event: EventWithDetails

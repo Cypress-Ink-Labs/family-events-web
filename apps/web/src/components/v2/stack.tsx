@@ -1,5 +1,5 @@
 import type { ElementType, ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 
 type Spacing = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8"
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer } from "react"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 type GeolocationSource = "browser" | "city-centroid" | "none"
 type GeolocationStatus = "idle" | "resolving" | "granted" | "fallback"

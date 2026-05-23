@@ -2,7 +2,7 @@ import { X } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 import { Badge } from "@/components/ui/badge"
 import { popInVariants } from "@/components/motion"
-import type { Tag } from "@/lib/types"
+import type { Tag } from "@/shared/types"
 
 interface ExploreActiveFiltersProps {
   onlyFree: boolean

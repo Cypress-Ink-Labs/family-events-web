@@ -23,7 +23,7 @@ import {
 } from "@/features/admin/hooks/use-admin-invite-requests"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
-import type { CreatedInviteCode } from "@/lib/types"
+import type { CreatedInviteCode } from "@/shared/types"
 
 type ExpiryOption = "7d" | "30d" | "never"
 type Tab = "codes" | "requests"

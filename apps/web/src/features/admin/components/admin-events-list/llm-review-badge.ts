@@ -1,4 +1,4 @@
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 /**
  * Builds the LLM-review badge text + class for a draft event. Returns null

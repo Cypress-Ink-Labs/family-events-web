@@ -1,5 +1,5 @@
 import type { ElementType, ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 
 type TouchTargetProps<E extends ElementType> = {
   as?: E

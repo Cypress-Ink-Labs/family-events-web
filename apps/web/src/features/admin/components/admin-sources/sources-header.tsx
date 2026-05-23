@@ -6,9 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { Toolbar } from "@/components/v2"
-import type { City, EventProcessingMode } from "@/lib/types"
+import type { City, EventProcessingMode } from "@/shared/types"
 import {
   AddSourceDialog,
   type SourceDraft,

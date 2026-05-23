@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
-import { HOME_PATH } from "@/lib/access-control"
+import { HOME_PATH } from "@/shared/access-control"
 
 // Sanitize ?next= the same way sign-in.tsx sanitizes location.state.from —
 // only accept in-app paths, never a full URL or // scheme-relative redirect.

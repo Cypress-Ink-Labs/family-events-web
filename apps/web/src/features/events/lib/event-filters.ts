@@ -1,5 +1,5 @@
-import { sanitizePostgrestLike } from "@/lib/utils"
-import type { Event } from "@/lib/types"
+import { sanitizePostgrestLike } from "@/shared/utils/format"
+import type { Event } from "@/shared/types"
 
 const OPEN_ENDED_MAX_AGE = 99
 

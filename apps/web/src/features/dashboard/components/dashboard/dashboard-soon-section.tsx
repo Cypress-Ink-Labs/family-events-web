@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { StaggerItem, StaggerList } from "@/components/motion"
 import { EventCard } from "@/features/events/components/event-card"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 interface DashboardSoonSectionProps {
   events: EventWithDetails[]

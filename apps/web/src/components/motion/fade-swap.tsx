@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { AnimatePresence, m } from "motion/react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { fadeInUpVariants } from "./motion-presets"
 
 interface FadeSwapProps {

@@ -7,8 +7,8 @@ import { ClientDate } from "@/components/client-date"
 import { AgeRangeBadge } from "@/features/events/components/tag-badge"
 import { formatProviderLabel } from "@/features/admin/utils/format-provider-label"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { cn } from "@/lib/utils"
-import type { Event } from "@/lib/types"
+import { cn } from "@/shared/utils/format"
+import type { Event } from "@/shared/types"
 import { buildLlmReviewBadge } from "@/features/admin/components/admin-events-list/llm-review-badge"
 
 interface AdminVirtualEventRowProps {

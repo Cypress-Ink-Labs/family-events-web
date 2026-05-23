@@ -20,7 +20,7 @@ import {
 import { useAdminSourceRunErrors } from "@/features/admin/hooks/sources/use-admin-source-runs"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
-import type { EventProcessingMode, ExtractionMode } from "@/lib/types"
+import type { EventProcessingMode, ExtractionMode } from "@/shared/types"
 
 function defaultExtractionModeForSourceType(sourceType: AdminSourceType): ExtractionMode {
   return sourceType === "website" ? "deterministic_then_llm" : "deterministic"

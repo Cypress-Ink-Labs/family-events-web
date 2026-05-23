@@ -1,4 +1,4 @@
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 export type EventCardVariant = "default" | "compact" | "featured" | "list"
 

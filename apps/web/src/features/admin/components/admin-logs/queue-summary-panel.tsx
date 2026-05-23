@@ -2,7 +2,7 @@ import type { ElementType } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { ClientDistanceToNow } from "@/components/client-date"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 
 export interface QueueSummaryRow<Status extends string> {
   status: Status

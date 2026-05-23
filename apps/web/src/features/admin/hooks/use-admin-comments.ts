@@ -5,7 +5,7 @@ import {
   listAdminComments,
   updateAdminComment,
 } from "@/features/admin/api/comments"
-import type { Comment } from "@/lib/types"
+import type { Comment } from "@/shared/types"
 
 export type { AdminComment } from "@/features/admin/types"
 

@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { Rating } from "@/lib/types"
+import type { Rating } from "@/shared/types"
 
 const RATING_COLUMNS = "id, user_id, event_id, score, created_at"
 

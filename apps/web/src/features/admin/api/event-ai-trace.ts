@@ -1,6 +1,6 @@
 import { supabase } from "@/infrastructure/supabase/client"
 import { normalizeAiTrace } from "@/features/admin/types"
-import type { EventAiTrace, EventAiTraceWithParsed, Json } from "@/lib/types"
+import type { EventAiTrace, EventAiTraceWithParsed, Json } from "@/shared/types"
 
 const EVENT_AI_TRACE_COLUMNS =
   "id, event_id, source_run_id, trigger_type, provider, model, status, input_title, input_description, available_tag_slugs, predicted_tags, predicted_fields, reasoning_summary, fallback_reason, processing_ms, created_at"

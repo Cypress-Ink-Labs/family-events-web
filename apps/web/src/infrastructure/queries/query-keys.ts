@@ -1,5 +1,5 @@
-import type { Event, EventFilters } from "@/lib/types"
-import { sanitizePostgrestLike } from "@/lib/utils"
+import type { Event, EventFilters } from "@/shared/types"
+import { sanitizePostgrestLike } from "@/shared/utils/format"
 
 const DEFAULT_EVENT_STATUS: Event["status"] = "published"
 

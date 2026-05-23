@@ -8,7 +8,7 @@ import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { ShareEventButton } from "@/features/plan/components/share-event-button"
 import { SmartImage } from "@/components/motion"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { formatEventPrice } from "@/lib/utils"
+import { formatEventPrice } from "@/shared/utils/format"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 
 interface PlanHeroCardProps {

@@ -1,5 +1,5 @@
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 import { CompactEventCard } from "@/features/events/components/event-card/compact-card"
 import { DefaultEventCard } from "@/features/events/components/event-card/default-card"
 import { FeaturedEventCard } from "@/features/events/components/event-card/featured-card"

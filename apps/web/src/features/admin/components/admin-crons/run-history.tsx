@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { ClientDate } from "@/components/client-date"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import type { CronRun } from "@/features/admin/types"
 import {
   ALL_RUNS_DOMAIN,

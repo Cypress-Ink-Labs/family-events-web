@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ImgHTMLAttributes } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 
 interface SmartImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   placeholderClassName?: string

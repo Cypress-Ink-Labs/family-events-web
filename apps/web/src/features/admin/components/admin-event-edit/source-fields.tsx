@@ -14,7 +14,7 @@ import {
   FieldError,
   LockedFieldsSummary,
 } from "@/features/admin/components/admin-event-edit-sections"
-import type { EventSource, EventWithDetails } from "@/lib/types"
+import type { EventSource, EventWithDetails } from "@/shared/types"
 import {
   type AdminEventEditorForm,
   NONE_VALUE,

@@ -1,7 +1,7 @@
 import { useWindowVirtualizer } from "@tanstack/react-virtual"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { City, Event } from "@/lib/types"
+import type { City, Event } from "@/shared/types"
 import { AdminVirtualEventRow } from "@/features/admin/components/admin-events-list/admin-virtual-event-row"
 import { AdminEventsListLoaderRow } from "@/features/admin/components/admin-events-list/admin-events-list-loader-row"
 

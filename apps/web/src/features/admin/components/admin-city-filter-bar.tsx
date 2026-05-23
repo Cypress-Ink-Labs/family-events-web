@@ -1,7 +1,7 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import { FilterBar } from "@/components/v2"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 interface CityCount {
   key: string

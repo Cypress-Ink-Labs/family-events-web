@@ -1,6 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
-import type { Favorite } from "@/lib/types"
+import type { Favorite } from "@/shared/types"
 
 export function applyFavoriteStateToCacheValue<T>(
   value: T,

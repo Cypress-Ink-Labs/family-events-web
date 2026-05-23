@@ -29,7 +29,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/features/auth/stores/auth-store"
-import { HOME_PATH } from "@/lib/access-control"
+import { HOME_PATH } from "@/shared/access-control"
 import { FadeSwap, PageTransition } from "@/components/motion"
 
 const ADMIN_NAV = [

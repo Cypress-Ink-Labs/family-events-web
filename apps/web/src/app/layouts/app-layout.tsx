@@ -13,10 +13,10 @@ import {
   Shield,
   User,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { HOME_PATH } from "@/lib/access-control"
+import { HOME_PATH } from "@/shared/access-control"
 import {
   DropdownMenu,
   DropdownMenuContent,

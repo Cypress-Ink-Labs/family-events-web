@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { HOME_PATH } from "@/lib/access-control"
+import { HOME_PATH } from "@/shared/access-control"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { resolveInviteRequirement, useInvitesRequired } from "@/features/auth/hooks/use-invites"
 import {

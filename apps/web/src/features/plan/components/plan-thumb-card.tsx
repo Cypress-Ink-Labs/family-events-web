@@ -6,7 +6,7 @@ import { ClientDate } from "@/components/client-date"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/components/motion"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { formatEventPrice } from "@/lib/utils"
+import { formatEventPrice } from "@/shared/utils/format"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 
 interface PlanThumbCardProps {

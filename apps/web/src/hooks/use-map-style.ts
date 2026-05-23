@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { StyleSpecification } from "maplibre-gl"
 import { useResolvedTheme } from "@/hooks/use-resolved-theme"
-import { LIBERTY_STYLE_URL, getDarkLibertyStyle } from "@/lib/map-styles"
+import { LIBERTY_STYLE_URL, getDarkLibertyStyle } from "@/shared/map-styles"
 
 /**
  * Returns the right MapLibre style for the current theme.

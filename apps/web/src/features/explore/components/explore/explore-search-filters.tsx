@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
-import { cn } from "@/lib/utils"
-import type { Tag } from "@/lib/types"
+import { cn } from "@/shared/utils/format"
+import type { Tag } from "@/shared/types"
 import {
   EXPLORE_AGE_OPTIONS,
   EXPLORE_DATE_QUICK_FILTERS,

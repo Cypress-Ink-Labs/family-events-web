@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { formatEventPrice } from "@/lib/utils"
+import { formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
 import { Separator } from "@/components/ui/separator"
 import {

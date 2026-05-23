@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { FormGrid, Toolbar } from "@/components/v2"
-import type { InviteCode } from "@/lib/types"
+import type { InviteCode } from "@/shared/types"
 
 export type ExpiryOption = "7d" | "30d" | "never"
 

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select"
 import { FormGrid } from "@/components/v2"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 import {
   type AdminEventEditorForm,
   NONE_VALUE,

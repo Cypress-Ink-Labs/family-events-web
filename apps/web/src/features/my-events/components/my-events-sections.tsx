@@ -8,9 +8,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { StarRating } from "@/features/events/components/star-rating"
 import { SmartImage, StaggerItem, StaggerList } from "@/components/motion"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { formatEventPrice } from "@/lib/utils"
+import { formatEventPrice } from "@/shared/utils/format"
 
 export function LoadingRows() {
   return (

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
-import type { Tag } from "@/lib/types"
+import { cn } from "@/shared/utils/format"
+import type { Tag } from "@/shared/types"
 
 interface TagBadgeProps {
   tag: Tag

@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { UserCalendarEvent } from "@/lib/types"
+import type { UserCalendarEvent } from "@/shared/types"
 
 const CALENDAR_COLUMNS = "id, user_id, event_id, added_at, notes"
 

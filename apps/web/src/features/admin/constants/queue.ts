@@ -1,4 +1,4 @@
-import type { SourceQueueStatus, TagQueueStatus } from "@/lib/types"
+import type { SourceQueueStatus, TagQueueStatus } from "@/shared/types"
 
 /**
  * Labels and ordering for the admin queue dashboards. Sourced from

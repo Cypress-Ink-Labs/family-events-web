@@ -23,7 +23,7 @@ import { useAdminEventFacetCounts } from "@/features/admin/hooks/events/use-admi
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
 import { ADMIN_EVENT_STATUS_DISPLAY } from "@/features/admin/constants/event-status-display"
-import type { Event } from "@/lib/types"
+import type { Event } from "@/shared/types"
 
 type EventStatusFilter = Event["status"] | "all"
 

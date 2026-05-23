@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { AdminCityFilterBar } from "./admin-city-filter-bar"
 import { UNASSIGNED_CITY_KEY } from "@/lib/events/group-by-city"
-import type { City } from "@/lib/types"
+import type { City } from "@/shared/types"
 
 function city(id: string, name: string): City {
   return {

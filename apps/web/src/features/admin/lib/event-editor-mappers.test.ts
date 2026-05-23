@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 import {
   changedEventPatch,
   editorValuesToEventPatch,

@@ -1,6 +1,6 @@
 import type { ElementType } from "react"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils/format"
 import {
   RUN_STATUS_TEXT_CLASS,
   SOURCE_HEALTH_TEXT_CLASS,

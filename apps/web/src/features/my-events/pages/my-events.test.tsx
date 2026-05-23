@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { Favorite, UserCalendarEvent } from "@/lib/types"
+import type { Favorite, UserCalendarEvent } from "@/shared/types"
 import { buildSavedEventIds } from "./my-events"
 
 function favorite(eventId: string): Favorite {

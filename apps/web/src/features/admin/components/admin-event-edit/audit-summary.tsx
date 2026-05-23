@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { ClientDate } from "@/components/client-date"
 import { AdminEventEditSection } from "@/features/admin/components/admin-event-edit-sections"
-import type { EventWithDetails } from "@/lib/types"
+import type { EventWithDetails } from "@/shared/types"
 
 export function AdminEventAuditSummary({ event }: { event: EventWithDetails }) {
   return (
