@@ -1,22 +1,15 @@
-import { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/lib/query-keys"
 import { subscribeToCommentChanges } from "@/features/events/lib/comments-channel-registry"
 import { addEventComment, listEventComments } from "@/features/events/api/comments"
+import { useRealtimeInvalidation } from "@/shared/hooks/use-realtime-invalidation"
 
 export function useComments(eventId: string | undefined) {
-  const queryClient = useQueryClient()
-
-  useEffect(() => {
-    if (!eventId) return
-    // Multiple useComments(eventId) mounts share one Supabase channel via the
-    // registry, avoiding the prior "two-channel" cost when two components
-    // subscribe to the same event. The registry also handles CHANNEL_ERROR
-    // reconnection (was previously silently logged and never retried).
-    return subscribeToCommentChanges(eventId, () => {
-      void queryClient.invalidateQueries({ queryKey: qk.comments.byEvent(eventId) })
-    })
-  }, [eventId, queryClient])
+  // Multiple useComments(eventId) mounts share one Supabase channel via the
+  // registry, avoiding the prior "two-channel" cost when two components
+  // subscribe to the same event. The registry handles CHANNEL_ERROR
+  // reconnection internally.
+  useRealtimeInvalidation(subscribeToCommentChanges, eventId, qk.comments.byEvent(eventId))
 
   return useQuery({
     queryKey: qk.comments.byEvent(eventId),
