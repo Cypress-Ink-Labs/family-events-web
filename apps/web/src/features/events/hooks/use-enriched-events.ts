@@ -168,4 +168,4 @@ export function useEnrichedEvents(options: UseEnrichedEventsOptions = {}) {
   })
 }
 
-export const ENRICHED_EVENTS_QUERY_KEY = qk.enrichedEvents.all[0]
+const ENRICHED_EVENTS_QUERY_KEY =qk.enrichedEvents.all[0]

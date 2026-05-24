@@ -85,6 +85,7 @@ export function ProfileThemeCard({ theme, onThemeChange }: ProfileThemeCardProps
         <div className="grid grid-cols-3 gap-2">
           {THEME_OPTIONS.map(({ value, label, icon: Icon }) => (
             <button
+              type="button"
               key={value}
               onClick={() => onThemeChange(value)}
               className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all text-sm font-medium ${

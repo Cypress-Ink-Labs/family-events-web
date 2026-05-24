@@ -27,7 +27,5 @@ export function useRealtimeInvalidation<Key extends string>(
     return subscribeFn(key, () => {
       void queryClient.invalidateQueries({ queryKey })
     })
-    // queryKey is a stable readonly tuple per call site (built via `qk.*`); intentionally not serialized.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscribeFn, key, queryClient])
+  }, [subscribeFn, key, queryClient, queryKey])
 }

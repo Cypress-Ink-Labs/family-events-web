@@ -40,6 +40,7 @@ export function EventDetailBooking({
           <span className="text-sm text-muted-foreground">Attendees</span>
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={onDecrement}
               className="flex size-11 items-center justify-center rounded-full border border-border text-base font-bold hover:bg-accent"
             >
@@ -47,6 +48,7 @@ export function EventDetailBooking({
             </button>
             <span className="text-sm font-bold w-4 text-center">{attendees}</span>
             <button
+              type="button"
               onClick={onIncrement}
               className="flex size-11 items-center justify-center rounded-full border border-border text-base font-bold hover:bg-accent"
             >

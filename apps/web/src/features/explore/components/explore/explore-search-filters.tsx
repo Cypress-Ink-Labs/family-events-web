@@ -61,6 +61,7 @@ export function ExploreSearchFilters({
         />
         {keyword && (
           <button
+            type="button"
             onClick={onClearKeyword}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
@@ -86,6 +87,7 @@ export function ExploreSearchFilters({
             <div className="flex items-center gap-3">
               {activeFilterCount > 0 && (
                 <button
+                  type="button"
                   onClick={onClearAllFilters}
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -108,6 +110,7 @@ export function ExploreSearchFilters({
                 <div className="flex flex-wrap gap-1.5">
                   {EXPLORE_DATE_QUICK_FILTERS.map((filter) => (
                     <button
+                      type="button"
                       key={filter.value}
                       onClick={() =>
                         onDateFilterChange(activeDateFilter === filter.value ? null : filter.value)
@@ -132,6 +135,7 @@ export function ExploreSearchFilters({
                 <div className="flex flex-wrap gap-1.5">
                   {EXPLORE_AGE_OPTIONS.map((option) => (
                     <button
+                      type="button"
                       key={option.label}
                       onClick={() =>
                         onAgeChange(selectedAge === option.label ? null : option.label)
@@ -173,6 +177,7 @@ export function ExploreSearchFilters({
                     const isSelected = selectedTagSlugs.includes(tag.slug)
                     return (
                       <button
+                        type="button"
                         key={tag.id}
                         onClick={() => onToggleTagSlug(tag.slug)}
                         className={cn(

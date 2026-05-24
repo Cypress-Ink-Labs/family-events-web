@@ -30,7 +30,7 @@ export function AdminEventsList(props: EventsListProps) {
   return <AdminVirtualEventsList {...props} />
 }
 
-export function AdminVirtualEventsList({
+function AdminVirtualEventsList({
   events,
   selectedIds,
   statusConfig,

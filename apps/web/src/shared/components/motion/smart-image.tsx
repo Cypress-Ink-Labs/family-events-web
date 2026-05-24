@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ImgHTMLAttributes } from "react"
+import { useRef, useState, type ImgHTMLAttributes } from "react"
 import { cn } from "@/shared/utils/format"
 
 interface SmartImageProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -17,16 +17,15 @@ export function SmartImage({
   alt,
   ...props
 }: SmartImageProps) {
-  const [loaded, setLoaded] = useState(false)
+  const [loadedSrc, setLoadedSrc] = useState<string | undefined>(undefined)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  useEffect(() => {
-    setLoaded(false)
-    const node = imgRef.current
-    if (node?.complete && node.naturalWidth > 0) {
-      setLoaded(true)
-    }
-  }, [src])
+  // Derive loaded state inline: reset when src changes (avoids useEffect state sync).
+  // If the img element is already complete (browser cache), treat as loaded immediately.
+  let loaded = loadedSrc === src
+  if (!loaded && imgRef.current?.complete && imgRef.current.naturalWidth > 0 && imgRef.current.src === src) {
+    loaded = true
+  }
 
   return (
     <span className="relative block overflow-hidden">
@@ -42,11 +41,11 @@ export function SmartImage({
         alt={alt}
         data-loaded={loaded ? "true" : "false"}
         onLoad={(event) => {
-          setLoaded(true)
+          setLoadedSrc(src)
           onLoad?.(event)
         }}
         onError={(event) => {
-          setLoaded(false)
+          setLoadedSrc(undefined)
           onError?.(event)
         }}
         className={cn("smart-image-fade", className)}

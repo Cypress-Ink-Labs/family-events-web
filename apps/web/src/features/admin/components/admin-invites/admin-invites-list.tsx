@@ -1,10 +1,13 @@
-import { Inbox, Ticket, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { ClientDate } from "@/shared/components/client-date"
 import { useNowMs } from "@/shared/hooks/use-now-ms"
 import type { InviteCode } from "@/shared/types"
+
+export { AdminInvitesEmptyState } from "@/features/admin/components/admin-invites/admin-invites-empty-state"
+export { AdminInviteRequestsEmptyState } from "@/features/admin/components/admin-invites/admin-invite-requests-empty-state"
 
 interface AdminInvitesListProps {
   codes: InviteCode[]
@@ -72,34 +75,5 @@ export function AdminInvitesList({ codes, onDelete }: AdminInvitesListProps) {
         )
       })}
     </div>
-  )
-}
-
-export function AdminInvitesEmptyState() {
-  return (
-    <Card className="border-border/60">
-      <CardContent className="p-8 text-center space-y-3">
-        <Ticket className="size-8 mx-auto text-muted-foreground" />
-        <h2 className="text-lg font-semibold">No invite codes yet</h2>
-        <p className="text-sm text-muted-foreground">
-          Generate codes to let specific people sign up during the closed beta.
-        </p>
-      </CardContent>
-    </Card>
-  )
-}
-
-export function AdminInviteRequestsEmptyState() {
-  return (
-    <Card className="border-border/60">
-      <CardContent className="p-8 text-center space-y-3">
-        <Inbox className="size-8 mx-auto text-muted-foreground" />
-        <h2 className="text-lg font-semibold">No invite requests yet</h2>
-        <p className="text-sm text-muted-foreground">
-          When someone clicks &quot;Request invite code&quot; on the sign-in page, they&apos;ll show
-          up here for approval.
-        </p>
-      </CardContent>
-    </Card>
   )
 }

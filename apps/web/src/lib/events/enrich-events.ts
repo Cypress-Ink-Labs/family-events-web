@@ -38,9 +38,9 @@ async function fetchInChunks<Row>(
   fetcher: (chunkIds: string[]) => PromiseLike<{ data: Row[] | null; error: unknown }>
 ): Promise<{ data: Row[]; error: unknown }> {
   const chunks = chunk(eventIds, EVENT_ID_CHUNK_SIZE)
+  const results = await Promise.all(chunks.map((ids) => fetcher(ids)))
   const all: Row[] = []
-  for (const ids of chunks) {
-    const { data, error } = await fetcher(ids)
+  for (const { data, error } of results) {
     if (error) return { data: [], error }
     if (data) all.push(...data)
   }

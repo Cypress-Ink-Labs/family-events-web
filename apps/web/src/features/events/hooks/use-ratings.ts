@@ -7,7 +7,7 @@ import {
 } from "@/features/events/api/ratings"
 import { invalidateEventProjectionQueries } from "@/features/events/lib/event-cache"
 
-export function useRatings(eventId: string | undefined) {
+function useRatings(eventId: string | undefined) {
   return useQuery({
     queryKey: qk.ratings.byEvent(eventId),
     queryFn: async () => {

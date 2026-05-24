@@ -72,7 +72,7 @@ type RowProps = StackProps & {
  * Horizontal layout primitive. Wraps by default — mobile-first.
  * Set `nowrap` only when content is guaranteed to fit (icons, fixed pills).
  */
-export function Row({
+function Row({
   gap = "3",
   align = "center",
   justify,

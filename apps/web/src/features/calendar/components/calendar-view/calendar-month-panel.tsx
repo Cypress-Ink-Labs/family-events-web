@@ -69,6 +69,7 @@ export function CalendarMonthPanel({
 
               return (
                 <button
+                  type="button"
                   key={day.toISOString()}
                   onClick={() => onSelectDate(day)}
                   className={cn(

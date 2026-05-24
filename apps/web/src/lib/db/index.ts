@@ -14,7 +14,6 @@ import type {
 import { Constants } from "../database.types"
 
 export type { CompositeTypes, Database, Enums, Json, Tables, TablesInsert, TablesUpdate }
-export { Constants }
 
 export type AdminAuditLogRow = Tables<"admin_audit_log">
 export type CityRow = Tables<"cities">

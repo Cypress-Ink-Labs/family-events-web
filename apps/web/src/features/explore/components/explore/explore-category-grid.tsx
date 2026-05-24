@@ -25,6 +25,7 @@ export function ExploreCategoryGrid({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {EXPLORE_CATEGORIES.map(({ label, icon: Icon, slug, color }) => (
           <button
+            type="button"
             key={slug}
             onClick={() => onActiveCategoryChange(activeCategory === slug ? null : slug)}
             className={cn(

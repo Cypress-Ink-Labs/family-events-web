@@ -10,7 +10,7 @@ interface AppStore {
   setSelectedCityId: (id: string | null) => void
 }
 
-export const useAppStore = create<AppStore>()(
+const useAppStore = create<AppStore>()(
   devtools(
     persist(
       (set) => ({
@@ -35,16 +35,9 @@ export function useApp() {
   )
   const { data: cities = [], isLoading: isCitiesLoading } = useCities()
 
-  // Memoize on the id list so callers (geolocation/plan) don't re-key on every
-  // render or on each useCities refetch that happens to produce a new array
-  // identity with the same content.
-  const cityIdsKey = useMemo(() => cities.map((c) => c.id).join(","), [cities])
   const selectedCity = useMemo(
     () => cities.find((c) => c.id === selectedCityId) ?? cities[0] ?? null,
-    // cityIdsKey is the stable dep — eslint can't see it depends on cities,
-    // but the join makes identity equal across same-content arrays.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedCityId, cityIdsKey]
+    [selectedCityId, cities]
   )
   const setSelectedCity = useCallback(
     (city: City | null) => setSelectedCityId(city?.id ?? null),

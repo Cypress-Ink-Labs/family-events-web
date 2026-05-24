@@ -26,7 +26,7 @@ export function formatEventDayHour(value: Date | string | number): string {
 }
 
 /** "May 23, 2026" — long-form, used by week headers. */
-export function formatLongDate(value: Date | string | number): string {
+function formatLongDate(value: Date | string | number): string {
   return format(toDate(value), "MMM d, yyyy")
 }
 
@@ -62,6 +62,6 @@ export function formatLastRun(value: Date | string | number): string {
 }
 
 /** "5m", "2h", "3d" — relative duration tightened for badge cells. */
-export function formatRelativeCompact(value: Date | string | number): string {
+function formatRelativeCompact(value: Date | string | number): string {
   return formatDistanceToNowStrict(toDate(value), { addSuffix: true })
 }

@@ -60,7 +60,7 @@ export async function fetchEventsPage(filters: EventsPageFilters, cursor?: Event
   return data ?? []
 }
 
-export async function searchEventsPage(filters: SearchEventsFilters, cursor?: EventsCursor) {
+async function searchEventsPage(filters: SearchEventsFilters, cursor?: EventsCursor) {
   const args: SearchEventsArgs = {
     p_city_id: filters.cityId,
     p_date_from: filters.dateFrom,

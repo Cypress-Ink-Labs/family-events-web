@@ -71,12 +71,16 @@ export function useTriggerSourceScrape() {
   })
 }
 
-export function useAdminBulkSetAutoApprove() {
+function useAdminBulkSetAutoApprove() {
+  const queryClient = useQueryClient()
   const bulkProcessingMode = useAdminBulkSetProcessingMode()
 
   return useMutation({
     mutationFn: async (enable: boolean) => {
       await bulkProcessingMode.mutateAsync(enable ? "auto_approve" : "manual_review")
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
     },
   })
 }

@@ -41,7 +41,7 @@ export function ExploreActiveFilters({
           >
             <Badge variant="secondary" className="gap-1">
               Free only
-              <button onClick={() => onOnlyFreeChange(false)}>
+              <button type="button" onClick={() => onOnlyFreeChange(false)}>
                 <X className="size-3" />
               </button>
             </Badge>
@@ -58,7 +58,7 @@ export function ExploreActiveFilters({
           >
             <Badge variant="secondary" className="gap-1 capitalize">
               {activeCategory}
-              <button onClick={() => onActiveCategoryChange(null)}>
+              <button type="button" onClick={() => onActiveCategoryChange(null)}>
                 <X className="size-3" />
               </button>
             </Badge>
@@ -77,7 +77,7 @@ export function ExploreActiveFilters({
             >
               <Badge variant="secondary" className="gap-1">
                 {tag.name}
-                <button onClick={() => onToggleTagSlug(slug)}>
+                <button type="button" onClick={() => onToggleTagSlug(slug)}>
                   <X className="size-3" />
                 </button>
               </Badge>
