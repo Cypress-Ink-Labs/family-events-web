@@ -3,7 +3,18 @@ import type { Event } from "@/shared/types"
 import { cn } from "@/shared/utils/format"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select"
 import { FilterBar } from "@/components/v2"
+import {
+  ADMIN_EVENTS_PAGE_SIZE_OPTIONS,
+  type AdminEventsPageSize,
+} from "@/shared/constants/pagination"
 
 export type AdminEventStatusFilter = Event["status"] | "all"
 export type AdminLlmReviewFilter =
@@ -101,6 +112,8 @@ interface ToolbarProps {
   totalCount: number
   allLoadedSelected: boolean
   onToggleSelectAll: () => void
+  pageSize: AdminEventsPageSize
+  onPageSizeChange: (value: AdminEventsPageSize) => void
 }
 
 export function AdminEventsToolbar({
@@ -110,6 +123,8 @@ export function AdminEventsToolbar({
   totalCount,
   allLoadedSelected,
   onToggleSelectAll,
+  pageSize,
+  onPageSizeChange,
 }: ToolbarProps) {
   const buttonLabel = allLoadedSelected
     ? "Deselect loaded"
@@ -126,6 +141,21 @@ export function AdminEventsToolbar({
           className="min-h-[44px] pl-9"
         />
       </div>
+      <Select
+        value={String(pageSize)}
+        onValueChange={(value) => onPageSizeChange(Number(value) as AdminEventsPageSize)}
+      >
+        <SelectTrigger className="min-h-[44px] w-auto gap-1.5 text-xs" aria-label="Rows per page">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {ADMIN_EVENTS_PAGE_SIZE_OPTIONS.map((size) => (
+            <SelectItem key={size} value={String(size)}>
+              {size} / page
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       {loadedCount > 0 && (
         <Button
           variant="outline"

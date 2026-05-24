@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { useAdminStore } from "@/features/admin/stores/admin-store"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
@@ -23,9 +23,24 @@ import { useAdminEventFacetCounts } from "@/features/admin/hooks/events/use-admi
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
 import { ADMIN_EVENT_STATUS_DISPLAY } from "@/features/admin/constants/event-status-display"
+import {
+  ADMIN_EVENTS_PAGE_SIZE_OPTIONS,
+  ADMIN_EVENTS_PAGE_SIZE_STORAGE_KEY,
+  ADMIN_PAGE_SIZE,
+  type AdminEventsPageSize,
+} from "@/shared/constants/pagination"
 import type { Event } from "@/shared/types"
 
 type EventStatusFilter = Event["status"] | "all"
+
+function readStoredPageSize(): AdminEventsPageSize {
+  if (typeof window === "undefined") return ADMIN_PAGE_SIZE as AdminEventsPageSize
+  const raw = window.localStorage.getItem(ADMIN_EVENTS_PAGE_SIZE_STORAGE_KEY)
+  const parsed = raw ? Number(raw) : NaN
+  return (ADMIN_EVENTS_PAGE_SIZE_OPTIONS as readonly number[]).includes(parsed)
+    ? (parsed as AdminEventsPageSize)
+    : (ADMIN_PAGE_SIZE as AdminEventsPageSize)
+}
 
 export function AdminEventsPage() {
   const keyword = useAdminStore((state) => state.keyword)
@@ -38,6 +53,20 @@ export function AdminEventsPage() {
   const setSelectedIds = useAdminStore((state) => state.setSelectedIds)
   const clearSelectedIds = useAdminStore((state) => state.clearSelectedIds)
   const [llmReviewFilter, setLlmReviewFilter] = useState<AdminLlmReviewFilter>("all")
+  const [pageSize, setPageSize] = useState<AdminEventsPageSize>(readStoredPageSize)
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    window.localStorage.setItem(ADMIN_EVENTS_PAGE_SIZE_STORAGE_KEY, String(pageSize))
+  }, [pageSize])
+
+  const handlePageSizeChange = useCallback(
+    (nextSize: AdminEventsPageSize) => {
+      setPageSize(nextSize)
+      clearSelectedIds()
+    },
+    [clearSelectedIds]
+  )
 
   const { value: cityFilter, setValue: setCityFilter } = useCityFilter()
 
@@ -50,7 +79,13 @@ export function AdminEventsPage() {
     isFetchingNextPage,
     hasNextPage: listHasNextPage,
     refetch: refetchEvents,
-  } = useAdminEventsInfinite({ keyword, status: statusFilter, cityFilter, llmReviewFilter })
+  } = useAdminEventsInfinite({
+    keyword,
+    status: statusFilter,
+    cityFilter,
+    llmReviewFilter,
+    pageSize,
+  })
 
   const events = useMemo(() => eventList?.events ?? [], [eventList?.events])
   const loadedCount = eventList?.loadedCount ?? 0
@@ -189,6 +224,8 @@ export function AdminEventsPage() {
         totalCount={totalCountForToolbar}
         allLoadedSelected={allLoadedSelected}
         onToggleSelectAll={toggleSelectAll}
+        pageSize={pageSize}
+        onPageSizeChange={handlePageSizeChange}
       />
 
       <AdminEventsBulkBar

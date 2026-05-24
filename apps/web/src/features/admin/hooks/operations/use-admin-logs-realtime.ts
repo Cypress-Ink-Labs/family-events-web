@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
-import { subscribeToAdminLogTableChanges } from "@/features/admin/lib/admin-logs-channel-registry"
+import { ADMIN_LOGS_POLL_INTERVAL_MS } from "@/shared/constants/time"
 
 export function useAdminLogsRealtime() {
   const queryClient = useQueryClient()
@@ -15,23 +15,7 @@ export function useAdminLogsRealtime() {
       void queryClient.invalidateQueries({ queryKey: qk.admin.deadTagQueueRows })
     }
 
-    const unsubSourceRuns = subscribeToAdminLogTableChanges(
-      "source_runs",
-      invalidateAdminLogQueries
-    )
-    const unsubSourceQueue = subscribeToAdminLogTableChanges(
-      "source_scrape_queue",
-      invalidateAdminLogQueries
-    )
-    const unsubTagQueue = subscribeToAdminLogTableChanges(
-      "event_tag_queue",
-      invalidateAdminLogQueries
-    )
-
-    return () => {
-      unsubSourceRuns()
-      unsubSourceQueue()
-      unsubTagQueue()
-    }
+    const id = setInterval(invalidateAdminLogQueries, ADMIN_LOGS_POLL_INTERVAL_MS)
+    return () => clearInterval(id)
   }, [queryClient])
 }

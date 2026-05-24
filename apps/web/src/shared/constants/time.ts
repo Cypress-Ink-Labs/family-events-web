@@ -19,3 +19,13 @@ export const SOURCE_STALE_THRESHOLD_MS = FIFTEEN_MINUTES_MS
 
 /** Delay before re-subscribing a dropped realtime channel. */
 export const REALTIME_RECONNECT_DELAY_MS = 2_000
+
+/**
+ * How often the admin logs page refetches queue/run state. Admin queue
+ * tables (event_tag_queue, source_scrape_queue, source_runs) are excluded
+ * from the supabase_realtime publication because their write rate (~28k
+ * WAL rows / sampling window for event_tag_queue alone) overwhelmed
+ * realtime.list_changes for negligible viewer count. Polling is the
+ * acceptable trade-off for an ops dashboard.
+ */
+export const ADMIN_LOGS_POLL_INTERVAL_MS = 10_000

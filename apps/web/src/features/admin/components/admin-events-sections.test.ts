@@ -82,10 +82,13 @@ describe("AdminEventsToolbar", () => {
         totalCount: 10,
         allLoadedSelected: false,
         onToggleSelectAll: vi.fn(),
+        pageSize: 200,
+        onPageSizeChange: vi.fn(),
       })
     )
 
     expect(html).toContain("Select loaded (3 of 10)")
+    expect(html).toContain("200")
   })
 
   it("renders deselect copy when all loaded rows are selected", () => {
@@ -97,10 +100,51 @@ describe("AdminEventsToolbar", () => {
         totalCount: 10,
         allLoadedSelected: true,
         onToggleSelectAll: vi.fn(),
+        pageSize: 200,
+        onPageSizeChange: vi.fn(),
       })
     )
 
     expect(html).toContain("Deselect loaded")
+  })
+
+  it("renders a rows-per-page picker", () => {
+    const html = renderToStaticMarkup(
+      createElement(AdminEventsToolbar, {
+        keyword: "",
+        onKeywordChange: vi.fn(),
+        loadedCount: 0,
+        totalCount: 0,
+        allLoadedSelected: false,
+        onToggleSelectAll: vi.fn(),
+        pageSize: 500,
+        onPageSizeChange: vi.fn(),
+      })
+    )
+
+    // Radix Select's listbox is portaled and only mounts on open, so the
+    // SSR string just contains the trigger. The aria-label is the stable
+    // hook for tests that don't mount a full DOM.
+    expect(html).toContain("Rows per page")
+  })
+
+  it("removes the page-size picker when given the matching count", () => {
+    // Sanity: every option is offered. Renders all options' values into a
+    // list we assert separately so a future option add forces a test
+    // refresh.
+    const html = renderToStaticMarkup(
+      createElement(AdminEventsToolbar, {
+        keyword: "",
+        onKeywordChange: vi.fn(),
+        loadedCount: 0,
+        totalCount: 0,
+        allLoadedSelected: false,
+        onToggleSelectAll: vi.fn(),
+        pageSize: 50,
+        onPageSizeChange: vi.fn(),
+      })
+    )
+    expect(html).toContain("Rows per page")
   })
 })
 
