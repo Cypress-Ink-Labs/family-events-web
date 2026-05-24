@@ -72,7 +72,15 @@ type RowProps = StackProps & {
  * Horizontal layout primitive. Wraps by default — mobile-first.
  * Set `nowrap` only when content is guaranteed to fit (icons, fixed pills).
  */
-export function Row({ gap = "3", align = "center", justify, nowrap, as, className, children }: RowProps) {
+export function Row({
+  gap = "3",
+  align = "center",
+  justify,
+  nowrap,
+  as,
+  className,
+  children,
+}: RowProps) {
   const Tag = (as ?? "div") as ElementType
   return (
     <Tag

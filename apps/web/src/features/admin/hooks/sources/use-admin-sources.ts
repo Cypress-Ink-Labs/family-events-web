@@ -71,7 +71,6 @@ export function useTriggerSourceScrape() {
   })
 }
 
-
 export function useAdminBulkSetProcessingMode() {
   const queryClient = useQueryClient()
 

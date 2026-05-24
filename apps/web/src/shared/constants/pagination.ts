@@ -3,7 +3,6 @@
  * page because admins drive bulk operations off the same view.
  */
 
-
 export const ADMIN_PAGE_SIZE = 200
 
 /**

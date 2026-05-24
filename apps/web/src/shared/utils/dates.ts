@@ -25,7 +25,6 @@ export function formatEventDayHour(value: Date | string | number): string {
   return format(toDate(value), "MMM d · h a")
 }
 
-
 /** "2:30 PM" — time only. */
 export function formatEventTime(value: Date | string | number): string {
   return format(toDate(value), "h:mm a")
@@ -56,5 +55,3 @@ export function formatLastRun(value: Date | string | number): string {
   if (isThisYear(date)) return format(date, "M/d h:mma").toLowerCase()
   return format(date, "M/d/yy")
 }
-
-

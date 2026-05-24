@@ -1,11 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
-import {
-  getUserEventRating,
-  upsertEventRating,
-} from "@/features/events/api/ratings"
+import { getUserEventRating, upsertEventRating } from "@/features/events/api/ratings"
 import { invalidateEventProjectionQueries } from "@/features/events/lib/event-cache"
-
 
 export function useUserRating(userId: string | undefined, eventId: string | undefined) {
   return useQuery({

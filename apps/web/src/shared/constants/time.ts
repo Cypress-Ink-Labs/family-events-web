@@ -16,7 +16,6 @@ export const PROFILE_REFRESH_INTERVAL_MS = FIVE_MINUTES_MS
  */
 export const SOURCE_STALE_THRESHOLD_MS = FIFTEEN_MINUTES_MS
 
-
 /**
  * How often the admin logs page refetches queue/run state. Admin queue
  * tables (event_tag_queue, source_scrape_queue, source_runs) are excluded

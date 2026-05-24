@@ -12,4 +12,3 @@ export const EVENT_STATUS_OPTIONS: readonly { value: EventStatus; label: string 
   { value: "rejected", label: "Rejected" },
   { value: "archived", label: "Archived" },
 ]
-
