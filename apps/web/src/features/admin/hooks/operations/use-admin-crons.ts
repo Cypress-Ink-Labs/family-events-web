@@ -4,6 +4,7 @@ import { qk } from "@/infrastructure/queries/query-keys"
 import {
   fetchCronHistory,
   fetchRailwayCronHistory,
+  fetchRailwayCronRunDetail,
   listCronJobs,
   listRailwayCronJobs,
   runDueScrapes,
@@ -63,6 +64,15 @@ export function useAdminRailwayCronHistory(label?: string) {
   return useQuery({
     queryKey: qk.admin.railwayCronHistory(label),
     queryFn: () => fetchRailwayCronHistory(label),
+    refetchInterval: ADMIN_CRON_REFETCH_INTERVAL_MS,
+  })
+}
+
+export function useAdminRailwayCronRunDetail(runId: number | null, enabled: boolean) {
+  return useQuery({
+    queryKey: qk.admin.railwayCronRunDetail(runId),
+    queryFn: () => fetchRailwayCronRunDetail(runId ?? 0),
+    enabled: enabled && runId != null,
     refetchInterval: ADMIN_CRON_REFETCH_INTERVAL_MS,
   })
 }

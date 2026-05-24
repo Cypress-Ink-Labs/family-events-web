@@ -21,7 +21,7 @@ export async function updateAdminEventStatus(
   const { error } = await supabase.rpc("admin_update_event_status", {
     p_event_id: eventId,
     p_status: status,
-    p_reason: reason,
+    p_reason: reason ?? undefined,
   })
   if (error) throw error
   return status

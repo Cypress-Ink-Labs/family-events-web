@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
+  formatDurationBetween,
+  formatDurationMinutes,
   formatEventDate,
   formatEventDateTime,
   formatEventTime,
@@ -37,6 +39,47 @@ describe("formatTimeRange", () => {
     const start = new Date(2026, 4, 23, 22, 0)
     const end = new Date(2026, 4, 24, 1, 0)
     expect(formatTimeRange(start, end)).toBe("Sat, May 23 · 10:00 PM - Sun, May 24 · 1:00 AM")
+  })
+})
+
+describe("formatDurationMinutes", () => {
+  it("formats minutes under one hour", () => {
+    expect(formatDurationMinutes(1)).toBe("1 minute")
+    expect(formatDurationMinutes(45)).toBe("45 minutes")
+  })
+
+  it("formats exact hours without leftover minutes", () => {
+    expect(formatDurationMinutes(60)).toBe("1 hour")
+    expect(formatDurationMinutes(120)).toBe("2 hours")
+  })
+
+  it("formats hours and minutes", () => {
+    expect(formatDurationMinutes(61)).toBe("1 hour 1 minute")
+    expect(formatDurationMinutes(90)).toBe("1 hour 30 minutes")
+    expect(formatDurationMinutes(135)).toBe("2 hours 15 minutes")
+  })
+
+  it("returns TBD for missing or invalid values", () => {
+    expect(formatDurationMinutes(null)).toBe("TBD")
+    expect(formatDurationMinutes(undefined)).toBe("TBD")
+    expect(formatDurationMinutes(Number.NaN)).toBe("TBD")
+    expect(formatDurationMinutes(0)).toBe("TBD")
+    expect(formatDurationMinutes(-15)).toBe("TBD")
+  })
+})
+
+describe("formatDurationBetween", () => {
+  it("formats the rounded duration between start and end", () => {
+    expect(formatDurationBetween("2026-05-24T10:00:00.000Z", "2026-05-24T12:00:00.000Z")).toBe(
+      "2 hours"
+    )
+  })
+
+  it("returns TBD when end is missing or before start", () => {
+    expect(formatDurationBetween("2026-05-24T10:00:00.000Z", null)).toBe("TBD")
+    expect(formatDurationBetween("2026-05-24T10:00:00.000Z", "2026-05-24T09:00:00.000Z")).toBe(
+      "TBD"
+    )
   })
 })
 

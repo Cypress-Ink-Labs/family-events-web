@@ -33,6 +33,7 @@ type MutationOptions<TVariables = void> = {
 
 type QueryOptions<TData> = {
   queryFn: () => Promise<TData>
+  enabled?: boolean
 }
 
 async function loadCronHooks() {
@@ -73,6 +74,43 @@ describe("admin cron hooks", () => {
       p_label: "tag-queue",
       p_limit: ADMIN_CRON_HISTORY_LIMIT,
     })
+  })
+
+  it("loads Railway cron run detail with the expected RPC params", async () => {
+    const { useAdminRailwayCronRunDetail } = await loadCronHooks()
+    mockRpc.mockResolvedValueOnce({
+      data: [
+        {
+          id: 123,
+          label: "cron-tag-queue",
+          status: "succeeded",
+          http_status: 200,
+          duration_s: 2,
+          body: "ok",
+          ran_at: "2026-05-24T12:00:00.000Z",
+          run_key: "00000000-0000-4000-8000-000000000123",
+          logs: [],
+        },
+      ],
+      error: null,
+    })
+
+    const query = useAdminRailwayCronRunDetail(123, true) as unknown as QueryOptions<unknown>
+    await query.queryFn()
+
+    expect(query.enabled).toBe(true)
+    expect(mockRpc).toHaveBeenCalledWith(ADMIN_CRON_RPCS.railwayCronRunDetail, {
+      p_run_id: 123,
+    })
+  })
+
+  it("disables Railway cron run detail queries without a selected run", async () => {
+    const { useAdminRailwayCronRunDetail } = await loadCronHooks()
+
+    const query = useAdminRailwayCronRunDetail(null, true) as unknown as QueryOptions<unknown>
+
+    expect(query.enabled).toBe(false)
+    expect(mockRpc).not.toHaveBeenCalled()
   })
 
   it("toggles pg_cron jobs and invalidates the cron job cache", async () => {
@@ -158,5 +196,25 @@ describe("admin cron hooks", () => {
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: qk.admin.sources })
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: qk.admin.sourceRuns })
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: qk.admin.cronHistory() })
+  })
+
+  it("normalizes Railway runs with the Railway provider", async () => {
+    const { railwayCronRunToCronRun } = await import("@/features/admin/types")
+
+    expect(
+      railwayCronRunToCronRun({
+        id: 12,
+        label: "cron-tag-queue",
+        status: "succeeded",
+        http_status: 200,
+        duration_s: 3,
+        body: "ok",
+        ran_at: "2026-05-24T12:00:00.000Z",
+      })
+    ).toMatchObject({
+      provider: "railway",
+      runid: 12,
+      duration_ms: 3000,
+    })
   })
 })

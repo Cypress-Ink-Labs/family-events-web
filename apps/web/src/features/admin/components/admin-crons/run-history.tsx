@@ -20,12 +20,23 @@ import {
   normalizeCronStatus,
 } from "@/features/admin/components/admin-crons/run-status-badge"
 
-function RunHistoryRow({ run }: { run: CronRun }) {
+function RunHistoryRow({
+  run,
+  onRunSelect,
+}: {
+  run: CronRun
+  onRunSelect?: (run: CronRun) => void
+}) {
   const key = normalizeCronStatus(run.status)
   const cfg = CRON_STATUS_CONFIG[key]
 
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-border/40 last:border-0">
+    <button
+      type="button"
+      aria-label={`View logs for ${run.jobname} run at ${run.start_time}`}
+      onClick={() => onRunSelect?.(run)}
+      className="flex w-full items-center gap-3 border-b border-border/40 py-2.5 text-left transition-colors last:border-0 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
       <cfg.icon className={cn("size-3.5 shrink-0", cfg.color)} />
       <span className="text-xs font-medium text-muted-foreground w-36 shrink-0 truncate">
         {run.jobname}
@@ -45,7 +56,7 @@ function RunHistoryRow({ run }: { run: CronRun }) {
           {run.return_message}
         </span>
       )}
-    </div>
+    </button>
   )
 }
 
@@ -86,9 +97,11 @@ export function RunDomainChip({ label, count, active, onClick }: RunDomainChipPr
 function RunHistoryDomainGroup({
   group,
   defaultOpen,
+  onRunSelect,
 }: {
   group: CronDomainGroup
   defaultOpen: boolean
+  onRunSelect?: (run: CronRun) => void
 }) {
   return (
     <Collapsible defaultOpen={defaultOpen}>
@@ -107,7 +120,11 @@ function RunHistoryDomainGroup({
         <CollapsibleContent>
           <div className="border-t border-border/60 px-3">
             {group.runs.map((run) => (
-              <RunHistoryRow key={run.runid} run={run} />
+              <RunHistoryRow
+                key={`${run.provider}-${run.runid}`}
+                run={run}
+                onRunSelect={onRunSelect}
+              />
             ))}
           </div>
         </CollapsibleContent>
@@ -119,9 +136,11 @@ function RunHistoryDomainGroup({
 export function RunHistory({
   history,
   selectedDomain,
+  onRunSelect,
 }: {
   history: CronRun[]
   selectedDomain: string
+  onRunSelect?: (run: CronRun) => void
 }) {
   const groups = useMemo(() => groupCronRunsByDomain(history), [history])
   const visibleGroups =
@@ -140,6 +159,7 @@ export function RunHistory({
           key={group.key}
           group={group}
           defaultOpen={selectedDomain !== ALL_RUNS_DOMAIN || groups.length === 1}
+          onRunSelect={onRunSelect}
         />
       ))}
     </div>

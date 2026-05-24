@@ -4,7 +4,13 @@ import {
   ADMIN_CRON_RPCS,
 } from "@/features/admin/constants/cron"
 import { supabase } from "@/infrastructure/supabase/client"
-import type { CronJob, CronRun, RailwayCronJob, RailwayCronRun } from "@/features/admin/types"
+import type {
+  CronJob,
+  CronRun,
+  RailwayCronJob,
+  RailwayCronRun,
+  RailwayCronRunDetail,
+} from "@/features/admin/types"
 
 export async function listCronJobs(): Promise<CronJob[]> {
   const { data, error } = await supabase.rpc(ADMIN_CRON_RPCS.listCronJobs)
@@ -19,7 +25,10 @@ export async function fetchCronHistory(jobName?: string): Promise<CronRun[]> {
     p_limit: ADMIN_CRON_HISTORY_LIMIT,
   })
   if (error) throw error
-  return (data ?? []) as CronRun[]
+  return ((data ?? []) as Omit<CronRun, "provider">[]).map((run) => ({
+    ...run,
+    provider: "pg_cron",
+  }))
 }
 
 export async function toggleCronJob(jobName: string, active: boolean): Promise<void> {
@@ -51,6 +60,19 @@ export async function fetchRailwayCronHistory(label?: string): Promise<RailwayCr
   })
   if (error) throw error
   return (data ?? []) as RailwayCronRun[]
+}
+
+export async function fetchRailwayCronRunDetail(runId: number): Promise<RailwayCronRunDetail> {
+  const { data, error } = await supabase.rpc(ADMIN_CRON_RPCS.railwayCronRunDetail, {
+    p_run_id: runId,
+  })
+  if (error) throw error
+  const row = Array.isArray(data) ? data[0] : data
+  if (!row) throw new Error("Cron run not found")
+  return {
+    ...row,
+    logs: Array.isArray(row.logs) ? row.logs : [],
+  } as unknown as RailwayCronRunDetail
 }
 
 export async function setRailwayCronEnabled(label: string, enabled: boolean): Promise<void> {

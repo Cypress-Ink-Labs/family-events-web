@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { safeImageSrc } from "@/infrastructure/safe-url"
+import { formatDurationBetween } from "@/shared/utils/dates"
 import { formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
 import { Separator } from "@/shared/components/ui/separator"
@@ -123,9 +124,7 @@ export function EventDetailPage() {
   const infoItems = [
     {
       label: "Duration",
-      value: currentEvent.end_datetime
-        ? `${Math.round((new Date(currentEvent.end_datetime).getTime() - new Date(currentEvent.start_datetime).getTime()) / 60000)} mins`
-        : "TBD",
+      value: formatDurationBetween(currentEvent.start_datetime, currentEvent.end_datetime),
       icon: Clock,
     },
     {

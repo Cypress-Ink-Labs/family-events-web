@@ -25,8 +25,8 @@ export async function setAdminUserAccess({
   disabledReason,
 }: SetUserAccessInput): Promise<void> {
   const payload = isEnabled
-    ? { p_disabled_reason: null }
-    : { p_disabled_reason: disabledReason?.trim() || null }
+    ? { p_disabled_reason: undefined }
+    : { p_disabled_reason: disabledReason?.trim() || undefined }
   const { error } = await supabase.rpc("admin_set_user_access", {
     p_user_id: userId,
     p_is_enabled: isEnabled,

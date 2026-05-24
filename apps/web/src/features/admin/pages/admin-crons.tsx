@@ -17,6 +17,7 @@ import {
   groupCronRunsByDomain,
 } from "@/features/admin/components/admin-crons/cron-domain"
 import { RailwayCronJobCard } from "@/features/admin/components/admin-crons/railway-cron-job-card"
+import { CronRunDetailSheet } from "@/features/admin/components/admin-crons/cron-run-detail-sheet"
 import { RunDomainChip, RunHistory } from "@/features/admin/components/admin-crons/run-history"
 
 // Re-exports kept stable for tests / external imports.
@@ -24,6 +25,7 @@ export {
   getCronRunDomain,
   groupCronRunsByDomain,
 } from "@/features/admin/components/admin-crons/cron-domain"
+import type { CronRun } from "@/features/admin/types"
 
 export function AdminCronsPage() {
   // pg_cron is fully migrated off Supabase — see migration
@@ -35,6 +37,7 @@ export function AdminCronsPage() {
   const runDueScrapes = useRunDueScrapes()
   const { toastError } = useAdminToast()
   const [selectedDomain, setSelectedDomain] = useState(ALL_RUNS_DOMAIN)
+  const [selectedRun, setSelectedRun] = useState<CronRun | null>(null)
 
   const combinedHistory = useMemo(() => {
     const normalized = railwayHistory.map(railwayCronRunToCronRun)
@@ -121,9 +124,21 @@ export function AdminCronsPage() {
           )}
         </CardHeader>
         <CardContent className="pt-0">
-          <RunHistory history={combinedHistory} selectedDomain={selectedDomain} />
+          <RunHistory
+            history={combinedHistory}
+            selectedDomain={selectedDomain}
+            onRunSelect={setSelectedRun}
+          />
         </CardContent>
       </Card>
+
+      <CronRunDetailSheet
+        run={selectedRun}
+        open={selectedRun != null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedRun(null)
+        }}
+      />
     </div>
   )
 }

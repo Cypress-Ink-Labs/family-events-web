@@ -40,6 +40,7 @@ function event(overrides: Partial<EventWithDetails> = {}): EventWithDetails {
     admin_locked_fields: [],
     admin_last_edited_at: null,
     admin_last_edited_by: null,
+    last_enrichment_attempt_at: null,
     created_at: "2026-05-01T00:00:00.000Z",
     updated_at: "2026-05-01T00:00:00.000Z",
     tags: [

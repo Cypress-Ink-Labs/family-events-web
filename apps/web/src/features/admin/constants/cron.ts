@@ -8,6 +8,7 @@ export const ADMIN_CRON_RPCS = {
   setCronSchedule: "admin_set_cron_schedule",
   listRailwayCronJobs: "admin_list_railway_cron_jobs",
   railwayCronRunHistory: "admin_railway_cron_run_history",
+  railwayCronRunDetail: "admin_railway_cron_run_detail",
   setRailwayCronEnabled: "admin_set_cron_enabled",
   runDueScrapes: "admin_run_due_scrapes",
 } as const

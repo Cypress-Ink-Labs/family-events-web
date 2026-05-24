@@ -112,6 +112,8 @@ export interface CronJob {
   last_run_message: string | null
 }
 
+export type CronRunProvider = "pg_cron" | "railway"
+
 export interface CronRun {
   runid: number
   jobname: string
@@ -120,6 +122,7 @@ export interface CronRun {
   start_time: string
   end_time: string | null
   duration_ms: number | null
+  provider: CronRunProvider
 }
 
 export interface RailwayCronJob {
@@ -141,6 +144,21 @@ export interface RailwayCronRun {
   ran_at: string
 }
 
+export interface CronRunLogEntry {
+  id: number
+  provider: "railway" | "supabase"
+  level: "debug" | "info" | "log" | "warn" | "error"
+  message: string
+  metadata: Record<string, unknown>
+  sequence: number | null
+  created_at: string
+}
+
+export interface RailwayCronRunDetail extends RailwayCronRun {
+  run_key: string
+  logs: CronRunLogEntry[]
+}
+
 export function railwayCronRunToCronRun(r: RailwayCronRun): CronRun {
   return {
     runid: r.id,
@@ -150,6 +168,7 @@ export function railwayCronRunToCronRun(r: RailwayCronRun): CronRun {
     start_time: r.ran_at,
     end_time: null,
     duration_ms: r.duration_s != null ? r.duration_s * 1000 : null,
+    provider: "railway",
   }
 }
 

@@ -10,6 +10,10 @@ function toDate(value: Date | string | number): Date {
   return value instanceof Date ? value : new Date(value)
 }
 
+function pluralize(value: number, singular: string, plural: string): string {
+  return `${value} ${value === 1 ? singular : plural}`
+}
+
 /** "Sat, May 23 · 2:30 PM" — the canonical event-card line. */
 export function formatEventDateTime(value: Date | string | number): string {
   return format(toDate(value), "EEE, MMM d · h:mm a")
@@ -41,6 +45,35 @@ export function formatTimeRange(
     return `${format(a, "h:mm a")} - ${format(b, "h:mm a")}`
   }
   return `${formatEventDateTime(a)} - ${formatEventDateTime(b)}`
+}
+
+export function formatDurationMinutes(totalMinutes: number | null | undefined): string {
+  if (totalMinutes == null || !Number.isFinite(totalMinutes)) return "TBD"
+
+  const minutes = Math.round(totalMinutes)
+  if (minutes <= 0) return "TBD"
+  if (minutes < 60) return pluralize(minutes, "minute", "minutes")
+
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  const hoursLabel = pluralize(hours, "hour", "hours")
+
+  if (remainingMinutes === 0) return hoursLabel
+  return `${hoursLabel} ${pluralize(remainingMinutes, "minute", "minutes")}`
+}
+
+export function formatDurationBetween(
+  start: Date | string | number,
+  end: Date | string | number | null | undefined
+): string {
+  if (end == null) return "TBD"
+
+  const startDate = toDate(start)
+  const endDate = toDate(end)
+  const durationMs = endDate.getTime() - startDate.getTime()
+
+  if (!Number.isFinite(durationMs)) return "TBD"
+  return formatDurationMinutes(durationMs / 60000)
 }
 
 /**
