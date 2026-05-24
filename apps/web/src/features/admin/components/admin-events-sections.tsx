@@ -1,6 +1,6 @@
 import { Check, CheckCheck, Search, Trash2, XCircle } from "lucide-react"
 import type { Event } from "@/shared/types"
-import { cn } from "@/shared/utils/format"
+import { cn, formatSlugLabel } from "@/shared/utils/format"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import {
@@ -56,7 +56,7 @@ export function AdminEventStatusFilterBar({
                 : "border-border hover:bg-accent"
             )}
           >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+            {formatSlugLabel(status)}
             {status !== "all" && counts[status] ? (
               <span className="opacity-70">({counts[status]})</span>
             ) : status === "all" ? (
@@ -80,7 +80,7 @@ export function AdminLlmReviewFilterBar({ llmReviewFilter, onChange }: LlmFilter
     { value: "reviewed", label: "LLM reviewed" },
     { value: "approved", label: "LLM approved" },
     { value: "rejected", label: "LLM rejected" },
-    { value: "needs_admin_review", label: "Needs admin review" },
+    { value: "needs_admin_review", label: "Needs Admin Review" },
     { value: "failed", label: "LLM failed" },
   ]
 

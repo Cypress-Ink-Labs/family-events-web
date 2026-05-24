@@ -160,7 +160,7 @@ describe("AdminLlmReviewFilterBar", () => {
     expect(html).toContain("LLM reviewed")
     expect(html).toContain("LLM approved")
     expect(html).toContain("LLM rejected")
-    expect(html).toContain("Needs admin review")
+    expect(html).toContain("Needs Admin Review")
     expect(html).toContain("LLM failed")
   })
 })

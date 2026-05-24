@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select"
 import { Switch } from "@/shared/components/ui/switch"
-import { cn } from "@/shared/utils/format"
+import { cn, formatSlugLabel } from "@/shared/utils/format"
 import { formatLastRun } from "@/shared/utils/dates"
 import {
   ADMIN_SOURCE_TYPE_LABELS,
@@ -60,7 +60,7 @@ export function SourceCard({
           <div className="min-w-0 flex-1 space-y-0.5">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-semibold text-foreground">{source.name}</h3>
-              <Badge variant="outline" className="text-[10px] capitalize">
+              <Badge variant="outline" className="text-[10px]">
                 {sourceTypeLabel}
               </Badge>
               <span className="text-[10px] text-muted-foreground">{cityLabel}</span>
@@ -115,8 +115,8 @@ export function SourceCard({
                 <SelectItem value="llm_review">LLM review</SelectItem>
               </SelectContent>
             </Select>
-            <span className="text-[10px] text-muted-foreground capitalize">
-              Extraction: {source.extraction_mode.replaceAll("_", " ")}
+            <span className="text-[10px] text-muted-foreground">
+              Extraction: {formatSlugLabel(source.extraction_mode)}
             </span>
           </div>
           <Button

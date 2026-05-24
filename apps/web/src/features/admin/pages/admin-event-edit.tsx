@@ -21,6 +21,7 @@ import { AdminEventEditForm, type AdminEventEditSubmit } from "../components/adm
 import { EventStatusBadge } from "../components/admin-event-edit-sections"
 import { useTags } from "@/features/events/hooks/use-tags"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
+import { formatSlugLabel } from "@/shared/utils/format"
 import type { Event } from "@/shared/types"
 
 export function AdminEventEditPage() {
@@ -83,7 +84,7 @@ export function AdminEventEditPage() {
         patch: { status },
         tagIds: eventQuery.data.tags?.map((tag) => tag.tag_id) ?? [],
       })
-      toast.success(`Event ${status}`)
+      toast.success(`Event ${formatSlugLabel(status)}`)
       isDirtyRef.current = false
     } catch (error) {
       setSaveError(humanizeSupabaseError(error, "Failed to update event status."))

@@ -3,7 +3,7 @@ import { Badge } from "@/shared/components/ui/badge"
 import { ClientDate } from "@/shared/components/client-date"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { formatProviderLabel } from "@/features/admin/utils/format-provider-label"
-import { formatEventPrice } from "@/shared/utils/format"
+import { formatEventPrice, formatSlugLabel } from "@/shared/utils/format"
 import type { EventAiTraceWithParsed } from "@/shared/types"
 
 interface AiTracePanelProps {
@@ -42,7 +42,7 @@ export function AiTracePanel({
               {trace.provider ? formatProviderLabel(trace.provider) : "Unknown provider"}
             </Badge>
             {trace.model ? <Badge variant="outline">Model: {trace.model}</Badge> : null}
-            <Badge variant="outline">Status: {trace.status}</Badge>
+            <Badge variant="outline">Status: {formatSlugLabel(trace.status)}</Badge>
             <Badge variant="outline">
               Run: <ClientDate value={trace.created_at} pattern="MMM d, h:mm a" />
             </Badge>

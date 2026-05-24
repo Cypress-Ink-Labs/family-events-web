@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { Badge } from "@/shared/components/ui/badge"
 import { ClientDate } from "@/shared/components/client-date"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
-import { cn } from "@/shared/utils/format"
+import { cn, formatSlugLabel } from "@/shared/utils/format"
 import type { Event, EventAiTraceWithParsed } from "@/shared/types"
 import { formatProviderLabel } from "@/features/admin/utils/format-provider-label"
 import { formatEventFieldLabel } from "@/features/admin/lib/event-field-locks"
@@ -42,7 +42,7 @@ export function EventStatusBadge({ status }: { status: Event["status"] }) {
   }
   return (
     <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", classes[status])}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {formatSlugLabel(status)}
     </span>
   )
 }
@@ -114,7 +114,7 @@ export function AdminEventAiReference({
                 {formatProviderLabel(trace.provider)}
               </Badge>
               {trace.model ? <Badge variant="outline">Model: {trace.model}</Badge> : null}
-              <Badge variant="outline">Status: {trace.status}</Badge>
+              <Badge variant="outline">Status: {formatSlugLabel(trace.status)}</Badge>
               <Badge variant="outline">
                 Run: <ClientDate value={trace.created_at} pattern="MMM d, h:mm a" />
               </Badge>

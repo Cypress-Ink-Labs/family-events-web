@@ -12,6 +12,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/comp
 import { Progress } from "@/shared/components/ui/progress"
 import { Toolbar } from "@/components/v2"
 import type { ChartConfig } from "@/shared/components/ui/chart"
+import { formatSlugLabel } from "@/shared/utils/format"
 
 const chartConfig: ChartConfig = {
   imported: { label: "Imported", color: "var(--chart-1)" },
@@ -164,7 +165,7 @@ export function AdminDashboardRecentRuns({ runs, isLoading }: AdminDashboardRece
                 }
                 className="text-[10px]"
               >
-                {run.status}
+                {formatSlugLabel(run.status)}
               </Badge>
               {run.imported > 0 && (
                 <p className="text-xs text-muted-foreground mt-0.5">+{run.imported} events</p>

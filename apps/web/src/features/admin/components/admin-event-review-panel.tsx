@@ -2,7 +2,7 @@ import { Check, ExternalLink, Pencil, Sparkles, X, XCircle } from "lucide-react"
 import { Link } from "react-router-dom"
 import type { EventAiTraceWithParsed, EventWithDetails, Tag as EventTag } from "@/shared/types"
 import { safeHref, safeImageSrc } from "@/infrastructure/safe-url"
-import { cn, formatEventPrice } from "@/shared/utils/format"
+import { cn, formatEventPrice, formatSlugLabel } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
@@ -116,7 +116,7 @@ export function AdminEventReviewDialog({
             </SheetTitle>
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               <Badge variant="outline" className="border-white/30 bg-black/30 text-white">
-                {event.status ?? "draft"}
+                {formatSlugLabel(event.status ?? "draft")}
               </Badge>
               {event.llm_review_decision ? (
                 <Badge
@@ -124,7 +124,7 @@ export function AdminEventReviewDialog({
                   className="border-transparent"
                 >
                   <Sparkles className="size-3" />
-                  {event.llm_review_decision.replace(/_/g, " ")}
+                  {formatSlugLabel(event.llm_review_decision)}
                 </Badge>
               ) : null}
               <Badge variant="outline" className="border-white/30 bg-black/30 text-white">

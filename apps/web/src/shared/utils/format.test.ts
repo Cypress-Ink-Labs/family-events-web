@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { formatEventPrice, sanitizePostgrestLike } from "./format"
+import { formatEventPrice, formatSlugLabel, sanitizePostgrestLike } from "./format"
 
 describe("formatEventPrice", () => {
   it("returns 'Free' when isFree is true regardless of price", () => {
@@ -14,6 +14,24 @@ describe("formatEventPrice", () => {
   it("formats a numeric price with a dollar sign", () => {
     expect(formatEventPrice(15, false)).toBe("$15")
     expect(formatEventPrice(0, false)).toBe("$0")
+  })
+})
+
+describe("formatSlugLabel", () => {
+  it.each([
+    ["needs_admin_review", "Needs Admin Review"],
+    ["low_confidence", "Low Confidence"],
+    ["not_required", "Not Required"],
+    ["timed-out", "Timed Out"],
+    ["llm_review_failed", "LLM Review Failed"],
+    ["ai_tag_status", "AI Tag Status"],
+    ["", "—"],
+  ])("formats %s as %s", (value, expected) => {
+    expect(formatSlugLabel(value)).toBe(expected)
+  })
+
+  it("uses the fallback for nullish values", () => {
+    expect(formatSlugLabel(null, "Pending")).toBe("Pending")
   })
 })
 
@@ -40,10 +58,8 @@ describe("sanitizePostgrestLike", () => {
   })
 
   it("neutralizes an attempt to break out of the .or() filter", () => {
-    // Classic injection try: close the current clause, open another
     const hostile = "evil),title.ilike.%%"
     const result = sanitizePostgrestLike(hostile)
-    // No parens, commas, or percents survive
     expect(result).not.toMatch(/[,.()%]/)
   })
 

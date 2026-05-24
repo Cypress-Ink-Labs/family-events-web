@@ -7,7 +7,7 @@ import { ClientDate } from "@/shared/components/client-date"
 import { AgeRangeBadge } from "@/features/events/components/tag-badge"
 import { formatProviderLabel } from "@/features/admin/utils/format-provider-label"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { cn } from "@/shared/utils/format"
+import { cn, formatSlugLabel } from "@/shared/utils/format"
 import type { Event } from "@/shared/types"
 import { buildLlmReviewBadge } from "@/features/admin/components/admin-events-list/llm-review-badge"
 
@@ -108,7 +108,7 @@ export function AdminVirtualEventRow({
                     event.ai_tag_status === "success" ? "text-emerald-700" : "text-amber-600"
                   )}
                 >
-                  AI {event.ai_tag_status ?? "pending"}
+                  AI {formatSlugLabel(event.ai_tag_status ?? "pending")}
                 </span>
                 {llmBadge ? (
                   <span
