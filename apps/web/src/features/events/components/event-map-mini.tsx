@@ -3,13 +3,15 @@ import { Map as MapGL, Marker, NavigationControl, Popup, type MapRef } from "rea
 import "maplibre-gl/dist/maplibre-gl.css"
 import { useMapStyle } from "@/shared/hooks/use-map-style"
 import { EventPin } from "@/features/events/components/event-pin"
-import { dateBucket } from "@/features/map/lib/map-helpers"
+import { dateBucket, isCityCentroidCoordinate } from "@/features/map/lib/map-helpers"
 
 const INITIAL_ZOOM = 10
 
 interface EventMapMiniProps {
   latitude: number | null
   longitude: number | null
+  cityLatitude?: number | null
+  cityLongitude?: number | null
   venueName?: string | null
   address?: string | null
   startDatetime?: string | null
@@ -18,6 +20,8 @@ interface EventMapMiniProps {
 export function EventMapMini({
   latitude,
   longitude,
+  cityLatitude,
+  cityLongitude,
   venueName,
   address,
   startDatetime,
@@ -26,21 +30,34 @@ export function EventMapMini({
   const mapStyle = useMapStyle()
   const mapRef = useRef<MapRef>(null)
 
+  // Treat city-centroid coordinates as a placeholder rather than a real venue
+  // pin — the enrichment pipeline seeds them on insert and overwrites once
+  // Nominatim returns a precise hit. Drawing a confident pin at the centroid
+  // would mislead the user about where the venue actually is.
+  const isCentroidPlaceholder = isCityCentroidCoordinate(
+    { latitude, longitude },
+    cityLatitude != null && cityLongitude != null
+      ? { latitude: cityLatitude, longitude: cityLongitude }
+      : null
+  )
+
   // Re-center if the event coordinates change after first render.
   useEffect(() => {
-    if (latitude == null || longitude == null) return
+    if (latitude == null || longitude == null || isCentroidPlaceholder) return
     mapRef.current?.flyTo({
       center: [longitude, latitude],
       zoom: INITIAL_ZOOM,
       speed: 1.2,
       essential: true,
     })
-  }, [latitude, longitude])
+  }, [latitude, longitude, isCentroidPlaceholder])
 
-  if (latitude == null || longitude == null) {
+  if (latitude == null || longitude == null || isCentroidPlaceholder) {
     return (
       <div className="rounded-xl bg-muted/50 border border-border/60 h-36 flex items-center justify-center">
-        <p className="text-muted-foreground text-sm">Location not mapped</p>
+        <p className="text-muted-foreground text-sm">
+          {isCentroidPlaceholder ? "Precise location pending" : "Location not mapped"}
+        </p>
       </div>
     )
   }

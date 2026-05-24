@@ -1,8 +1,12 @@
 import { MapPin } from "lucide-react"
 import { EventMapMini } from "@/features/events/components/event-map-mini"
+import { useCities } from "@/shared/hooks/use-cities"
 import type { EventWithDetails } from "@/shared/types"
 
 export function EventDetailLocation({ event }: { event: EventWithDetails }) {
+  const { data: cities = [] } = useCities()
+  const eventCity = cities.find((c) => c.id === event.city_id) ?? null
+
   return (
     <div>
       <h2 className="text-lg font-semibold text-foreground mb-3">Location</h2>
@@ -20,6 +24,8 @@ export function EventDetailLocation({ event }: { event: EventWithDetails }) {
       <EventMapMini
         latitude={event.latitude}
         longitude={event.longitude}
+        cityLatitude={eventCity?.latitude ?? null}
+        cityLongitude={eventCity?.longitude ?? null}
         venueName={event.venue_name}
         address={event.address}
         startDatetime={event.start_datetime}
