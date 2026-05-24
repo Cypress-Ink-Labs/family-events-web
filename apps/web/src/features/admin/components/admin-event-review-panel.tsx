@@ -74,7 +74,8 @@ export function AdminEventReviewDialog({
     return <Sheet open={open} onOpenChange={onOpenChange} />
   }
 
-  const confidencePct = Math.round((event.ai_confidence ?? 0) * 100)
+  const confidenceRaw = event.llm_review_confidence ?? event.ai_confidence ?? 0
+  const confidencePct = Math.round(Number(confidenceRaw) * 100)
   const heroImage =
     safeImageSrc(event.images?.[0]) ?? `https://picsum.photos/seed/${event.id}/900/360`
 
