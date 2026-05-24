@@ -154,3 +154,19 @@ export function railwayCronRunToCronRun(r: RailwayCronRun): CronRun {
 }
 
 export type { City }
+
+export interface ApprovedAiModel {
+  id: string
+  provider: string
+  display_name: string
+  description: string
+  cost_tier: "low" | "medium" | "high"
+}
+
+export interface AiFeatureConfig {
+  feature: "tagging" | "event-review"
+  model_id: string
+  enabled: boolean
+  updated_at: string
+  updated_by: string | null
+}

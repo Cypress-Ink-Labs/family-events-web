@@ -241,5 +241,7 @@ export const qk = {
       label
         ? (["admin", "railway-cron-history", label] as const)
         : (["admin", "railway-cron-history"] as const),
+    aiSettings: ["admin", "ai-settings"] as const,
+    approvedModels: ["admin", "approved-ai-models"] as const,
   },
 } as const
