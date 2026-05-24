@@ -1,7 +1,7 @@
-import { Check, Pencil, Sparkles, X, XCircle } from "lucide-react"
+import { Check, ExternalLink, Pencil, Sparkles, X, XCircle } from "lucide-react"
 import { Link } from "react-router-dom"
 import type { EventAiTraceWithParsed, EventWithDetails, Tag as EventTag } from "@/shared/types"
-import { safeImageSrc } from "@/infrastructure/safe-url"
+import { safeHref, safeImageSrc } from "@/infrastructure/safe-url"
 import { cn, formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
 import { Badge } from "@/shared/components/ui/badge"
@@ -131,6 +131,17 @@ export function AdminEventReviewDialog({
                 AI {confidencePct}%
               </Badge>
             </div>
+            {safeHref(event.source_url) !== "#" ? (
+              <a
+                href={safeHref(event.source_url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-fit items-center gap-1.5 pt-1 font-mono text-2xs uppercase tracking-[0.14em] text-white/80 hover:text-white hover:underline"
+              >
+                {event.source_name ? `${event.source_name} · ` : ""}Go to event
+                <ExternalLink className="size-3" />
+              </a>
+            ) : null}
           </SheetHeader>
         </div>
 
