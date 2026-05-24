@@ -11,3 +11,7 @@ export const ADMIN_CRON_RPCS = {
   setRailwayCronEnabled: "admin_set_cron_enabled",
   runDueScrapes: "admin_run_due_scrapes",
 } as const
+
+export const ADMIN_CRON_FUNCTIONS = {
+  runRailwayCron: "admin-run-cron",
+} as const

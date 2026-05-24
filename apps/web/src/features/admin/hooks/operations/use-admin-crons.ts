@@ -7,6 +7,7 @@ import {
   listCronJobs,
   listRailwayCronJobs,
   runDueScrapes,
+  runRailwayCron,
   setCronSchedule,
   setRailwayCronEnabled,
   toggleCronJob,
@@ -73,6 +74,20 @@ export function useToggleRailwayCron() {
       setRailwayCronEnabled(label, enabled),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.railwayCronJobs })
+    },
+  })
+}
+
+export function useRunRailwayCron() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ label }: { label: string }) => runRailwayCron(label),
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({ queryKey: qk.admin.railwayCronJobs })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.railwayCronHistory() })
+      void queryClient.invalidateQueries({
+        queryKey: qk.admin.railwayCronHistory(variables.label),
+      })
     },
   })
 }

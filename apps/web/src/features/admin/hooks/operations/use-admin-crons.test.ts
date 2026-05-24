@@ -1,16 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { ADMIN_CRON_HISTORY_LIMIT, ADMIN_CRON_RPCS } from "@/features/admin/constants/cron"
+import {
+  ADMIN_CRON_FUNCTIONS,
+  ADMIN_CRON_HISTORY_LIMIT,
+  ADMIN_CRON_RPCS,
+} from "@/features/admin/constants/cron"
 import { qk } from "@/infrastructure/queries/query-keys"
 
-const { mockRpc, mockInvalidateQueries, mockUseMutation, mockUseQuery } = vi.hoisted(() => ({
-  mockRpc: vi.fn(),
-  mockInvalidateQueries: vi.fn(),
-  mockUseMutation: vi.fn((options: unknown) => options),
-  mockUseQuery: vi.fn((options: unknown) => options),
-}))
+const { mockInvoke, mockRpc, mockInvalidateQueries, mockUseMutation, mockUseQuery } = vi.hoisted(
+  () => ({
+    mockInvoke: vi.fn(),
+    mockRpc: vi.fn(),
+    mockInvalidateQueries: vi.fn(),
+    mockUseMutation: vi.fn((options: unknown) => options),
+    mockUseQuery: vi.fn((options: unknown) => options),
+  })
+)
 
 vi.mock("@/infrastructure/supabase/client", () => ({
-  supabase: { rpc: mockRpc },
+  supabase: { functions: { invoke: mockInvoke }, rpc: mockRpc },
 }))
 
 vi.mock("@tanstack/react-query", () => ({
@@ -21,7 +28,7 @@ vi.mock("@tanstack/react-query", () => ({
 
 type MutationOptions<TVariables = void> = {
   mutationFn: (variables: TVariables) => Promise<void>
-  onSuccess?: () => void
+  onSuccess?: (data?: void, variables?: TVariables) => void
 }
 
 type QueryOptions<TData> = {
@@ -34,10 +41,12 @@ async function loadCronHooks() {
 
 beforeEach(() => {
   vi.resetModules()
+  mockInvoke.mockReset()
   mockRpc.mockReset()
   mockInvalidateQueries.mockReset()
   mockUseMutation.mockClear()
   mockUseQuery.mockClear()
+  mockInvoke.mockResolvedValue({ data: {}, error: null })
   mockRpc.mockResolvedValue({ data: [], error: null })
 })
 
@@ -115,6 +124,27 @@ describe("admin cron hooks", () => {
       p_enabled: true,
     })
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: qk.admin.railwayCronJobs })
+  })
+
+  it("runs Railway cron jobs and invalidates Railway cron caches", async () => {
+    const { useRunRailwayCron } = await loadCronHooks()
+
+    const mutation = useRunRailwayCron() as unknown as MutationOptions<{
+      label: string
+    }>
+    await mutation.mutationFn({ label: "cron-tag-queue" })
+    mutation.onSuccess?.(undefined, { label: "cron-tag-queue" })
+
+    expect(mockInvoke).toHaveBeenCalledWith(ADMIN_CRON_FUNCTIONS.runRailwayCron, {
+      body: { label: "cron-tag-queue" },
+    })
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: qk.admin.railwayCronJobs })
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({
+      queryKey: qk.admin.railwayCronHistory(),
+    })
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({
+      queryKey: qk.admin.railwayCronHistory("cron-tag-queue"),
+    })
   })
 
   it("runs due scrapes and invalidates source/run/history caches", async () => {

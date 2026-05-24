@@ -1,4 +1,8 @@
-import { ADMIN_CRON_HISTORY_LIMIT, ADMIN_CRON_RPCS } from "@/features/admin/constants/cron"
+import {
+  ADMIN_CRON_FUNCTIONS,
+  ADMIN_CRON_HISTORY_LIMIT,
+  ADMIN_CRON_RPCS,
+} from "@/features/admin/constants/cron"
 import { supabase } from "@/infrastructure/supabase/client"
 import type { CronJob, CronRun, RailwayCronJob, RailwayCronRun } from "@/features/admin/types"
 
@@ -53,6 +57,13 @@ export async function setRailwayCronEnabled(label: string, enabled: boolean): Pr
   const { error } = await supabase.rpc(ADMIN_CRON_RPCS.setRailwayCronEnabled, {
     p_label: label,
     p_enabled: enabled,
+  })
+  if (error) throw error
+}
+
+export async function runRailwayCron(label: string): Promise<void> {
+  const { error } = await supabase.functions.invoke(ADMIN_CRON_FUNCTIONS.runRailwayCron, {
+    body: { label },
   })
   if (error) throw error
 }

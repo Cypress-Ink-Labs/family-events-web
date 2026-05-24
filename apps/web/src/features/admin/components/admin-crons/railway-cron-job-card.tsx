@@ -1,12 +1,16 @@
-import { CalendarClock } from "lucide-react"
+import { CalendarClock, Loader2, Play } from "lucide-react"
 import { toast } from "sonner"
 import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { ClientDistanceToNow } from "@/shared/components/client-date"
 import { Switch } from "@/shared/components/ui/switch"
 import { cn } from "@/shared/utils/format"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
-import { useToggleRailwayCron } from "@/features/admin/hooks/operations/use-admin-crons"
+import {
+  useRunRailwayCron,
+  useToggleRailwayCron,
+} from "@/features/admin/hooks/operations/use-admin-crons"
 import type { RailwayCronJob } from "@/features/admin/types"
 import { RunStatusBadge } from "@/features/admin/components/admin-crons/run-status-badge"
 
@@ -16,6 +20,7 @@ export function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
     .map((p) => p[0].toUpperCase() + p.slice(1))
     .join(" ")
   const toggleRailway = useToggleRailwayCron()
+  const runRailway = useRunRailwayCron()
   const { toastError } = useAdminToast()
 
   async function handleToggle(enabled: boolean) {
@@ -24,6 +29,15 @@ export function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
       toast.success(enabled ? "Cron enabled" : "Cron paused")
     } catch (error) {
       toastError(error, "Failed to update cron.")
+    }
+  }
+
+  async function handleRunNow() {
+    try {
+      await runRailway.mutateAsync({ label: job.label })
+      toast.success("Cron triggered", { description: label })
+    } catch (error) {
+      toastError(error, "Failed to run cron.")
     }
   }
 
@@ -50,6 +64,20 @@ export function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
             </div>
           </div>
           <div className="hidden shrink-0 items-center gap-2 @[420px]/cron-card:flex">
+            <Button
+              variant="outline"
+              size="sm"
+              className="min-h-[44px] gap-2"
+              onClick={handleRunNow}
+              disabled={runRailway.isPending}
+            >
+              {runRailway.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Play className="size-4" />
+              )}
+              <span>Run</span>
+            </Button>
             <Switch
               checked={job.enabled}
               onCheckedChange={handleToggle}
@@ -81,7 +109,21 @@ export function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
           )}
         </div>
         <p className="truncate font-mono text-[10px] text-muted-foreground/60">{label}</p>
-        <div className="flex items-center justify-end gap-2 border-t border-border/60 pt-3 @[420px]/cron-card:hidden">
+        <div className="flex items-center justify-between gap-2 border-t border-border/60 pt-3 @[420px]/cron-card:hidden">
+          <Button
+            variant="outline"
+            size="sm"
+            className="min-h-[44px] gap-2"
+            onClick={handleRunNow}
+            disabled={runRailway.isPending}
+          >
+            {runRailway.isPending ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Play className="size-4" />
+            )}
+            <span>Run</span>
+          </Button>
           <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
             <Switch
               checked={job.enabled}
