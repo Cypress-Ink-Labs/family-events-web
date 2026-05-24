@@ -63,37 +63,3 @@ export function Stack({ gap = "4", align, justify, as, className, children }: St
     </Tag>
   )
 }
-
-type RowProps = StackProps & {
-  nowrap?: boolean
-}
-
-/**
- * Horizontal layout primitive. Wraps by default — mobile-first.
- * Set `nowrap` only when content is guaranteed to fit (icons, fixed pills).
- */
-export function Row({
-  gap = "3",
-  align = "center",
-  justify,
-  nowrap,
-  as,
-  className,
-  children,
-}: RowProps) {
-  const Tag = (as ?? "div") as ElementType
-  return (
-    <Tag
-      className={cn(
-        "flex flex-row",
-        nowrap ? "flex-nowrap" : "flex-wrap",
-        gapClass[gap],
-        alignClass[align],
-        justify && justifyClass[justify],
-        className
-      )}
-    >
-      {children}
-    </Tag>
-  )
-}

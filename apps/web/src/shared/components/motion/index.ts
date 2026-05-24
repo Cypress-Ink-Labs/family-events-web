@@ -9,5 +9,4 @@ export {
   staggerContainerVariants,
   staggerItemVariants,
   popInVariants,
-  fadeTransition,
 } from "./motion-presets"

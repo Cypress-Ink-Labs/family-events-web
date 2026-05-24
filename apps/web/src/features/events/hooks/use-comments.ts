@@ -1,18 +1,26 @@
+import { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
 import { subscribeToCommentChanges } from "@/features/events/lib/comments-channel-registry"
 import { addEventComment, listEventComments } from "@/features/events/api/comments"
-import { useRealtimeInvalidation } from "@/shared/hooks/use-realtime-invalidation"
 
 export function useComments(eventId: string | undefined) {
+  const queryClient = useQueryClient()
+  const commentsQueryKey = qk.comments.byEvent(eventId)
+
   // Multiple useComments(eventId) mounts share one Supabase channel via the
   // registry, avoiding the prior "two-channel" cost when two components
   // subscribe to the same event. The registry handles CHANNEL_ERROR
   // reconnection internally.
-  useRealtimeInvalidation(subscribeToCommentChanges, eventId, qk.comments.byEvent(eventId))
+  useEffect(() => {
+    if (!eventId) return
+    return subscribeToCommentChanges(eventId, () => {
+      void queryClient.invalidateQueries({ queryKey: qk.comments.byEvent(eventId) })
+    })
+  }, [eventId, queryClient])
 
   return useQuery({
-    queryKey: qk.comments.byEvent(eventId),
+    queryKey: commentsQueryKey,
     queryFn: async () => {
       if (!eventId) return []
       return listEventComments(eventId)

@@ -5,20 +5,9 @@ import { z } from "zod"
 // runtime so an RPC drift becomes a typed error at the data layer instead
 // of a deep-component crash.
 
-export const tagSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  slug: z.string(),
-  color: z
-    .string()
-    .nullable()
-    .default("")
-    .transform((v) => v ?? ""),
-})
-
 // Shape the events_enriched RPC emits per tag (jsonb_agg of the tag columns).
 // Looser than `Tag` because the RPC doesn't return category/is_system/created_at.
-export const enrichedTagSchema = z.object({
+const enrichedTagSchema = z.object({
   id: z.string(),
   name: z.string(),
   slug: z.string(),

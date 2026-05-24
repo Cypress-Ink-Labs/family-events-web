@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import type { AiFeatureConfig, ApprovedAiModel } from "@/features/admin/types"
 
 const COST_BADGE: Record<string, string> = {
@@ -14,7 +13,11 @@ interface AiFeatureCardProps {
   config: AiFeatureConfig | undefined
   models: ApprovedAiModel[]
   showEnabledToggle: boolean
+  selectedModelId: string
+  enabled: boolean
   isSaving: boolean
+  onModelChange: (modelId: string) => void
+  onEnabledChange: (enabled: boolean) => void
   onSave: (modelId: string, enabled: boolean) => void
 }
 
@@ -25,19 +28,13 @@ export function AiFeatureCard({
   config,
   models,
   showEnabledToggle,
+  selectedModelId,
+  enabled,
   isSaving,
+  onModelChange,
+  onEnabledChange,
   onSave,
 }: AiFeatureCardProps) {
-  const [selectedModelId, setSelectedModelId] = useState(config?.model_id ?? "")
-  const [enabled, setEnabled] = useState(config?.enabled ?? false)
-
-  useEffect(() => {
-    if (config) {
-      setSelectedModelId(config.model_id)
-      setEnabled(config.enabled)
-    }
-  }, [config])
-
   const openaiModels = models.filter((m) => m.provider === "openai")
   const ollamaModels = models.filter((m) => m.provider === "ollama")
   const selectedModel = models.find((m) => m.id === selectedModelId)
@@ -55,7 +52,8 @@ export function AiFeatureCard({
             type="checkbox"
             id={`${feature}-enabled`}
             checked={enabled}
-            onChange={(e) => setEnabled(e.target.checked)}
+            onChange={(e) => onEnabledChange(e.target.checked)}
+            aria-label={`${title} enabled`}
             className="size-4 rounded border-input"
           />
           <label htmlFor={`${feature}-enabled`} className="text-sm">
@@ -71,7 +69,7 @@ export function AiFeatureCard({
         <select
           id={`${feature}-model`}
           value={selectedModelId}
-          onChange={(e) => setSelectedModelId(e.target.value)}
+          onChange={(e) => onModelChange(e.target.value)}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
         >
           {openaiModels.length > 0 && (

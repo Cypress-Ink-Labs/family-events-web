@@ -8,28 +8,21 @@ import {
   updateAdminEvent,
 } from "@/features/admin/api/event-editor"
 
-function invalidateAdminEventQueries(
-  queryClient: ReturnType<typeof useQueryClient>,
-  eventId: string
-) {
-  return Promise.all([
-    queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
-    queryClient.invalidateQueries({ queryKey: qk.events.all }),
-    queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
-    queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
-    queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(eventId) }),
-    queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(eventId) }),
-    queryClient.invalidateQueries({ queryKey: qk.events.detailById(eventId) }),
-  ])
-}
-
 export function useUpdateAdminEvent() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (input: UpdateAdminEventInput) => updateAdminEvent(input),
     onSuccess: async (_event, variables) => {
-      await invalidateAdminEventQueries(queryClient, variables.eventId)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
+        queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(variables.eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(variables.eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(variables.eventId) }),
+      ])
     },
   })
 }
@@ -40,7 +33,15 @@ export function useCreateAdminEvent() {
   return useMutation({
     mutationFn: (input: CreateAdminEventInput) => createAdminEvent(input),
     onSuccess: async (event) => {
-      await invalidateAdminEventQueries(queryClient, event.id)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
+        queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(event.id) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(event.id) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(event.id) }),
+      ])
     },
   })
 }
@@ -51,7 +52,15 @@ export function useUnlockAdminEventFields() {
   return useMutation({
     mutationFn: (eventId: string) => unlockAdminEventFields(eventId),
     onSuccess: async (eventId) => {
-      await invalidateAdminEventQueries(queryClient, eventId)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.all }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailAll }),
+        queryClient.invalidateQueries({ queryKey: qk.enrichedEvents.all }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.events.detailById(eventId) }),
+      ])
     },
   })
 }

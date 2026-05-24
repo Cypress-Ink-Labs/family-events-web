@@ -11,7 +11,7 @@ import { eventSourceRowSchema } from "@/lib/schemas"
  * an entry → red squiggle in CI.
  */
 
-export const ADMIN_SOURCE_TYPES = eventSourceRowSchema.shape.source_type.options
+const ADMIN_SOURCE_TYPES = eventSourceRowSchema.shape.source_type.options
 export type AdminSourceType = (typeof ADMIN_SOURCE_TYPES)[number]
 
 interface AdminSourceTypeEntry {

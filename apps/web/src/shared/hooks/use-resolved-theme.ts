@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 
 type Resolved = "light" | "dark"
 
@@ -15,20 +15,19 @@ function readResolvedTheme(): Resolved {
  * so this hook works regardless of how the theme is set.
  */
 export function useResolvedTheme(): Resolved {
-  const [resolved, setResolved] = useState<Resolved>(readResolvedTheme)
+  return useSyncExternalStore(subscribeToThemeClass, readResolvedTheme, () => "light")
+}
 
-  useEffect(() => {
-    const update = () => setResolved(readResolvedTheme())
-    update()
+function subscribeToThemeClass(onStoreChange: () => void) {
+  if (typeof document === "undefined" || typeof MutationObserver === "undefined") {
+    return () => {}
+  }
 
-    const observer = new MutationObserver(update)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
+  const observer = new MutationObserver(onStoreChange)
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  })
 
-    return () => observer.disconnect()
-  }, [])
-
-  return resolved
+  return () => observer.disconnect()
 }

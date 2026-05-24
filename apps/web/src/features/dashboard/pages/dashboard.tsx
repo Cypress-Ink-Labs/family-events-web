@@ -23,6 +23,21 @@ const DAY_FORMATTER_OPTIONS: Intl.DateTimeFormatOptions = {
   day: "2-digit",
 }
 
+const dayFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
+
+function getDayFormatter(timeZone: string) {
+  let formatter = dayFormattersByTimeZone.get(timeZone)
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat("en-CA", { ...DAY_FORMATTER_OPTIONS, timeZone })
+    dayFormattersByTimeZone.set(timeZone, formatter)
+  }
+  return formatter
+}
+
+function formatDayKey(date: Date, timeZone: string) {
+  return getDayFormatter(timeZone).format(date)
+}
+
 function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<string, boolean>) {
   return { ...state, ...patch }
 }
@@ -63,24 +78,10 @@ export function DashboardPage() {
   const recommended = events.slice(0, 4)
   const savedEvents = events.filter((event) => isFavorited(event.id)).slice(0, 3)
   const selectedTimeZone = selectedCity?.timezone ?? "UTC"
-  const dayFormattersByTimeZone = useMemo(() => {
-    const timeZones = new Set([selectedTimeZone])
-    for (const event of events) {
-      timeZones.add(event.timezone || selectedTimeZone)
-    }
-    return new Map(
-      Array.from(timeZones, (timeZone) => [
-        timeZone,
-        new Intl.DateTimeFormat("en-CA", { ...DAY_FORMATTER_OPTIONS, timeZone }),
-      ])
-    )
-  }, [events, selectedTimeZone])
-  const todayFormatter = dayFormattersByTimeZone.get(selectedTimeZone)!
-  const todayKey = useMemo(() => todayFormatter.format(new Date()), [todayFormatter])
+  const todayKey = useMemo(() => formatDayKey(new Date(), selectedTimeZone), [selectedTimeZone])
   const isToday = (start: string, tz: string) => {
-    const formatter = dayFormattersByTimeZone.get(tz) ?? todayFormatter
-    const referenceKey = tz === selectedTimeZone ? todayKey : formatter.format(new Date())
-    return formatter.format(new Date(start)) === referenceKey
+    const referenceKey = tz === selectedTimeZone ? todayKey : formatDayKey(new Date(), tz)
+    return formatDayKey(new Date(start), tz) === referenceKey
   }
   const todayEvents: typeof events = []
   for (const e of events) {

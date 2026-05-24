@@ -14,14 +14,23 @@ const contractsPkgPath = path.join(
   "package.json",
 );
 const sharedPkgPath = path.join(repoRoot, "packages", "shared", "package.json");
-const webBridgePath = path.join(
+const webContractsConsumerPath = path.join(
   repoRoot,
   "apps",
   "web",
   "src",
-  "infrastructure",
-  "smoke",
-  "workspace-packages.ts",
+  "shared",
+  "types.ts",
+);
+const webSharedConsumerPath = path.join(
+  repoRoot,
+  "apps",
+  "web",
+  "src",
+  "features",
+  "admin",
+  "api",
+  "sources.ts",
 );
 const contractsIndexPath = path.join(
   repoRoot,
@@ -43,11 +52,13 @@ test("shared and contracts package manifests exist", () => {
   assert.equal(existsSync(sharedPkgPath), true);
 });
 
-test("web workspace has explicit source-level import bridge for shared/contracts", () => {
-  assert.equal(existsSync(webBridgePath), true);
-  const source = readFileSync(webBridgePath, "utf8");
-  assert.match(source, /from "@family-events\/contracts"/);
-  assert.match(source, /from "@family-events\/shared"/);
+test("web workspace has source-level imports for shared and contracts", () => {
+  assert.equal(existsSync(webContractsConsumerPath), true);
+  assert.equal(existsSync(webSharedConsumerPath), true);
+  const contractsConsumer = readFileSync(webContractsConsumerPath, "utf8");
+  const sharedConsumer = readFileSync(webSharedConsumerPath, "utf8");
+  assert.match(contractsConsumer, /from "@family-events\/contracts"/);
+  assert.match(sharedConsumer, /from "@family-events\/shared"/);
 });
 
 test("contracts package owns generated Supabase database types", () => {

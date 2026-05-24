@@ -3,16 +3,6 @@ import type { Rating } from "@/shared/types"
 
 const RATING_COLUMNS = "id, user_id, event_id, score, created_at"
 
-export async function listEventRatings(eventId: string): Promise<Rating[]> {
-  const { data, error } = await supabase
-    .from("ratings")
-    .select(RATING_COLUMNS)
-    .eq("event_id", eventId)
-    .order("created_at", { ascending: false })
-  if (error) throw error
-  return data ?? []
-}
-
 export async function getUserEventRating(userId: string, eventId: string): Promise<Rating | null> {
   const { data, error } = await supabase
     .from("ratings")

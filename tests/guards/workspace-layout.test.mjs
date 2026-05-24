@@ -47,7 +47,7 @@ test("web workspace wires explicit workspace dependencies", () => {
   assert.equal(webPkg.dependencies["@family-events/shared"], "workspace:*")
   assert.equal(webPkg.dependencies["@family-events/contracts"], "workspace:*")
   assert.equal(webPkg.devDependencies["@family-events/config-typescript"], "workspace:*")
-  assert.equal(webPkg.devDependencies["@family-events/config-quality"], "workspace:*")
+  assert.equal(webPkg.devDependencies["@family-events/config-quality"], undefined)
 })
 
 test("web tsconfig consumers extend config-typescript presets", () => {

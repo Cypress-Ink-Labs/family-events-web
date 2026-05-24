@@ -10,14 +10,9 @@
  * for visual reference.
  */
 
-export { TouchTarget } from "./touch-target.js"
 export { Page } from "./page.js"
-export { Stack, Row } from "./stack.js"
-export { Section } from "./section.js"
+export { Stack } from "./stack.js"
 export { Toolbar } from "./toolbar.js"
-export { ResponsiveCard } from "./responsive-card.js"
 export { FormGrid } from "./form-grid.js"
 export { FilterBar } from "./filter-bar.js"
-export { MobileTable, type MobileTableColumn } from "./mobile-table.js"
-export { BottomSheet } from "./bottom-sheet.js"
 export { designTokens, v2Breakpoints, type V2Breakpoint } from "./_tokens.js"
