@@ -93,6 +93,11 @@ export type SourceRun = Override<
   { status: "running" | "success" | "error" | "partial" }
 >
 
+export interface ParentTip {
+  category: string
+  text: string
+}
+
 export type Event = Override<
   EventRow,
   {
@@ -102,6 +107,11 @@ export type Event = Override<
     ai_tag_status: AiTagStatus | null
     search_vector: string | null
     is_outdoor: boolean | null
+    parent_tips?: ParentTip[] | null
+    parent_tips_generated_at?: string | null
+    parent_tips_provider?: string | null
+    parent_tips_model?: string | null
+    parent_tips_prompt_version?: string | null
     llm_review_status?: LlmEventReviewStatus | null
     llm_review_decision?: LlmEventReviewDecision | null
     llm_review_confidence?: number | null

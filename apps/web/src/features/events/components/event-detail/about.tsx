@@ -1,24 +1,60 @@
-import { Info } from "lucide-react"
+import {
+  Accessibility,
+  Backpack,
+  Clock,
+  CloudSun,
+  HeartHandshake,
+  Info,
+  Sparkles,
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import { type ParentTip } from "@/features/events/lib/parent-tips-fallback"
 
-export function EventDetailAbout({ description }: { description: string | null }) {
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  arrival: Clock,
+  bring: Backpack,
+  behavior: HeartHandshake,
+  timing: Sparkles,
+  weather: CloudSun,
+  accessibility: Accessibility,
+}
+
+interface EventDetailAboutProps {
+  description: string | null
+  tips: ParentTip[]
+}
+
+export function EventDetailAbout({ description, tips }: EventDetailAboutProps) {
   return (
     <div>
       <h2 className="text-lg font-semibold text-foreground mb-3">About the Experience</h2>
       <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
 
-      <div className="mt-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 p-4 flex gap-3">
-        <Info className="size-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
-        <div>
-          <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-0.5">
-            Parent Tip
-          </p>
-
-          <p className="text-xs text-blue-600 dark:text-blue-500 leading-relaxed">
-            We recommend arriving 10 minutes early to let your toddler get comfortable with the
-            space before the session begins!
-          </p>
+      {tips.length > 0 && (
+        <div className="mt-4 rounded-xl bg-accent-tertiary-soft border border-accent-tertiary/30 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Info className="size-4 text-accent-tertiary shrink-0" />
+            <p className="text-xs font-semibold text-accent-tertiary">Parent Tips</p>
+          </div>
+          <ul className="space-y-2">
+            {tips.map((tip, index) => {
+              const Icon = CATEGORY_ICONS[tip.category] ?? Info
+              return (
+                <li
+                  key={`${tip.category}-${index}`}
+                  className="flex gap-2 text-xs text-accent-tertiary leading-relaxed"
+                >
+                  <Icon className="size-3.5 mt-0.5 shrink-0 text-accent-tertiary/80" aria-hidden />
+                  <span>
+                    <span className="sr-only">{tip.category}: </span>
+                    {tip.text}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
         </div>
-      </div>
+      )}
     </div>
   )
 }

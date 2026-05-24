@@ -23,6 +23,7 @@ import { useAuth } from "@/features/auth/stores/auth-store"
 import { useToggleCalendarEvent } from "@/features/events/hooks/use-calendar-events"
 import { useComments, useAddComment } from "@/features/events/hooks/use-comments"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
+import { deriveFallbackTips } from "@/features/events/lib/parent-tips-fallback"
 import { useUpsertRating, useUserRating } from "@/features/events/hooks/use-ratings"
 import { FadeSwap } from "@/shared/components/motion"
 import { toast } from "sonner"
@@ -211,7 +212,21 @@ export function EventDetailPage() {
       <EventDetailSectionLayout>
         <EventDetailSummary event={currentEvent} startDate={startDate} />
         <EventDetailInfoGrid infoItems={infoItems} />
-        <EventDetailAbout description={cleanDescription(currentEvent.description)} />
+        <EventDetailAbout
+          description={cleanDescription(currentEvent.description)}
+          tips={
+            currentEvent.parent_tips && currentEvent.parent_tips.length > 0
+              ? currentEvent.parent_tips
+              : deriveFallbackTips({
+                  age_min: currentEvent.age_min,
+                  age_max: currentEvent.age_max,
+                  is_outdoor: currentEvent.is_outdoor,
+                  start_datetime: currentEvent.start_datetime,
+                  timezone: currentEvent.timezone,
+                  tag_slugs: (currentEvent.tags ?? []).map((t) => t.tag.slug),
+                })
+          }
+        />
         <Separator />
         <EventDetailLocation event={currentEvent} />
         <Separator />

@@ -107,6 +107,28 @@ export const eventRowSchema = z.object({
     .nullable()
     .optional()
     .transform((v) => v ?? null),
+  parent_tips: z
+    .preprocess((input) => {
+      if (!Array.isArray(input)) return null
+      const cleaned = input.filter(
+        (entry): entry is { category: string; text: string } =>
+          entry != null &&
+          typeof entry === "object" &&
+          typeof (entry as { category?: unknown }).category === "string" &&
+          typeof (entry as { text?: unknown }).text === "string" &&
+          (entry as { category: string }).category.length > 0 &&
+          (entry as { text: string }).text.length > 0
+      )
+      return cleaned.length > 0 ? cleaned : null
+    }, z.array(z.object({ category: z.string(), text: z.string() })).nullable())
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  parent_tips_generated_at: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
   view_count: z.number(),
   search_vector: z.string().nullable().optional(),
   admin_locked_fields: z.array(z.string()).optional().default([]),
