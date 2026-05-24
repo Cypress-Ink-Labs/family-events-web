@@ -1,4 +1,8 @@
 import { z } from "zod"
+import {
+  LLM_EVENT_REVIEW_DECISIONS,
+  LLM_EVENT_REVIEW_STATUSES,
+} from "@/shared/constants/llm-review"
 import { eventRowSchema } from "./event"
 
 // event_sources row. Mirrors src/lib/types.ts's EventSource. The status enum
@@ -35,9 +39,9 @@ export const adminEventFacetRowSchema = z.object({
 
 export type AdminEventFacetRow = z.infer<typeof adminEventFacetRowSchema>
 
-const llmReviewStatusSchema = z.enum(["not_required", "pending", "succeeded", "failed", "skipped"])
+const llmReviewStatusSchema = z.enum(LLM_EVENT_REVIEW_STATUSES)
 
-const llmReviewDecisionSchema = z.enum(["approve", "reject", "needs_admin_review"])
+const llmReviewDecisionSchema = z.enum(LLM_EVENT_REVIEW_DECISIONS)
 
 const adminEventFilterSchema = z.object({
   status: z.enum(["draft", "published", "rejected", "archived"]).optional(),

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 import { formatEventPrice, formatSlugLabel, sanitizePostgrestLike } from "./format"
 
 describe("formatEventPrice", () => {
@@ -19,9 +20,9 @@ describe("formatEventPrice", () => {
 
 describe("formatSlugLabel", () => {
   it.each([
-    ["needs_admin_review", "Needs Admin Review"],
+    [LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW, "Needs Admin Review"],
     ["low_confidence", "Low Confidence"],
-    ["not_required", "Not Required"],
+    [LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED, "Not Required"],
     ["timed-out", "Timed Out"],
     ["llm_review_failed", "LLM Review Failed"],
     ["ai_tag_status", "AI Tag Status"],

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { fetchAdminEventsPage } from "./rpc-admin-events"
 import { supabase } from "@/infrastructure/supabase/client"
+import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 
 vi.mock("@/infrastructure/supabase/client", () => ({
   supabase: {
@@ -46,7 +47,7 @@ describe("fetchAdminEventsPage", () => {
     ai_tag_provider: null,
     ai_tag_model: null,
     ai_tag_status: null,
-    llm_review_status: "not_required" as const,
+    llm_review_status: LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED,
     llm_review_decision: null,
     llm_review_confidence: null,
     llm_review_reason: null,
@@ -137,8 +138,8 @@ describe("fetchAdminEventsPage", () => {
     )
 
     await fetchAdminEventsPage({
-      llmReviewStatus: "failed",
-      llmReviewDecision: "needs_admin_review",
+      llmReviewStatus: LLM_EVENT_REVIEW_STATUS.FAILED,
+      llmReviewDecision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
       limit: 20,
     })
 
@@ -150,8 +151,8 @@ describe("fetchAdminEventsPage", () => {
       p_after_created_at: undefined,
       p_after_id: undefined,
       p_limit: 20,
-      p_llm_review_status: "failed",
-      p_llm_review_decision: "needs_admin_review",
+      p_llm_review_status: LLM_EVENT_REVIEW_STATUS.FAILED,
+      p_llm_review_decision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
     })
   })
 

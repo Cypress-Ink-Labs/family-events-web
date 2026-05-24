@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { MemoryRouter } from "react-router-dom"
 import { describe, expect, it, vi } from "vitest"
 import type { Event } from "@/shared/types"
+import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 
 import { AdminEventsList } from "./admin-events-list"
 import { AdminEventsToolbar, AdminLlmReviewFilterBar } from "./admin-events-sections"
@@ -49,7 +50,7 @@ function adminEvent(overrides: Partial<Event> = {}): Event {
     ai_tag_provider: "openai",
     ai_tag_model: "gpt-4o-mini",
     ai_tag_status: "success",
-    llm_review_status: "not_required",
+    llm_review_status: LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED,
     llm_review_decision: null,
     llm_review_confidence: null,
     llm_review_reason: null,
@@ -242,8 +243,8 @@ describe("AdminVirtualEventsList", () => {
 
   it("renders LLM approved badge with confidence", () => {
     const event = adminEvent({
-      llm_review_status: "succeeded",
-      llm_review_decision: "approve",
+      llm_review_status: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
+      llm_review_decision: LLM_EVENT_REVIEW_DECISION.APPROVE,
       llm_review_confidence: 0.92,
       llm_review_reason: "High confidence family-safe event",
     })
@@ -283,14 +284,14 @@ describe("AdminVirtualEventsList", () => {
   it("renders needs-review and failed LLM states", () => {
     const failed = adminEvent({
       id: "failed",
-      llm_review_status: "failed",
-      llm_review_decision: "needs_admin_review",
+      llm_review_status: LLM_EVENT_REVIEW_STATUS.FAILED,
+      llm_review_decision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
       llm_review_error: "provider timeout",
     })
     const lowConfidence = adminEvent({
       id: "low-confidence",
-      llm_review_status: "succeeded",
-      llm_review_decision: "needs_admin_review",
+      llm_review_status: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
+      llm_review_decision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
       llm_review_confidence: 0.61,
       llm_review_reason: "Missing source details",
     })

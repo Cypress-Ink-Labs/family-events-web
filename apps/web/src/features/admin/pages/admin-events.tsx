@@ -29,6 +29,7 @@ import {
   ADMIN_PAGE_SIZE,
   type AdminEventsPageSize,
 } from "@/shared/constants/pagination"
+import { ADMIN_LLM_REVIEW_FILTER } from "@/shared/constants/llm-review"
 import type { Event } from "@/shared/types"
 
 type EventStatusFilter = Event["status"] | "all"
@@ -52,7 +53,9 @@ export function AdminEventsPage() {
   const toggleSelectedId = useAdminStore((state) => state.toggleSelectedId)
   const setSelectedIds = useAdminStore((state) => state.setSelectedIds)
   const clearSelectedIds = useAdminStore((state) => state.clearSelectedIds)
-  const [llmReviewFilter, setLlmReviewFilter] = useState<AdminLlmReviewFilter>("all")
+  const [llmReviewFilter, setLlmReviewFilter] = useState<AdminLlmReviewFilter>(
+    ADMIN_LLM_REVIEW_FILTER.ALL
+  )
   const [pageSize, setPageSize] = useState<AdminEventsPageSize>(readStoredPageSize)
 
   useEffect(() => {

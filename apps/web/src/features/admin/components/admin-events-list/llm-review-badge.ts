@@ -1,28 +1,32 @@
 import type { Event } from "@/shared/types"
+import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 
 /**
  * Builds the LLM-review badge text + class for a draft event. Returns null
- * when no badge applies (status unset or `not_required`).
+ * when no badge applies (status unset or not required).
  *
  * Extracted from `AdminVirtualEventRow` so the per-decision class map and
  * confidence formatting live in one focused, testable spot.
  */
 export function buildLlmReviewBadge(event: Event): { text: string; className: string } | null {
-  if (!event.llm_review_status || event.llm_review_status === "not_required") {
+  if (
+    !event.llm_review_status ||
+    event.llm_review_status === LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED
+  ) {
     return null
   }
 
   const confidenceText =
     event.llm_review_confidence == null ? null : Number(event.llm_review_confidence).toFixed(2)
 
-  if (event.llm_review_status === "failed") {
+  if (event.llm_review_status === LLM_EVENT_REVIEW_STATUS.FAILED) {
     return {
       text: "LLM failed",
       className: "text-destructive border-destructive/30 bg-destructive/10",
     }
   }
 
-  if (event.llm_review_decision === "approve") {
+  if (event.llm_review_decision === LLM_EVENT_REVIEW_DECISION.APPROVE) {
     return {
       text: `LLM approved${confidenceText ? ` · ${confidenceText}` : ""}`,
       className:
@@ -30,7 +34,7 @@ export function buildLlmReviewBadge(event: Event): { text: string; className: st
     }
   }
 
-  if (event.llm_review_decision === "reject") {
+  if (event.llm_review_decision === LLM_EVENT_REVIEW_DECISION.REJECT) {
     return {
       text: `LLM rejected${confidenceText ? ` · ${confidenceText}` : ""}`,
       className:

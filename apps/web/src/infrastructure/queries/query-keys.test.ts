@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { ADMIN_LLM_REVIEW_FILTER } from "@/shared/constants/llm-review"
 import { qk } from "./query-keys"
 
 describe("qk.events", () => {
@@ -112,14 +113,14 @@ describe("qk.admin.events", () => {
         keyword: "storytime",
         status: "all",
         cityFilter: "all",
-        llmReviewFilter: "failed",
+        llmReviewFilter: ADMIN_LLM_REVIEW_FILTER.FAILED,
       })
     ).not.toEqual(
       qk.admin.events.list({
         keyword: "storytime",
         status: "all",
         cityFilter: "all",
-        llmReviewFilter: "all",
+        llmReviewFilter: ADMIN_LLM_REVIEW_FILTER.ALL,
       })
     )
   })

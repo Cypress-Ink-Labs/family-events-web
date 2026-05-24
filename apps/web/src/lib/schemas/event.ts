@@ -1,4 +1,8 @@
 import { z } from "zod"
+import {
+  LLM_EVENT_REVIEW_DECISIONS,
+  LLM_EVENT_REVIEW_STATUSES,
+} from "@/shared/constants/llm-review"
 
 // Boundary schemas for Supabase RPC results. They mirror src/lib/types.ts's
 // hand-written Event / Tag / EventWithDetails contracts but validate at
@@ -55,12 +59,12 @@ export const eventRowSchema = z.object({
     .optional()
     .transform((v) => v ?? null),
   llm_review_status: z
-    .enum(["not_required", "pending", "succeeded", "failed", "skipped"])
+    .enum(LLM_EVENT_REVIEW_STATUSES)
     .nullable()
     .optional()
     .transform((v) => v ?? null),
   llm_review_decision: z
-    .enum(["approve", "reject", "needs_admin_review"])
+    .enum(LLM_EVENT_REVIEW_DECISIONS)
     .nullable()
     .optional()
     .transform((v) => v ?? null),

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 import { enrichedEventRowSchema, eventRowSchema } from "./event"
 
 const baseEventRow = {
@@ -26,7 +27,7 @@ const baseEventRow = {
   ai_tag_provider: null,
   ai_tag_model: null,
   ai_tag_status: null,
-  llm_review_status: "not_required",
+  llm_review_status: LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED,
   llm_review_decision: null,
   llm_review_confidence: null,
   llm_review_reason: null,
@@ -79,8 +80,8 @@ describe("eventRowSchema", () => {
   it("parses llm review metadata when present", () => {
     const parsed = eventRowSchema.parse({
       ...baseEventRow,
-      llm_review_status: "succeeded",
-      llm_review_decision: "approve",
+      llm_review_status: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
+      llm_review_decision: LLM_EVENT_REVIEW_DECISION.APPROVE,
       llm_review_confidence: 0.91,
       llm_review_reason: "High confidence family event",
       llm_review_flags: ["verified"],
@@ -90,8 +91,8 @@ describe("eventRowSchema", () => {
       llm_reviewed_at: "2026-05-12T01:00:00Z",
       llm_review_error: null,
     })
-    expect(parsed.llm_review_status).toBe("succeeded")
-    expect(parsed.llm_review_decision).toBe("approve")
+    expect(parsed.llm_review_status).toBe(LLM_EVENT_REVIEW_STATUS.SUCCEEDED)
+    expect(parsed.llm_review_decision).toBe(LLM_EVENT_REVIEW_DECISION.APPROVE)
     expect(parsed.llm_review_confidence).toBe(0.91)
   })
 

@@ -10,6 +10,7 @@ import { safeImageSrc } from "@/infrastructure/safe-url"
 import { cn, formatSlugLabel } from "@/shared/utils/format"
 import type { Event } from "@/shared/types"
 import { buildLlmReviewBadge } from "@/features/admin/components/admin-events-list/llm-review-badge"
+import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 
 interface AdminVirtualEventRowProps {
   event: Event
@@ -122,8 +123,9 @@ export function AdminVirtualEventRow({
                   </span>
                 ) : null}
               </div>
-              {event.llm_review_status === "failed" ||
-              event.llm_review_decision === "needs_admin_review" ? (
+              {event.llm_review_status === LLM_EVENT_REVIEW_STATUS.FAILED ||
+              (event.llm_review_status !== LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED &&
+                event.llm_review_decision === LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW) ? (
                 <p className="text-[11px] text-muted-foreground line-clamp-1">
                   {event.llm_review_error ?? event.llm_review_reason ?? "Routed to admin review"}
                 </p>

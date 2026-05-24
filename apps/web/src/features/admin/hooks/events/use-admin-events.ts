@@ -6,6 +6,12 @@ import { fetchAdminEventsPage } from "@/lib/db/rpc-admin-events"
 import type { AdminEventsCursor, AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
 import type { Event } from "@/shared/types"
 import {
+  ADMIN_LLM_REVIEW_FILTER,
+  LLM_EVENT_REVIEW_DECISION,
+  LLM_EVENT_REVIEW_STATUS,
+  type AdminLlmReviewFilter,
+} from "@/shared/constants/llm-review"
+import {
   batchUpdateAdminEventStatus,
   deleteAdminEvents,
   fetchAdminEventFacets,
@@ -20,14 +26,6 @@ export interface AdminEventsInfiniteData {
   isFetchingNextPage: boolean
 }
 
-export type AdminLlmReviewFilter =
-  | "all"
-  | "reviewed"
-  | "approved"
-  | "rejected"
-  | "needs_admin_review"
-  | "failed"
-
 interface AdminEventsInfiniteOptions {
   keyword: string
   status: Event["status"] | "all"
@@ -36,35 +34,53 @@ interface AdminEventsInfiniteOptions {
   pageSize?: number
 }
 
+export function getAdminLlmReviewFilters(llmReviewFilter: AdminLlmReviewFilter): {
+  llmReviewStatus?: Event["llm_review_status"]
+  llmReviewDecision?: Event["llm_review_decision"]
+} {
+  if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.FAILED) {
+    return { llmReviewStatus: LLM_EVENT_REVIEW_STATUS.FAILED }
+  }
+  if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.REVIEWED) {
+    return { llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED }
+  }
+  if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.APPROVED) {
+    return {
+      llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
+      llmReviewDecision: LLM_EVENT_REVIEW_DECISION.APPROVE,
+    }
+  }
+  if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.REJECTED) {
+    return {
+      llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
+      llmReviewDecision: LLM_EVENT_REVIEW_DECISION.REJECT,
+    }
+  }
+  if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.NEEDS_ADMIN_REVIEW) {
+    return {
+      llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
+      llmReviewDecision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
+    }
+  }
+  return {}
+}
+
 export function useAdminEventsInfinite({
   keyword,
   status,
   cityFilter = "all",
-  llmReviewFilter = "all",
+  llmReviewFilter = ADMIN_LLM_REVIEW_FILTER.ALL,
   pageSize = 200,
 }: AdminEventsInfiniteOptions) {
   const sanitizedKeyword = sanitizePostgrestLike(keyword) || undefined
-  const llmReviewStatus =
-    llmReviewFilter === "failed"
-      ? "failed"
-      : llmReviewFilter === "reviewed"
-        ? "succeeded"
-        : undefined
-  const llmReviewDecision =
-    llmReviewFilter === "approved"
-      ? "approve"
-      : llmReviewFilter === "rejected"
-        ? "reject"
-        : llmReviewFilter === "needs_admin_review"
-          ? "needs_admin_review"
-          : undefined
+  const { llmReviewStatus, llmReviewDecision } = getAdminLlmReviewFilters(llmReviewFilter)
   const filters = {
     status: status !== "all" ? status : undefined,
     cityId: cityFilter !== "all" && cityFilter !== UNASSIGNED_CITY_KEY ? cityFilter : undefined,
     cityIsNull: cityFilter === UNASSIGNED_CITY_KEY ? true : undefined,
     keyword: sanitizedKeyword,
-    llmReviewStatus: llmReviewStatus as Event["llm_review_status"] | undefined,
-    llmReviewDecision: llmReviewDecision as Event["llm_review_decision"] | undefined,
+    llmReviewStatus,
+    llmReviewDecision,
     limit: pageSize,
   }
 

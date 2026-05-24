@@ -2,6 +2,7 @@ import { Bot } from "lucide-react"
 import { ClientDate } from "@/shared/components/client-date"
 import type { EventWithDetails } from "@/shared/types"
 import { formatSlugLabel } from "@/shared/utils/format"
+import { LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
 
 export function LlmReviewSummary({ event }: { event: EventWithDetails }) {
   return (
@@ -15,7 +16,7 @@ export function LlmReviewSummary({ event }: { event: EventWithDetails }) {
           <div>
             <span className="text-muted-foreground">Status:</span>{" "}
             <span className="font-medium">
-              {formatSlugLabel(event.llm_review_status ?? "not_required")}
+              {formatSlugLabel(event.llm_review_status ?? LLM_EVENT_REVIEW_STATUS.NOT_REQUIRED)}
             </span>
           </div>
           <div>

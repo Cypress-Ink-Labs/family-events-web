@@ -15,15 +15,13 @@ import {
   ADMIN_EVENTS_PAGE_SIZE_OPTIONS,
   type AdminEventsPageSize,
 } from "@/shared/constants/pagination"
+import {
+  ADMIN_LLM_REVIEW_FILTER_OPTIONS,
+  type AdminLlmReviewFilter,
+} from "@/shared/constants/llm-review"
 
 export type AdminEventStatusFilter = Event["status"] | "all"
-export type AdminLlmReviewFilter =
-  | "all"
-  | "reviewed"
-  | "approved"
-  | "rejected"
-  | "needs_admin_review"
-  | "failed"
+export type { AdminLlmReviewFilter }
 
 interface StatusFilterBarProps {
   statusFilter: AdminEventStatusFilter
@@ -75,18 +73,9 @@ interface LlmFilterBarProps {
 }
 
 export function AdminLlmReviewFilterBar({ llmReviewFilter, onChange }: LlmFilterBarProps) {
-  const options: Array<{ value: AdminLlmReviewFilter; label: string }> = [
-    { value: "all", label: "All" },
-    { value: "reviewed", label: "LLM reviewed" },
-    { value: "approved", label: "LLM approved" },
-    { value: "rejected", label: "LLM rejected" },
-    { value: "needs_admin_review", label: "Needs Admin Review" },
-    { value: "failed", label: "LLM failed" },
-  ]
-
   return (
     <FilterBar>
-      {options.map((option) => (
+      {ADMIN_LLM_REVIEW_FILTER_OPTIONS.map((option) => (
         <button
           type="button"
           key={option.value}

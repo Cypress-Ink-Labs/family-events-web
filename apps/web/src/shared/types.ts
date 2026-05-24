@@ -22,6 +22,8 @@ import type {
   EventProcessingMode as DbEventProcessingMode,
   EventTagQueueStatus as DbEventTagQueueStatus,
   InviteRequestStatus as DbInviteRequestStatus,
+  LlmEventReviewDecision as DbLlmEventReviewDecision,
+  LlmEventReviewStatus as DbLlmEventReviewStatus,
   SourceExtractionMode,
   SourceScrapeQueueStatus as DbSourceScrapeQueueStatus,
 } from "@family-events/contracts"
@@ -34,8 +36,8 @@ export type AiTagStatus = "success" | "fallback" | "error"
 export type EventStatus = "draft" | "published" | "rejected" | "archived"
 export type ExtractionMode = SourceExtractionMode
 export type EventProcessingMode = DbEventProcessingMode
-export type LlmEventReviewStatus = "not_required" | "pending" | "succeeded" | "failed" | "skipped"
-export type LlmEventReviewDecision = "approve" | "reject" | "needs_admin_review"
+export type LlmEventReviewStatus = DbLlmEventReviewStatus
+export type LlmEventReviewDecision = DbLlmEventReviewDecision
 export type InviteRequestStatus = DbInviteRequestStatus
 export type TagQueueStatus = DbEventTagQueueStatus
 export type SourceQueueStatus = DbSourceScrapeQueueStatus

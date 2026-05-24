@@ -1,5 +1,6 @@
 import type { Event, EventFilters } from "@/shared/types"
 import { sanitizePostgrestLike } from "@/shared/utils/format"
+import { type AdminLlmReviewFilter } from "@/shared/constants/llm-review"
 
 const DEFAULT_EVENT_STATUS: Event["status"] = "published"
 
@@ -34,7 +35,7 @@ type AdminEventsKeyOptions = {
   keyword: string
   status: Event["status"] | "all"
   cityFilter?: "all" | "none" | string
-  llmReviewFilter?: "all" | "reviewed" | "approved" | "rejected" | "needs_admin_review" | "failed"
+  llmReviewFilter?: AdminLlmReviewFilter
   pageSize?: number
 }
 
