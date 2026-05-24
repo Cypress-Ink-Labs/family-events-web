@@ -1,10 +1,11 @@
 import path from "path"
+import fs from "fs"
 import { createEnv } from "@t3-oss/env-core"
 import { z } from "zod"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { sentryVitePlugin } from "@sentry/vite-plugin"
-import { defineConfig } from "vite"
+import { defineConfig, type Plugin } from "vite"
 
 const buildEnv = createEnv({
   server: {
@@ -18,10 +19,35 @@ const buildEnv = createEnv({
   emptyStringAsUndefined: true,
 })
 
-export default defineConfig(() => {
-  const plugins = [react(), tailwindcss()]
+function versionManifestPlugin(appVersion: string): Plugin {
+  const startedAt = new Date().toISOString()
+  const manifest = () =>
+    JSON.stringify({ version: appVersion, builtAt: startedAt }) + "\n"
 
+  return {
+    name: "family-events:version-manifest",
+    // Dev: serve a synthetic /version.json so useVersionCheck doesn't 404-spam.
+    configureServer(server) {
+      server.middlewares.use("/version.json", (_req, res) => {
+        res.setHeader("Content-Type", "application/json")
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+        res.end(manifest())
+      })
+    },
+    // Build: write the file into dist/ for production serving.
+    closeBundle() {
+      const outDir = path.resolve(__dirname, "dist")
+      fs.mkdirSync(outDir, { recursive: true })
+      fs.writeFileSync(path.join(outDir, "version.json"), manifest())
+    },
+  }
+}
+
+export default defineConfig(() => {
   const release = buildEnv.SENTRY_RELEASE ?? buildEnv.RAILWAY_GIT_COMMIT_SHA
+  const appVersion = release ?? `dev-${Date.now()}`
+
+  const plugins = [react(), tailwindcss(), versionManifestPlugin(appVersion)]
 
   if (buildEnv.SENTRY_AUTH_TOKEN && buildEnv.SENTRY_ORG && buildEnv.SENTRY_PROJECT && release) {
     plugins.push(
@@ -43,6 +69,9 @@ export default defineConfig(() => {
 
   return {
     plugins,
+    define: {
+      __APP_VERSION__: JSON.stringify(appVersion),
+    },
     build: {
       // Emit sourcemaps only when we have a Sentry upload pipeline to
       // consume + delete them. Without Sentry, leaving *.map files in dist/

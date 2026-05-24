@@ -12,6 +12,7 @@ export function EventDetailAbout({ description }: { description: string | null }
           <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-0.5">
             Parent Tip
           </p>
+
           <p className="text-xs text-blue-600 dark:text-blue-500 leading-relaxed">
             We recommend arriving 10 minutes early to let your toddler get comfortable with the
             space before the session begins!

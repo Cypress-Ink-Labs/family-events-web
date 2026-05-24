@@ -7,6 +7,8 @@ import { ProtectedRoute } from "@/features/auth/components/protected-route"
 import { PublicOnlyRoute } from "@/features/auth/components/public-only-route"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
 import { Toaster } from "@/shared/components/ui/sonner"
+import { UpdateBanner } from "@/shared/components/update-banner"
+import { VersionCheckRunner } from "@/shared/lib/app-version/use-version-check"
 import { HOME_PATH } from "@/shared/access-control"
 import { queryClient } from "@/infrastructure/queries/query-client"
 import { AppMotionProvider, FadeSwap } from "@/shared/components/motion"
@@ -278,6 +280,8 @@ export default function App() {
             </AppErrorBoundary>
           </BrowserRouter>
         </AppMotionProvider>
+        <UpdateBanner />
+        <VersionCheckRunner />
         <Toaster richColors position="bottom-right" />
         {ReactQueryDevtools ? (
           <Suspense fallback={null}>
