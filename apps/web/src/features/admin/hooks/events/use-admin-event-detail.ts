@@ -7,8 +7,13 @@ import { enrichAdminEvents } from "./admin-events-shared"
 import { normalizeAiTrace } from "@/features/admin/types"
 import type { EventAiTrace } from "@/shared/types"
 
+// LLM review columns must be selected so the Review Event dialog can render
+// status/decision/confidence/etc. Without them, every llm_review_* field
+// arrives as undefined and the panel collapses to all-em-dashes even when
+// the events list (which goes through admin_events_page RPC and includes
+// these fields by default) shows "Needs review".
 const ADMIN_EVENT_EDITOR_SELECT =
-  "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, ai_tag_model, ai_tag_status, recurrence_info, is_featured, is_outdoor, view_count, search_vector, created_at, updated_at, admin_locked_fields, admin_last_edited_at, admin_last_edited_by"
+  "id, title, description, start_datetime, end_datetime, timezone, venue_name, address, city_id, latitude, longitude, age_min, age_max, price, is_free, source_url, source_name, source_id, images, status, ai_confidence, ai_tag_provider, ai_tag_model, ai_tag_status, llm_review_status, llm_review_decision, llm_review_confidence, llm_review_reason, llm_review_flags, llm_review_provider, llm_review_model, llm_review_prompt_version, llm_reviewed_at, llm_review_error, recurrence_info, is_featured, is_outdoor, view_count, search_vector, created_at, updated_at, admin_locked_fields, admin_last_edited_at, admin_last_edited_by"
 
 export function useAdminEventDetail(eventId: string | undefined) {
   return useQuery({
