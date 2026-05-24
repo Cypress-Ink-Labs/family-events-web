@@ -34,7 +34,7 @@ type MobileTableProps<T> = {
  * Renders as a card-list on mobile (<md) and as a real `<table>` on md+.
  * Same data, two presentations: scan-friendly cards and dense table rows.
  */
-function MobileTable<T>({
+export function MobileTable<T>({
   data,
   columns,
   getId,

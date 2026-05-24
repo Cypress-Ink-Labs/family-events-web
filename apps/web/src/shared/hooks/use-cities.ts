@@ -3,7 +3,6 @@ import { qk } from "@/infrastructure/queries/query-keys"
 import { supabase } from "@/infrastructure/supabase/client"
 import type { City } from "@/shared/types"
 
-const ACTIVE_CITIES_QUERY_KEY =qk.cities.active
 
 async function fetchActiveCities(): Promise<City[]> {
   const { data, error } = await supabase

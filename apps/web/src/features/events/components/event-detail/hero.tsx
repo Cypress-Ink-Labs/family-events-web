@@ -43,7 +43,10 @@ export function EventDetailHero({
             onToggle={onFavoriteToggle}
             variant="overlay"
           />
-          <button type="button" className="size-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md">
+          <button
+            type="button"
+            className="size-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
+          >
             <Share2 className="size-4 text-foreground" />
           </button>
         </div>

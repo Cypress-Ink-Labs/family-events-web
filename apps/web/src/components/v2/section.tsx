@@ -13,7 +13,7 @@ type SectionProps = {
  * Vertical-rhythm section with optional title + lede + right-aligned action.
  * On mobile the action wraps below title (Toolbar handles tighter compositions).
  */
-function Section({ title, lede, action, className, children }: SectionProps) {
+export function Section({ title, lede, action, className, children }: SectionProps) {
   const hasHeader = title || lede || action
   return (
     <section className={cn("space-y-4 py-6 md:py-8", className)}>

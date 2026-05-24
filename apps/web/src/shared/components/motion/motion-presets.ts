@@ -2,7 +2,7 @@ import type { Transition, Variants } from "motion/react"
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-const fadeTransition: Transition = { duration: 0.25, ease }
+export const fadeTransition: Transition = { duration: 0.25, ease }
 
 export const fadeInUpVariants: Variants = {
   initial: { opacity: 0, y: 8 },

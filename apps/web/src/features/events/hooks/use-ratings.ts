@@ -2,21 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
 import {
   getUserEventRating,
-  listEventRatings,
   upsertEventRating,
 } from "@/features/events/api/ratings"
 import { invalidateEventProjectionQueries } from "@/features/events/lib/event-cache"
 
-function useRatings(eventId: string | undefined) {
-  return useQuery({
-    queryKey: qk.ratings.byEvent(eventId),
-    queryFn: async () => {
-      if (!eventId) return []
-      return listEventRatings(eventId)
-    },
-    enabled: Boolean(eventId),
-  })
-}
 
 export function useUserRating(userId: string | undefined, eventId: string | undefined) {
   return useQuery({

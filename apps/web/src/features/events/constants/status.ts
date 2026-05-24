@@ -13,4 +13,3 @@ export const EVENT_STATUS_OPTIONS: readonly { value: EventStatus; label: string 
   { value: "archived", label: "Archived" },
 ]
 
-const EVENT_STATUS_VALUES: readonly EventStatus[] =EVENT_STATUS_OPTIONS.map((o) => o.value)

@@ -35,13 +35,7 @@ export const adminEventFacetRowSchema = z.object({
 
 export type AdminEventFacetRow = z.infer<typeof adminEventFacetRowSchema>
 
-const llmReviewStatusSchema = z.enum([
-  "not_required",
-  "pending",
-  "succeeded",
-  "failed",
-  "skipped",
-])
+const llmReviewStatusSchema = z.enum(["not_required", "pending", "succeeded", "failed", "skipped"])
 
 const llmReviewDecisionSchema = z.enum(["approve", "reject", "needs_admin_review"])
 

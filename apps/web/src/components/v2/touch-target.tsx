@@ -13,7 +13,7 @@ type TouchTargetProps<E extends ElementType> = {
  * The visual size of `children` can stay smaller — padding fills the rest.
  * Wraps any element (button, a, label, ...). Default: button.
  */
-function TouchTarget({ as, className, children, ...rest }: TouchTargetProps<ElementType>) {
+export function TouchTarget({ as, className, children, ...rest }: TouchTargetProps<ElementType>) {
   const Tag = (as ?? "button") as ElementType
   return (
     <Tag

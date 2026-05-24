@@ -22,9 +22,7 @@ function emitThemeColorBindings(palette) {
   // bakes the literal oklch() value into the utility CSS and dark-mode
   // overrides never apply (the bug that produced unreadable text on selected
   // map-list rows: bg-accent-primary-soft stayed pastel in dark mode).
-  const lines = Object.keys(palette).map(
-    (name) => `  --color-${name}: var(--color-${name});`
-  )
+  const lines = Object.keys(palette).map((name) => `  --color-${name}: var(--color-${name});`)
   return `@theme inline {\n${lines.join("\n")}\n}`
 }
 

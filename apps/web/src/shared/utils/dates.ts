@@ -1,4 +1,4 @@
-import { format, formatDistanceToNowStrict, isSameDay, isThisYear, isToday } from "date-fns"
+import { format, isSameDay, isThisYear, isToday } from "date-fns"
 
 /**
  * Intent-revealing date formatters used across the app. Centralizing here
@@ -25,10 +25,6 @@ export function formatEventDayHour(value: Date | string | number): string {
   return format(toDate(value), "MMM d · h a")
 }
 
-/** "May 23, 2026" — long-form, used by week headers. */
-function formatLongDate(value: Date | string | number): string {
-  return format(toDate(value), "MMM d, yyyy")
-}
 
 /** "2:30 PM" — time only. */
 export function formatEventTime(value: Date | string | number): string {
@@ -61,7 +57,4 @@ export function formatLastRun(value: Date | string | number): string {
   return format(date, "M/d/yy")
 }
 
-/** "5m", "2h", "3d" — relative duration tightened for badge cells. */
-function formatRelativeCompact(value: Date | string | number): string {
-  return formatDistanceToNowStrict(toDate(value), { addSuffix: true })
-}
+

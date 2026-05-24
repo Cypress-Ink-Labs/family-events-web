@@ -11,7 +11,7 @@ import { eventSourceRowSchema } from "@/lib/schemas"
  * an entry → red squiggle in CI.
  */
 
-const ADMIN_SOURCE_TYPES =eventSourceRowSchema.shape.source_type.options
+export const ADMIN_SOURCE_TYPES = eventSourceRowSchema.shape.source_type.options
 export type AdminSourceType = (typeof ADMIN_SOURCE_TYPES)[number]
 
 interface AdminSourceTypeEntry {
@@ -33,10 +33,6 @@ const ADMIN_SOURCE_TYPE_REGISTRY: Record<AdminSourceType, AdminSourceTypeEntry> 
 export const ADMIN_SOURCE_TYPE_LABELS: Record<AdminSourceType, string> = Object.fromEntries(
   ADMIN_SOURCE_TYPES.map((type) => [type, ADMIN_SOURCE_TYPE_REGISTRY[type].label])
 ) as Record<AdminSourceType, string>
-
-const ADMIN_SOURCE_TYPE_ICONS: Record<AdminSourceType, ElementType> = Object.fromEntries(
-  ADMIN_SOURCE_TYPES.map((type) => [type, ADMIN_SOURCE_TYPE_REGISTRY[type].icon])
-) as Record<AdminSourceType, ElementType>
 
 export const ADMIN_SOURCE_TYPE_OPTIONS = ADMIN_SOURCE_TYPES.map((value) => ({
   value,

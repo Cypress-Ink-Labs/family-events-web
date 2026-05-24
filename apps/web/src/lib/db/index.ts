@@ -11,7 +11,6 @@ import type {
   TablesInsert,
   TablesUpdate,
 } from "../database.types"
-import { Constants } from "../database.types"
 
 export type { CompositeTypes, Database, Enums, Json, Tables, TablesInsert, TablesUpdate }
 

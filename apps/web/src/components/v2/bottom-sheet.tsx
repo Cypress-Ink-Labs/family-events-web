@@ -35,7 +35,7 @@ type BottomSheetProps = {
  * children in both to avoid duplicating mount semantics. Variant="sheet"
  * or "dialog" forces a side. Default "auto" follows breakpoint.
  */
-function BottomSheet({
+export function BottomSheet({
   open,
   onOpenChange,
   trigger,

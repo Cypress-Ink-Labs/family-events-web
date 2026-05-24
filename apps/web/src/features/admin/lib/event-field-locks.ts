@@ -25,7 +25,7 @@ export const ADMIN_EDITABLE_EVENT_FIELDS = [
 
 export type AdminEditableEventField = (typeof ADMIN_EDITABLE_EVENT_FIELDS)[number]
 
-const ADMIN_EDITABLE_EVENT_FIELD_SET =new Set<string>(ADMIN_EDITABLE_EVENT_FIELDS)
+const ADMIN_EDITABLE_EVENT_FIELD_SET = new Set<string>(ADMIN_EDITABLE_EVENT_FIELDS)
 
 const EVENT_FIELD_LABELS: Record<AdminEditableEventField, string> = {
   title: "Title",

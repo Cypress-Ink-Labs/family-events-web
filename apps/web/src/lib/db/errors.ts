@@ -7,7 +7,7 @@ export interface DbError {
   message: string
 }
 
-function mapSupabaseError(error: PostgrestError): DbError {
+export function mapSupabaseError(error: PostgrestError): DbError {
   if (error.code === "42501") {
     return { kind: "forbidden", message: error.message }
   }

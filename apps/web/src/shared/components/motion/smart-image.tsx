@@ -23,7 +23,12 @@ export function SmartImage({
   // Derive loaded state inline: reset when src changes (avoids useEffect state sync).
   // If the img element is already complete (browser cache), treat as loaded immediately.
   let loaded = loadedSrc === src
-  if (!loaded && imgRef.current?.complete && imgRef.current.naturalWidth > 0 && imgRef.current.src === src) {
+  if (
+    !loaded &&
+    imgRef.current?.complete &&
+    imgRef.current.naturalWidth > 0 &&
+    imgRef.current.src === src
+  ) {
     loaded = true
   }
 

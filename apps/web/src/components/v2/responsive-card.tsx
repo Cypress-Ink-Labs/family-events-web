@@ -15,7 +15,7 @@ type ResponsiveCardProps = {
  * Container-query-aware card that collapses horizontal to vertical at narrow widths.
  * Actions stay full-width below the content in both layouts.
  */
-function ResponsiveCard({
+export function ResponsiveCard({
   leading,
   title,
   body,
