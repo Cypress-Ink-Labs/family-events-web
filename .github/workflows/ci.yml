@@ -212,6 +212,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Check admin cron edge function
+        run: deno check --config supabase/functions/deno.json supabase/functions/admin-run-cron/index.ts
+
       - name: Turbo cache proof
         env:
           VITE_SUPABASE_ANON_KEY: ci-anon-key
