@@ -1,14 +1,14 @@
-import { Check, Pencil, X, XCircle } from "lucide-react"
+import { Check, Pencil, Sparkles, X, XCircle } from "lucide-react"
 import { Link } from "react-router-dom"
 import type { EventAiTraceWithParsed, EventWithDetails, Tag as EventTag } from "@/shared/types"
 import { safeImageSrc } from "@/infrastructure/safe-url"
-import { formatEventPrice } from "@/shared/utils/format"
+import { cn, formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
+import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { ClientDate } from "@/shared/components/client-date"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog"
-import { Separator } from "@/shared/components/ui/separator"
-import { FormGrid } from "@/components/v2"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/shared/components/ui/sheet"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { LlmReviewSummary } from "@/features/admin/components/admin-event-review/llm-review-summary"
 import { TagOverridesEditor } from "@/features/admin/components/admin-event-review/tag-overrides-editor"
 import { AiTracePanel } from "@/features/admin/components/admin-event-review/ai-trace-panel"
@@ -30,6 +30,30 @@ interface ReviewDialogProps {
   onSetDraft: () => void
 }
 
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+      {children}
+    </p>
+  )
+}
+
+function MetaRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <Eyebrow>{label}</Eyebrow>
+      <span className="text-sm font-medium text-foreground">{value}</span>
+    </div>
+  )
+}
+
+function decisionVariant(decision: string | null | undefined) {
+  if (!decision) return "outline" as const
+  if (decision.includes("approve") || decision === "auto_approve") return "default" as const
+  if (decision.includes("reject")) return "destructive" as const
+  return "secondary" as const
+}
+
 export function AdminEventReviewDialog({
   event,
   open,
@@ -46,57 +70,123 @@ export function AdminEventReviewDialog({
   onReject,
   onSetDraft,
 }: ReviewDialogProps) {
+  if (!event) {
+    return <Sheet open={open} onOpenChange={onOpenChange} />
+  }
+
+  const confidencePct = Math.round((event.ai_confidence ?? 0) * 100)
+  const heroImage =
+    safeImageSrc(event.images?.[0]) ?? `https://picsum.photos/seed/${event.id}/900/360`
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      {event && (
-        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Review Event</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <img
-              src={
-                safeImageSrc(event.images?.[0]) ?? `https://picsum.photos/seed/${event.id}/600/300`
-              }
-              alt={event.title}
-              className="w-full h-40 object-cover rounded-xl"
-            />
-            <div>
-              <h3 className="font-semibold text-lg">{event.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {cleanDescription(event.description)}
-              </p>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="right"
+        showCloseButton={false}
+        className={cn(
+          "flex h-full w-full flex-col gap-0 border-l border-border/60 bg-background p-0",
+          "sm:max-w-[600px]"
+        )}
+      >
+        {/* Cover + header */}
+        <div className="relative">
+          <div
+            className="h-44 w-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${heroImage})` }}
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"
+            aria-hidden
+          />
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="absolute right-4 top-4 inline-flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Close review panel"
+          >
+            <X className="size-4" />
+          </button>
+          <SheetHeader className="absolute inset-x-0 bottom-0 gap-2 p-5">
+            <p className="font-mono text-2xs uppercase tracking-[0.18em] text-white/70">
+              Review event
+            </p>
+            <SheetTitle className="font-display text-2xl leading-tight text-white">
+              {event.title}
+            </SheetTitle>
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <Badge variant="outline" className="border-white/30 bg-black/30 text-white">
+                {event.status ?? "draft"}
+              </Badge>
+              {event.llm_review_decision ? (
+                <Badge
+                  variant={decisionVariant(event.llm_review_decision)}
+                  className="border-transparent"
+                >
+                  <Sparkles className="size-3" />
+                  {event.llm_review_decision.replace(/_/g, " ")}
+                </Badge>
+              ) : null}
+              <Badge variant="outline" className="border-white/30 bg-black/30 text-white">
+                AI {confidencePct}%
+              </Badge>
             </div>
-            <FormGrid cols={2} gap="3" className="text-sm">
-              <div>
-                <span className="text-muted-foreground">Date:</span>{" "}
-                <span className="font-medium">
-                  <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
-                </span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Venue:</span>{" "}
-                <span className="font-medium">{event.venue_name ?? "—"}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Price:</span>{" "}
-                <span className="font-medium">{formatEventPrice(event.price, event.is_free)}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">AI confidence:</span>{" "}
-                <span className="font-medium">{Math.round((event.ai_confidence ?? 0) * 100)}%</span>
-              </div>
-            </FormGrid>
-            <Separator />
-            <LlmReviewSummary event={event} />
-            <TagOverridesEditor
-              event={event}
-              allTags={allTags}
-              editingTagIds={editingTagIds}
-              onToggleTag={onToggleTag}
-              onSaveTags={onSaveTags}
-            />
-            <Separator />
+          </SheetHeader>
+        </div>
+
+        {/* Tabs body */}
+        <Tabs defaultValue="overview" className="flex min-h-0 flex-1 flex-col gap-0">
+          <div className="border-b border-border/60 px-5 pt-4 pb-2">
+            <TabsList variant="line" className="w-full justify-start">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="trace">AI Trace</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent
+            value="overview"
+            className="min-h-0 flex-1 overflow-y-auto px-5 pb-32 pt-5 data-[state=inactive]:hidden"
+          >
+            <div className="space-y-6">
+              <section className="grid grid-cols-2 gap-x-4 gap-y-5">
+                <MetaRow
+                  label="Date"
+                  value={<ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />}
+                />
+                <MetaRow label="Venue" value={event.venue_name ?? "—"} />
+                <MetaRow label="Price" value={formatEventPrice(event.price, event.is_free)} />
+                <MetaRow label="AI confidence" value={`${confidencePct}%`} />
+              </section>
+
+              {event.description ? (
+                <section className="space-y-2">
+                  <Eyebrow>Description</Eyebrow>
+                  <p className="text-sm leading-relaxed text-foreground/90">
+                    {cleanDescription(event.description)}
+                  </p>
+                </section>
+              ) : null}
+
+              <section className="space-y-3">
+                <LlmReviewSummary event={event} />
+              </section>
+
+              <section className="space-y-3">
+                <TagOverridesEditor
+                  event={event}
+                  allTags={allTags}
+                  editingTagIds={editingTagIds}
+                  onToggleTag={onToggleTag}
+                  onSaveTags={onSaveTags}
+                />
+              </section>
+            </div>
+          </TabsContent>
+
+          <TabsContent
+            value="trace"
+            className="min-h-0 flex-1 overflow-y-auto px-5 pb-32 pt-5 data-[state=inactive]:hidden"
+          >
             <AiTracePanel
               trace={selectedEventTrace}
               isLoading={isTraceLoading}
@@ -104,33 +194,38 @@ export function AdminEventReviewDialog({
               tagNameById={tagNameById}
               tagNameBySlug={tagNameBySlug}
             />
-            <div className="flex gap-2 pt-2">
-              <Button variant="outline" className="flex-1 gap-2" asChild>
-                <Link to={`/admin/events/${event.id}/edit`}>
-                  <Pencil className="size-4" />
-                  Edit full event
-                </Link>
-              </Button>
-              <Button variant="outline" className="flex-1 gap-2" onClick={onSetDraft}>
-                <XCircle className="size-4" />
-                Draft
-              </Button>
-              <Button className="flex-1 gap-2" onClick={onPublish}>
-                <Check className="size-4" />
-                Publish
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 gap-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                onClick={onReject}
-              >
-                <X className="size-4" />
-                Reject
-              </Button>
-            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Sticky action footer */}
+        <div className="absolute inset-x-0 bottom-0 border-t border-border/60 bg-background/95 px-5 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-2" asChild>
+              <Link to={`/admin/events/${event.id}/edit`}>
+                <Pencil className="size-4" />
+                Edit
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2" onClick={onSetDraft}>
+              <XCircle className="size-4" />
+              Draft
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 border-destructive/60 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+              onClick={onReject}
+            >
+              <X className="size-4" />
+              Reject
+            </Button>
+            <Button size="sm" className="ml-auto gap-2" onClick={onPublish}>
+              <Check className="size-4" />
+              Publish
+            </Button>
           </div>
-        </DialogContent>
-      )}
-    </Dialog>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }
