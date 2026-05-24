@@ -130,8 +130,8 @@ export function ProfileChangePasswordCard({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters")
+    if (newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters")
       return
     }
     if (newPassword !== confirm) {
