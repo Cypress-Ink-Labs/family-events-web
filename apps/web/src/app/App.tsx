@@ -146,6 +146,11 @@ const AdminCronsPage = lazy(() =>
     default: module.AdminCronsPage,
   }))
 )
+const AdminSettingsPage = lazy(() =>
+  import("@/features/admin/pages/admin-settings").then((module) => ({
+    default: module.AdminSettingsPage,
+  }))
+)
 
 const ReactQueryDevtools = import.meta.env.DEV
   ? lazy(() =>
@@ -263,6 +268,7 @@ export default function App() {
                       <Route path="invites" element={<AdminInvitesPage />} />
                       <Route path="logs" element={<AdminLogsPage />} />
                       <Route path="crons" element={<AdminCronsPage />} />
+                      <Route path="settings" element={<AdminSettingsPage />} />
                     </Route>
                   </Route>
 

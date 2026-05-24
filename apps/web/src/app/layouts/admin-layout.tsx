@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   Zap,
   CalendarClock,
+  Settings as SettingsIcon,
 } from "lucide-react"
 import {
   SidebarProvider,
@@ -43,6 +44,7 @@ const ADMIN_NAV = [
   { to: "/admin/invites", label: "Invite Codes", icon: Ticket },
   { to: "/admin/logs", label: "Ingestion Logs", icon: FileText },
   { to: "/admin/crons", label: "Scheduled Jobs", icon: CalendarClock },
+  { to: "/admin/settings", label: "AI Settings", icon: SettingsIcon },
 ]
 
 export function AdminLayout() {
