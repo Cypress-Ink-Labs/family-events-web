@@ -162,6 +162,19 @@ export function ProfilePage() {
         <Separator />
 
         <ProfileSignOutButton onSignOut={handleSignOut} />
+
+        <p className="text-xs text-muted-foreground">
+          Some event photos courtesy of{" "}
+          <a
+            className="underline underline-offset-2 hover:text-foreground"
+            href="https://unsplash.com/?utm_source=family_events&utm_medium=referral"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Unsplash
+          </a>
+          .
+        </p>
       </Stack>
     </Page>
   )

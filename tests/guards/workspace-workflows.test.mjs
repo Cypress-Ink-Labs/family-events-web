@@ -35,14 +35,10 @@ test("dependency-review watches all workspace manifests", () => {
   assert.match(dep, /pnpm-lock\.yaml/)
 })
 
-test("local repeatable workflow script exists and runs the same gate sequence", () => {
+test("local repeatable workflow script exists and delegates to the full scoped gate", () => {
   assert.equal(existsSync(localScriptPath), true)
   const script = readFileSync(localScriptPath, "utf8")
-  assert.match(script, /pnpm run docs:test/)
-  assert.match(script, /pnpm run workspace:test/)
-  assert.match(script, /pnpm run check/)
-  assert.match(script, /pnpm run test/)
-  assert.match(script, /pnpm run build/)
+  assert.match(script, /pnpm run verify:full/)
 })
 
 test("turbo scripts avoid deprecated parallel flag", () => {
@@ -56,9 +52,67 @@ test("workspace exposes turbo-backed formatting scripts", () => {
   const pkg = JSON.parse(readFileSync(rootPackagePath, "utf8"))
   assert.equal(pkg.scripts.format, "turbo run format")
   assert.equal(pkg.scripts["format:check"], "turbo run format:check")
+  assert.equal(pkg.scripts["web:check"], "pnpm --filter @family-events/web check")
+  assert.equal(pkg.scripts["web:test"], "pnpm --filter @family-events/web test")
+  assert.equal(pkg.scripts["web:build"], "pnpm --filter @family-events/web build")
+  assert.match(pkg.scripts["packages:check"], /@family-events\/contracts check/)
+  assert.match(pkg.scripts["packages:check"], /@family-events\/shared check/)
+  assert.match(pkg.scripts["packages:check"], /@family-events\/design-system check/)
+  assert.match(pkg.scripts["packages:check"], /@family-events\/email check/)
+  assert.match(pkg.scripts["packages:test"], /@family-events\/contracts test/)
+  assert.match(pkg.scripts["packages:test"], /@family-events\/shared test/)
+  assert.match(pkg.scripts["packages:test"], /@family-events\/design-system test/)
+  assert.match(pkg.scripts["verify:web"], /pnpm run docs:test/)
+  assert.match(pkg.scripts["verify:web"], /pnpm run workspace:test/)
+  assert.match(pkg.scripts["verify:web"], /pnpm run web:check/)
+  assert.match(pkg.scripts["verify:web"], /pnpm run web:test/)
+  assert.match(pkg.scripts["verify:web"], /pnpm run web:build/)
+  assert.equal(pkg.scripts["verify:ios"], "pnpm run ios:test")
   assert.equal(pkg.scripts["android:check"], "pnpm --filter @family-events/android check")
   assert.equal(pkg.scripts["android:test"], "pnpm --filter @family-events/android test")
   assert.equal(pkg.scripts["android:build"], "pnpm --filter @family-events/android build")
+  assert.equal(
+    pkg.scripts["verify:android"],
+    "pnpm run android:check && pnpm run android:test && pnpm run android:build"
+  )
+  assert.equal(pkg.scripts["verify:full"], "pnpm run verify:web && pnpm run verify:ios && pnpm run verify:android")
+  assert.equal(pkg.scripts["clean:artifacts"], "bash scripts/clean-generated-artifacts.sh")
+})
+
+test("artifact cleanup script exists and avoids dependency/source deletion", () => {
+  const cleanupPath = path.join(repoRoot, "scripts", "clean-generated-artifacts.sh")
+  assert.equal(existsSync(cleanupPath), true)
+
+  const script = readFileSync(cleanupPath, "utf8")
+  assert.match(script, /apps\/web\/dist/)
+  assert.match(script, /apps\/web\/output/)
+  assert.match(script, /apps\/android\/\.gradle/)
+  assert.match(script, /apps\/android\/\*\/build/)
+  assert.match(script, /apps\/ios\/Packages\/\*\/\.build/)
+  assert.doesNotMatch(script, /node_modules/)
+  assert.doesNotMatch(script, /FamilyEvents\.xcodeproj/)
+  assert.doesNotMatch(script, /tokens\.generated\.css/)
+  assert.doesNotMatch(script, /Tokens\.swift/)
+  assert.doesNotMatch(script, /Tokens\.kt/)
+})
+
+test("generated artifact directories are ignored explicitly", () => {
+  const gitignorePath = path.join(repoRoot, ".gitignore")
+  const gitignore = readFileSync(gitignorePath, "utf8")
+
+  for (const pattern of [
+    "**/.turbo/",
+    "**/build/",
+    "**/.gradle/",
+    "**/.kotlin/",
+    "**/.build/",
+    "**/.swiftpm/",
+    "DerivedData/",
+    "apps/web/output/",
+    "apps/web/dist/",
+  ]) {
+    assert.match(gitignore, new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))
+  }
 })
 
 test("turbo declares measurable build outputs for web, design-system, and android", () => {

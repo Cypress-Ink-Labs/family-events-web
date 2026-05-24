@@ -12,6 +12,9 @@ const turboPath = path.join(repoRoot, "turbo.json")
 const gitignorePath = path.join(repoRoot, ".gitignore")
 const webTsAppPath = path.join(repoRoot, "apps", "web", "tsconfig.app.json")
 const webTsNodePath = path.join(repoRoot, "apps", "web", "tsconfig.node.json")
+const webAgentsPath = path.join(repoRoot, "apps", "web", "AGENTS.md")
+const iosAgentsPath = path.join(repoRoot, "apps", "ios", "AGENTS.md")
+const androidAgentsPath = path.join(repoRoot, "apps", "android", "AGENTS.md")
 
 test("workspace root files exist", () => {
   assert.equal(existsSync(rootPkgPath), true)
@@ -57,4 +60,33 @@ test("web tsconfig consumers extend config-typescript presets", () => {
 test("turbo cache directory is ignored", () => {
   const gitignore = readFileSync(gitignorePath, "utf8")
   assert.match(gitignore, /^\.turbo$/m)
+})
+
+test("app ownership docs exist for web, iOS, and Android", () => {
+  assert.equal(existsSync(webAgentsPath), true)
+  assert.equal(existsSync(iosAgentsPath), true)
+  assert.equal(existsSync(androidAgentsPath), true)
+
+  const web = readFileSync(webAgentsPath, "utf8")
+  const ios = readFileSync(iosAgentsPath, "utf8")
+  const android = readFileSync(androidAgentsPath, "utf8")
+
+  assert.match(web, /pnpm --filter @family-events\/web check/)
+  assert.match(web, /docs\/DESIGN\.md/)
+  assert.match(web, /@family-events\/contracts/)
+  assert.match(web, /@family-events\/shared/)
+  assert.match(web, /@family-events\/design-system/)
+
+  assert.match(ios, /pnpm run ios:test/)
+  assert.match(ios, /XcodeGen/)
+  assert.match(ios, /consumer/i)
+  assert.match(ios, /FECore/)
+  assert.match(ios, /FEData/)
+  assert.match(ios, /FEDesignSystem/)
+
+  assert.match(android, /pnpm --filter @family-events\/android check/)
+  assert.match(android, /consumer/i)
+  assert.match(android, /:core/)
+  assert.match(android, /:data/)
+  assert.match(android, /:designsystem/)
 })
