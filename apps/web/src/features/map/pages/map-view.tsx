@@ -128,6 +128,17 @@ export function MapViewPage() {
     zoom: viewState.zoom,
   })
 
+  // Fly to user location when geolocation is first granted.
+  useEffect(() => {
+    if (!userLocation) return
+    mapRef.current?.flyTo({
+      center: [userLocation.longitude, userLocation.latitude],
+      zoom: Math.max(14, mapState.viewState.zoom),
+      speed: 1.4,
+      essential: true,
+    })
+  }, [userLocation])
+
   // Fly to city center when the city selector changes.
   const centerLat = selectedCity?.latitude
   const centerLng = selectedCity?.longitude
@@ -540,8 +551,8 @@ function MapLocationControl({ locationStatus, requestLocation }: MapLocationCont
         className={cn(
           "gap-1.5 h-8 text-xs shadow focus-visible:border-accent-tertiary focus-visible:ring-accent-tertiary/30",
           locationStatus === "granted"
-            ? "border-accent-tertiary bg-accent-tertiary text-surface hover:bg-accent-tertiary/90 hover:text-surface"
-            : "border-border/70 bg-surface/90 hover:bg-accent-tertiary-soft hover:text-accent-tertiary"
+            ? "border-accent-tertiary bg-accent-tertiary text-white hover:bg-accent-tertiary/90 hover:text-white"
+            : "border-border/70 bg-surface/90 text-foreground hover:bg-accent-tertiary-soft hover:text-accent-tertiary"
         )}
       >
         <Locate className="size-3.5" />

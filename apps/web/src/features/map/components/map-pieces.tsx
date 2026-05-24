@@ -102,7 +102,7 @@ export function EventPopup({ event, userLocation }: EventPopupProps) {
           asChild
           size="sm"
           variant="outline"
-          className="h-7 text-xs border-accent-primary bg-accent-primary text-surface hover:bg-accent-primary/90 hover:text-surface focus-visible:border-accent-primary focus-visible:ring-accent-primary/30"
+          className="h-7 text-xs border-accent-primary bg-accent-primary text-white hover:bg-accent-primary/90 hover:text-white focus-visible:border-accent-primary focus-visible:ring-accent-primary/30"
         >
           <Link to={`/events/${event.id}`}>Details</Link>
         </Button>
