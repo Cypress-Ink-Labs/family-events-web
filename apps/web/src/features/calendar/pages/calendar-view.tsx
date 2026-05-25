@@ -51,9 +51,8 @@ export function CalendarViewPage() {
   const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd })
 
   const today = startOfDay(new Date())
-  const dateFrom = view === "week"
-    ? (hidePastEvents ? today : weekStart)
-    : (hidePastEvents ? today : monthStart)
+  const dateFrom =
+    view === "week" ? (hidePastEvents ? today : weekStart) : hidePastEvents ? today : monthStart
   const dateTo = view === "week" ? weekEnd : monthEnd
 
   const {

@@ -31,7 +31,10 @@ export function CalendarViewHeader({
             checked={hidePastEvents}
             onCheckedChange={onHidePastEventsChange}
           />
-          <Label htmlFor="hide-past-events" className="text-xs text-muted-foreground cursor-pointer">
+          <Label
+            htmlFor="hide-past-events"
+            className="text-xs text-muted-foreground cursor-pointer"
+          >
             Upcoming only
           </Label>
         </div>

@@ -1,5 +1,12 @@
 import { lazy, Suspense, useEffect } from "react"
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  ScrollRestoration,
+  useLocation,
+} from "react-router-dom"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/app/providers/theme-provider"
 import { AppErrorBoundary } from "@/app/app-error-boundary"
@@ -230,6 +237,7 @@ export default function App() {
         <AuthInit />
         <AppMotionProvider>
           <BrowserRouter>
+            <ScrollRestoration />
             <AppErrorBoundary>
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
