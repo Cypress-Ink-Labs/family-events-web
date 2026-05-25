@@ -3,11 +3,17 @@ import { Button } from "@/shared/components/ui/button"
 import { AffordancePillCompact } from "@/shared/components/ui/affordance-pill"
 import { SmartImage } from "@/shared/components/motion"
 import { AgeRangeBadge } from "@/features/events/components/tag-badge"
+import {
+  findUnsplashAttribution,
+  UnsplashAttribution,
+} from "@/features/events/components/unsplash-attribution"
 import { formatEventDate } from "@/shared/utils/dates"
 import { cn } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
 
 export function CompactEventCard({ event, imageUrl, startDate, className }: EventCardVariantProps) {
+  const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
+
   return (
     <Link to={`/events/${event.id}`} className="block">
       <div
@@ -30,6 +36,7 @@ export function CompactEventCard({ event, imageUrl, startDate, className }: Even
             {formatEventDate(startDate)}
             {event.venue_name ? ` · ${event.venue_name}` : ""}
           </p>
+          <UnsplashAttribution attribution={attribution} imageUrl={imageUrl} className="mt-1" />
           <div className="flex items-center gap-1.5 mt-1">
             {event.is_free ? (
               <AffordancePillCompact variant="free" />
