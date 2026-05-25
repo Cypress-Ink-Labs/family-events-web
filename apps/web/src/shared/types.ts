@@ -100,6 +100,17 @@ export interface ParentTip {
   text: string
 }
 
+export interface UnsplashImageAttribution {
+  provider: "unsplash"
+  image_url: string
+  matched_tag: string | null
+  photo_id: string
+  photographer_name: string
+  photographer_username: string
+  photographer_profile_url: string
+  photo_url: string
+}
+
 export type Event = Override<
   EventRow,
   {
@@ -109,6 +120,7 @@ export type Event = Override<
     ai_tag_status: AiTagStatus | null
     search_vector: string | null
     is_outdoor: boolean | null
+    image_attributions?: UnsplashImageAttribution[]
     parent_tips?: ParentTip[] | null
     parent_tips_generated_at?: string | null
     parent_tips_provider?: string | null

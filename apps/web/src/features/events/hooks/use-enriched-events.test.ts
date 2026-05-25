@@ -101,6 +101,38 @@ describe("adaptEnrichedRow", () => {
     expect(Array.isArray(result.images)).toBe(true)
     expect(result.images).toHaveLength(0)
   })
+
+  it("preserves public image attributions", () => {
+    const result = adaptEnrichedRow(
+      baseRow({
+        image_attributions: [
+          {
+            provider: "unsplash",
+            image_url: "https://images.unsplash.com/photo.jpg",
+            matched_tag: "museum",
+            photo_id: "abc",
+            photographer_name: "Jane Doe",
+            photographer_username: "jane",
+            photographer_profile_url: "https://unsplash.com/@jane",
+            photo_url: "https://unsplash.com/photos/abc",
+          },
+        ],
+      })
+    )
+
+    expect(result.image_attributions).toEqual([
+      {
+        provider: "unsplash",
+        image_url: "https://images.unsplash.com/photo.jpg",
+        matched_tag: "museum",
+        photo_id: "abc",
+        photographer_name: "Jane Doe",
+        photographer_username: "jane",
+        photographer_profile_url: "https://unsplash.com/@jane",
+        photo_url: "https://unsplash.com/photos/abc",
+      },
+    ])
+  })
 })
 
 describe("buildEnrichedRpcArgs", () => {

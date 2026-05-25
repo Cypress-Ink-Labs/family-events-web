@@ -6,6 +6,10 @@ import { Card, CardContent } from "@/shared/components/ui/card"
 import { SmartImage } from "@/shared/components/motion"
 import { TagBadge } from "@/features/events/components/tag-badge"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
+import {
+  findUnsplashAttribution,
+  UnsplashAttribution,
+} from "@/features/events/components/unsplash-attribution"
 import { formatEventDateTime } from "@/shared/utils/dates"
 import { cn, formatEventPrice } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
@@ -18,6 +22,7 @@ export function ListEventCard({
   className,
 }: EventCardVariantProps) {
   const topTags = event.tags?.slice(0, 3) || []
+  const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
   return (
     <Link to={`/events/${event.id}`} className="block group">
       <Card
@@ -60,6 +65,11 @@ export function ListEventCard({
               </Badge>
             </div>
           )}
+          <UnsplashAttribution
+            attribution={attribution}
+            imageUrl={imageUrl}
+            className="absolute bottom-3 right-3 max-w-[65%] text-right text-white/90 drop-shadow-sm"
+          />
         </div>
         <CardContent className="p-4">
           <div className="flex gap-2 flex-wrap mb-2">

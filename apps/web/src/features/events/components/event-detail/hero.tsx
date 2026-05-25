@@ -3,6 +3,10 @@ import { ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { SmartImage } from "@/shared/components/motion"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
+import {
+  findUnsplashAttribution,
+  UnsplashAttribution,
+} from "@/features/events/components/unsplash-attribution"
 import type { EventWithDetails } from "@/shared/types"
 
 interface EventDetailHeroProps {
@@ -18,6 +22,8 @@ export function EventDetailHero({
   isFavorited,
   onFavoriteToggle,
 }: EventDetailHeroProps) {
+  const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
+
   return (
     <>
       <div className="sticky top-14 z-30 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
@@ -36,6 +42,11 @@ export function EventDetailHero({
           placeholderClassName="w-full h-64 sm:h-80"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
+        <UnsplashAttribution
+          attribution={attribution}
+          imageUrl={imageUrl}
+          className="absolute bottom-3 left-4 right-4 text-white/90 drop-shadow-sm"
+        />
         <div className="absolute top-4 right-4 flex gap-2">
           <FavoriteButton
             eventId={event.id}

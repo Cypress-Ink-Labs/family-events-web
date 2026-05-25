@@ -5,6 +5,10 @@ import { SmartImage } from "@/shared/components/motion"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { StarRating } from "@/features/events/components/star-rating"
+import {
+  findUnsplashAttribution,
+  UnsplashAttribution,
+} from "@/features/events/components/unsplash-attribution"
 import { formatEventDayHour } from "@/shared/utils/dates"
 import { cn, formatEventPrice } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
@@ -17,6 +21,7 @@ export function DefaultEventCard({
   className,
 }: EventCardVariantProps) {
   const topTags = event.tags?.slice(0, 3) || []
+  const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
   return (
     <Link to={`/events/${event.id}`} className="block group">
       <Card
@@ -41,6 +46,11 @@ export function DefaultEventCard({
               <AgeRangeBadge ageMin={event.age_min} ageMax={event.age_max} />
             </div>
           )}
+          <UnsplashAttribution
+            attribution={attribution}
+            imageUrl={imageUrl}
+            className="absolute bottom-1.5 left-2 right-2 text-white/90 drop-shadow-sm"
+          />
         </div>
         <CardContent className="p-3">
           <div className="flex gap-1.5 flex-wrap mb-1.5">

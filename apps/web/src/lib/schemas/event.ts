@@ -22,6 +22,21 @@ const enrichedTagSchema = z.object({
     .transform((v) => v ?? ""),
 })
 
+const imageAttributionSchema = z.object({
+  provider: z.literal("unsplash"),
+  image_url: z.string(),
+  matched_tag: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  photo_id: z.string(),
+  photographer_name: z.string(),
+  photographer_username: z.string(),
+  photographer_profile_url: z.string(),
+  photo_url: z.string(),
+})
+
 // Core events row. Mirrors the public.events table; nullables match the schema.
 // `images` can arrive as null / JSON string / array of unknown — we normalize
 // to string[] at the boundary because UI code never has to think about nulls.
@@ -182,6 +197,13 @@ export const enrichedEventRowSchema = eventRowSchema.extend({
     .nullable()
     .optional()
     .transform((v) => v ?? 0),
+  image_attributions: z.preprocess(
+    (input) =>
+      Array.isArray(input)
+        ? input.filter((entry) => imageAttributionSchema.safeParse(entry).success)
+        : [],
+    z.array(imageAttributionSchema)
+  ),
   is_favorited: z
     .boolean()
     .nullable()

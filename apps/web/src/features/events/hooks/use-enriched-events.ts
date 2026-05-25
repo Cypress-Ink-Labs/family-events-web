@@ -98,6 +98,7 @@ export function adaptEnrichedRow(row: unknown): EventWithDetails {
     rating_count: data.rating_count,
     is_favorited: data.is_favorited,
     is_in_calendar: data.is_in_calendar,
+    image_attributions: data.image_attributions,
     parent_tips: data.parent_tips,
     parent_tips_generated_at: data.parent_tips_generated_at,
   }

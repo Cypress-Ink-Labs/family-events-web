@@ -3,6 +3,10 @@ import { Card, CardContent } from "@/shared/components/ui/card"
 import { SmartImage } from "@/shared/components/motion"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { StarRating } from "@/features/events/components/star-rating"
+import {
+  findUnsplashAttribution,
+  UnsplashAttribution,
+} from "@/features/events/components/unsplash-attribution"
 import { formatEventDate } from "@/shared/utils/dates"
 import { cn } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
@@ -15,6 +19,7 @@ export function FeaturedEventCard({
   className,
 }: EventCardVariantProps) {
   const topTags = event.tags?.slice(0, 3) || []
+  const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
   return (
     <Link to={`/events/${event.id}`} className="block group">
       <Card
@@ -34,6 +39,11 @@ export function FeaturedEventCard({
             variant="overlay"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <UnsplashAttribution
+            attribution={attribution}
+            imageUrl={imageUrl}
+            className="absolute top-2 left-3 right-14 text-white/90 drop-shadow-sm"
+          />
           <div className="absolute bottom-3 left-3 right-10">
             <div className="flex gap-1.5 mb-1.5 flex-wrap">
               {topTags.slice(0, 2).map((et) => (

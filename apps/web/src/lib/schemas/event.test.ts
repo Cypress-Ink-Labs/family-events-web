@@ -120,10 +120,37 @@ describe("enrichedEventRowSchema", () => {
   it("defaults missing enrichment fields", () => {
     const parsed = enrichedEventRowSchema.parse(baseEventRow)
     expect(parsed.tags).toEqual([])
+    expect(parsed.image_attributions).toEqual([])
     expect(parsed.avg_rating).toBe(0)
     expect(parsed.rating_count).toBe(0)
     expect(parsed.is_favorited).toBe(false)
     expect(parsed.is_in_calendar).toBe(false)
+  })
+
+  it("accepts public Unsplash attribution JSON and drops malformed entries", () => {
+    const parsed = enrichedEventRowSchema.parse({
+      ...baseEventRow,
+      image_attributions: [
+        {
+          provider: "unsplash",
+          image_url: "https://images.unsplash.com/photo.jpg",
+          matched_tag: "museum",
+          photo_id: "abc",
+          photographer_name: "Jane Doe",
+          photographer_username: "jane",
+          photographer_profile_url: "https://unsplash.com/@jane",
+          photo_url: "https://unsplash.com/photos/abc",
+        },
+        { provider: "unsplash", download_location: "should-not-be-required" },
+      ],
+    })
+
+    expect(parsed.image_attributions).toHaveLength(1)
+    expect(parsed.image_attributions[0]).toMatchObject({
+      photographer_name: "Jane Doe",
+      photo_url: "https://unsplash.com/photos/abc",
+    })
+    expect(parsed.image_attributions[0]).not.toHaveProperty("download_location")
   })
 
   it("coerces numeric strings on avg_rating / rating_count", () => {
