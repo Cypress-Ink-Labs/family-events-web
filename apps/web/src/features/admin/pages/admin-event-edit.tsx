@@ -1,6 +1,6 @@
 import { ArrowLeft, Archive, Check, Trash2, XCircle } from "lucide-react"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router"
+import { useEffect, useRef, useState } from "react"
+import { Link, useBlocker, useNavigate, useParams } from "react-router"
 import { toast } from "sonner"
 import { Button } from "@/shared/components/ui/button"
 import { Skeleton } from "@/shared/components/ui/skeleton"
@@ -49,14 +49,22 @@ export function AdminEventEditPage() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload)
   }, [])
 
-  const confirmLeave = useCallback(() => {
-    return !isDirtyRef.current || window.confirm("Discard unsaved event changes?")
-  }, [])
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      isDirtyRef.current && currentLocation.pathname !== nextLocation.pathname
+  )
+
+  useEffect(() => {
+    if (blocker.state !== "blocked") return
+    if (window.confirm("Discard unsaved event changes?")) {
+      blocker.proceed()
+    } else {
+      blocker.reset()
+    }
+  }, [blocker])
 
   function goBack() {
-    if (confirmLeave()) {
-      navigate("/admin/events")
-    }
+    navigate("/admin/events")
   }
 
   async function handleSubmit(input: AdminEventEditSubmit) {
