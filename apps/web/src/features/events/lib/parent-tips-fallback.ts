@@ -1,3 +1,5 @@
+import { getHourFormatter } from "@/shared/lib/intl-formatters"
+
 export type ParentTipCategory =
   | "arrival"
   | "bring"
@@ -29,12 +31,7 @@ function hourInTimezone(iso: string, timezone: string): number | null {
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return null
   try {
-    const formatter = new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      hourCycle: "h23",
-      timeZone: timezone,
-    })
-    const value = Number.parseInt(formatter.format(date), 10)
+    const value = Number.parseInt(getHourFormatter(timezone).format(date), 10)
     return Number.isFinite(value) ? value : null
   } catch {
     // Invalid IANA zone — fall back to UTC so the rule still has a defined

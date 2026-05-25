@@ -58,87 +58,64 @@
 :root {
   --radius: 0.75rem;
 
-  --background: oklch(0.99 0.003 12);
-  --foreground: oklch(0.18 0.018 20);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.018 20);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.018 20);
+  /* Dusk-Meadow bridge: shadcn semantic vars → design tokens.
+   * Components using bg-primary, bg-background, etc. pick up the
+   * Dusk-Meadow palette. Dark mode is automatic: tokens.generated.css
+   * .dark block overrides --color-* vars, which propagate here. */
+  --background: var(--color-bg);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
 
-  --primary: oklch(0.54 0.215 12);
-  --primary-foreground: oklch(0.99 0.003 12);
+  --primary: var(--color-accent-primary);
+  --primary-foreground: oklch(99% 0.003 82);
 
-  --secondary: oklch(0.96 0.01 12);
-  --secondary-foreground: oklch(0.3 0.04 12);
-  --muted: oklch(0.965 0.006 12);
-  --muted-foreground: oklch(0.52 0.02 15);
-  --accent: oklch(0.93 0.028 12);
-  --accent-foreground: oklch(0.28 0.04 12);
+  --secondary: var(--color-surface-raised);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-surface-raised);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-accent-primary-soft);
+  --accent-foreground: var(--color-accent-primary);
 
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.91 0.01 12);
-  --input: oklch(0.93 0.008 12);
-  --ring: oklch(0.54 0.215 12);
+  --destructive: var(--color-error);
+  --destructive-foreground: oklch(99% 0 0);
+  --border: var(--color-border);
+  --input: var(--color-surface-raised);
+  --ring: var(--color-accent-primary);
 
-  --chart-1: oklch(0.62 0.22 12);
-  --chart-2: oklch(0.6 0.14 160);
-  --chart-3: oklch(0.7 0.12 200);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.65 0.18 290);
+  --chart-1: var(--color-accent-secondary);
+  --chart-2: var(--color-accent-primary);
+  --chart-3: var(--color-accent-tertiary);
+  --chart-4: var(--color-accent-kid);
+  --chart-5: var(--color-success);
 
-  --sidebar: oklch(0.22 0.02 12);
-  --sidebar-foreground: oklch(0.93 0.008 12);
-  --sidebar-primary: oklch(0.73 0.185 12);
-  --sidebar-primary-foreground: oklch(0.16 0.016 12);
-  --sidebar-accent: oklch(0.32 0.024 12);
-  --sidebar-accent-foreground: oklch(0.93 0.008 12);
-  --sidebar-border: oklch(0.34 0.024 12);
-  --sidebar-ring: oklch(0.54 0.215 12);
+  --sidebar: var(--color-surface-raised);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: var(--color-accent-primary);
+  --sidebar-primary-foreground: oklch(99% 0.003 82);
+  --sidebar-accent: var(--color-accent-primary-soft);
+  --sidebar-accent-foreground: var(--color-accent-primary);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-accent-primary);
 
-  --family-warm: oklch(0.96 0.038 12);
-  --family-warm-foreground: oklch(0.35 0.08 12);
-  --family-accent: oklch(0.54 0.215 12);
-  --family-accent-foreground: oklch(0.99 0.003 12);
+  --family-warm: var(--color-accent-primary-soft);
+  --family-warm-foreground: var(--color-accent-primary);
+  --family-accent: var(--color-accent-secondary);
+  --family-accent-foreground: oklch(99% 0.003 82);
 }
 
 .dark {
-  --background: oklch(0.145 0.014 12);
-  --foreground: oklch(0.955 0.007 12);
-  --card: oklch(0.195 0.017 12);
-  --card-foreground: oklch(0.955 0.007 12);
-  --popover: oklch(0.225 0.017 12);
-  --popover-foreground: oklch(0.955 0.007 12);
-  --primary: oklch(0.73 0.185 12);
-  --primary-foreground: oklch(0.15 0.016 12);
-  --secondary: oklch(0.265 0.018 12);
-  --secondary-foreground: oklch(0.955 0.007 12);
-  --muted: oklch(0.255 0.013 12);
-  --muted-foreground: oklch(0.605 0.018 15);
-  --accent: oklch(0.305 0.024 12);
-  --accent-foreground: oklch(0.955 0.007 12);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
+  /* Dark-mode vars flow automatically from tokens.generated.css .dark
+   * overriding --color-* vars. Only override where shadcn component
+   * behavior differs from the default light mapping. */
+  --primary-foreground: oklch(15% 0.016 250);
+  --sidebar-primary-foreground: oklch(15% 0.016 250);
+  --family-accent-foreground: oklch(15% 0.016 250);
+  --destructive-foreground: oklch(99% 0 0);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.73 0.185 12);
-  --chart-1: oklch(0.74 0.19 12);
-  --chart-2: oklch(0.65 0.16 155);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.175 0.016 12);
-  --sidebar-foreground: oklch(0.93 0.008 12);
-  --sidebar-primary: oklch(0.73 0.185 12);
-  --sidebar-primary-foreground: oklch(0.15 0.016 12);
-  --sidebar-accent: oklch(0.28 0.022 12);
-  --sidebar-accent-foreground: oklch(0.93 0.008 12);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.73 0.185 12);
-  --family-warm: oklch(0.275 0.042 12);
-  --family-warm-foreground: oklch(0.88 0.04 12);
-  --family-accent: oklch(0.73 0.185 12);
-  --family-accent-foreground: oklch(0.15 0.016 12);
+  --input: oklch(1 0 0 / 12%);
 }
 
 @layer base {

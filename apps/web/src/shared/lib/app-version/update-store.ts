@@ -30,11 +30,3 @@ export const updateStore = create<UpdateStore>()(
     { name: "app-update" }
   )
 )
-
-export function useUpdateAvailable() {
-  return updateStore((s) => s.updateAvailable)
-}
-
-export function useUpdateReason() {
-  return updateStore((s) => s.reason)
-}

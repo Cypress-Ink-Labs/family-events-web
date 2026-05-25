@@ -14,10 +14,10 @@ export function UpdateBanner() {
   if (!updateAvailable) return null
 
   return (
-    <div
-      role="status"
+    <output
       aria-live="polite"
       className={cn(
+        "block",
         "fixed inset-x-0 top-0 z-[60]",
         "border-b border-primary/30 bg-primary/10 backdrop-blur",
         "supports-[backdrop-filter]:bg-primary/15"
@@ -37,6 +37,6 @@ export function UpdateBanner() {
           Update now
         </Button>
       </div>
-    </div>
+    </output>
   )
 }

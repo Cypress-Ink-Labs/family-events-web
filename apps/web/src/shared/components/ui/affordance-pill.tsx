@@ -36,25 +36,6 @@ const VARIANT_CONFIG: Record<AffordanceVariant, VariantConfig> = {
 const solidClass = "bg-[var(--color-accent-kid)] text-[var(--color-text-primary)]"
 const softClass = "bg-[var(--color-accent-kid-soft)] text-[var(--color-text-primary)]"
 
-export function AffordancePill({ variant, label, className }: AffordancePillProps) {
-  const config = VARIANT_CONFIG[variant]
-  const Icon = config.icon
-  const displayLabel = label ?? config.defaultLabel
-
-  return (
-    <span
-      className={cn(
-        "inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
-        config.soft ? softClass : solidClass,
-        className
-      )}
-    >
-      <Icon className="size-3 shrink-0" aria-hidden />
-      {displayLabel}
-    </span>
-  )
-}
-
 // Compact variant — no touch-target padding, for dense card contexts
 export function AffordancePillCompact({ variant, label, className }: AffordancePillProps) {
   const config = VARIANT_CONFIG[variant]

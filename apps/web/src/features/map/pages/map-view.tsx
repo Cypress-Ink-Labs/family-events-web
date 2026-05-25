@@ -131,9 +131,11 @@ export function MapViewPage() {
   // Fly to user location when geolocation is first granted.
   useEffect(() => {
     if (!userLocation) return
-    mapRef.current?.flyTo({
+    const map = mapRef.current
+    if (!map) return
+    map.flyTo({
       center: [userLocation.longitude, userLocation.latitude],
-      zoom: Math.max(14, mapState.viewState.zoom),
+      zoom: Math.max(14, map.getZoom()),
       speed: 1.4,
       essential: true,
     })

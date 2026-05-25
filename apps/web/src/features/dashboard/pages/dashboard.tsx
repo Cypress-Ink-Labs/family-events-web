@@ -16,27 +16,7 @@ import {
   DashboardTodaySection,
 } from "@/features/dashboard/components/dashboard-sections"
 import { Page, Stack } from "@/components/v2"
-
-const DAY_FORMATTER_OPTIONS: Intl.DateTimeFormatOptions = {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-}
-
-const dayFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
-
-function getDayFormatter(timeZone: string) {
-  let formatter = dayFormattersByTimeZone.get(timeZone)
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-CA", { ...DAY_FORMATTER_OPTIONS, timeZone })
-    dayFormattersByTimeZone.set(timeZone, formatter)
-  }
-  return formatter
-}
-
-function formatDayKey(date: Date, timeZone: string) {
-  return getDayFormatter(timeZone).format(date)
-}
+import { formatDayKey } from "@/shared/lib/intl-formatters"
 
 function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<string, boolean>) {
   return { ...state, ...patch }
