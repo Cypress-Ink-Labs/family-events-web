@@ -70,7 +70,7 @@
   --popover-foreground: var(--color-text-primary);
 
   --primary: var(--color-accent-primary);
-  --primary-foreground: oklch(99% 0.003 82);
+  --primary-foreground: oklch(99% 0.003 290);
 
   --secondary: var(--color-surface-raised);
   --secondary-foreground: var(--color-text-primary);
@@ -94,7 +94,7 @@
   --sidebar: var(--color-surface-raised);
   --sidebar-foreground: var(--color-text-primary);
   --sidebar-primary: var(--color-accent-primary);
-  --sidebar-primary-foreground: oklch(99% 0.003 82);
+  --sidebar-primary-foreground: oklch(99% 0.003 290);
   --sidebar-accent: var(--color-accent-primary-soft);
   --sidebar-accent-foreground: var(--color-accent-primary);
   --sidebar-border: var(--color-border);
@@ -103,18 +103,17 @@
   --family-warm: var(--color-accent-primary-soft);
   --family-warm-foreground: var(--color-accent-primary);
   --family-accent: var(--color-accent-secondary);
-  --family-accent-foreground: oklch(99% 0.003 82);
+  --family-accent-foreground: oklch(99% 0.003 290);
 }
 
 .dark {
   /* Dark-mode vars flow automatically from tokens.generated.css .dark
    * overriding --color-* vars. Only override where shadcn component
    * behavior differs from the default light mapping. */
-  --primary-foreground: oklch(15% 0.016 250);
-  --sidebar-primary-foreground: oklch(15% 0.016 250);
-  --family-accent-foreground: oklch(15% 0.016 250);
+  --primary-foreground: oklch(15% 0.016 285);
+  --sidebar-primary-foreground: oklch(15% 0.016 285);
+  --family-accent-foreground: oklch(15% 0.016 285);
   --destructive-foreground: oklch(99% 0 0);
-  --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
 }
 
