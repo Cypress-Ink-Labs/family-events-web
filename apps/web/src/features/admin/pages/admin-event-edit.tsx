@@ -1,6 +1,6 @@
 import { ArrowLeft, Archive, Check, Trash2, XCircle } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router"
 import { toast } from "sonner"
 import { Button } from "@/shared/components/ui/button"
 import { Skeleton } from "@/shared/components/ui/skeleton"

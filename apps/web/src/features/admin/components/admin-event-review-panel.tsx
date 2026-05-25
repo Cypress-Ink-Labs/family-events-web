@@ -1,5 +1,5 @@
 import { Check, ExternalLink, Pencil, Sparkles, X, XCircle } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import type { EventAiTraceWithParsed, EventWithDetails, Tag as EventTag } from "@/shared/types"
 import { safeHref, safeImageSrc } from "@/infrastructure/safe-url"
 import { cn, formatEventPrice, formatSlugLabel } from "@/shared/utils/format"

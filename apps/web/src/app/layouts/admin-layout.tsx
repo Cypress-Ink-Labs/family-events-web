@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation, Navigate } from "react-router-dom"
+import { Outlet, Link, useLocation, Navigate } from "react-router"
 import {
   LayoutDashboard,
   Database,

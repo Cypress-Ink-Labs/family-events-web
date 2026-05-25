@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Link, NavLink, Outlet, useNavigate } from "react-router"
 import { m } from "motion/react"
 import {
   Bookmark,
@@ -56,17 +56,11 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const location = useLocation()
   const navigate = useNavigate()
   const { user, profile, signOut, isAdmin } = useAuth()
   const { selectedCity, setSelectedCity, cities } = useApp()
   const { isBelow } = useBreakpoint()
   const isMobile = isBelow("md")
-
-  function isActive(to: string): boolean {
-    if (to === HOME_PATH) return location.pathname === HOME_PATH
-    return location.pathname.startsWith(to)
-  }
 
   async function handleSignOut(): Promise<void> {
     await signOut()
@@ -214,42 +208,46 @@ export function AppLayout({ children }: AppLayoutProps) {
       {!isMobile ? (
         <nav className="sticky top-14 z-30 border-b border-border/40 bg-background/95 backdrop-blur">
           <div className="mx-auto flex max-w-[1280px] items-center gap-1 px-4 md:px-6 lg:px-8">
-            {DESKTOP_NAV_ITEMS.map(({ to, label, icon: Icon }) => {
-              const active = isActive(to)
-              return (
-                <Link
-                  key={to}
-                  to={to}
-                  className={cn(
+            {DESKTOP_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === HOME_PATH}
+                className={({ isActive }) =>
+                  cn(
                     "relative inline-flex min-h-[44px] items-center gap-1.5 px-3 py-3 font-body text-sm font-medium transition-colors",
-                    active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Icon className="size-4" />
-                  {label}
-                  {active ? (
-                    <m.span
-                      layoutId="desktop-nav-active"
-                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                      className="absolute inset-x-1 -bottom-px h-0.5 rounded-full bg-primary"
-                    />
-                  ) : null}
-                </Link>
-              )
-            })}
-            {isAdmin ? (
-              <Link
-                to="/admin"
-                className={cn(
-                  "relative ml-auto inline-flex min-h-[44px] items-center gap-1.5 px-3 py-3 font-body text-sm font-medium transition-colors",
-                  location.pathname.startsWith("/admin")
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <Icon className="size-4" />
+                    {label}
+                    {isActive ? (
+                      <m.span
+                        layoutId="desktop-nav-active"
+                        transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                        className="absolute inset-x-1 -bottom-px h-0.5 rounded-full bg-primary"
+                      />
+                    ) : null}
+                  </>
                 )}
+              </NavLink>
+            ))}
+            {isAdmin ? (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  cn(
+                    "relative ml-auto inline-flex min-h-[44px] items-center gap-1.5 px-3 py-3 font-body text-sm font-medium transition-colors",
+                    isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  )
+                }
               >
                 <Shield className="size-4" />
                 Admin
-              </Link>
+              </NavLink>
             ) : null}
           </div>
         </nav>
@@ -268,32 +266,35 @@ export function AppLayout({ children }: AppLayoutProps) {
           aria-label="Primary"
         >
           <div className="mx-auto grid max-w-[640px] grid-cols-3">
-            {PRIMARY_TABS.map(({ to, label, icon: Icon }) => {
-              const active = isActive(to)
-              return (
-                <Link
-                  key={to}
-                  to={to}
-                  className={cn(
+            {PRIMARY_TABS.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === HOME_PATH}
+                className={({ isActive }) =>
+                  cn(
                     "relative flex min-h-[56px] flex-col items-center justify-center gap-0.5 px-2 py-2 font-body text-xs",
-                    active ? "text-primary" : "text-muted-foreground"
-                  )}
-                  aria-current={active ? "page" : undefined}
-                >
-                  <span className="relative inline-flex size-9 items-center justify-center rounded-lg">
-                    {active ? (
-                      <m.span
-                        layoutId="mobile-nav-active"
-                        transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                        className="absolute inset-0 rounded-lg bg-primary/12"
-                      />
-                    ) : null}
-                    <Icon className="relative z-10 size-5" />
-                  </span>
-                  <span className="text-[11px] font-medium leading-none">{label}</span>
-                </Link>
-              )
-            })}
+                    isActive ? "text-primary" : "text-muted-foreground"
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <span className="relative inline-flex size-9 items-center justify-center rounded-lg">
+                      {isActive ? (
+                        <m.span
+                          layoutId="mobile-nav-active"
+                          transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                          className="absolute inset-0 rounded-lg bg-primary/12"
+                        />
+                      ) : null}
+                      <Icon className="relative z-10 size-5" />
+                    </span>
+                    <span className="text-[11px] font-medium leading-none">{label}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
           </div>
         </nav>
       ) : null}

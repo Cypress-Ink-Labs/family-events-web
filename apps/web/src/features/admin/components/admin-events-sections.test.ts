@@ -1,6 +1,6 @@
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
-import { MemoryRouter } from "react-router-dom"
+import { MemoryRouter } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 import type { Event } from "@/shared/types"
 import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 
 /** Resets window scroll on route changes. BrowserRouter has no ScrollRestoration. */
 export function ScrollToTop() {

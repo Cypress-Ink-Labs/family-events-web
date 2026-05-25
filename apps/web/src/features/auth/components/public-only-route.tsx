@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { resolveInAppRedirectTarget } from "@/shared/access-control"
 import { FadeSwap } from "@/shared/components/motion"

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Button } from "@/shared/components/ui/button"
 import { AffordancePillCompact } from "@/shared/components/ui/affordance-pill"
 import { SmartImage } from "@/shared/components/motion"

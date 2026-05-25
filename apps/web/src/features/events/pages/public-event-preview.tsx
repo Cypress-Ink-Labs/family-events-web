@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router"
 import { format } from "date-fns"
 import { CalendarDays, MapPin } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"

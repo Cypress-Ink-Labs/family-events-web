@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Clock, Trash2 } from "lucide-react"
 import { formatEventDateTime } from "@/shared/utils/dates"
 import { Button } from "@/shared/components/ui/button"

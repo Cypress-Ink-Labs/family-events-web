@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { ArrowRight, CalendarDays, MapPin, RefreshCw, Sparkles } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"

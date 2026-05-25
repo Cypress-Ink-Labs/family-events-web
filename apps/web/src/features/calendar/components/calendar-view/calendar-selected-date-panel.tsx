@@ -1,6 +1,6 @@
 import { format, isToday } from "date-fns"
 import { CalendarDays } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { FadeSwap, StaggerItem, StaggerList } from "@/shared/components/motion"

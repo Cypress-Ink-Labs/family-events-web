@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { SmartImage } from "@/shared/components/motion"
 import { FavoriteButton } from "@/features/events/components/favorite-button"

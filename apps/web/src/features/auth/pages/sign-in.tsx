@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react"
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { resolveInAppRedirectTarget } from "@/shared/access-control"

@@ -1,5 +1,5 @@
 import { Bot, Check, Eye, Pencil, Tag, X, XCircle } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { Checkbox } from "@/shared/components/ui/checkbox"

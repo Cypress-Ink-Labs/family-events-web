@@ -1,5 +1,5 @@
 import { ArrowRight, Calendar, MapPin } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"

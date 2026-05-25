@@ -1,5 +1,5 @@
 import { useReducer } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router"
 import { Ticket } from "lucide-react"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Button } from "@/shared/components/ui/button"

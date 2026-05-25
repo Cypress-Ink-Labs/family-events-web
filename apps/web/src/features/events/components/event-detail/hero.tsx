@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { SmartImage } from "@/shared/components/motion"

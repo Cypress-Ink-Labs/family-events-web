@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Bookmark, Clock, Star } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"

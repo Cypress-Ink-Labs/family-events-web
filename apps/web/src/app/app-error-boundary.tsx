@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 import { AlertTriangle, RefreshCcw } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react"
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router"
 import { ScrollToTop } from "@/app/scroll-to-top"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/app/providers/theme-provider"

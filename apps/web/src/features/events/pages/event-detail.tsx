@@ -1,5 +1,5 @@
 import { useReducer } from "react"
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { safeImageSrc } from "@/infrastructure/safe-url"

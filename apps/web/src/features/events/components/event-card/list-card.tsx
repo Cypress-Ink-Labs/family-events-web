@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { Clock, MapPin } from "lucide-react"
 import { Badge } from "@/shared/components/ui/badge"
 import { AffordancePillCompact } from "@/shared/components/ui/affordance-pill"

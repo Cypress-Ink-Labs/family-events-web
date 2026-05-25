@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { Loader2 } from "lucide-react"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
