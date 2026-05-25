@@ -1,6 +1,25 @@
 import { mkdirSync, writeFileSync } from "node:fs"
+import { spawnSync } from "node:child_process"
 import path from "node:path"
-import { GENERATED_BANNER, REPO_ROOT, loadTokens } from "./_lib.mjs"
+import { GENERATED_BANNER, PKG_ROOT, REPO_ROOT, loadTokens } from "./_lib.mjs"
+
+const OXFMT_CONFIG = path.join(PKG_ROOT, "..", "config-quality", "oxfmt.base.json")
+
+function formatCss(source) {
+  const result = spawnSync(
+    "pnpm",
+    ["exec", "oxfmt", "--stdin-filepath", OUTPUT, "--config", OXFMT_CONFIG],
+    {
+      cwd: PKG_ROOT,
+      encoding: "utf8",
+      input: source,
+    }
+  )
+  if (result.status !== 0) {
+    throw new Error(result.stderr || result.stdout || "oxfmt failed")
+  }
+  return result.stdout
+}
 
 const OUTPUT = path.join(REPO_ROOT, "apps", "web", "src", "styles", "tokens.generated.css")
 
@@ -95,7 +114,7 @@ function emitTouch(t) {
 }
 
 export function buildCss(tokens) {
-  return [
+  return formatCss([
     GENERATED_BANNER,
     "",
     "/* Light + dark token values. .dark overrides :root so Tailwind utilities */",
@@ -126,7 +145,7 @@ export function buildCss(tokens) {
     "",
     emitColors("dark", tokens.color.dark),
     "",
-  ].join("\n")
+  ].join("\n"))
 }
 
 export function run() {

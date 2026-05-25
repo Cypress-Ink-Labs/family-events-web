@@ -13,18 +13,18 @@
   --color-text-primary: oklch(20% 0.025 295);
   --color-text-muted: oklch(46% 0.022 305);
   --color-border: oklch(82% 0.016 285);
-  --color-accent-primary: oklch(52% 0.160 290);
+  --color-accent-primary: oklch(52% 0.16 290);
   --color-accent-primary-soft: oklch(92% 0.045 290);
-  --color-accent-secondary: oklch(72% 0.130 52);
+  --color-accent-secondary: oklch(72% 0.13 52);
   --color-accent-secondary-soft: oklch(93% 0.038 52);
-  --color-accent-tertiary: oklch(54% 0.070 248);
+  --color-accent-tertiary: oklch(54% 0.07 248);
   --color-accent-tertiary-soft: oklch(91% 0.028 245);
-  --color-accent-kid: oklch(76% 0.170 78);
-  --color-accent-kid-soft: oklch(93% 0.070 80);
+  --color-accent-kid: oklch(76% 0.17 78);
+  --color-accent-kid-soft: oklch(93% 0.07 80);
   --color-success: oklch(48% 0.085 155);
   --color-warning: oklch(60% 0.13 70);
   --color-error: oklch(55% 0.16 25);
-  --color-info: oklch(54% 0.070 248);
+  --color-info: oklch(54% 0.07 248);
 }
 
 @theme inline {
@@ -142,22 +142,22 @@
 }
 
 .dark {
-  --color-bg: oklch(22% 0.020 285);
+  --color-bg: oklch(22% 0.02 285);
   --color-surface: oklch(26% 0.024 285);
   --color-surface-raised: oklch(30% 0.028 285);
   --color-text-primary: oklch(94% 0.012 295);
   --color-text-muted: oklch(65% 0.018 290);
   --color-border: oklch(34% 0.022 285);
-  --color-accent-primary: oklch(70% 0.140 290);
+  --color-accent-primary: oklch(70% 0.14 290);
   --color-accent-primary-soft: oklch(26% 0.065 290);
   --color-accent-secondary: oklch(78% 0.095 52);
   --color-accent-secondary-soft: oklch(26% 0.072 45);
-  --color-accent-tertiary: oklch(65% 0.070 250);
+  --color-accent-tertiary: oklch(65% 0.07 250);
   --color-accent-tertiary-soft: oklch(24% 0.045 250);
   --color-accent-kid: oklch(80% 0.155 78);
-  --color-accent-kid-soft: oklch(26% 0.080 78);
+  --color-accent-kid-soft: oklch(26% 0.08 78);
   --color-success: oklch(65% 0.1 155);
   --color-warning: oklch(72% 0.14 70);
   --color-error: oklch(68% 0.16 25);
-  --color-info: oklch(65% 0.070 250);
+  --color-info: oklch(65% 0.07 250);
 }
