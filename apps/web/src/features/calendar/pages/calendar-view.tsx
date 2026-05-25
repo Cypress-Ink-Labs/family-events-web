@@ -4,6 +4,7 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
+  startOfDay,
   eachDayOfInterval,
   isSameDay,
   addMonths,
@@ -37,6 +38,7 @@ export function CalendarViewPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [view, setView] = useState<"month" | "week">("month")
+  const [hidePastEvents, setHidePastEvents] = useState(true)
   const [favoriteOverrides, setFavoriteOverrides] = useReducer(favoriteOverridesReducer, {})
 
   const monthStart = startOfMonth(currentMonth)
@@ -48,7 +50,10 @@ export function CalendarViewPage() {
   const weekEnd = endOfWeek(selectedDate)
   const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd })
 
-  const dateFrom = view === "week" ? weekStart : monthStart
+  const today = startOfDay(new Date())
+  const dateFrom = view === "week"
+    ? (hidePastEvents ? today : weekStart)
+    : (hidePastEvents ? today : monthStart)
   const dateTo = view === "week" ? weekEnd : monthEnd
 
   const {
@@ -93,10 +98,9 @@ export function CalendarViewPage() {
     return favoriteOverrides[eventId] ?? baseFavoritedIds.has(eventId)
   }
 
-  const eventsForSelectedDate = monthEvents.filter((event) => {
-    const eventDate = new Date(event.start_datetime)
-    return isSameDay(eventDate, selectedDate)
-  })
+  const eventsForSelectedDate = monthEvents
+    .filter((event) => isSameDay(new Date(event.start_datetime), selectedDate))
+    .sort((a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime())
 
   const upcomingCount = savedEvents.filter(
     (event) => new Date(event.start_datetime) >= new Date()
@@ -126,7 +130,12 @@ export function CalendarViewPage() {
   return (
     <Page width="content" className="py-6">
       <Stack gap="5">
-        <CalendarViewHeader view={view} onViewChange={setView} />
+        <CalendarViewHeader
+          view={view}
+          onViewChange={setView}
+          hidePastEvents={hidePastEvents}
+          onHidePastEventsChange={setHidePastEvents}
+        />
         {isMonthEventsError && <CalendarErrorState />}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
