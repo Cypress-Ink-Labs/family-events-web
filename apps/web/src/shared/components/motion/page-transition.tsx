@@ -7,14 +7,16 @@ interface PageTransitionProps {
   children: ReactNode
 }
 
+export const pageTransitionMode = "popLayout" as const
+
 /**
- * Wraps route content with a cross-fade keyed on pathname. Keeps the layout
- * (header, nav) static while the page body fades between routes.
+ * Wraps route content with an overlapping cross-fade keyed on pathname. Keeps
+ * the layout (header, nav) static while the page body fades between routes.
  */
 export function PageTransition({ children }: PageTransitionProps) {
   const location = useLocation()
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode={pageTransitionMode} initial={false}>
       <m.div
         key={location.pathname}
         variants={fadeOnlyVariants}
