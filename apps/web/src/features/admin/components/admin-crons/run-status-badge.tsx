@@ -13,9 +13,9 @@ export function normalizeCronStatus(status: string | null): CronStatusKey {
 }
 
 export const CRON_STATUS_CONFIG = {
-  success: { icon: CheckCircle, color: "text-green-600", label: "Succeeded" },
+  success: { icon: CheckCircle, color: "text-[var(--color-success)]", label: "Succeeded" },
   failed: { icon: XCircle, color: "text-destructive", label: "Failed" },
-  running: { icon: Loader2, color: "text-blue-600", label: "Running" },
+  running: { icon: Loader2, color: "text-[var(--color-accent-tertiary)]", label: "Running" },
   unknown: { icon: Clock, color: "text-muted-foreground", label: "Unknown" },
 } as const
 

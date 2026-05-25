@@ -11,7 +11,7 @@ export const ADMIN_EVENT_STATUS_DISPLAY: Record<Event["status"], { label: string
     draft: { label: "Draft", color: "bg-muted text-muted-foreground" },
     published: {
       label: "Published",
-      color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+      color: "bg-[var(--color-success)]/15 text-[var(--color-success)]",
     },
     rejected: { label: "Rejected", color: "bg-destructive/10 text-destructive" },
     archived: { label: "Archived", color: "bg-muted/50 text-muted-foreground" },

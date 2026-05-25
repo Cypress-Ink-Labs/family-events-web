@@ -31,7 +31,7 @@ export function AdminInvitesCreatedReveal({
             <Button variant="outline" size="sm" className="min-h-[44px]" onClick={onCopy}>
               {copied ? (
                 <>
-                  <Check className="mr-1.5 size-3.5 text-green-600" /> Copied
+                  <Check className="mr-1.5 size-3.5 text-[var(--color-success)]" /> Copied
                 </>
               ) : (
                 <>

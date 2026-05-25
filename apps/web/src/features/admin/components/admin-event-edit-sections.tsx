@@ -36,7 +36,7 @@ export function FieldError({ message }: { message?: string }) {
 export function EventStatusBadge({ status }: { status: Event["status"] }) {
   const classes: Record<Event["status"], string> = {
     draft: "bg-muted text-muted-foreground",
-    published: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    published: "bg-[var(--color-success)]/15 text-[var(--color-success)]",
     rejected: "bg-destructive/10 text-destructive",
     archived: "bg-muted/50 text-muted-foreground",
   }

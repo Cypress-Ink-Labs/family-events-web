@@ -1,9 +1,9 @@
 import type { AiFeatureConfig, ApprovedAiModel } from "@/features/admin/types"
 
 const COST_BADGE: Record<string, string> = {
-  low: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  high: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  low: "bg-[var(--color-success)]/15 text-[var(--color-success)]",
+  medium: "bg-[var(--color-warning)]/15 text-[var(--color-warning)]",
+  high: "bg-[var(--color-error)]/15 text-[var(--color-error)]",
 }
 
 interface AiFeatureCardProps {

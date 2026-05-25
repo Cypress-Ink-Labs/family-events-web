@@ -19,4 +19,19 @@ describe("getAdminLlmReviewFilters", () => {
       llmReviewStatus: LLM_EVENT_REVIEW_STATUS.FAILED,
     })
   })
+
+  it("keeps reviewed independent from current review status", () => {
+    expect(getAdminLlmReviewFilters(ADMIN_LLM_REVIEW_FILTER.REVIEWED)).toEqual({
+      llmReviewed: true,
+    })
+  })
+
+  it("keeps approval decisions visible after admin resolution", () => {
+    expect(getAdminLlmReviewFilters(ADMIN_LLM_REVIEW_FILTER.APPROVED)).toEqual({
+      llmReviewDecision: LLM_EVENT_REVIEW_DECISION.APPROVE,
+    })
+    expect(getAdminLlmReviewFilters(ADMIN_LLM_REVIEW_FILTER.REJECTED)).toEqual({
+      llmReviewDecision: LLM_EVENT_REVIEW_DECISION.REJECT,
+    })
+  })
 })

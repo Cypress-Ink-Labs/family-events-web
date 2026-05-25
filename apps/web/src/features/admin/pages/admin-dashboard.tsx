@@ -33,7 +33,7 @@ export function AdminDashboardPage() {
       value: stats?.activeSources ?? 0,
       delta: `${stats?.sourceErrors ?? 0} with errors`,
       icon: Database,
-      color: "text-blue-600",
+      color: "text-[var(--color-accent-tertiary)]",
     },
     {
       label: "Published",
@@ -42,7 +42,7 @@ export function AdminDashboardPage() {
         ? `${Math.round((stats.published / stats.totalEvents) * 100)}% publish rate`
         : "No events yet",
       icon: CheckCircle,
-      color: "text-green-600",
+      color: "text-[var(--color-success)]",
     },
   ]
 

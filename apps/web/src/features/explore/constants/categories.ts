@@ -20,25 +20,25 @@ export const EXPLORE_CATEGORIES: readonly ExploreCategory[] = [
     label: "Playgroups",
     slug: "playgroup",
     icon: Users,
-    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    color: "bg-[var(--color-accent-tertiary-soft)] text-[var(--color-accent-tertiary)]",
   },
   {
     label: "Music & Movement",
     slug: "music",
     icon: Music,
-    color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400",
+    color: "bg-[var(--color-accent-secondary-soft)] text-[var(--color-accent-secondary)]",
   },
   {
     label: "Outdoor Fun",
     slug: "outdoor",
     icon: TreePine,
-    color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    color: "bg-[var(--color-accent-primary-soft)] text-[var(--color-accent-primary)]",
   },
   {
     label: "Indoor Storytime",
     slug: "storytime",
     icon: BookOpen,
-    color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+    color: "bg-[var(--color-accent-tertiary-soft)] text-[var(--color-accent-tertiary)]",
   },
 ]
 

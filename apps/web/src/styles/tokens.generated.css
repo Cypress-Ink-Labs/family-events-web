@@ -7,24 +7,24 @@
 /* Light + dark token values. .dark overrides :root so Tailwind utilities */
 /* bound below via `var(--color-*)` flip on dark-mode class. */
 :root {
-  --color-bg: oklch(97.5% 0.018 88);
-  --color-surface: oklch(100% 0 0);
-  --color-surface-raised: oklch(94.5% 0.025 88);
-  --color-text-primary: oklch(23% 0.025 78);
-  --color-text-muted: oklch(50% 0.035 78);
-  --color-border: oklch(84% 0.035 82);
-  --color-accent-primary: oklch(45% 0.08 165);
-  --color-accent-primary-soft: oklch(93% 0.04 165);
-  --color-accent-secondary: oklch(65% 0.16 35);
-  --color-accent-secondary-soft: oklch(92% 0.05 35);
-  --color-accent-tertiary: oklch(56% 0.1 245);
-  --color-accent-tertiary-soft: oklch(93% 0.03 240);
-  --color-accent-kid: oklch(83% 0.16 90);
-  --color-accent-kid-soft: oklch(93% 0.06 90);
+  --color-bg: oklch(97% 0.01 82);
+  --color-surface: oklch(99% 0.006 88);
+  --color-surface-raised: oklch(92% 0.018 82);
+  --color-text-primary: oklch(20% 0.025 295);
+  --color-text-muted: oklch(46% 0.022 305);
+  --color-border: oklch(79% 0.018 82);
+  --color-accent-primary: oklch(52% 0.08 158);
+  --color-accent-primary-soft: oklch(92% 0.032 158);
+  --color-accent-secondary: oklch(72% 0.13 52);
+  --color-accent-secondary-soft: oklch(93% 0.038 52);
+  --color-accent-tertiary: oklch(54% 0.07 248);
+  --color-accent-tertiary-soft: oklch(91% 0.028 245);
+  --color-accent-kid: oklch(74% 0.145 77);
+  --color-accent-kid-soft: oklch(92% 0.052 80);
   --color-success: oklch(48% 0.085 155);
   --color-warning: oklch(60% 0.13 70);
   --color-error: oklch(55% 0.16 25);
-  --color-info: oklch(56% 0.1 245);
+  --color-info: oklch(54% 0.07 248);
 }
 
 @theme inline {
@@ -142,22 +142,22 @@
 }
 
 .dark {
-  --color-bg: oklch(18% 0.015 60);
-  --color-surface: oklch(22% 0.018 60);
-  --color-surface-raised: oklch(26% 0.02 60);
-  --color-text-primary: oklch(94% 0.012 78);
-  --color-text-muted: oklch(70% 0.02 78);
-  --color-border: oklch(34% 0.02 70);
-  --color-accent-primary: oklch(65% 0.1 165);
-  --color-accent-primary-soft: oklch(28% 0.06 165);
-  --color-accent-secondary: oklch(72% 0.16 35);
-  --color-accent-secondary-soft: oklch(30% 0.08 35);
-  --color-accent-tertiary: oklch(68% 0.1 245);
-  --color-accent-tertiary-soft: oklch(30% 0.05 245);
-  --color-accent-kid: oklch(83% 0.16 90);
-  --color-accent-kid-soft: oklch(30% 0.08 90);
+  --color-bg: oklch(18% 0.018 250);
+  --color-surface: oklch(22% 0.022 250);
+  --color-surface-raised: oklch(26% 0.025 250);
+  --color-text-primary: oklch(94% 0.012 265);
+  --color-text-muted: oklch(65% 0.02 260);
+  --color-border: oklch(30% 0.022 252);
+  --color-accent-primary: oklch(68% 0.092 165);
+  --color-accent-primary-soft: oklch(26% 0.055 165);
+  --color-accent-secondary: oklch(78% 0.095 52);
+  --color-accent-secondary-soft: oklch(26% 0.072 45);
+  --color-accent-tertiary: oklch(65% 0.07 250);
+  --color-accent-tertiary-soft: oklch(24% 0.045 250);
+  --color-accent-kid: oklch(80% 0.135 78);
+  --color-accent-kid-soft: oklch(24% 0.072 77);
   --color-success: oklch(65% 0.1 155);
   --color-warning: oklch(72% 0.14 70);
   --color-error: oklch(68% 0.16 25);
-  --color-info: oklch(68% 0.1 245);
+  --color-info: oklch(65% 0.07 250);
 }

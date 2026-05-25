@@ -63,7 +63,10 @@ export function DefaultEventCard({
           )}
           <div className="flex items-center justify-between mt-2.5">
             <span
-              className={cn("text-sm font-bold", event.is_free ? "text-green-600" : "text-primary")}
+              className={cn(
+                "text-sm font-bold",
+                event.is_free ? "text-[var(--color-accent-kid)]" : "text-primary"
+              )}
             >
               {formatEventPrice(event.price, event.is_free)}
             </span>

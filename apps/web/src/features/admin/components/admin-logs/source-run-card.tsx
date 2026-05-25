@@ -52,7 +52,7 @@ export function SourceRunCard({
     <Card
       className={cn(
         "border-border/60",
-        isRunning && "border-blue-500/30 bg-blue-500/5",
+        isRunning && "border-[var(--color-accent-tertiary)]/30 bg-[var(--color-accent-tertiary)]/5",
         isTimedOut && "border-amber-500/30 bg-amber-500/5"
       )}
     >
@@ -77,7 +77,8 @@ export function SourceRunCard({
                   }
                   className={cn(
                     "text-[10px]",
-                    isRunning && "border-blue-500/40 text-blue-600",
+                    isRunning &&
+                      "border-[var(--color-accent-tertiary)]/40 text-[var(--color-accent-tertiary)]",
                     isTimedOut && "border-amber-500/40 text-amber-600"
                   )}
                 >
@@ -119,7 +120,7 @@ export function SourceRunCard({
               <span
                 className={cn(
                   "font-medium",
-                  run.events_imported > 0 ? "text-green-600" : "text-muted-foreground"
+                  run.events_imported > 0 ? "text-[var(--color-success)]" : "text-muted-foreground"
                 )}
               >
                 +{run.events_imported} imported

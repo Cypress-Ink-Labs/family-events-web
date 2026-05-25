@@ -97,6 +97,7 @@ describe("fetchAdminEventsPage", () => {
       p_limit: 200,
       p_llm_review_status: undefined,
       p_llm_review_decision: undefined,
+      p_llm_reviewed: undefined,
     })
 
     mockRpc.mockResolvedValueOnce(
@@ -125,6 +126,7 @@ describe("fetchAdminEventsPage", () => {
       p_limit: 25,
       p_llm_review_status: undefined,
       p_llm_review_decision: undefined,
+      p_llm_reviewed: undefined,
     })
   })
 
@@ -140,6 +142,7 @@ describe("fetchAdminEventsPage", () => {
     await fetchAdminEventsPage({
       llmReviewStatus: LLM_EVENT_REVIEW_STATUS.FAILED,
       llmReviewDecision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
+      llmReviewed: true,
       limit: 20,
     })
 
@@ -153,6 +156,7 @@ describe("fetchAdminEventsPage", () => {
       p_limit: 20,
       p_llm_review_status: LLM_EVENT_REVIEW_STATUS.FAILED,
       p_llm_review_decision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
+      p_llm_reviewed: true,
     })
   })
 

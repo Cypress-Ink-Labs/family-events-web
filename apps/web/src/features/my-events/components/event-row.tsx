@@ -64,7 +64,7 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
               <span
                 className={
                   event.is_free
-                    ? "text-xs font-bold text-green-600"
+                    ? "text-xs font-bold text-[var(--color-accent-kid)]"
                     : "text-xs font-bold text-primary"
                 }
               >

@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom"
 import { Clock, MapPin } from "lucide-react"
 import { Badge } from "@/shared/components/ui/badge"
+import { AffordancePillCompact } from "@/shared/components/ui/affordance-pill"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { SmartImage } from "@/shared/components/motion"
-import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
+import { TagBadge } from "@/features/events/components/tag-badge"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { formatEventDateTime } from "@/shared/utils/dates"
 import { cn, formatEventPrice } from "@/shared/utils/format"
@@ -38,14 +39,23 @@ export function ListEventCard({
             onToggle={onFavoriteToggle}
             variant="overlay"
           />
-          {event.age_min !== null || event.age_max !== null ? (
+          {(event.age_min !== null || event.age_max !== null) && (
             <div className="absolute top-3 left-3">
-              <AgeRangeBadge ageMin={event.age_min} ageMax={event.age_max} />
+              <AffordancePillCompact
+                variant="age"
+                label={
+                  event.age_min === null
+                    ? `Under ${event.age_max}y`
+                    : event.age_max === null
+                      ? `${event.age_min}y+`
+                      : `${event.age_min}–${event.age_max}y`
+                }
+              />
             </div>
-          ) : null}
+          )}
           {topTags.find((t) => t.tag.slug === "outdoor") && (
             <div className="absolute bottom-3 left-3">
-              <Badge className="bg-green-600 text-white text-[10px]">
+              <Badge className="bg-[var(--color-accent-primary)] text-white text-[10px]">
                 {topTags.find((t) => t.tag.slug === "outdoor")?.tag.name}
               </Badge>
             </div>
@@ -74,14 +84,13 @@ export function ListEventCard({
             </div>
           )}
           <div className="flex items-center justify-between mt-3">
-            <span
-              className={cn(
-                "text-sm font-bold",
-                event.is_free ? "text-green-600 dark:text-green-400" : "text-primary"
-              )}
-            >
-              {formatEventPrice(event.price, event.is_free)}
-            </span>
+            {event.is_free ? (
+              <AffordancePillCompact variant="free" />
+            ) : (
+              <span className="text-sm font-bold text-primary">
+                {formatEventPrice(event.price, event.is_free)}
+              </span>
+            )}
             <span className="text-xs text-muted-foreground">Details →</span>
           </div>
         </CardContent>

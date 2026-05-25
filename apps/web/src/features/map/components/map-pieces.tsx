@@ -46,8 +46,8 @@ export function ClusterBubble({ count }: ClusterBubbleProps) {
 export function UserLocationDot() {
   return (
     <div className="relative">
-      <span className="absolute inset-0 -m-2 rounded-full bg-blue-400 animate-ping opacity-40" />
-      <span className="relative block size-3 rounded-full bg-blue-500 ring-2 ring-white shadow" />
+      <span className="absolute inset-0 -m-2 rounded-full bg-[var(--color-accent-tertiary)] animate-ping opacity-40" />
+      <span className="relative block size-3 rounded-full bg-[var(--color-accent-tertiary)] ring-2 ring-white shadow" />
     </div>
   )
 }

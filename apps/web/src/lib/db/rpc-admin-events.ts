@@ -17,6 +17,7 @@ export interface AdminEventsFilters {
   keyword?: string
   llmReviewStatus?: Event["llm_review_status"]
   llmReviewDecision?: Event["llm_review_decision"]
+  llmReviewed?: boolean
   limit?: number
 }
 
@@ -78,6 +79,7 @@ export async function fetchAdminEventsPage(
     p_limit: limit,
     p_llm_review_status: filters.llmReviewStatus ?? undefined,
     p_llm_review_decision: filters.llmReviewDecision ?? undefined,
+    p_llm_reviewed: filters.llmReviewed ?? undefined,
   })
   if (error) {
     throw error

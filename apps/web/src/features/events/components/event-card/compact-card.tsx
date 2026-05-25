@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
+import { AffordancePillCompact } from "@/shared/components/ui/affordance-pill"
 import { SmartImage } from "@/shared/components/motion"
 import { AgeRangeBadge } from "@/features/events/components/tag-badge"
 import { formatEventDate } from "@/shared/utils/dates"
@@ -32,12 +32,7 @@ export function CompactEventCard({ event, imageUrl, startDate, className }: Even
           </p>
           <div className="flex items-center gap-1.5 mt-1">
             {event.is_free ? (
-              <Badge
-                variant="secondary"
-                className="text-[10px] px-1.5 py-0 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              >
-                Free
-              </Badge>
+              <AffordancePillCompact variant="free" />
             ) : event.price != null ? (
               <span className="text-xs font-semibold text-primary">${event.price}</span>
             ) : (

@@ -61,7 +61,7 @@ function CommentCard({ c, onApprove, onRemove }: CommentCardProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-6 text-xs gap-1 text-green-600 hover:text-green-700"
+                  className="h-6 text-xs gap-1 text-[var(--color-success)] hover:text-[var(--color-success)]/80"
                   onClick={() => onApprove(c.id)}
                 >
                   <Check className="size-3" /> Approve

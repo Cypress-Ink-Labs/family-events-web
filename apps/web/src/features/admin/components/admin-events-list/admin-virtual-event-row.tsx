@@ -33,10 +33,15 @@ export function AdminVirtualEventRow({
 }: AdminVirtualEventRowProps) {
   const imageUrl = safeImageSrc(event.images?.[0])
   const status = statusConfig[event.status]
-  const providerLabel = formatProviderLabel(event.ai_tag_provider)
+  const llmBadge = buildLlmReviewBadge(event)
+  const reviewProviderLabel = formatSlugLabel(event.llm_review_provider)
+  const tagProviderLabel = formatProviderLabel(event.ai_tag_provider)
+  const modelLabel =
+    llmBadge && event.llm_review_model
+      ? `${reviewProviderLabel} • ${event.llm_review_model}`
+      : `${tagProviderLabel}${event.ai_tag_model ? ` • ${event.ai_tag_model}` : ""}`
   const aiConfidence =
     event.ai_confidence == null ? null : `${Math.round(event.ai_confidence * 100)}%`
-  const llmBadge = buildLlmReviewBadge(event)
 
   return (
     <article
@@ -94,10 +99,7 @@ export function AdminVirtualEventRow({
               <div className="flex items-center gap-3 flex-wrap text-xs">
                 <span className="inline-flex items-center gap-1 text-muted-foreground">
                   <Bot className="size-3" />
-                  <span>
-                    {providerLabel}
-                    {event.ai_tag_model ? ` • ${event.ai_tag_model}` : ""}
-                  </span>
+                  <span>{modelLabel}</span>
                 </span>
                 <span className="inline-flex items-center gap-1 text-muted-foreground">
                   <Tag className="size-3" />
@@ -158,7 +160,7 @@ export function AdminVirtualEventRow({
                   variant="ghost"
                   size="icon"
                   aria-label="Publish event"
-                  className="size-9 text-green-600 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/20"
+                  className="size-9 text-[var(--color-success)] hover:bg-[var(--color-success)]/8 hover:text-[var(--color-success)]"
                   onClick={() => onUpdateStatus(event.id, "published")}
                 >
                   <Check className="size-4" />

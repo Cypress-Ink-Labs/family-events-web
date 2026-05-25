@@ -143,7 +143,7 @@ export function AdminDashboardRecentRuns({ runs, isLoading }: AdminDashboardRece
           >
             <div className="flex items-center gap-2.5 min-w-0">
               {run.status === "success" && (
-                <CheckCircle className="size-4 text-green-600 shrink-0" />
+                <CheckCircle className="size-4 text-[var(--color-success)] shrink-0" />
               )}
               {run.status === "error" && <XCircle className="size-4 text-destructive shrink-0" />}
               {run.status === "partial" && (

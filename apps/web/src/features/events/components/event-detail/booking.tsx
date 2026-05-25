@@ -80,7 +80,7 @@ export function EventDetailBooking({
       </Button>
 
       <div className="flex items-center justify-center gap-1.5 mt-3">
-        <div className="size-1.5 rounded-full bg-green-500" />
+        <div className="size-1.5 rounded-full bg-[var(--color-success)]" />
         <span className="text-xs text-muted-foreground">SECURE PARENTING PLATFORM</span>
       </div>
     </div>

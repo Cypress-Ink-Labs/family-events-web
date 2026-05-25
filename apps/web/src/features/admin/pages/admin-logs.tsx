@@ -79,7 +79,7 @@ export function AdminLogsPage() {
         subtitle="Scrape run history and diagnostics"
         actions={
           hasRunning ? (
-            <div className="flex items-center gap-1.5 text-xs text-blue-600">
+            <div className="flex items-center gap-1.5 text-xs text-[var(--color-accent-tertiary)]">
               <RefreshCw className="size-3 animate-spin" />
               <span>Live</span>
             </div>

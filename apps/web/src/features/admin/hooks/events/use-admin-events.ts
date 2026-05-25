@@ -37,22 +37,21 @@ interface AdminEventsInfiniteOptions {
 export function getAdminLlmReviewFilters(llmReviewFilter: AdminLlmReviewFilter): {
   llmReviewStatus?: Event["llm_review_status"]
   llmReviewDecision?: Event["llm_review_decision"]
+  llmReviewed?: boolean
 } {
   if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.FAILED) {
     return { llmReviewStatus: LLM_EVENT_REVIEW_STATUS.FAILED }
   }
   if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.REVIEWED) {
-    return { llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED }
+    return { llmReviewed: true }
   }
   if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.APPROVED) {
     return {
-      llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
       llmReviewDecision: LLM_EVENT_REVIEW_DECISION.APPROVE,
     }
   }
   if (llmReviewFilter === ADMIN_LLM_REVIEW_FILTER.REJECTED) {
     return {
-      llmReviewStatus: LLM_EVENT_REVIEW_STATUS.SUCCEEDED,
       llmReviewDecision: LLM_EVENT_REVIEW_DECISION.REJECT,
     }
   }
@@ -73,7 +72,8 @@ export function useAdminEventsInfinite({
   pageSize = 200,
 }: AdminEventsInfiniteOptions) {
   const sanitizedKeyword = sanitizePostgrestLike(keyword) || undefined
-  const { llmReviewStatus, llmReviewDecision } = getAdminLlmReviewFilters(llmReviewFilter)
+  const { llmReviewStatus, llmReviewDecision, llmReviewed } =
+    getAdminLlmReviewFilters(llmReviewFilter)
   const filters = {
     status: status !== "all" ? status : undefined,
     cityId: cityFilter !== "all" && cityFilter !== UNASSIGNED_CITY_KEY ? cityFilter : undefined,
@@ -81,6 +81,7 @@ export function useAdminEventsInfinite({
     keyword: sanitizedKeyword,
     llmReviewStatus,
     llmReviewDecision,
+    llmReviewed,
     limit: pageSize,
   }
 

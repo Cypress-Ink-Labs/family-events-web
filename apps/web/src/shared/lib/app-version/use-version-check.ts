@@ -4,7 +4,7 @@ import { updateStore } from "./update-store"
 
 const DEFAULT_INTERVAL_MS = 60_000
 
-export function useVersionCheck(intervalMs: number = DEFAULT_INTERVAL_MS) {
+function useVersionCheck(intervalMs: number = DEFAULT_INTERVAL_MS) {
   useEffect(() => {
     const currentVersion = __APP_VERSION__
 

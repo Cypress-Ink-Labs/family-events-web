@@ -3,10 +3,11 @@ import { designTokens } from "../index.js"
 
 describe("designTokens", () => {
   it("locks brand-critical color hex values", () => {
-    expect(designTokens.color.light["accent-primary"].hex).toBe("#256F5D")
-    expect(designTokens.color.light["accent-secondary"].hex).toBe("#E36B3F")
-    expect(designTokens.color.light["accent-tertiary"].hex).toBe("#3B75AF")
-    expect(designTokens.color.light["accent-kid"].hex).toBe("#F2C94C")
+    // Dusk-Meadow palette (2026-05-24 redesign)
+    expect(designTokens.color.light["accent-primary"].hex).toBe("#4A8070")
+    expect(designTokens.color.light["accent-secondary"].hex).toBe("#E89060")
+    expect(designTokens.color.light["accent-tertiary"].hex).toBe("#5A7EA8")
+    expect(designTokens.color.light["accent-kid"].hex).toBe("#CCAA35")
   })
 
   it("keeps body type at 16px on mobile (iOS HIG floor)", () => {
@@ -17,7 +18,7 @@ describe("designTokens", () => {
     expect(designTokens.touch.min.px).toBe(44)
   })
 
-  it("uses warm-dark, not pure black, for dark-mode bg", () => {
+  it("uses dark (not pure black) for dark-mode bg", () => {
     const dark = designTokens.color.dark.bg
     expect(dark.hex).not.toMatch(/^#0+$/)
     expect(dark.oklch).toMatch(/^1\d/)

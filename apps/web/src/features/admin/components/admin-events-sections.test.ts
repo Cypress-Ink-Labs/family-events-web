@@ -247,6 +247,8 @@ describe("AdminVirtualEventsList", () => {
       llm_review_decision: LLM_EVENT_REVIEW_DECISION.APPROVE,
       llm_review_confidence: 0.92,
       llm_review_reason: "High confidence family-safe event",
+      llm_review_provider: "openai",
+      llm_review_model: "gpt-5.4",
     })
 
     const html = renderToStaticMarkup(
@@ -279,6 +281,8 @@ describe("AdminVirtualEventsList", () => {
     )
 
     expect(html).toContain("LLM approved · 0.92")
+    expect(html).toContain("gpt-5.4")
+    expect(html).not.toContain("gpt-4o-mini")
   })
 
   it("renders needs-review and failed LLM states", () => {

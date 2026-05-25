@@ -197,7 +197,7 @@ export function AdminEventsBulkBar({
       <div className="ml-auto flex flex-wrap gap-2">
         <Button
           size="sm"
-          className="min-h-[44px] gap-1.5 bg-green-600 text-white hover:bg-green-700"
+          className="min-h-[44px] gap-1.5 bg-[var(--color-accent-primary)] text-white hover:bg-[var(--color-accent-primary)]/90"
           disabled={isStatusPending || selectedDraftCount === 0}
           onClick={onPublish}
         >

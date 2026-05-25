@@ -57,7 +57,7 @@ export function FeaturedEventCard({
             <span
               className={cn(
                 "text-sm font-bold",
-                event.is_free ? "text-green-600 dark:text-green-400" : "text-primary"
+                event.is_free ? "text-[var(--color-accent-kid)]" : "text-primary"
               )}
             >
               {event.is_free
