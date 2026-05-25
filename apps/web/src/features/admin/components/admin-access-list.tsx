@@ -23,6 +23,7 @@ export function AdminAccessList({
       {accounts.map((account) => {
         const profile = account.user_profiles
         const isSelf = account.user_id === currentUserId
+        const canDisable = !isSelf && account.is_enabled
 
         return (
           <Card key={account.user_id} className="border-border/60">
@@ -31,6 +32,7 @@ export function AdminAccessList({
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <UserRound className="size-5" />
                 </div>
+
                 <div className="min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="truncate text-sm font-semibold text-foreground">
@@ -42,9 +44,11 @@ export function AdminAccessList({
                     {profile?.role === "admin" && <Badge variant="outline">Admin</Badge>}
                     {isSelf && <Badge variant="outline">You</Badge>}
                   </div>
+
                   <p className="truncate text-xs text-muted-foreground">
                     {profile?.email || "No email on file"}
                   </p>
+
                   <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
                     <span>
                       Joined <ClientDate value={account.created_at} pattern="MMM d, yyyy" />
@@ -64,7 +68,7 @@ export function AdminAccessList({
               </div>
 
               <div className="flex shrink-0 flex-wrap gap-2">
-                {account.is_enabled ? (
+                {canDisable ? (
                   <Button
                     variant="destructive"
                     size="sm"
