@@ -60,6 +60,7 @@ export function CalendarViewPage() {
     userId: user?.id,
     dateFrom,
     dateTo,
+    limit: 500,
   })
 
   const { data: favorites = [] } = useFavorites(user?.id)
