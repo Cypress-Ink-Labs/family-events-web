@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { CalendarClock, Loader2, Play } from "lucide-react"
+import { Loader2, Play } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
@@ -52,7 +52,7 @@ export function AdminCronsPage() {
           last_run_at: null,
           last_run_duration_s: null,
           last_http_status: null,
-        },
+        }
     )
   }, [railwayJobs])
 

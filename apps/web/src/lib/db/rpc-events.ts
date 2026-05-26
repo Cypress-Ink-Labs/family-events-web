@@ -2,12 +2,12 @@ import { supabase } from "@/infrastructure/supabase/client"
 import type { Database } from "@/lib/db"
 
 const EVENTS_RPC = {
-  enrichedPage: "events_enriched_v2",
+  enrichedPage: "events_enriched",
 } as const
 
 const DEFAULT_EVENT_STATUS = "published"
 
-type EventsEnrichedArgs = Database["public"]["Functions"]["events_enriched_v2"]["Args"]
+type EventsEnrichedArgs = Database["public"]["Functions"]["events_enriched"]["Args"]
 
 export interface EventsCursor {
   afterStartDatetime?: string
