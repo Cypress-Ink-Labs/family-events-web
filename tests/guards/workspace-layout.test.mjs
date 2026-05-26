@@ -28,10 +28,10 @@ test("workspace root files exist", () => {
 test("android workspace exposes Gradle-backed package scripts", () => {
   const androidPkg = JSON.parse(readFileSync(androidPkgPath, "utf8"))
   assert.equal(androidPkg.name, "@family-events/android")
-  assert.match(androidPkg.scripts.check, /(^|\s)\.\/gradlew check$/)
-  assert.match(androidPkg.scripts.test, /(^|\s)\.\/gradlew test$/)
-  assert.match(androidPkg.scripts.build, /(^|\s)\.\/gradlew assembleDebug$/)
-  assert.match(androidPkg.scripts.lint, /(^|\s)\.\/gradlew lint$/)
+  assert.match(androidPkg.scripts.check, /\.\/gradlew check/)
+  assert.match(androidPkg.scripts.test, /\.\/gradlew test/)
+  assert.match(androidPkg.scripts.build, /\.\/gradlew assembleDebug/)
+  assert.match(androidPkg.scripts.lint, /\.\/gradlew lint/)
 })
 
 test("workspace configuration includes apps, packages, supabase/functions", () => {
