@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { qk } from "@/infrastructure/queries/query-keys"
-import { matchesAgeFilter, normalizeKeyword } from "./use-events"
+import { matchesAgeFilter, normalizeKeyword } from "@/features/events/lib/event-filters"
 import type { Event } from "@/shared/types"
 
 // Minimal Event stub — matchesAgeFilter only reads age_min / age_max.

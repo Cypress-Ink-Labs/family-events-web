@@ -3,7 +3,6 @@ import {
   LLM_EVENT_REVIEW_DECISIONS,
   LLM_EVENT_REVIEW_STATUSES,
 } from "@/shared/constants/llm-review"
-import { eventRowSchema } from "./event"
 
 // event_sources row. Mirrors src/lib/types.ts's EventSource. The status enum
 // is a runtime convention (the column is plain text in the DB); accept null
@@ -52,7 +51,3 @@ const adminEventFilterSchema = z.object({
 })
 
 export type AdminEventFilters = z.infer<typeof adminEventFilterSchema>
-
-// Re-export eventRowSchema so admin hooks that want the full event row can
-// import the entire admin namespace from one place.
-export { eventRowSchema }

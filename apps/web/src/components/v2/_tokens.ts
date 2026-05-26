@@ -1,6 +1,3 @@
-export { designTokens } from "@family-events/design-system"
-export type { DesignTokens } from "@family-events/design-system"
-
 export const v2Breakpoints = {
   xs: 320,
   sm: 480,

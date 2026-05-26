@@ -2,17 +2,9 @@
  * Re-exports Supabase-generated schema types plus short aliases.
  * Regenerated schema lives in `database.types.ts` (`pnpm db:types`); import from here in app code.
  */
-import type {
-  CompositeTypes,
-  Database,
-  Enums,
-  Json,
-  Tables,
-  TablesInsert,
-  TablesUpdate,
-} from "../database.types"
+import type { Database, Json, Tables } from "../database.types"
 
-export type { CompositeTypes, Database, Enums, Json, Tables, TablesInsert, TablesUpdate }
+export type { Database, Json }
 
 export type AdminAuditLogRow = Tables<"admin_audit_log">
 export type CityRow = Tables<"cities">
@@ -34,14 +26,4 @@ export type UserCalendarEventRow = Tables<"user_calendar_events">
 export type UserProfileRow = Tables<"user_profiles">
 export type PlanEventsRow =
   Database["public"]["Functions"]["plan_events_for_user"]["Returns"][number]
-
 export type { DbError, DbErrorKind } from "./errors"
-export { fetchEventsPage } from "./rpc-events"
-export type { EventsCursor, EventsPageFilters } from "./rpc-events"
-export { fetchAdminEventsPage } from "./rpc-admin-events"
-export type {
-  AdminEventsCursor,
-  AdminEventsFilters,
-  AdminEventsPageResult,
-  AdminEventFacetRow,
-} from "./rpc-admin-events"

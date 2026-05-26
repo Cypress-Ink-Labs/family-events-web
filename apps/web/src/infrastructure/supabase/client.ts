@@ -24,7 +24,7 @@ function readSupabaseEnv() {
   })
 }
 
-export function getSupabaseClient(): SupabaseClient<Database> {
+function getSupabaseClient(): SupabaseClient<Database> {
   if (client) return client
 
   const env = readSupabaseEnv()
@@ -34,10 +34,6 @@ export function getSupabaseClient(): SupabaseClient<Database> {
     },
   })
   return client
-}
-
-export function setSupabaseClientForTests(nextClient: SupabaseClient<Database> | null): void {
-  client = nextClient
 }
 
 export const supabase = new Proxy({} as SupabaseClient<Database>, {

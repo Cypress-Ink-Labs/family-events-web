@@ -4,7 +4,7 @@ import {
   AdminSourcesList,
   type SourceDraft,
 } from "@/features/admin/components/admin-sources-sections"
-import type { AdminSourceType } from "@/features/admin/lib/source-types"
+import type { AdminSourceType } from "@/features/admin/constants/source-types"
 import { AdminCityFilterBar } from "@/features/admin/components/admin-city-filter-bar"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"

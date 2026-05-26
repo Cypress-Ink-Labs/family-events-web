@@ -4,11 +4,6 @@
  * code; this barrel keeps the page imports stable.
  */
 
-export {
-  EXPLORE_AGE_OPTIONS as AGE_OPTIONS,
-  EXPLORE_CATEGORIES as CATEGORIES,
-  EXPLORE_DATE_QUICK_FILTERS as DATE_QUICK_FILTERS,
-} from "@/features/explore/constants/categories"
 export { ExploreHeader } from "@/features/explore/components/explore/explore-header"
 export { ExploreSearchFilters } from "@/features/explore/components/explore/explore-search-filters"
 export { ExploreActiveFilters } from "@/features/explore/components/explore/explore-active-filters"

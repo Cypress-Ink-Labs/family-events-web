@@ -12,7 +12,7 @@ const hourFormatterOptions: Intl.DateTimeFormatOptions = {
 const dayFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
 const hourFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
 
-export function getDayFormatter(timeZone: string): Intl.DateTimeFormat {
+function getDayFormatter(timeZone: string): Intl.DateTimeFormat {
   let formatter = dayFormattersByTimeZone.get(timeZone)
   if (!formatter) {
     formatter = new Intl.DateTimeFormat("en-CA", { ...dayFormatterOptions, timeZone })

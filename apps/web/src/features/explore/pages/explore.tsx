@@ -5,8 +5,8 @@ import { useExploreStore } from "@/features/explore/stores/explore-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { matchesAgeFilter } from "@/features/events/lib/event-filters"
 import { useTags } from "@/features/events/hooks/use-tags"
+import { EXPLORE_AGE_OPTIONS } from "@/features/explore/constants/categories"
 import {
-  AGE_OPTIONS,
   ExploreActiveFilters,
   ExploreCategoryGrid,
   ExploreEventsSection,
@@ -33,7 +33,7 @@ export function ExplorePage() {
   const setActiveCategory = useExploreStore((s) => s.setActiveCategory)
   const resetFilters = useExploreStore((s) => s.resetFilters)
 
-  const ageFilter = AGE_OPTIONS.find((option) => option.label === selectedAge)
+  const ageFilter = EXPLORE_AGE_OPTIONS.find((option) => option.label === selectedAge)
 
   const dateRange = useMemo(() => {
     const now = new Date()
