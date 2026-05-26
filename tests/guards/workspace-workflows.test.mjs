@@ -71,11 +71,14 @@ test("workspace exposes turbo-backed formatting scripts", () => {
   assert.equal(pkg.scripts["android:check"], "pnpm --filter @family-events/android check")
   assert.equal(pkg.scripts["android:test"], "pnpm --filter @family-events/android test")
   assert.equal(pkg.scripts["android:build"], "pnpm --filter @family-events/android build")
-  assert.equal(
+  assert.match(
     pkg.scripts["verify:android"],
-    "pnpm run android:check && pnpm run android:test && pnpm run android:build"
+    /^bash -c 'pnpm run android:check && pnpm run android:test && pnpm run android:build'$/
   )
-  assert.equal(pkg.scripts["verify:full"], "pnpm run verify:web && pnpm run verify:ios && pnpm run verify:android")
+  assert.match(
+    pkg.scripts["verify:full"],
+    /^bash -c 'pnpm run verify:web && pnpm run verify:ios && pnpm run verify:android'$/
+  )
   assert.equal(pkg.scripts["clean:artifacts"], "bash scripts/clean-generated-artifacts.sh")
 })
 
