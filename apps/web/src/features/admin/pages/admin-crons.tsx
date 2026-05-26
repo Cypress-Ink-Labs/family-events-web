@@ -19,6 +19,8 @@ import {
 import { RailwayCronJobCard } from "@/features/admin/components/admin-crons/railway-cron-job-card"
 import { CronRunDetailSheet } from "@/features/admin/components/admin-crons/cron-run-detail-sheet"
 import { RunDomainChip, RunHistory } from "@/features/admin/components/admin-crons/run-history"
+import { KNOWN_RAILWAY_CRON_LABELS } from "@/features/admin/constants/cron"
+import type { RailwayCronJob } from "@/features/admin/types"
 
 // Re-exports kept stable for tests / external imports.
 export {
@@ -38,6 +40,21 @@ export function AdminCronsPage() {
   const { toastError } = useAdminToast()
   const [selectedDomain, setSelectedDomain] = useState(ALL_RUNS_DOMAIN)
   const [selectedRun, setSelectedRun] = useState<CronRun | null>(null)
+
+  const allJobs = useMemo<RailwayCronJob[]>(() => {
+    const byLabel = new Map(railwayJobs.map((j) => [j.label, j]))
+    return KNOWN_RAILWAY_CRON_LABELS.map(
+      (label) =>
+        byLabel.get(label) ?? {
+          label,
+          enabled: true,
+          last_run_status: null,
+          last_run_at: null,
+          last_run_duration_s: null,
+          last_http_status: null,
+        },
+    )
+  }, [railwayJobs])
 
   const combinedHistory = useMemo(() => {
     const normalized = railwayHistory.map(railwayCronRunToCronRun)
@@ -88,15 +105,8 @@ export function AdminCronsPage() {
               <div className="h-16 animate-pulse bg-muted rounded-lg" />
             </CardContent>
           </Card>
-        ) : railwayJobs.length === 0 ? (
-          <Card className="border-dashed border-border/60 bg-muted/20">
-            <CardContent className="p-8 text-center">
-              <CalendarClock className="size-8 text-muted-foreground/30 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">No Railway cron services found</p>
-            </CardContent>
-          </Card>
         ) : (
-          railwayJobs.map((job) => <RailwayCronJobCard key={job.label} job={job} />)
+          allJobs.map((job) => <RailwayCronJobCard key={job.label} job={job} />)
         )}
       </div>
 

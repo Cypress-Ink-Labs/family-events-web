@@ -16,3 +16,13 @@ export const ADMIN_CRON_RPCS = {
 export const ADMIN_CRON_FUNCTIONS = {
   runRailwayCron: "admin-run-cron",
 } as const
+
+/** All cron labels supported by the admin-run-cron edge function. */
+export const KNOWN_RAILWAY_CRON_LABELS = [
+  "cron-cleanup-stale",
+  "cron-db-maintenance",
+  "cron-enrich-events",
+  "cron-review-events",
+  "cron-scrape-sources",
+  "cron-tag-queue",
+] as const
