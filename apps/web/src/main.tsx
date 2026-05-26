@@ -6,7 +6,7 @@ import { initSentry } from "@/infrastructure/observability/sentry"
 import { updateStore } from "@/shared/lib/app-version/update-store"
 import { isDynamicImportError } from "@/shared/lib/app-version/version-check"
 
-initSentry()
+void initSentry()
 
 window.addEventListener("vite:preloadError", (event) => {
   // Vite emits this when a `<link rel="modulepreload">` or dynamic import fails.

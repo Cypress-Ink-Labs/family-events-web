@@ -69,6 +69,18 @@ export default defineConfig(() => {
 
   return {
     plugins,
+    server: {
+      warmup: {
+        clientFiles: [
+          "./src/main.tsx",
+          "./src/app/App.tsx",
+          "./src/app/app-router.tsx",
+          "./src/app/app-providers.tsx",
+          "./src/app/app-route-pages.ts",
+          "./src/features/dashboard/pages/dashboard.tsx",
+        ],
+      },
+    },
     define: {
       __APP_VERSION__: JSON.stringify(appVersion),
     },

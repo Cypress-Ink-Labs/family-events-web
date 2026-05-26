@@ -1,4 +1,7 @@
-import * as Sentry from "@sentry/react"
+import type { Scope as SentryScope } from "@sentry/react"
+
+type SentryModule = typeof import("@sentry/react")
+type CaptureContext = Parameters<SentryModule["captureException"]>[1]
 
 interface RedactedSentryUserContext {
   id: string
@@ -65,6 +68,38 @@ function hasSentryDsn(value: string | undefined): value is string {
   return typeof value === "string" && value.trim().length > 0
 }
 
+let sentryModule: SentryModule | null = null
+let sentryLoadPromise: Promise<SentryModule> | null = null
+let sentryReady = false
+let lastUserContext: RedactedSentryUserContext | null = null
+const pendingActions: Array<(module: SentryModule) => void> = []
+
+function loadSentryModule(): Promise<SentryModule> {
+  sentryLoadPromise ??= import("@sentry/react").then((module) => {
+    sentryModule = module
+    return module
+  })
+  return sentryLoadPromise
+}
+
+function toSentryUser(user: RedactedSentryUserContext) {
+  return {
+    id: user.id,
+    role: user.role ?? undefined,
+    access_enabled: user.accessEnabled ?? undefined,
+  }
+}
+
+function runWhenReady(action: (module: SentryModule) => void) {
+  if (sentryReady && sentryModule) {
+    action(sentryModule)
+    return
+  }
+  if (sentryLoadPromise && pendingActions.length < 25) {
+    pendingActions.push(action)
+  }
+}
+
 function redactUrl(url: string): string {
   try {
     const parsed = new URL(url)
@@ -83,26 +118,28 @@ function redactUrl(url: string): string {
   }
 }
 
-export function initSentry() {
+export async function initSentry() {
   const sentryEnv = readSentryEnv()
   if (!hasSentryDsn(sentryEnv.dsn)) {
     return
   }
 
-  Sentry.init({
+  const SentrySdk = await loadSentryModule()
+
+  SentrySdk.init({
     dsn: sentryEnv.dsn,
     environment: sentryEnv.appEnv,
     release: sentryEnv.release,
     integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
+      SentrySdk.browserTracingIntegration(),
+      SentrySdk.replayIntegration({
         maskAllText: true,
         blockAllMedia: true,
       }),
-      Sentry.httpClientIntegration(),
-      Sentry.globalHandlersIntegration(),
-      Sentry.linkedErrorsIntegration(),
-      Sentry.dedupeIntegration(),
+      SentrySdk.httpClientIntegration(),
+      SentrySdk.globalHandlersIntegration(),
+      SentrySdk.linkedErrorsIntegration(),
+      SentrySdk.dedupeIntegration(),
     ],
     tracePropagationTargets: ["localhost"],
     tracesSampleRate: sentryEnv.tracesSampleRate,
@@ -137,18 +174,32 @@ export function initSentry() {
       return breadcrumb
     },
   })
+
+  if (lastUserContext) {
+    SentrySdk.setUser(toSentryUser(lastUserContext))
+  }
+
+  sentryReady = true
+  for (const action of pendingActions.splice(0)) {
+    action(SentrySdk)
+  }
 }
 
 export function setSentryUserContext(user: RedactedSentryUserContext) {
-  Sentry.setUser({
-    id: user.id,
-    role: user.role ?? undefined,
-    access_enabled: user.accessEnabled ?? undefined,
-  })
+  lastUserContext = user
+  runWhenReady((module) => module.setUser(toSentryUser(user)))
 }
 
 export function clearSentryUserContext() {
-  Sentry.setUser(null)
+  lastUserContext = null
+  runWhenReady((module) => module.setUser(null))
 }
 
-export { Sentry }
+export const Sentry = {
+  captureException(error: unknown, captureContext?: CaptureContext) {
+    runWhenReady((module) => module.captureException(error, captureContext))
+  },
+  withScope(callback: (scope: SentryScope) => void) {
+    runWhenReady((module) => module.withScope(callback))
+  },
+}

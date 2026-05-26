@@ -30,7 +30,7 @@ describe("sentry", () => {
 
     const { initSentry } = await loadSentry()
 
-    initSentry()
+    await initSentry()
 
     expect(sentry.init).not.toHaveBeenCalled()
     expect(sentry.consoleLoggingIntegration).not.toHaveBeenCalled()
@@ -44,7 +44,7 @@ describe("sentry", () => {
 
     const { initSentry } = await loadSentry()
 
-    initSentry()
+    await initSentry()
 
     expect(sentry.init).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -67,7 +67,7 @@ describe("sentry", () => {
 
     const { initSentry } = await loadSentry()
 
-    initSentry()
+    await initSentry()
 
     expect(sentry.init).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -79,13 +79,15 @@ describe("sentry", () => {
   })
 
   it("sets and clears redacted user context", async () => {
-    const { clearSentryUserContext, setSentryUserContext } = await loadSentry()
+    vi.stubEnv("VITE_SENTRY_DSN", "https://public@example.com/1")
+    const { clearSentryUserContext, initSentry, setSentryUserContext } = await loadSentry()
 
     setSentryUserContext({
       id: "user-1",
       role: "admin",
       accessEnabled: true,
     })
+    await initSentry()
     clearSentryUserContext()
 
     expect(sentry.setUser).toHaveBeenNthCalledWith(1, {
