@@ -546,29 +546,37 @@ jobs:
           fi
           xcodebuild -version
 
-      # v2 cache namespace: GoogleSignIn 7→9 + supabase-swift 2.20→2.46
-      # pulled in new transitive deps (xctest-dynamic-overlay 1.9, GTMAppAuth 5,
-      # swift-clocks, swift-http-types). A v1 cache restored via the bare prefix
-      # could carry stale SPM checkouts that miss IssueReportingTestSupport,
-      # breaking the test link.
+      # v3 cache namespace: supabase-swift pinned by revision (not exact semver) so a
+      # restored v2 cache cannot leave SPM with a checkout that fails exact 2.46.0 lookup.
       - name: Cache Swift packages
         uses: actions/cache@v5
         with:
           path: ~/Library/Caches/family-events-swiftpm
-          key: ${{ runner.os }}-swiftpm-v2-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
+          key: ${{ runner.os }}-swiftpm-v3-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Packages/**/Package.swift', 'apps/ios/FamilyEvents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-swiftpm-v2-
+            ${{ runner.os }}-swiftpm-v3-
 
       - name: Cache Xcode build data
         uses: actions/cache@v5
         with:
           path: ~/Library/Developer/Xcode/DerivedData/FamilyEvents
-          key: ${{ runner.os }}-xcode-familyevents-v2-${{ hashFiles('apps/ios/project.yml', 'apps/ios/**/*.swift', 'apps/ios/Packages/**/Package.swift', 'apps/ios/Packages/**/Package.resolved') }}
+          key: ${{ runner.os }}-xcode-familyevents-v3-${{ hashFiles('apps/ios/project.yml', 'apps/ios/**/*.swift', 'apps/ios/Packages/**/Package.swift', 'apps/ios/FamilyEvents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-xcode-familyevents-v2-
+            ${{ runner.os }}-xcode-familyevents-v3-
 
       - name: Generate iOS project
         run: cd apps/ios && xcodegen generate
+
+      - name: Resolve Swift package dependencies
+        run: |
+          cd apps/ios
+          mkdir -p "$HOME/Library/Caches/family-events-swiftpm"
+          xcodebuild \
+            -project FamilyEvents.xcodeproj \
+            -scheme FamilyEvents \
+            -clonedSourcePackagesDirPath "$HOME/Library/Caches/family-events-swiftpm" \
+            -derivedDataPath "$HOME/Library/Developer/Xcode/DerivedData/FamilyEvents" \
+            -resolvePackageDependencies
 
       - name: Run iOS tests
         run: |
