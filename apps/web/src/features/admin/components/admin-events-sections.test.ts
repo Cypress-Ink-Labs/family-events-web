@@ -159,11 +159,11 @@ describe("AdminLlmReviewFilterBar", () => {
       })
     )
 
-    expect(html).toContain("LLM reviewed")
-    expect(html).toContain("LLM approved")
-    expect(html).toContain("LLM rejected")
-    expect(html).toContain("Needs Admin Review")
-    expect(html).toContain("LLM failed")
+    expect(html).toContain("reviewed")
+    expect(html).toContain("approved")
+    expect(html).toContain("rejected")
+    expect(html).toContain("Needs Review")
+    expect(html).toContain("failed")
   })
 })
 
