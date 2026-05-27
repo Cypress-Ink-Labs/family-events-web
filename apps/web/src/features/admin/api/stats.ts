@@ -7,20 +7,30 @@ import type { AdminStats } from "@/features/admin/types"
  * just hands the result to TanStack Query.
  */
 export async function fetchAdminStats(): Promise<AdminStats> {
-  const [{ data: events, error: eventsError }, { data: sources, error: sourcesError }] =
-    await Promise.all([
-      supabase.from("events").select("status, ai_confidence"),
-      supabase.from("event_sources").select("is_active, last_status"),
-    ])
-  if (eventsError) throw eventsError
+  const [
+    { count: totalCount, error: totalError },
+    { count: draftCount, error: draftError },
+    { count: publishedCount, error: publishedError },
+    { data: confidenceData, error: confidenceError },
+    { data: sources, error: sourcesError },
+  ] = await Promise.all([
+    supabase.from("events").select("*", { count: "exact", head: true }),
+    supabase.from("events").select("*", { count: "exact", head: true }).eq("status", "draft"),
+    supabase.from("events").select("*", { count: "exact", head: true }).eq("status", "published"),
+    supabase.from("events").select("ai_confidence").not("ai_confidence", "is", null),
+    supabase.from("event_sources").select("is_active, last_status"),
+  ])
+  if (totalError) throw totalError
+  if (draftError) throw draftError
+  if (publishedError) throw publishedError
+  if (confidenceError) throw confidenceError
   if (sourcesError) throw sourcesError
 
-  const eventRows = events ?? []
   const sourceRows = sources ?? []
   let totalConfidenceRows = 0
   let highConfidenceRows = 0
   let mediumConfidenceRows = 0
-  for (const event of eventRows) {
+  for (const event of confidenceData ?? []) {
     const value = event.ai_confidence
     if (typeof value !== "number") continue
     totalConfidenceRows += 1
@@ -32,9 +42,9 @@ export async function fetchAdminStats(): Promise<AdminStats> {
   const medium = Math.round((mediumConfidenceRows / confidenceDenominator) * 100)
 
   return {
-    totalEvents: eventRows.length,
-    pendingReview: eventRows.filter((event) => event.status === "draft").length,
-    published: eventRows.filter((event) => event.status === "published").length,
+    totalEvents: totalCount ?? 0,
+    pendingReview: draftCount ?? 0,
+    published: publishedCount ?? 0,
     activeSources: sourceRows.filter((source) => source.is_active).length,
     sourceErrors: sourceRows.filter((source) => source.is_active && source.last_status === "error")
       .length,
