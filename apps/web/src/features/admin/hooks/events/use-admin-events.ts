@@ -158,6 +158,7 @@ export function useUpdateAdminEventStatus() {
       void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.detailAll })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     },
   })
 }
@@ -172,6 +173,7 @@ export function useBatchUpdateAdminEventStatus() {
       void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.detailAll })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     },
   })
 }
@@ -185,6 +187,7 @@ export function useDeleteAdminEvents() {
       void queryClient.invalidateQueries({ queryKey: qk.admin.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.all })
       void queryClient.invalidateQueries({ queryKey: qk.events.detailAll })
+      void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     },
   })
 }

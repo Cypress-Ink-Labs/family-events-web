@@ -22,6 +22,7 @@ export function useUpdateAdminEvent() {
         queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(variables.eventId) }),
         queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(variables.eventId) }),
         queryClient.invalidateQueries({ queryKey: qk.events.detailById(variables.eventId) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.stats }),
       ])
     },
   })
@@ -41,6 +42,7 @@ export function useCreateAdminEvent() {
         queryClient.invalidateQueries({ queryKey: qk.admin.events.detail(event.id) }),
         queryClient.invalidateQueries({ queryKey: qk.admin.eventAiTrace(event.id) }),
         queryClient.invalidateQueries({ queryKey: qk.events.detailById(event.id) }),
+        queryClient.invalidateQueries({ queryKey: qk.admin.stats }),
       ])
     },
   })

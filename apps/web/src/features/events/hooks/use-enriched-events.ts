@@ -31,10 +31,16 @@ function toIsoDate(value: string | Date): string {
   return typeof value === "string" ? value : value.toISOString()
 }
 
-function startOfTodayIso(now = new Date()): string {
-  const start = new Date(now)
-  start.setHours(0, 0, 0, 0)
-  return start.toISOString()
+// Cached per calendar date — avoids allocating Date objects on every render.
+let _todayCache: { dateKey: string; iso: string } | null = null
+function startOfTodayIso(): string {
+  const now = new Date()
+  const dateKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`
+  if (_todayCache?.dateKey === dateKey) return _todayCache.iso
+  now.setHours(0, 0, 0, 0)
+  const iso = now.toISOString()
+  _todayCache = { dateKey, iso }
+  return iso
 }
 
 function effectiveDateFrom(options: UseEnrichedEventsOptions): string | Date | undefined {

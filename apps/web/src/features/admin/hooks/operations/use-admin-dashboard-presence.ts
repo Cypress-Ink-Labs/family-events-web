@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "@/infrastructure/supabase/client"
 import { useAuthStore } from "@/features/auth/stores/auth-store"
 
@@ -29,21 +29,16 @@ function toPresenceUsers(state: PresenceState): AdminDashboardPresenceUser[] {
 }
 
 export function useAdminDashboardPresence() {
-  const user = useAuthStore((state) => state.user)
-  const profile = useAuthStore((state) => state.profile)
+  // Select primitives only — Supabase recreates the user object on token refresh,
+  // so depending on the full object would re-subscribe every ~55 minutes.
+  const userId = useAuthStore((state) => state.user?.id)
+  const displayName = useAuthStore(
+    (state) => state.profile?.display_name || state.user?.email || "Admin"
+  )
   const [users, setUsers] = useState<AdminDashboardPresenceUser[]>([])
 
-  const payload = useMemo<DashboardPresencePayload | null>(() => {
-    if (!user) return null
-    return {
-      user_id: user.id,
-      display_name: profile?.display_name || user.email || "Admin",
-      online_at: new Date().toISOString(),
-    }
-  }, [profile?.display_name, user])
-
   useEffect(() => {
-    if (!user || !payload) {
+    if (!userId) {
       setUsers([])
       return
     }
@@ -52,7 +47,7 @@ export function useAdminDashboardPresence() {
     const channel = supabase.channel("dashboard:events", {
       config: {
         private: true,
-        presence: { key: user.id },
+        presence: { key: userId },
       },
     })
 
@@ -64,6 +59,13 @@ export function useAdminDashboardPresence() {
       .on("presence", { event: "sync" }, syncPresence)
       .on("presence", { event: "join" }, syncPresence)
       .on("presence", { event: "leave" }, syncPresence)
+
+    // online_at is set at track time, not at payload construction time.
+    const payload: DashboardPresencePayload = {
+      user_id: userId,
+      display_name: displayName,
+      online_at: new Date().toISOString(),
+    }
 
     void supabase.realtime.setAuth().then(() => {
       if (closed) return
@@ -80,7 +82,7 @@ export function useAdminDashboardPresence() {
       void channel.untrack().catch(() => {})
       void supabase.removeChannel(channel).catch(() => {})
     }
-  }, [payload, user])
+  }, [userId, displayName])
 
   return users
 }
