@@ -57,7 +57,8 @@ export function AdminVirtualEventRow({
           className="mt-1 shrink-0"
           aria-label={`Select ${event.title}`}
         />
-        <div className="size-14 rounded-lg overflow-hidden shrink-0 bg-muted">
+
+        <div className="w-20 h-14 rounded-lg overflow-hidden shrink-0 bg-muted">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -72,16 +73,17 @@ export function AdminVirtualEventRow({
             </div>
           )}
         </div>
-        <div className="flex-1 min-w-0 space-y-2">
-          <div className="flex items-start gap-2 flex-wrap">
-            <h3 className="font-semibold text-sm text-foreground leading-tight flex-1">
+
+        <div className="flex-1 min-w-0 space-y-1.5">
+          <div className="flex items-start gap-2">
+            <h3 className="font-bold text-sm text-foreground leading-tight flex-1 min-w-0">
               {event.title}
             </h3>
-            <Badge variant="outline" className="text-[10px]">
-              {cityName}
-            </Badge>
             <span
-              className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-full", status.color)}
+              className={cn(
+                "shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full",
+                status.color
+              )}
             >
               {status.label}
             </span>
@@ -92,6 +94,9 @@ export function AdminVirtualEventRow({
               <ClientDate value={event.start_datetime} pattern="MMM d, h:mm a" />
             </span>
             <span>{event.venue_name ?? "No venue"}</span>
+            <Badge variant="outline" className="text-[10px]">
+              {cityName}
+            </Badge>
           </div>
 
           {event.status === "draft" && (
@@ -138,56 +143,56 @@ export function AdminVirtualEventRow({
           <div className="flex items-center gap-1.5">
             <AgeRangeBadge ageMin={event.age_min} ageMax={event.age_max} />
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 pt-1">
-            <Button variant="ghost" size="icon" aria-label="Edit event" className="size-9" asChild>
-              <Link to={`/admin/events/${event.id}/edit`}>
-                <Pencil className="size-4" />
-              </Link>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Review event"
-              className="size-9"
-              onClick={() => onOpenReview(event)}
-            >
-              <Eye className="size-4" />
-            </Button>
-            {event.status === "draft" && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Publish event"
-                  className="size-9 text-[var(--color-success)] hover:bg-[var(--color-success)]/8 hover:text-[var(--color-success)]"
-                  onClick={() => onUpdateStatus(event.id, "published")}
-                >
-                  <Check className="size-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Reject event"
-                  className="size-9 text-destructive hover:bg-destructive/10"
-                  onClick={() => onUpdateStatus(event.id, "rejected")}
-                >
-                  <X className="size-4" />
-                </Button>
-              </>
-            )}
-            {event.status === "published" && (
+        <div className="flex shrink-0 flex-col items-center gap-1 self-start">
+          <Button variant="ghost" size="icon" aria-label="Edit event" className="size-8" asChild>
+            <Link to={`/admin/events/${event.id}/edit`}>
+              <Pencil className="size-3.5" />
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Review event"
+            className="size-8"
+            onClick={() => onOpenReview(event)}
+          >
+            <Eye className="size-3.5" />
+          </Button>
+          {event.status === "draft" && (
+            <>
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Archive event"
-                className="size-9 text-destructive hover:bg-destructive/10"
-                onClick={() => onUpdateStatus(event.id, "archived")}
+                aria-label="Publish event"
+                className="size-8 text-[var(--color-success)] hover:bg-[var(--color-success)]/8 hover:text-[var(--color-success)]"
+                onClick={() => onUpdateStatus(event.id, "published")}
               >
-                <XCircle className="size-4" />
+                <Check className="size-3.5" />
               </Button>
-            )}
-          </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Reject event"
+                className="size-8 text-destructive hover:bg-destructive/10"
+                onClick={() => onUpdateStatus(event.id, "rejected")}
+              >
+                <X className="size-3.5" />
+              </Button>
+            </>
+          )}
+          {event.status === "published" && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Archive event"
+              className="size-8 text-destructive hover:bg-destructive/10"
+              onClick={() => onUpdateStatus(event.id, "archived")}
+            >
+              <XCircle className="size-3.5" />
+            </Button>
+          )}
         </div>
       </div>
     </article>

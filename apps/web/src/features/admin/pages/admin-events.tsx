@@ -22,6 +22,7 @@ import {
 import { useAdminEventFacetCounts } from "@/features/admin/hooks/events/use-admin-event-facet-counts"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
+import { useAdminEventsRealtime } from "@/features/admin/hooks/operations/use-admin-events-realtime"
 import { ADMIN_EVENT_STATUS_DISPLAY } from "@/features/admin/constants/event-status-display"
 import {
   ADMIN_EVENTS_PAGE_SIZE_OPTIONS,
@@ -44,6 +45,7 @@ function readStoredPageSize(): AdminEventsPageSize {
 }
 
 export function AdminEventsPage() {
+  useAdminEventsRealtime()
   const keyword = useAdminStore((state) => state.keyword)
   const statusFilter = useAdminStore((state) => state.statusFilter)
   const selectedIds = useAdminStore((state) => state.selectedIds)
@@ -202,45 +204,56 @@ export function AdminEventsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <AdminEventStatusFilterBar
-        statusFilter={statusFilter}
-        counts={statusCounts}
-        total={statusTotal}
-        onChange={handleStatusFilterChange}
-      />
-      <AdminCityFilterBar
-        cities={cities}
-        counts={cityCounts}
-        total={cityTotal}
-        value={cityFilter}
-        onChange={handleCityFilterChange}
-      />
-      <AdminLlmReviewFilterBar
-        llmReviewFilter={llmReviewFilter}
-        onChange={handleLlmReviewFilterChange}
-      />
-      <AdminEventsToolbar
-        keyword={keyword}
-        onKeywordChange={handleKeywordChange}
-        loadedCount={loadedCount}
-        totalCount={totalCountForToolbar}
-        allLoadedSelected={allLoadedSelected}
-        onToggleSelectAll={toggleSelectAll}
-        pageSize={pageSize}
-        onPageSizeChange={handlePageSizeChange}
-      />
+    <div className="space-y-4">
+      <div className="flex items-baseline gap-2">
+        <h2 className="font-display text-xl font-medium tracking-tight text-foreground md:text-2xl">
+          Events
+        </h2>
+        {totalCount > 0 && (
+          <span className="text-sm text-muted-foreground">{totalCount.toLocaleString()} total</span>
+        )}
+      </div>
 
-      <AdminEventsBulkBar
-        selectedCount={selectedLoadedIds.length}
-        selectedDraftCount={selectedDraftIds.length}
-        isStatusPending={batchUpdateStatusMutation.isPending}
-        isDeletePending={deleteEventsMutation.isPending}
-        onPublish={() => batchUpdateStatus("published")}
-        onReject={() => batchUpdateStatus("rejected")}
-        onDelete={deleteSelectedEvents}
-        onClear={clearSelectedIds}
-      />
+      <div className="rounded-xl border border-border bg-[var(--color-surface)] p-4 space-y-3">
+        <AdminEventStatusFilterBar
+          statusFilter={statusFilter}
+          counts={statusCounts}
+          total={statusTotal}
+          onChange={handleStatusFilterChange}
+        />
+        <AdminCityFilterBar
+          cities={cities}
+          counts={cityCounts}
+          total={cityTotal}
+          value={cityFilter}
+          onChange={handleCityFilterChange}
+        />
+        <AdminLlmReviewFilterBar
+          llmReviewFilter={llmReviewFilter}
+          onChange={handleLlmReviewFilterChange}
+        />
+        <AdminEventsToolbar
+          keyword={keyword}
+          onKeywordChange={handleKeywordChange}
+          loadedCount={loadedCount}
+          totalCount={totalCountForToolbar}
+          allLoadedSelected={allLoadedSelected}
+          onToggleSelectAll={toggleSelectAll}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
+        />
+
+        <AdminEventsBulkBar
+          selectedCount={selectedLoadedIds.length}
+          selectedDraftCount={selectedDraftIds.length}
+          isStatusPending={batchUpdateStatusMutation.isPending}
+          isDeletePending={deleteEventsMutation.isPending}
+          onPublish={() => batchUpdateStatus("published")}
+          onReject={() => batchUpdateStatus("rejected")}
+          onDelete={deleteSelectedEvents}
+          onClear={clearSelectedIds}
+        />
+      </div>
 
       <AdminEventsList
         events={events}

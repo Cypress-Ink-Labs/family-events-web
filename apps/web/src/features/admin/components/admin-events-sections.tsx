@@ -37,10 +37,10 @@ export function AdminEventStatusFilterBar({
   onChange,
 }: StatusFilterBarProps) {
   return (
-    <div className="space-y-2">
-      <h2 className="font-display text-xl font-medium tracking-tight text-foreground md:text-2xl">
-        Events
-      </h2>
+    <div className="flex items-center gap-3">
+      <span className="shrink-0 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        Status
+      </span>
       <FilterBar>
         {(["all", "draft", "published", "rejected"] as const).map((status) => (
           <button
@@ -72,25 +72,38 @@ interface LlmFilterBarProps {
   onChange: (value: AdminLlmReviewFilter) => void
 }
 
+const LLM_LABEL_OVERRIDES: Partial<Record<AdminLlmReviewFilter, string>> = {
+  needs_admin_review: "Needs Review",
+}
+
+function displayLlmLabel(option: { value: AdminLlmReviewFilter; label: string }): string {
+  return LLM_LABEL_OVERRIDES[option.value] ?? option.label.replace(/^LLM\s+/i, "")
+}
+
 export function AdminLlmReviewFilterBar({ llmReviewFilter, onChange }: LlmFilterBarProps) {
   return (
-    <FilterBar>
-      {ADMIN_LLM_REVIEW_FILTER_OPTIONS.map((option) => (
-        <button
-          type="button"
-          key={option.value}
-          onClick={() => onChange(option.value)}
-          className={cn(
-            "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-            llmReviewFilter === option.value
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border hover:bg-accent"
-          )}
-        >
-          {option.label}
-        </button>
-      ))}
-    </FilterBar>
+    <div className="flex items-center gap-3">
+      <span className="shrink-0 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        AI Review
+      </span>
+      <FilterBar>
+        {ADMIN_LLM_REVIEW_FILTER_OPTIONS.map((option) => (
+          <button
+            type="button"
+            key={option.value}
+            onClick={() => onChange(option.value)}
+            className={cn(
+              "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+              llmReviewFilter === option.value
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border hover:bg-accent"
+            )}
+          >
+            {displayLlmLabel(option)}
+          </button>
+        ))}
+      </FilterBar>
+    </div>
   )
 }
 
@@ -121,7 +134,7 @@ export function AdminEventsToolbar({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <div className="relative min-w-[200px] flex-1 sm:max-w-sm">
+      <div className="relative min-w-[200px] flex-1">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={keyword}
@@ -192,7 +205,7 @@ export function AdminEventsBulkBar({
   if (selectedCount === 0) return null
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2.5 sm:px-4">
+    <div className="animate-in slide-in-from-top-2 duration-200 flex flex-wrap items-center gap-3 rounded-lg border border-primary/40 bg-primary/5 px-3 py-2.5 shadow-sm sm:px-4">
       <span className="text-sm font-medium">{selectedCount} selected</span>
       <div className="ml-auto flex flex-wrap gap-2">
         <Button

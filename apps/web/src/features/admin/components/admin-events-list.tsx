@@ -49,7 +49,7 @@ function AdminVirtualEventsList({
   const count = events.length + (hasLoader ? 1 : 0)
   const virtualizer = useWindowVirtualizer({
     count,
-    estimateSize: () => 112,
+    estimateSize: () => 100,
     overscan: 12,
     measureElement: (element) => element?.getBoundingClientRect().height ?? 0,
   })

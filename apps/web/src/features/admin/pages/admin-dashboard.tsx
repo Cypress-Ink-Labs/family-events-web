@@ -3,15 +3,20 @@ import {
   AdminDashboardConfidenceCard,
   AdminDashboardHeader,
   AdminDashboardIngestionChart,
+  AdminDashboardPresence,
   AdminDashboardRecentRuns,
   AdminDashboardStatsGrid,
 } from "@/features/admin/components/admin-dashboard-sections"
 import { useAdminSourceRuns } from "@/features/admin/hooks/sources/use-admin-source-runs"
 import { useAdminStats } from "@/features/admin/hooks/operations/use-admin-stats"
+import { useAdminDashboardPresence } from "@/features/admin/hooks/operations/use-admin-dashboard-presence"
+import { useAdminEventsRealtime } from "@/features/admin/hooks/operations/use-admin-events-realtime"
 
 export function AdminDashboardPage() {
+  useAdminEventsRealtime()
   const { data: stats, isLoading: isStatsLoading } = useAdminStats()
   const { data: runs = [], isLoading: isRunsLoading } = useAdminSourceRuns()
+  const presenceUsers = useAdminDashboardPresence()
 
   const STAT_CARDS = [
     {
@@ -76,6 +81,7 @@ export function AdminDashboardPage() {
         title="Admin Dashboard"
         description="Overview of your Family Events platform"
       />
+      <AdminDashboardPresence users={presenceUsers} />
       <AdminDashboardStatsGrid stats={STAT_CARDS} isLoading={isStatsLoading} />
       <AdminDashboardIngestionChart data={INGESTION_DATA} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

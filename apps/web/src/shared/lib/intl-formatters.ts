@@ -1,3 +1,6 @@
+// Formatters are constructed at most once per timeZone via the module-scoped
+// caches below — not recreated on every call.
+
 const dayFormatterOptions: Intl.DateTimeFormatOptions = {
   year: "numeric",
   month: "2-digit",
@@ -12,13 +15,22 @@ const hourFormatterOptions: Intl.DateTimeFormatOptions = {
 const dayFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
 const hourFormattersByTimeZone = new Map<string, Intl.DateTimeFormat>()
 
-function getDayFormatter(timeZone: string): Intl.DateTimeFormat {
-  let formatter = dayFormattersByTimeZone.get(timeZone)
+function getOrCreateFormatter(
+  cache: Map<string, Intl.DateTimeFormat>,
+  locale: string,
+  baseOptions: Intl.DateTimeFormatOptions,
+  timeZone: string
+): Intl.DateTimeFormat {
+  let formatter = cache.get(timeZone)
   if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-CA", { ...dayFormatterOptions, timeZone })
-    dayFormattersByTimeZone.set(timeZone, formatter)
+    formatter = new Intl.DateTimeFormat(locale, { ...baseOptions, timeZone })
+    cache.set(timeZone, formatter)
   }
   return formatter
+}
+
+function getDayFormatter(timeZone: string): Intl.DateTimeFormat {
+  return getOrCreateFormatter(dayFormattersByTimeZone, "en-CA", dayFormatterOptions, timeZone)
 }
 
 export function formatDayKey(date: Date, timeZone: string): string {
@@ -26,10 +38,5 @@ export function formatDayKey(date: Date, timeZone: string): string {
 }
 
 export function getHourFormatter(timeZone: string): Intl.DateTimeFormat {
-  let formatter = hourFormattersByTimeZone.get(timeZone)
-  if (!formatter) {
-    formatter = new Intl.DateTimeFormat("en-US", { ...hourFormatterOptions, timeZone })
-    hourFormattersByTimeZone.set(timeZone, formatter)
-  }
-  return formatter
+  return getOrCreateFormatter(hourFormattersByTimeZone, "en-US", hourFormatterOptions, timeZone)
 }

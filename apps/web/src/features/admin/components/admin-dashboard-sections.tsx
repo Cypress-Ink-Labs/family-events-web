@@ -13,6 +13,7 @@ import { Progress } from "@/shared/components/ui/progress"
 import { Toolbar } from "@/components/v2"
 import type { ChartConfig } from "@/shared/components/ui/chart"
 import { formatSlugLabel } from "@/shared/utils/format"
+import type { AdminDashboardPresenceUser } from "@/features/admin/hooks/operations/use-admin-dashboard-presence"
 
 const chartConfig: ChartConfig = {
   imported: { label: "Imported", color: "var(--chart-1)" },
@@ -63,6 +64,24 @@ interface AdminDashboardHeaderProps {
 
 export function AdminDashboardHeader({ title, description }: AdminDashboardHeaderProps) {
   return <Toolbar title={title} subtitle={description} />
+}
+
+interface AdminDashboardPresenceProps {
+  users: AdminDashboardPresenceUser[]
+}
+
+export function AdminDashboardPresence({ users }: AdminDashboardPresenceProps) {
+  const names = users.map((user) => user.name).join(", ")
+
+  return (
+    <div className="flex min-h-9 flex-wrap items-center gap-2 rounded-md border border-border/60 bg-[var(--color-surface)] px-3 py-2 text-sm">
+      <span className="flex items-center gap-2 font-medium text-foreground">
+        <span className="size-2 rounded-full bg-[var(--color-success)]" />
+        {users.length} active
+      </span>
+      {names && <span className="min-w-0 truncate text-muted-foreground">{names}</span>}
+    </div>
+  )
 }
 
 interface AdminDashboardStatsGridProps {

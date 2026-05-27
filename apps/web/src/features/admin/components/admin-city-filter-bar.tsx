@@ -36,8 +36,8 @@ export function AdminCityFilterBar({
   }
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="flex items-center gap-3">
+      <span className="shrink-0 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
         City
       </span>
       <FilterBar>

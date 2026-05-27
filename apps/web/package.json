@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@family-events/contracts": "workspace:*",
-    "@family-events/design-system": "workspace:*",
     "@family-events/shared": "workspace:*",
     "@hookform/resolvers": "^5.4.0",
     "@sentry/react": "^10.54.0",
@@ -57,6 +56,7 @@
   },
   "devDependencies": {
     "@family-events/config-typescript": "workspace:*",
+    "@family-events/design-system": "workspace:*",
     "@playwright/test": "^1.60.0",
     "@sentry/vite-plugin": "^5.3.0",
     "@tailwindcss/vite": "^4.3.0",
