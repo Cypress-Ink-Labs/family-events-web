@@ -42,10 +42,7 @@ export function EventDetailLocation({ event }: { event: EventWithDetails }) {
       </div>
       <Suspense
         fallback={
-          <Skeleton
-            aria-hidden
-            className="rounded-xl border border-border/60 h-48 w-full"
-          />
+          <Skeleton aria-hidden className="rounded-xl border border-border/60 h-48 w-full" />
         }
       >
         <EventMapMini
