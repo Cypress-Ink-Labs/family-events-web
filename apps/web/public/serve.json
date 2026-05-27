@@ -28,7 +28,6 @@
       ]
     }
   ],
-  "_comment_rewrites": "The `serve` package matches rewrites by URL glob only — it cannot branch on User-Agent. Social-crawler routing (sending Facebookbot/Twitterbot/LinkedInBot/Slackbot/Discordbot/iMessage to supabase/functions/share-og while humans get the SPA) must therefore happen at an upstream proxy (Cloudflare Worker, Vercel Edge, Railway edge config, or equivalent). Until that proxy exists, shared-event link previews on chat apps will fall back to the SPA HTML and look broken. Tracked as a follow-up.",
   "rewrites": [
     { "source": "**", "destination": "/index.html" }
   ]
