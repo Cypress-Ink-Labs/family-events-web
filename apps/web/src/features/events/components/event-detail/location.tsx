@@ -1,7 +1,17 @@
+import { lazy, Suspense } from "react"
 import { MapPin } from "lucide-react"
-import { EventMapMini } from "@/features/events/components/event-map-mini"
+import { Skeleton } from "@/shared/components/ui/skeleton"
 import { useCities } from "@/shared/hooks/use-cities"
 import type { EventWithDetails } from "@/shared/types"
+
+// EventMapMini pulls in maplibre-gl (~1 MB) and is the only consumer of that
+// vendor chunk on this page. Gate it behind React.lazy so the chunk is fetched
+// when an event-detail view actually renders the map, not on first paint of /.
+const EventMapMini = lazy(() =>
+  import("@/features/events/components/event-map-mini").then((m) => ({
+    default: m.EventMapMini,
+  }))
+)
 
 export function EventDetailLocation({ event }: { event: EventWithDetails }) {
   const { data: cities = [] } = useCities()
@@ -30,15 +40,24 @@ export function EventDetailLocation({ event }: { event: EventWithDetails }) {
           ) : null}
         </div>
       </div>
-      <EventMapMini
-        latitude={event.latitude}
-        longitude={event.longitude}
-        cityLatitude={eventCity?.latitude ?? null}
-        cityLongitude={eventCity?.longitude ?? null}
-        venueName={event.venue_name}
-        address={event.address}
-        startDatetime={event.start_datetime}
-      />
+      <Suspense
+        fallback={
+          <Skeleton
+            aria-hidden
+            className="rounded-xl border border-border/60 h-48 w-full"
+          />
+        }
+      >
+        <EventMapMini
+          latitude={event.latitude}
+          longitude={event.longitude}
+          cityLatitude={eventCity?.latitude ?? null}
+          cityLongitude={eventCity?.longitude ?? null}
+          venueName={event.venue_name}
+          address={event.address}
+          startDatetime={event.start_datetime}
+        />
+      </Suspense>
     </div>
   )
 }

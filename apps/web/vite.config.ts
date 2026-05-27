@@ -97,6 +97,19 @@ export default defineConfig(() => {
       // Drops back to Rollup's default 500 KB warning so future bloat
       // surfaces in CI rather than hiding under a raised ceiling.
       chunkSizeWarningLimit: 500,
+      // Strip heavy single-purpose vendor chunks (maplibre/recharts/sentry)
+      // from <link rel="modulepreload"> on first paint. They are route-
+      // specific — only needed once the user navigates to /map, /admin, or
+      // an error path triggers Sentry — and React.lazy() already gates them
+      // behind a Suspense boundary. The default preload graph defeats that
+      // gate by hinting every reachable chunk on initial HTML load, which
+      // costs ~2 MB of JS for nothing on the first paint of /. Keep all
+      // other preloads (route chunks, shared vendor deps) intact so warm
+      // navigation between common pages stays snappy.
+      modulePreload: {
+        resolveDependencies: (_filename, deps) =>
+          deps.filter((dep) => !/\/(maplibre|recharts|sentry)-[A-Za-z0-9_-]+\.js$/.test(dep)),
+      },
       rollupOptions: {
         output: {
           // Heavy single-purpose vendors that only load on specific pages get
