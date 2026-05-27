@@ -2,7 +2,8 @@ import { useMemo, useState } from "react"
 import { Loader2, Play } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/shared/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/shared/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { FilterBar, Toolbar } from "@/components/v2"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import {
@@ -95,52 +96,57 @@ export function AdminCronsPage() {
         }
       />
 
-      <div className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Railway Services
-        </p>
-        {railwayJobsLoading ? (
+      <Tabs defaultValue="services">
+        <TabsList>
+          <TabsTrigger value="services">Railway Services</TabsTrigger>
+          <TabsTrigger value="runs">Recent Runs ({combinedHistory.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="services" className="mt-4 space-y-3">
+          {railwayJobsLoading ? (
+            <Card className="border-border/60">
+              <CardContent className="p-4">
+                <div className="h-16 animate-pulse rounded-lg bg-muted" />
+              </CardContent>
+            </Card>
+          ) : (
+            allJobs.map((job) => <RailwayCronJobCard key={job.label} job={job} />)
+          )}
+        </TabsContent>
+
+        <TabsContent value="runs" className="mt-4">
           <Card className="border-border/60">
-            <CardContent className="p-4">
-              <div className="h-16 animate-pulse bg-muted rounded-lg" />
+            <CardHeader className="space-y-3 pb-3">
+              {historyGroups.length > 1 && (
+                <FilterBar>
+                  <RunDomainChip
+                    label="All"
+                    count={combinedHistory.length}
+                    active={selectedDomain === ALL_RUNS_DOMAIN}
+                    onClick={() => setSelectedDomain(ALL_RUNS_DOMAIN)}
+                  />
+                  {historyGroups.map((group) => (
+                    <RunDomainChip
+                      key={group.key}
+                      label={group.label}
+                      count={group.runs.length}
+                      active={selectedDomain === group.key}
+                      onClick={() => setSelectedDomain(group.key)}
+                    />
+                  ))}
+                </FilterBar>
+              )}
+            </CardHeader>
+            <CardContent className="pt-0">
+              <RunHistory
+                history={combinedHistory}
+                selectedDomain={selectedDomain}
+                onRunSelect={setSelectedRun}
+              />
             </CardContent>
           </Card>
-        ) : (
-          allJobs.map((job) => <RailwayCronJobCard key={job.label} job={job} />)
-        )}
-      </div>
-
-      <Card className="border-border/60">
-        <CardHeader className="space-y-3 pb-3">
-          <CardTitle className="text-sm font-semibold">Recent Runs</CardTitle>
-          {historyGroups.length > 1 && (
-            <FilterBar>
-              <RunDomainChip
-                label="All"
-                count={combinedHistory.length}
-                active={selectedDomain === ALL_RUNS_DOMAIN}
-                onClick={() => setSelectedDomain(ALL_RUNS_DOMAIN)}
-              />
-              {historyGroups.map((group) => (
-                <RunDomainChip
-                  key={group.key}
-                  label={group.label}
-                  count={group.runs.length}
-                  active={selectedDomain === group.key}
-                  onClick={() => setSelectedDomain(group.key)}
-                />
-              ))}
-            </FilterBar>
-          )}
-        </CardHeader>
-        <CardContent className="pt-0">
-          <RunHistory
-            history={combinedHistory}
-            selectedDomain={selectedDomain}
-            onRunSelect={setSelectedRun}
-          />
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
 
       <CronRunDetailSheet
         run={selectedRun}
