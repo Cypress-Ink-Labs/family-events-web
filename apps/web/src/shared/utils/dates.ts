@@ -62,6 +62,17 @@ export function formatDurationMinutes(totalMinutes: number | null | undefined): 
   return `${hoursLabel} ${pluralize(remainingMinutes, "minute", "minutes")}`
 }
 
+/** Sort any array of objects with a `start_datetime` string field by date+time. */
+export function sortByStartDatetime<T extends { start_datetime: string }>(
+  events: T[],
+  order: "asc" | "desc" = "asc"
+): T[] {
+  return [...events].sort((a, b) => {
+    const diff = new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
+    return order === "asc" ? diff : -diff
+  })
+}
+
 export function formatDurationBetween(
   start: Date | string | number,
   end: Date | string | number | null | undefined

@@ -2,6 +2,7 @@ import { useMemo, useReducer } from "react"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
+import { sortByStartDatetime } from "@/shared/utils/dates"
 import { FadeSwap } from "@/shared/components/motion"
 import {
   DashboardCarouselSection,
@@ -53,9 +54,9 @@ export function DashboardPage() {
     setFavoriteOverrides({ [eventId]: newState })
   }
 
-  const featuredEvents = events.filter((event) => event.is_featured)
-  const happeningSoon = events.filter((event) => !event.is_featured).slice(0, 4)
-  const recommended = events.slice(0, 4)
+  const featuredEvents = useMemo(() => sortByStartDatetime(events.filter((e) => e.is_featured), "asc"), [events])
+  const happeningSoon = useMemo(() => sortByStartDatetime(events.filter((e) => !e.is_featured), "asc").slice(0, 4), [events])
+  const recommended = useMemo(() => sortByStartDatetime(events, "asc").slice(0, 4), [events])
   const savedEvents = events.filter((event) => isFavorited(event.id)).slice(0, 3)
   const selectedTimeZone = selectedCity?.timezone ?? "UTC"
   const todayKey = useMemo(() => formatDayKey(new Date(), selectedTimeZone), [selectedTimeZone])

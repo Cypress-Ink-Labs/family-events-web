@@ -5,6 +5,7 @@ import { useExploreStore } from "@/features/explore/stores/explore-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { matchesAgeFilter } from "@/features/events/lib/event-filters"
 import { useTags } from "@/features/events/hooks/use-tags"
+import { sortByStartDatetime } from "@/shared/utils/dates"
 import { EXPLORE_AGE_OPTIONS } from "@/features/explore/constants/categories"
 import {
   ExploreActiveFilters,
@@ -101,7 +102,7 @@ export function ExplorePage() {
     const to = dateRange.dateTo ? new Date(dateRange.dateTo) : null
     const tagSlugSet = combinedTagSlugs.length > 0 ? new Set(combinedTagSlugs) : null
 
-    return allEvents.filter((event) => {
+    const filtered = allEvents.filter((event) => {
       if (trimmedKeyword) {
         const haystack =
           `${event.title} ${event.description ?? ""} ${event.venue_name ?? ""}`.toLowerCase()
@@ -131,6 +132,8 @@ export function ExplorePage() {
 
       return true
     })
+
+    return sortByStartDatetime(filtered, "asc")
   }, [allEvents, keyword, dateRange, onlyFree, ageFilter, combinedTagSlugs])
 
   const activeFilterCount = [

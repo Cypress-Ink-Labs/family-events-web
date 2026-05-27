@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Link } from "react-router"
 import { Bookmark, Clock, Star } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
@@ -19,6 +19,7 @@ import {
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useUpsertRating } from "@/features/events/hooks/use-ratings"
 import type { Favorite, UserCalendarEvent } from "@/shared/types"
+import { sortByStartDatetime } from "@/shared/utils/dates"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack, Toolbar } from "@/components/v2"
@@ -52,10 +53,15 @@ export function MyEventsPage() {
     userId: user?.id,
   })
 
-  const now = new Date()
-  const upcomingEvents = savedEvents.filter((event) => new Date(event.start_datetime) >= now)
-  const pastEvents = savedEvents.filter((event) => new Date(event.start_datetime) < now)
-  const allSaved = savedEvents
+  const upcomingEvents = useMemo(() => {
+    const now = new Date()
+    return sortByStartDatetime(savedEvents.filter((e) => new Date(e.start_datetime) >= now), "asc")
+  }, [savedEvents])
+  const pastEvents = useMemo(() => {
+    const now = new Date()
+    return sortByStartDatetime(savedEvents.filter((e) => new Date(e.start_datetime) < now), "desc")
+  }, [savedEvents])
+  const allSaved = useMemo(() => sortByStartDatetime(savedEvents, "asc"), [savedEvents])
 
   async function handleRemove(eventId: string) {
     if (!user) {
