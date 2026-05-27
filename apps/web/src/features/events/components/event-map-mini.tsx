@@ -52,21 +52,25 @@ export function EventMapMini({
     })
   }, [latitude, longitude, isCentroidPlaceholder])
 
-  if (latitude == null || longitude == null || isCentroidPlaceholder) {
+  // No coordinates at all — nothing to show
+  if (latitude == null || longitude == null) {
     return (
       <div className="rounded-xl bg-muted/50 border border-border/60 h-36 flex items-center justify-center">
-        <p className="text-muted-foreground text-sm">
-          {isCentroidPlaceholder ? "Precise location pending" : "Location not mapped"}
-        </p>
+        <p className="text-muted-foreground text-sm">Location not mapped</p>
       </div>
     )
   }
+
+  // Centroid placeholder — show map at city zoom but suppress the address popup
+  // so the pin isn't mistaken for the exact venue. The address text above the
+  // map already tells the user where to go; the map just gives city context.
+  const showPopup = !isCentroidPlaceholder && (venueName || address)
 
   return (
     <div className="rounded-xl overflow-hidden border border-border/60 h-48">
       <MapGL
         ref={mapRef}
-        initialViewState={{ longitude, latitude, zoom: INITIAL_ZOOM }}
+        initialViewState={{ longitude, latitude, zoom: isCentroidPlaceholder ? 11 : INITIAL_ZOOM }}
         mapStyle={mapStyle}
         style={{ width: "100%", height: "100%" }}
         attributionControl={{ compact: true }}
@@ -79,7 +83,7 @@ export function EventMapMini({
         <Marker longitude={longitude} latitude={latitude} anchor="bottom">
           <EventPin bucket={bucket} highlighted={false} />
         </Marker>
-        {(venueName || address) && (
+        {showPopup && (
           <Popup
             longitude={longitude}
             latitude={latitude}
