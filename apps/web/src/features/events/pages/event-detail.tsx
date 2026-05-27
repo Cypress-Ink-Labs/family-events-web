@@ -62,7 +62,7 @@ function eventDetailUiReducer(
 
 export function EventDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const { user } = useAuth()
+  const { user, isEnabled, isAdmin } = useAuth()
   const {
     data: events,
     isLoading: isEventLoading,
@@ -241,7 +241,8 @@ export function EventDetailPage() {
         />
         <Separator />
         <EventDetailReviews
-          canReview={Boolean(user)}
+          canReview={isEnabled || isAdmin}
+          isLoggedIn={Boolean(user)}
           userRating={userRating}
           comment={comment}
           onCommentChange={(comment) => setUiState({ comment })}

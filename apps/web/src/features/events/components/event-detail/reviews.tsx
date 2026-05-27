@@ -9,6 +9,7 @@ import type { CommentWithProfile } from "@/shared/types"
 
 interface EventDetailReviewsProps {
   canReview: boolean
+  isLoggedIn: boolean
   userRating: number
   comment: string
   onCommentChange: (value: string) => void
@@ -20,6 +21,7 @@ interface EventDetailReviewsProps {
 
 export function EventDetailReviews({
   canReview,
+  isLoggedIn,
   userRating,
   comment,
   onCommentChange,
@@ -78,12 +80,20 @@ export function EventDetailReviews({
         <p className="text-sm text-muted-foreground">No comments yet. Be the first to add one.</p>
       )}
 
-      {!canReview && (
+      {!canReview && !isLoggedIn && (
         <div className="mt-4 text-center">
           <p className="text-sm text-muted-foreground mb-2">Sign in to leave a review</p>
           <Button variant="outline" size="sm" asChild>
             <Link to="/sign-in">Sign In</Link>
           </Button>
+        </div>
+      )}
+
+      {!canReview && isLoggedIn && (
+        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            Reviews are available to members. Request access to share your experience.
+          </p>
         </div>
       )}
     </div>
