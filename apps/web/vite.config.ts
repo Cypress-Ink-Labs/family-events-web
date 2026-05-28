@@ -119,11 +119,17 @@ export default defineConfig(() => {
           manualChunks(id) {
             if (!id.includes("node_modules")) return undefined
             if (id.includes("maplibre-gl") || id.includes("react-map-gl")) return "maplibre"
+            // d3 sub-packages (d3-shape, d3-scale, etc.) before recharts so
+            // they land in their own chunk instead of the recharts bundle.
+            if (id.includes("d3-")) return "d3"
             if (id.includes("recharts")) return "recharts"
             if (id.includes("@sentry")) return "sentry"
             // Match "motion" the npm package but not paths like
             // "node_modules/framer-motion" or "react-motion".
             if (id.match(/node_modules\/motion(\/|$)/)) return "motion"
+            if (id.includes("date-fns")) return "date-fns"
+            if (id.includes("@radix-ui")) return "radix-ui"
+            if (id.includes("@supabase")) return "supabase"
             return undefined
           },
         },
