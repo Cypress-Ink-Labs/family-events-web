@@ -54,8 +54,22 @@ export function DashboardPage() {
     setFavoriteOverrides({ [eventId]: newState })
   }
 
-  const featuredEvents = useMemo(() => sortByStartDatetime(events.filter((e) => e.is_featured), "asc"), [events])
-  const happeningSoon = useMemo(() => sortByStartDatetime(events.filter((e) => !e.is_featured), "asc").slice(0, 4), [events])
+  const featuredEvents = useMemo(
+    () =>
+      sortByStartDatetime(
+        events.filter((e) => e.is_featured),
+        "asc"
+      ),
+    [events]
+  )
+  const happeningSoon = useMemo(
+    () =>
+      sortByStartDatetime(
+        events.filter((e) => !e.is_featured),
+        "asc"
+      ).slice(0, 4),
+    [events]
+  )
   const recommended = useMemo(() => sortByStartDatetime(events, "asc").slice(0, 4), [events])
   const savedEvents = events.filter((event) => isFavorited(event.id)).slice(0, 3)
   const selectedTimeZone = selectedCity?.timezone ?? "UTC"

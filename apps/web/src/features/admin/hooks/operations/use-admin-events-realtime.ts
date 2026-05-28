@@ -118,7 +118,7 @@ export function useAdminEventsRealtime() {
 
     return () => {
       closed = true
-      void supabase.removeChannel(channel).catch(() => { })
+      void supabase.removeChannel(channel).catch(() => {})
     }
   }, [queryClient])
 }

@@ -55,11 +55,17 @@ export function MyEventsPage() {
 
   const upcomingEvents = useMemo(() => {
     const now = new Date()
-    return sortByStartDatetime(savedEvents.filter((e) => new Date(e.start_datetime) >= now), "asc")
+    return sortByStartDatetime(
+      savedEvents.filter((e) => new Date(e.start_datetime) >= now),
+      "asc"
+    )
   }, [savedEvents])
   const pastEvents = useMemo(() => {
     const now = new Date()
-    return sortByStartDatetime(savedEvents.filter((e) => new Date(e.start_datetime) < now), "desc")
+    return sortByStartDatetime(
+      savedEvents.filter((e) => new Date(e.start_datetime) < now),
+      "desc"
+    )
   }, [savedEvents])
   const allSaved = useMemo(() => sortByStartDatetime(savedEvents, "asc"), [savedEvents])
 
