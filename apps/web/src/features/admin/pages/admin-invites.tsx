@@ -15,6 +15,7 @@ import {
   useAdminInviteCodes,
   useCreateInviteCode,
   useDeleteInviteCode,
+  useInvitesRequired,
 } from "@/features/auth/hooks/use-invites"
 import {
   useAdminApproveInviteRequest,
@@ -23,6 +24,7 @@ import {
 } from "@/features/admin/hooks/use-admin-invite-requests"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
+import { AlertTriangle, Loader2, ShieldCheck, ShieldOff } from "lucide-react"
 import type { CreatedInviteCode } from "@/shared/types"
 
 type ExpiryOption = "7d" | "30d" | "never"
@@ -68,6 +70,7 @@ export function AdminInvitesPage() {
   const createCode = useCreateInviteCode()
   const deleteCode = useDeleteInviteCode()
   const { toastError } = useAdminToast()
+  const { data: inviteRequired, isLoading: gateLoading, isError: gateError } = useInvitesRequired()
 
   // Requests tab: only PENDING by default — that's the actionable queue.
   // We separately fetch the reviewed history when the admin scrolls.
@@ -178,6 +181,32 @@ export function AdminInvitesPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+        {gateLoading ? (
+          <>
+            <Loader2 className="size-4 animate-spin text-muted-foreground" />
+            <span className="text-muted-foreground">Checking gate status…</span>
+          </>
+        ) : gateError ? (
+          <>
+            <AlertTriangle className="size-4 text-yellow-600 dark:text-yellow-500" />
+            <span className="text-muted-foreground">Unable to determine gate status</span>
+          </>
+        ) : inviteRequired ? (
+          <>
+            <ShieldCheck className="size-4 text-green-600 dark:text-green-500" />
+            <span>Invite gate:</span>
+            <Badge variant="default">Enabled</Badge>
+          </>
+        ) : (
+          <>
+            <ShieldOff className="size-4 text-muted-foreground" />
+            <span>Invite gate:</span>
+            <Badge variant="outline">Disabled</Badge>
+          </>
+        )}
+      </div>
+
       <AdminInvitesHeader
         codes={codes}
         dialogOpen={dialogOpen}
