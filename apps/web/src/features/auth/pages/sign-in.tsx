@@ -196,12 +196,14 @@ export function SignInPage() {
         <p className="text-center text-sm text-muted-foreground mt-4">
           Don't have an account?{" "}
           <Link to="/sign-up" className="text-primary font-medium hover:underline">
-            Use invite
+            {requiresInvite ? "Use invite" : "Sign up"}
           </Link>
         </p>
-        <div className="text-center mt-2">
-          <RequestInviteDialog defaultEmail={email} />
-        </div>
+        {requiresInvite && (
+          <div className="text-center mt-2">
+            <RequestInviteDialog defaultEmail={email} />
+          </div>
+        )}
       </div>
     </div>
   )
