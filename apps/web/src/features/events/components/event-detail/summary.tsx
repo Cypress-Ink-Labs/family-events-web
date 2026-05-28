@@ -13,7 +13,7 @@ export function EventDetailSummary({ event, startDate }: EventDetailSummaryProps
     <div>
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-          {format(startDate, "EEEE MMMM")} Morning
+          {format(startDate, "EEEE MMMM d · h:mm a")}
         </span>
       </div>
       <h1 className="text-2xl font-semibold text-foreground tracking-tight">{event.title}</h1>
