@@ -112,7 +112,7 @@ class AppErrorBoundaryInner extends Component<InnerProps, ErrorBoundaryState> {
               <p className="text-sm text-muted-foreground">
                 We hit an unexpected error while rendering this page.
               </p>
-              {this.state.errorMessage && (
+              {import.meta.env.DEV && this.state.errorMessage && (
                 <p className="text-xs text-destructive font-mono bg-destructive/10 rounded-md px-3 py-2 break-all">
                   {this.state.errorMessage}
                 </p>

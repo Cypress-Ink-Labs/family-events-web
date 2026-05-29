@@ -70,7 +70,7 @@ export function PublicEventPreviewPage() {
               We couldn't load this event preview.
             </h1>
             <p className="text-sm text-muted-foreground">
-              {error instanceof Error ? error.message : "Please try again."}
+              {import.meta.env.DEV && error instanceof Error ? error.message : "Please try again."}
             </p>
             <div className="flex justify-center gap-2">
               <Button
