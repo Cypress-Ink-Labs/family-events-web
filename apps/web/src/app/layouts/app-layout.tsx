@@ -208,33 +208,35 @@ export function AppLayout({ children }: AppLayoutProps) {
       {!isMobile ? (
         <nav className="sticky top-14 z-30 border-b border-border/40 bg-background/95 backdrop-blur">
           <div className="mx-auto flex max-w-[1280px] items-center gap-1 px-4 md:px-6 lg:px-8">
-            {DESKTOP_NAV_ITEMS.filter((item) => !item.auth || user).map(({ to, label, icon: Icon }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === HOME_PATH}
-                className={({ isActive }) =>
-                  cn(
-                    "relative inline-flex min-h-[44px] items-center gap-1.5 px-3 py-3 font-body text-sm font-medium transition-colors",
-                    isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <Icon className="size-4" />
-                    {label}
-                    {isActive ? (
-                      <m.span
-                        layoutId="desktop-nav-active"
-                        transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                        className="absolute inset-x-1 -bottom-px h-0.5 rounded-full bg-primary"
-                      />
-                    ) : null}
-                  </>
-                )}
-              </NavLink>
-            ))}
+            {DESKTOP_NAV_ITEMS.filter((item) => !item.auth || user).map(
+              ({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={to === HOME_PATH}
+                  className={({ isActive }) =>
+                    cn(
+                      "relative inline-flex min-h-[44px] items-center gap-1.5 px-3 py-3 font-body text-sm font-medium transition-colors",
+                      isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                    )
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon className="size-4" />
+                      {label}
+                      {isActive ? (
+                        <m.span
+                          layoutId="desktop-nav-active"
+                          transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                          className="absolute inset-x-1 -bottom-px h-0.5 rounded-full bg-primary"
+                        />
+                      ) : null}
+                    </>
+                  )}
+                </NavLink>
+              )
+            )}
             {isAdmin ? (
               <NavLink
                 to="/admin"
@@ -265,7 +267,12 @@ export function AppLayout({ children }: AppLayoutProps) {
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
           aria-label="Primary"
         >
-          <div className="mx-auto grid max-w-[640px]" style={{ gridTemplateColumns: `repeat(${PRIMARY_TABS.filter((t) => !t.auth || user).length}, 1fr)` }}>
+          <div
+            className="mx-auto grid max-w-[640px]"
+            style={{
+              gridTemplateColumns: `repeat(${PRIMARY_TABS.filter((t) => !t.auth || user).length}, 1fr)`,
+            }}
+          >
             {PRIMARY_TABS.filter((item) => !item.auth || user).map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}

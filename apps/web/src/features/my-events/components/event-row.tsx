@@ -22,7 +22,12 @@ interface EventRowProps {
 export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowProps) {
   const imageUrl =
     safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 200, 200)
+    getFallbackImageUrl(
+      event.id,
+      (event.tags ?? []).map((t) => t.tag.slug),
+      200,
+      200
+    )
   const startDate = new Date(event.start_datetime)
 
   return (

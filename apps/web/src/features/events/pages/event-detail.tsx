@@ -121,7 +121,12 @@ export function EventDetailPage() {
   const currentEvent = event
   const imageUrl =
     safeImageSrc(currentEvent.images?.[0]) ??
-    getFallbackImageUrl(currentEvent.id, (currentEvent.tags ?? []).map((t) => t.tag.slug), 800, 500)
+    getFallbackImageUrl(
+      currentEvent.id,
+      (currentEvent.tags ?? []).map((t) => t.tag.slug),
+      800,
+      500
+    )
   const startDate = new Date(currentEvent.start_datetime)
   const infoItems = [
     {

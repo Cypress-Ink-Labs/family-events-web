@@ -55,7 +55,12 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
                       <SmartImage
                         src={
                           safeImageSrc(event.images?.[0]) ??
-                          getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 200, 200)
+                          getFallbackImageUrl(
+                            event.id,
+                            (event.tags ?? []).map((t) => t.tag.slug),
+                            200,
+                            200
+                          )
                         }
                         alt={event.title}
                         className="size-full object-cover"

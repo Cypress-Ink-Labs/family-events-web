@@ -30,7 +30,12 @@ function formatMatch(score: number): string {
 export function PlanHeroCard({ event }: PlanHeroCardProps) {
   const imageUrl =
     safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 1200, 630)
+    getFallbackImageUrl(
+      event.id,
+      (event.tags ?? []).map((t) => t.tag.slug),
+      1200,
+      630
+    )
   const distanceLabel = formatDistance(event.distance_km)
 
   return (

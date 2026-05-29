@@ -14,6 +14,7 @@ interface EventCardProps {
   variant?: EventCardVariant
   onFavoriteToggle?: (eventId: string, newState: boolean) => void
   className?: string
+  showImages?: boolean
 }
 
 export function EventCard({
@@ -21,10 +22,16 @@ export function EventCard({
   variant = "default",
   onFavoriteToggle,
   className,
+  showImages = true,
 }: EventCardProps) {
   const imageUrl =
     safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 600, 400)
+    getFallbackImageUrl(
+      event.id,
+      (event.tags ?? []).map((t) => t.tag.slug),
+      600,
+      400
+    )
   const startDate = new Date(event.start_datetime)
 
   const shared = {
@@ -33,6 +40,7 @@ export function EventCard({
     startDate,
     onFavoriteToggle,
     className,
+    showImages,
   }
 
   if (variant === "compact") return <CompactEventCard {...shared} />

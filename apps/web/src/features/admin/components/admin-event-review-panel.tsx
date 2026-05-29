@@ -79,7 +79,12 @@ export function AdminEventReviewDialog({
   const confidencePct = Math.round(Number(confidenceRaw) * 100)
   const heroImage =
     safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 900, 360)
+    getFallbackImageUrl(
+      event.id,
+      (event.tags ?? []).map((t) => t.tag.slug),
+      900,
+      360
+    )
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

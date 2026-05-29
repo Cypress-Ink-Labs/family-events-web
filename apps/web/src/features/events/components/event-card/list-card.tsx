@@ -20,6 +20,7 @@ export function ListEventCard({
   startDate,
   onFavoriteToggle,
   className,
+  showImages = true,
 }: EventCardVariantProps) {
   const topTags = event.tags?.slice(0, 3) || []
   const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
@@ -31,46 +32,48 @@ export function ListEventCard({
           className
         )}
       >
-        <div className="relative">
-          <SmartImage
-            src={imageUrl}
-            alt={event.title}
-            className="w-full h-52 object-cover group-hover:scale-[1.02] transition-transform duration-300"
-            placeholderClassName="w-full h-52"
-          />
-          <FavoriteButton
-            eventId={event.id}
-            isFavorited={event.is_favorited ?? false}
-            onToggle={onFavoriteToggle}
-            variant="overlay"
-          />
-          {(event.age_min !== null || event.age_max !== null) && (
-            <div className="absolute top-3 left-3">
-              <AffordancePillCompact
-                variant="age"
-                label={
-                  event.age_min === null
-                    ? `Under ${event.age_max}y`
-                    : event.age_max === null
-                      ? `${event.age_min}y+`
-                      : `${event.age_min}–${event.age_max}y`
-                }
-              />
-            </div>
-          )}
-          {topTags.find((t) => t.tag.slug === "outdoor") && (
-            <div className="absolute bottom-3 left-3">
-              <Badge className="bg-[var(--color-accent-primary)] text-white text-[10px]">
-                {topTags.find((t) => t.tag.slug === "outdoor")?.tag.name}
-              </Badge>
-            </div>
-          )}
-          <UnsplashAttribution
-            attribution={attribution}
-            imageUrl={imageUrl}
-            className="absolute bottom-3 right-3 max-w-[65%] text-right text-white/90 drop-shadow-sm"
-          />
-        </div>
+        {showImages && (
+          <div className="relative">
+            <SmartImage
+              src={imageUrl}
+              alt={event.title}
+              className="w-full h-52 object-cover group-hover:scale-[1.02] transition-transform duration-300"
+              placeholderClassName="w-full h-52"
+            />
+            <FavoriteButton
+              eventId={event.id}
+              isFavorited={event.is_favorited ?? false}
+              onToggle={onFavoriteToggle}
+              variant="overlay"
+            />
+            {(event.age_min !== null || event.age_max !== null) && (
+              <div className="absolute top-3 left-3">
+                <AffordancePillCompact
+                  variant="age"
+                  label={
+                    event.age_min === null
+                      ? `Under ${event.age_max}y`
+                      : event.age_max === null
+                        ? `${event.age_min}y+`
+                        : `${event.age_min}–${event.age_max}y`
+                  }
+                />
+              </div>
+            )}
+            {topTags.find((t) => t.tag.slug === "outdoor") && (
+              <div className="absolute bottom-3 left-3">
+                <Badge className="bg-[var(--color-accent-primary)] text-white text-[10px]">
+                  {topTags.find((t) => t.tag.slug === "outdoor")?.tag.name}
+                </Badge>
+              </div>
+            )}
+            <UnsplashAttribution
+              attribution={attribution}
+              imageUrl={imageUrl}
+              className="absolute bottom-3 right-3 max-w-[65%] text-right text-white/90 drop-shadow-sm"
+            />
+          </div>
+        )}
         <CardContent className="p-4">
           <div className="flex gap-2 flex-wrap mb-2">
             {topTags

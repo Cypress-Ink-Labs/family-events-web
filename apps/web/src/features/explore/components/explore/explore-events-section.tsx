@@ -2,6 +2,7 @@ import { Search } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
+import type { EventCardVariant } from "@/features/events/components/event-card/_shared"
 import { FadeSwap, StaggerItem, StaggerList } from "@/shared/components/motion"
 import type { EventWithDetails } from "@/shared/types"
 import { EXPLORE_CATEGORIES } from "@/features/explore/constants/categories"
@@ -12,6 +13,9 @@ interface ExploreEventsSectionProps {
   isEventsLoading: boolean
   isEventsError: boolean
   onClearAllFilters: () => void
+  cardVariant: EventCardVariant
+  containerClassName: string
+  showImages: boolean
 }
 
 export function ExploreEventsSection({
@@ -20,6 +24,9 @@ export function ExploreEventsSection({
   isEventsLoading,
   isEventsError,
   onClearAllFilters,
+  cardVariant,
+  containerClassName,
+  showImages,
 }: ExploreEventsSectionProps) {
   const activeCategoryLabel = EXPLORE_CATEGORIES.find(
     (category) => category.slug === activeCategory
@@ -52,10 +59,10 @@ export function ExploreEventsSection({
         }
       >
         {isEventsLoading ? (
-          <StaggerList className="space-y-4">
-            {Array.from({ length: 6 }).map((_, index) => (
+          <StaggerList className={containerClassName}>
+            {Array.from({ length: 8 }).map((_, index) => (
               <StaggerItem key={`explore-skeleton-${index}`}>
-                <EventCardSkeleton variant="list" />
+                <EventCardSkeleton variant={cardVariant === "featured" ? "default" : cardVariant} />
               </StaggerItem>
             ))}
           </StaggerList>
@@ -71,10 +78,10 @@ export function ExploreEventsSection({
             </Button>
           </div>
         ) : (
-          <StaggerList className="space-y-4">
+          <StaggerList className={containerClassName}>
             {filteredEvents.map((event) => (
               <StaggerItem key={event.id}>
-                <EventCard event={event} variant="list" />
+                <EventCard event={event} variant={cardVariant} showImages={showImages} />
               </StaggerItem>
             ))}
           </StaggerList>

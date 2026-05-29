@@ -11,7 +11,13 @@ import { formatEventDate } from "@/shared/utils/dates"
 import { cn } from "@/shared/utils/format"
 import type { EventCardVariantProps } from "@/features/events/components/event-card/_shared"
 
-export function CompactEventCard({ event, imageUrl, startDate, className }: EventCardVariantProps) {
+export function CompactEventCard({
+  event,
+  imageUrl,
+  startDate,
+  className,
+  showImages = true,
+}: EventCardVariantProps) {
   const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
 
   return (
@@ -22,14 +28,16 @@ export function CompactEventCard({ event, imageUrl, startDate, className }: Even
           className
         )}
       >
-        <div className="size-14 rounded-xl overflow-hidden shrink-0 bg-muted">
-          <SmartImage
-            src={imageUrl}
-            alt={event.title}
-            className="size-full object-cover"
-            placeholderClassName="size-full"
-          />
-        </div>
+        {showImages && (
+          <div className="size-14 rounded-xl overflow-hidden shrink-0 bg-muted">
+            <SmartImage
+              src={imageUrl}
+              alt={event.title}
+              className="size-full object-cover"
+              placeholderClassName="size-full"
+            />
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground truncate">{event.title}</p>
           <p className="text-xs text-muted-foreground mt-0.5">

@@ -19,6 +19,7 @@ export function DefaultEventCard({
   startDate,
   onFavoriteToggle,
   className,
+  showImages = true,
 }: EventCardVariantProps) {
   const topTags = event.tags?.slice(0, 3) || []
   const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
@@ -27,31 +28,33 @@ export function DefaultEventCard({
       <Card
         className={cn("overflow-hidden border-border/60 hover:shadow-md transition-all", className)}
       >
-        <div className="relative">
-          <SmartImage
-            src={imageUrl}
-            alt={event.title}
-            className="w-full h-44 object-cover group-hover:scale-[1.02] transition-transform duration-300"
-            placeholderClassName="w-full h-44"
-          />
-          <FavoriteButton
-            eventId={event.id}
-            isFavorited={event.is_favorited ?? false}
-            onToggle={onFavoriteToggle}
-            variant="overlay"
-            size="sm"
-          />
-          {(event.age_min !== null || event.age_max !== null) && (
-            <div className="absolute top-2 left-2">
-              <AgeRangeBadge ageMin={event.age_min} ageMax={event.age_max} />
-            </div>
-          )}
-          <UnsplashAttribution
-            attribution={attribution}
-            imageUrl={imageUrl}
-            className="absolute bottom-1.5 left-2 right-2 text-white/90 drop-shadow-sm"
-          />
-        </div>
+        {showImages && (
+          <div className="relative">
+            <SmartImage
+              src={imageUrl}
+              alt={event.title}
+              className="w-full h-44 object-cover group-hover:scale-[1.02] transition-transform duration-300"
+              placeholderClassName="w-full h-44"
+            />
+            <FavoriteButton
+              eventId={event.id}
+              isFavorited={event.is_favorited ?? false}
+              onToggle={onFavoriteToggle}
+              variant="overlay"
+              size="sm"
+            />
+            {(event.age_min !== null || event.age_max !== null) && (
+              <div className="absolute top-2 left-2">
+                <AgeRangeBadge ageMin={event.age_min} ageMax={event.age_max} />
+              </div>
+            )}
+            <UnsplashAttribution
+              attribution={attribution}
+              imageUrl={imageUrl}
+              className="absolute bottom-1.5 left-2 right-2 text-white/90 drop-shadow-sm"
+            />
+          </div>
+        )}
         <CardContent className="p-3">
           <div className="flex gap-1.5 flex-wrap mb-1.5">
             {topTags.slice(0, 2).map((et) => (

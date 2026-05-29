@@ -22,7 +22,12 @@ function formatMatch(score: number): string {
 export function PlanThumbCard({ event }: PlanThumbCardProps) {
   const imageUrl =
     safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 640, 360)
+    getFallbackImageUrl(
+      event.id,
+      (event.tags ?? []).map((t) => t.tag.slug),
+      640,
+      360
+    )
 
   return (
     <Link to={`/events/${event.id}`} className="block">

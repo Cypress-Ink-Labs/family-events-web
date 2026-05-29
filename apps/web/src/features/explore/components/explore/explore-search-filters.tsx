@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { Check, Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
@@ -31,6 +32,7 @@ interface ExploreSearchFiltersProps {
   onOnlyFreeChange: (value: boolean) => void
   onToggleTagSlug: (slug: string) => void
   onClearAllFilters: () => void
+  trailing?: ReactNode
 }
 
 export function ExploreSearchFilters({
@@ -48,6 +50,7 @@ export function ExploreSearchFilters({
   onOnlyFreeChange,
   onToggleTagSlug,
   onClearAllFilters,
+  trailing,
 }: ExploreSearchFiltersProps) {
   return (
     <div className="flex gap-2">
@@ -205,6 +208,7 @@ export function ExploreSearchFilters({
           </div>
         </SheetContent>
       </Sheet>
+      {trailing}
     </div>
   )
 }

@@ -8,4 +8,6 @@ export interface EventCardVariantProps {
   startDate: Date
   onFavoriteToggle?: (eventId: string, newState: boolean) => void
   className?: string
+  /** When false, the card hides its image block (text-dense mode). Defaults to true. */
+  showImages?: boolean
 }

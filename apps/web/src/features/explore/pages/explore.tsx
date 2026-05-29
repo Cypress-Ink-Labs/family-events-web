@@ -5,8 +5,15 @@ import { useExploreStore } from "@/features/explore/stores/explore-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { matchesAgeFilter } from "@/features/events/lib/event-filters"
 import { useTags } from "@/features/events/hooks/use-tags"
-import { sortByStartDatetime } from "@/shared/utils/dates"
 import { EXPLORE_AGE_OPTIONS } from "@/features/explore/constants/categories"
+import {
+  CARD_VARIANT_BY_LAYOUT,
+  COMPACT_CONTAINER_CLASSNAME,
+  GRID_COLUMN_CLASSNAMES,
+  LIST_CONTAINER_CLASSNAME,
+} from "@/features/explore/constants/view"
+import { useExploreViewStore } from "@/features/explore/stores/explore-view-store"
+import { sortEvents } from "@/features/explore/lib/sort-events"
 import {
   ExploreActiveFilters,
   ExploreCategoryGrid,
@@ -14,6 +21,7 @@ import {
   ExploreHeader,
   ExploreNeighborhoodCta,
   ExploreSearchFilters,
+  ExploreViewControls,
 } from "@/features/explore/components/explore-sections"
 import { Page, Stack } from "@/components/v2"
 
@@ -33,6 +41,23 @@ export function ExplorePage() {
   const toggleTagSlug = useExploreStore((s) => s.toggleTagSlug)
   const setActiveCategory = useExploreStore((s) => s.setActiveCategory)
   const resetFilters = useExploreStore((s) => s.resetFilters)
+
+  const layout = useExploreViewStore((s) => s.layout)
+  const columns = useExploreViewStore((s) => s.columns)
+  const sort = useExploreViewStore((s) => s.sort)
+  const showImages = useExploreViewStore((s) => s.showImages)
+  const setLayout = useExploreViewStore((s) => s.setLayout)
+  const setColumns = useExploreViewStore((s) => s.setColumns)
+  const setSort = useExploreViewStore((s) => s.setSort)
+  const setShowImages = useExploreViewStore((s) => s.setShowImages)
+
+  const cardVariant = CARD_VARIANT_BY_LAYOUT[layout]
+  const containerClassName =
+    layout === "grid"
+      ? GRID_COLUMN_CLASSNAMES[columns]
+      : layout === "list"
+        ? LIST_CONTAINER_CLASSNAME
+        : COMPACT_CONTAINER_CLASSNAME
 
   const ageFilter = EXPLORE_AGE_OPTIONS.find((option) => option.label === selectedAge)
 
@@ -133,8 +158,8 @@ export function ExplorePage() {
       return true
     })
 
-    return sortByStartDatetime(filtered, "asc")
-  }, [allEvents, keyword, dateRange, onlyFree, ageFilter, combinedTagSlugs])
+    return sortEvents(filtered, sort)
+  }, [allEvents, keyword, dateRange, onlyFree, ageFilter, combinedTagSlugs, sort])
 
   const activeFilterCount = [
     activeDateFilter,
@@ -163,6 +188,18 @@ export function ExplorePage() {
           onOnlyFreeChange={setOnlyFree}
           onToggleTagSlug={toggleTagSlug}
           onClearAllFilters={resetFilters}
+          trailing={
+            <ExploreViewControls
+              layout={layout}
+              columns={columns}
+              sort={sort}
+              showImages={showImages}
+              onLayoutChange={setLayout}
+              onColumnsChange={setColumns}
+              onSortChange={setSort}
+              onShowImagesChange={setShowImages}
+            />
+          }
         />
         <ExploreActiveFilters
           onlyFree={onlyFree}
@@ -184,6 +221,9 @@ export function ExplorePage() {
           isEventsLoading={isEventsLoading}
           isEventsError={isEventsError}
           onClearAllFilters={resetFilters}
+          cardVariant={cardVariant}
+          containerClassName={containerClassName}
+          showImages={showImages}
         />
         <ExploreNeighborhoodCta />
       </Stack>
