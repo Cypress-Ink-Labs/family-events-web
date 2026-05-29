@@ -10,7 +10,6 @@ import {
   Ticket,
   Users,
   ArrowLeft,
-  Zap,
   CalendarClock,
   Settings as SettingsIcon,
 } from "lucide-react"
@@ -76,9 +75,13 @@ export function AdminLayout() {
         <Sidebar collapsible="icon">
           <SidebarHeader className="p-4">
             <div className="flex items-center gap-2">
-              <div className="size-8 rounded-xl bg-sidebar-primary flex items-center justify-center shrink-0">
-                <Zap className="size-4 text-sidebar-primary-foreground" />
-              </div>
+              <img
+                src="/brand/family-events-icon.png"
+                alt=""
+                className="size-8 shrink-0 rounded-md object-cover"
+                width={32}
+                height={32}
+              />
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="text-sm font-bold text-sidebar-foreground">Family Events</p>
                 <p className="text-xs text-sidebar-foreground/60">Admin Dashboard</p>

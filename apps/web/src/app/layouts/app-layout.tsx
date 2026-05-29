@@ -35,6 +35,7 @@ import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useBreakpoint } from "@/shared/hooks/use-breakpoint"
 import { PageTransition } from "@/shared/components/motion"
+import { BrandLogo } from "@/shared/components/brand-logo"
 
 const PRIMARY_TABS = [
   { to: HOME_PATH, label: "Plan", icon: Home, auth: true },
@@ -75,21 +76,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between gap-3 px-4 md:px-6 lg:px-8">
-          <Link
-            to={HOME_PATH}
-            className="flex shrink-0 items-center gap-2 min-h-[44px] min-w-[44px]"
-            aria-label="Family Events home"
-          >
-            <span
-              className="flex size-8 items-center justify-center rounded-md font-display text-sm font-medium text-primary-foreground"
-              style={{ background: "var(--color-accent-primary)" }}
-            >
-              F
-            </span>
-            <span className="hidden font-display text-lg font-medium tracking-tight text-foreground sm:block">
-              Family Events
-            </span>
-          </Link>
+          <BrandLogo to={HOME_PATH} className="shrink-0" />
 
           <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:max-w-xs">
             <Select

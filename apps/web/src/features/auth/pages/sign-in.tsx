@@ -15,6 +15,7 @@ import { OAuthButtons } from "@/features/auth/components/sign-in/oauth-buttons"
 import { PasswordSignInForm } from "@/features/auth/components/sign-in/password-form"
 import { notifyError, notifySuccess, toast } from "@/shared/utils/toast"
 import { AUTH_ERROR_MESSAGES, OAUTH_CALLBACK_FAILED_FLAG } from "@/features/auth/constants/messages"
+import { BrandLogo } from "@/shared/components/brand-logo"
 
 type Mode = "password" | "magic" | "magic-sent"
 
@@ -134,14 +135,7 @@ export function SignInPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link to="/" className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center gap-2">
-            <div
-              className="flex size-10 items-center justify-center rounded-md font-display text-lg font-medium text-primary-foreground"
-              style={{ background: "var(--color-accent-primary)" }}
-            >
-              F
-            </div>
-          </Link>
+          <BrandLogo showText={false} className="mb-4 justify-center" markClassName="size-10" />
           <h1 className="font-display text-2xl font-medium tracking-tight text-foreground">
             Welcome back
           </h1>

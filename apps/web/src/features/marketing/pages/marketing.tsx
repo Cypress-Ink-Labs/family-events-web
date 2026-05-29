@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Badge } from "@/shared/components/ui/badge"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { useInvitesRequired } from "@/features/auth/hooks/use-invites"
+import { BrandLogo } from "@/shared/components/brand-logo"
 
 const HIGHLIGHTS_CLOSED = [
   {
@@ -55,14 +56,7 @@ export function MarketingPage() {
     <div className="min-h-screen bg-background">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6">
         <header className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-2xl bg-primary">
-              <span className="text-lg font-black text-primary-foreground">F</span>
-            </div>
-            <span className="text-lg font-extrabold tracking-tight text-foreground">
-              Family<span className="text-primary">Events</span>
-            </span>
-          </Link>
+          <BrandLogo />
 
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>

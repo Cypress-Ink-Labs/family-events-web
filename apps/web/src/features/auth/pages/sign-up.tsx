@@ -15,6 +15,7 @@ import {
 } from "@/features/auth/lib/auth-closed-beta"
 import { RequestInviteDialog } from "@/features/auth/components/request-invite-dialog"
 import { AppleIcon, GoogleIcon } from "@/features/auth/components/provider-icons"
+import { BrandLogo } from "@/shared/components/brand-logo"
 import { toast } from "sonner"
 
 interface SignUpState {
@@ -101,14 +102,7 @@ export function SignUpPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <Link to="/" className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center gap-2">
-            <div
-              className="flex size-10 items-center justify-center rounded-md font-display text-lg font-medium text-primary-foreground"
-              style={{ background: "var(--color-accent-primary)" }}
-            >
-              F
-            </div>
-          </Link>
+          <BrandLogo showText={false} className="mb-4 justify-center" markClassName="size-10" />
           <h1 className="font-display text-2xl font-medium tracking-tight text-foreground">
             Create your account
           </h1>

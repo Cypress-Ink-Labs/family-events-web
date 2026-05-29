@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/shared/components/ui/card"
 import { HOME_PATH } from "@/shared/access-control"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { supabase } from "@/infrastructure/supabase/client"
+import { BrandLogo } from "@/shared/components/brand-logo"
 import { toast } from "sonner"
 
 export function ResetPasswordPage() {
@@ -69,14 +70,7 @@ export function ResetPasswordPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <Link to="/" className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center gap-2">
-            <div
-              className="flex size-10 items-center justify-center rounded-md font-display text-lg font-medium text-primary-foreground"
-              style={{ background: "var(--color-accent-primary)" }}
-            >
-              F
-            </div>
-          </Link>
+          <BrandLogo showText={false} className="mb-4 justify-center" markClassName="size-10" />
           <h1 className="font-display text-2xl font-medium tracking-tight text-foreground">
             Set a new password
           </h1>

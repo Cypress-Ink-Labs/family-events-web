@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { Link } from "react-router"
 import { Page, Stack } from "@/components/v2"
+import { BrandLogo } from "@/shared/components/brand-logo"
 
 const CONTACT_EMAIL = "support@family-events.org"
 const LAST_UPDATED = "May 29, 2026"
@@ -142,21 +143,7 @@ function LegalPageShell({
       <Page className="py-6 md:py-8">
         <Stack gap="7">
           <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-4">
-            <Link
-              to="/"
-              className="inline-flex min-h-[44px] items-center gap-2"
-              aria-label="Family Events home"
-            >
-              <span
-                className="flex size-9 items-center justify-center rounded-md font-display text-base font-medium text-primary-foreground"
-                style={{ background: "var(--color-accent-primary)" }}
-              >
-                F
-              </span>
-              <span className="font-display text-lg font-medium tracking-tight text-foreground">
-                Family Events
-              </span>
-            </Link>
+            <BrandLogo />
             <nav className="flex min-h-[44px] items-center gap-4 text-sm font-medium text-muted-foreground">
               <Link to="/privacy" className="hover:text-foreground">
                 Privacy
