@@ -134,6 +134,7 @@ export function CalendarViewPage() {
           onViewChange={setView}
           hidePastEvents={hidePastEvents}
           onHidePastEventsChange={setHidePastEvents}
+          isLoggedIn={Boolean(user)}
         />
         {isMonthEventsError && <CalendarErrorState />}
 
@@ -167,15 +168,19 @@ export function CalendarViewPage() {
               isFavorited={isFavorited}
               onFavoriteToggle={handleFavoriteToggle}
             />
-            <CalendarStatsPanel savedCount={savedEventIds.size} upcomingCount={upcomingCount} />
+            {user && (
+              <CalendarStatsPanel savedCount={savedEventIds.size} upcomingCount={upcomingCount} />
+            )}
           </div>
         </div>
-        <SavedEventsSection
-          savedEvents={savedEvents}
-          isLoading={isSavedEventsLoading}
-          isFavorited={isFavorited}
-          onFavoriteToggle={handleFavoriteToggle}
-        />
+        {user && (
+          <SavedEventsSection
+            savedEvents={savedEvents}
+            isLoading={isSavedEventsLoading}
+            isFavorited={isFavorited}
+            onFavoriteToggle={handleFavoriteToggle}
+          />
+        )}
       </Stack>
     </Page>
   )

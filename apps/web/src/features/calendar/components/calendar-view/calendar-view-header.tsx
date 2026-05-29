@@ -8,6 +8,7 @@ interface PageHeaderProps {
   onViewChange: (view: "month" | "week") => void
   hidePastEvents: boolean
   onHidePastEventsChange: (value: boolean) => void
+  isLoggedIn?: boolean
 }
 
 export function CalendarViewHeader({
@@ -15,6 +16,7 @@ export function CalendarViewHeader({
   onViewChange,
   hidePastEvents,
   onHidePastEventsChange,
+  isLoggedIn = true,
 }: PageHeaderProps) {
   return (
     <div className="flex items-center justify-between">
@@ -22,7 +24,9 @@ export function CalendarViewHeader({
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
           Calendar
         </p>
-        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Your Adventures</h1>
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+          {isLoggedIn ? "Your Adventures" : "Event Calendar"}
+        </h1>
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
