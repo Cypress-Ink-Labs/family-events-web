@@ -92,6 +92,7 @@ export function eventToEditorValues(event: EventWithDetails): AdminEventEditorVa
     recurrenceInfoText: formatJson(event.recurrence_info),
     is_featured: event.is_featured,
     tagIds: event.tags?.map((tag) => tag.tag_id) ?? [],
+    decision_reason: "",
   }
 }
 

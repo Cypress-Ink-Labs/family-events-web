@@ -35,6 +35,7 @@ import { SaveErrorMessage } from "@/features/admin/components/admin-event-edit/s
 export interface AdminEventEditSubmit {
   patch: AdminEventPatch
   tagIds: string[]
+  decisionReason?: string
 }
 
 interface AdminEventEditFormProps {
@@ -79,7 +80,7 @@ export function AdminEventEditForm({
 
   function submit(values: AdminEventEditorValues) {
     const patch = isDirty ? changedEventPatch(defaults, values) : editorValuesToEventPatch(values)
-    onSubmit({ patch, tagIds: values.tagIds })
+    onSubmit({ patch, tagIds: values.tagIds, decisionReason: values.decision_reason || undefined })
   }
 
   return (

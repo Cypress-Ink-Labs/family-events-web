@@ -40,6 +40,16 @@ export const PublicEventPreviewPage = lazy(() =>
     default: module.PublicEventPreviewPage,
   }))
 )
+export const PrivacyPage = lazy(() =>
+  import("@/features/legal/pages/legal-pages").then((module) => ({
+    default: module.PrivacyPage,
+  }))
+)
+export const TermsPage = lazy(() =>
+  import("@/features/legal/pages/legal-pages").then((module) => ({
+    default: module.TermsPage,
+  }))
+)
 export const MyEventsPage = lazy(() =>
   import("@/features/my-events/pages/my-events").then((module) => ({
     default: module.MyEventsPage,

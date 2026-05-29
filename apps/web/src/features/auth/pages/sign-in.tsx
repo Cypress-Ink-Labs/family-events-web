@@ -204,6 +204,15 @@ export function SignInPage() {
             <RequestInviteDialog defaultEmail={email} />
           </div>
         )}
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          <Link to="/privacy" className="hover:text-foreground hover:underline">
+            Privacy
+          </Link>
+          <span aria-hidden="true"> · </span>
+          <Link to="/terms" className="hover:text-foreground hover:underline">
+            Terms
+          </Link>
+        </p>
       </div>
     </div>
   )

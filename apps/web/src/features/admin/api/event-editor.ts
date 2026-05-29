@@ -7,6 +7,7 @@ export interface UpdateAdminEventInput {
   patch: AdminEventPatch
   tagIds: string[]
   lockEditedFields?: boolean
+  decisionReason?: string
 }
 
 export interface CreateAdminEventInput {
@@ -19,12 +20,14 @@ export async function updateAdminEvent({
   patch,
   tagIds,
   lockEditedFields = true,
+  decisionReason,
 }: UpdateAdminEventInput): Promise<Event> {
   const { data, error } = await supabase.rpc("admin_update_event", {
     p_event_id: eventId,
     p_patch: patch as Json,
     p_tag_ids: tagIds,
     p_lock_edited_fields: lockEditedFields,
+    p_decision_reason: decisionReason || null,
   })
   if (error) throw error
   return data as Event

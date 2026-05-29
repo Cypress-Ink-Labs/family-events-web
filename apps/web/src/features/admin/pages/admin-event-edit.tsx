@@ -75,6 +75,7 @@ export function AdminEventEditPage() {
         eventId,
         patch: input.patch,
         tagIds: input.tagIds,
+        decisionReason: input.decisionReason,
       })
       toast.success("Event saved")
       isDirtyRef.current = false

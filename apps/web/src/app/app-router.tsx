@@ -26,10 +26,12 @@ import {
   MyEventsPage,
   OAuthCallbackPage,
   ProfilePage,
+  PrivacyPage,
   PublicEventPreviewPage,
   ResetPasswordPage,
   SignInPage,
   SignUpPage,
+  TermsPage,
 } from "@/app/app-route-pages"
 import { RouteFallback } from "@/app/route-fallback"
 import { ProtectedRoute } from "@/features/auth/components/protected-route"
@@ -56,6 +58,8 @@ export const appRouter = createBrowserRouter(
       children: [
         { index: true, element: <RootRedirect /> },
         { path: "/share/:eventId", element: <PublicEventPreviewPage /> },
+        { path: "/privacy", element: <PrivacyPage /> },
+        { path: "/terms", element: <TermsPage /> },
 
         {
           element: <PublicOnlyRoute />,

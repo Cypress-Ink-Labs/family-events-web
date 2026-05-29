@@ -64,6 +64,7 @@ export const adminEventEditorSchema = z
     recurrenceInfoText: z.string(),
     is_featured: z.boolean(),
     tagIds: z.array(z.string()),
+    decision_reason: z.string().optional().default(""),
   })
   .superRefine((value, ctx) => {
     if (value.end_datetime && new Date(value.end_datetime) <= new Date(value.start_datetime)) {
