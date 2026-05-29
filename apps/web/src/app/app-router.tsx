@@ -69,17 +69,25 @@ export const appRouter = createBrowserRouter(
         { path: "/reset-password", element: <ResetPasswordPage /> },
         { path: "/auth/callback", element: <OAuthCallbackPage /> },
 
+        /* Public browse routes — accessible without login */
+        {
+          element: <AppLayout />,
+          children: [
+            { path: HOME_PATH, element: <HomeRoute /> },
+            { path: "/explore", element: <ExplorePage /> },
+            { path: "/map", element: <MapViewPage /> },
+            { path: "/events/:id", element: <EventDetailPage /> },
+            { path: "/calendar", element: <CalendarViewPage /> },
+          ],
+        },
+
+        /* Auth-required routes */
         {
           element: <ProtectedRoute />,
           children: [
             {
               element: <AppLayout />,
               children: [
-                { path: HOME_PATH, element: <HomeRoute /> },
-                { path: "/explore", element: <ExplorePage /> },
-                { path: "/map", element: <MapViewPage /> },
-                { path: "/events/:id", element: <EventDetailPage /> },
-                { path: "/calendar", element: <CalendarViewPage /> },
                 { path: "/saved", element: <MyEventsPage /> },
                 { path: "/profile", element: <ProfilePage /> },
               ],
