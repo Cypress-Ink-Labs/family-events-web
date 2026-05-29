@@ -7,8 +7,10 @@ import {
   AdminDashboardRecentRuns,
   AdminDashboardStatsGrid,
 } from "@/features/admin/components/admin-dashboard-sections"
+import { AdminPipelineLearning } from "@/features/admin/components/admin-pipeline-learning"
 import { useAdminSourceRuns } from "@/features/admin/hooks/sources/use-admin-source-runs"
 import { useAdminStats } from "@/features/admin/hooks/operations/use-admin-stats"
+import { useAdminPipelineStats } from "@/features/admin/hooks/operations/use-admin-pipeline-stats"
 import { useAdminDashboardPresence } from "@/features/admin/hooks/operations/use-admin-dashboard-presence"
 import { useAdminEventsRealtime } from "@/features/admin/hooks/operations/use-admin-events-realtime"
 
@@ -16,6 +18,7 @@ export function AdminDashboardPage() {
   useAdminEventsRealtime()
   const { data: stats, isLoading: isStatsLoading } = useAdminStats()
   const { data: runs = [], isLoading: isRunsLoading } = useAdminSourceRuns()
+  const { data: pipelineStats, isLoading: isPipelineStatsLoading } = useAdminPipelineStats()
   const presenceUsers = useAdminDashboardPresence()
 
   const STAT_CARDS = [
@@ -96,6 +99,7 @@ export function AdminDashboardPage() {
           pendingReview={stats?.pendingReview ?? 0}
         />
       </div>
+      <AdminPipelineLearning stats={pipelineStats} isLoading={isPipelineStatsLoading} />
     </div>
   )
 }

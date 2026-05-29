@@ -41,6 +41,23 @@ function createAuthStoreRuntime() {
 
 const authRuntime = createAuthStoreRuntime()
 
+function resolveAppOrigin(): string {
+  const configuredSiteUrl = import.meta.env.VITE_SITE_URL
+  if (typeof configuredSiteUrl === "string" && configuredSiteUrl.trim()) {
+    try {
+      return new URL(configuredSiteUrl).origin
+    } catch {
+      return window.location.origin
+    }
+  }
+
+  return window.location.origin
+}
+
+function appUrl(path: string): string {
+  return new URL(path, resolveAppOrigin()).toString()
+}
+
 function authSyncFailureMessage(error: unknown): string {
   return error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.sessionRestoreFailed
 }
@@ -224,7 +241,7 @@ export const useAuthStore = create<AuthStore>()(
         // private.enforce_invited_oauth_signup auth.users trigger. If invites are
         // required and no pending_invite_claims row exists for this email, Supabase
         // rejects new Google/Apple users before profile/access rows are created.
-        const callback = new URL(`${window.location.origin}/auth/callback`)
+        const callback = new URL(appUrl("/auth/callback"))
         if (options?.next) {
           callback.searchParams.set("next", options.next)
         }
@@ -269,7 +286,7 @@ export const useAuthStore = create<AuthStore>()(
 
       async resetPassword(email) {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password`,
+          redirectTo: appUrl("/reset-password"),
         })
         return { error }
       },
@@ -291,7 +308,7 @@ export const useAuthStore = create<AuthStore>()(
           email,
           options: {
             shouldCreateUser,
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: appUrl("/"),
           },
         })
         return { error }

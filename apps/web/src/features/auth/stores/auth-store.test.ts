@@ -254,4 +254,19 @@ describe("useAuthStore", () => {
       },
     })
   })
+
+  it("uses the configured site URL for OAuth redirects", async () => {
+    vi.stubEnv("VITE_SITE_URL", "https://family-events.org")
+    vi.stubGlobal("window", { location: { origin: "http://localhost:3000" } })
+    const useAuthStore = await loadStore()
+
+    await useAuthStore.getState().signInWithProvider("google", { next: "/events/evt-1" })
+
+    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: {
+        redirectTo: "https://family-events.org/auth/callback?next=%2Fevents%2Fevt-1",
+      },
+    })
+  })
 })
