@@ -9,21 +9,16 @@ type BrandLogoProps = {
   markClassName?: string
 }
 
-const iconSrc = "/brand/family-events-icon.png"
-
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <span className={cn("relative inline-flex size-9 shrink-0", className)} aria-hidden="true">
-      <img
-        src={iconSrc}
-        alt=""
-        className="size-full rounded-lg object-cover shadow-sm dark:hidden"
-        width={36}
-        height={36}
-      />
-      <span className="hidden size-full items-center justify-center rounded-lg border border-primary/30 bg-primary/15 font-display text-sm font-semibold text-primary shadow-sm dark:flex">
-        F
-      </span>
+    <span
+      className={cn(
+        "inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/30 bg-primary/15 font-display text-sm font-semibold text-primary shadow-sm",
+        className
+      )}
+      aria-hidden="true"
+    >
+      F
     </span>
   )
 }
