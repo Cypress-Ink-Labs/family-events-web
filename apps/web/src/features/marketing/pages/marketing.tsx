@@ -89,8 +89,8 @@ export function MarketingPage() {
                 </h1>
                 <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
                   {requiresInvite
-                    ? "Family Events is in a closed rollout. Invited families can sign in to browse curated events, save favorites, and plan the week in one place."
-                    : "Browse curated events, save favorites, and plan the week in one place."}
+                    ? "Family Events helps parents discover local kid-friendly activities, browse curated event listings, save favorites, and plan the week in one place. The app is currently in a closed rollout for invited families."
+                    : "Family Events helps parents discover local kid-friendly activities, browse curated event listings, save favorites, and plan the week in one place."}
                 </p>
               </div>
 

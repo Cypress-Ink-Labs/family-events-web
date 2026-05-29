@@ -76,7 +76,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between gap-3 px-4 md:px-6 lg:px-8">
-          <BrandLogo to={HOME_PATH} className="shrink-0" />
+          <BrandLogo to={HOME_PATH} className="shrink-0" textClassName="hidden sm:inline" />
 
           <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:max-w-xs">
             <Select

@@ -9,6 +9,7 @@ import { defineConfig, type Plugin } from "vite"
 
 const buildEnv = createEnv({
   server: {
+    VITE_GOOGLE_SITE_VERIFICATION: z.string().min(1).optional(),
     SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
     SENTRY_ORG: z.string().min(1).optional(),
     SENTRY_PROJECT: z.string().min(1).optional(),
@@ -43,11 +44,38 @@ function versionManifestPlugin(appVersion: string): Plugin {
   }
 }
 
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+}
+
+function googleSiteVerificationPlugin(token?: string): Plugin {
+  return {
+    name: "family-events:google-site-verification",
+    transformIndexHtml(html) {
+      if (!token) return html
+
+      return html.replace(
+        "    <title>Family Events</title>",
+        `    <meta name="google-site-verification" content="${escapeHtmlAttribute(token)}" />\n    <title>Family Events</title>`
+      )
+    },
+  }
+}
+
 export default defineConfig(() => {
   const release = buildEnv.SENTRY_RELEASE ?? buildEnv.RAILWAY_GIT_COMMIT_SHA
   const appVersion = release ?? `dev-${Date.now()}`
 
-  const plugins = [react(), tailwindcss(), versionManifestPlugin(appVersion)]
+  const plugins = [
+    react(),
+    tailwindcss(),
+    versionManifestPlugin(appVersion),
+    googleSiteVerificationPlugin(buildEnv.VITE_GOOGLE_SITE_VERIFICATION),
+  ]
 
   if (buildEnv.SENTRY_AUTH_TOKEN && buildEnv.SENTRY_ORG && buildEnv.SENTRY_PROJECT && release) {
     plugins.push(

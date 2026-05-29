@@ -31,6 +31,7 @@ import {
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { HOME_PATH } from "@/shared/access-control"
 import { FadeSwap, PageTransition } from "@/shared/components/motion"
+import { BrandMark } from "@/shared/components/brand-logo"
 
 const ADMIN_NAV = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -75,13 +76,7 @@ export function AdminLayout() {
         <Sidebar collapsible="icon">
           <SidebarHeader className="p-4">
             <div className="flex items-center gap-2">
-              <img
-                src="/brand/family-events-icon.png"
-                alt=""
-                className="size-8 shrink-0 rounded-md object-cover"
-                width={32}
-                height={32}
-              />
+              <BrandMark className="size-8" />
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="text-sm font-bold text-sidebar-foreground">Family Events</p>
                 <p className="text-xs text-sidebar-foreground/60">Admin Dashboard</p>
