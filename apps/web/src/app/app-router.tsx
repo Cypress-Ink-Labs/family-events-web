@@ -4,7 +4,7 @@ import { AppErrorBoundary } from "@/app/app-error-boundary"
 import { ScrollToTop } from "@/app/scroll-to-top"
 import { AdminLayout } from "@/app/layouts/admin-layout"
 import { AppLayout } from "@/app/layouts/app-layout"
-import { HomeRoute } from "@/app/app-route-elements"
+import { HomeRoute, RootRedirect } from "@/app/app-route-elements"
 import {
   AdminAccessPage,
   AdminCitiesPage,
@@ -54,7 +54,7 @@ export const appRouter = createBrowserRouter(
     {
       element: <AppRouteShell />,
       children: [
-        { index: true, element: <Navigate to={HOME_PATH} replace /> },
+        { index: true, element: <RootRedirect /> },
         { path: "/share/:eventId", element: <PublicEventPreviewPage /> },
 
         {
@@ -73,7 +73,6 @@ export const appRouter = createBrowserRouter(
         {
           element: <AppLayout />,
           children: [
-            { path: HOME_PATH, element: <HomeRoute /> },
             { path: "/explore", element: <ExplorePage /> },
             { path: "/map", element: <MapViewPage /> },
             { path: "/events/:id", element: <EventDetailPage /> },
@@ -88,6 +87,7 @@ export const appRouter = createBrowserRouter(
             {
               element: <AppLayout />,
               children: [
+                { path: HOME_PATH, element: <HomeRoute /> },
                 { path: "/saved", element: <MyEventsPage /> },
                 { path: "/profile", element: <ProfilePage /> },
               ],
