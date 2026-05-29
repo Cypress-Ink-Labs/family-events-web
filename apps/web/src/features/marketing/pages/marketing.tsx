@@ -85,7 +85,7 @@ export function MarketingPage() {
 
               <div className="space-y-4">
                 <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-                  Family event discovery for parents who want fewer tabs and better plans.
+                  Family Events helps parents find kid-friendly plans nearby.
                 </h1>
                 <p className="max-w-2xl text-base text-muted-foreground sm:text-lg">
                   {requiresInvite

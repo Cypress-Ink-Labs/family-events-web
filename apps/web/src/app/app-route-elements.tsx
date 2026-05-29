@@ -1,15 +1,17 @@
 import { Navigate, useLocation } from "react-router"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { HOME_PATH } from "@/shared/access-control"
-import { DashboardPage, SaturdayPlanPage } from "@/app/app-route-pages"
+import { DashboardPage, MarketingPage, SaturdayPlanPage } from "@/app/app-route-pages"
 
-/** Logged-in users land on Plan; anonymous users land on Explore. */
+/** Logged-in users land on Plan; anonymous users land on the public homepage. */
 export function RootRedirect() {
   const { user, isLoading } = useAuth()
 
   if (isLoading) return null
 
-  return <Navigate to={user ? HOME_PATH : "/explore"} replace />
+  if (user) return <Navigate to={HOME_PATH} replace />
+
+  return <MarketingPage />
 }
 
 export function HomeRoute() {
