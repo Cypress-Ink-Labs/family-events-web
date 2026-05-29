@@ -37,18 +37,18 @@ import { useBreakpoint } from "@/shared/hooks/use-breakpoint"
 import { PageTransition } from "@/shared/components/motion"
 
 const PRIMARY_TABS = [
-  { to: HOME_PATH, label: "Plan", icon: Home },
-  { to: "/explore", label: "Explore", icon: Compass },
-  { to: "/saved", label: "Saved", icon: Bookmark },
+  { to: HOME_PATH, label: "Plan", icon: Home, auth: true },
+  { to: "/explore", label: "Explore", icon: Compass, auth: false },
+  { to: "/saved", label: "Saved", icon: Bookmark, auth: true },
 ] as const
 
 const DESKTOP_NAV_ITEMS = [
-  { to: HOME_PATH, label: "Plan", icon: Home },
-  { to: "/explore", label: "Explore", icon: Compass },
-  { to: "/map", label: "Map", icon: MapIcon },
-  { to: "/calendar", label: "Calendar", icon: CalendarDays },
-  { to: "/saved", label: "Saved", icon: Bookmark },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: HOME_PATH, label: "Plan", icon: Home, auth: true },
+  { to: "/explore", label: "Explore", icon: Compass, auth: false },
+  { to: "/map", label: "Map", icon: MapIcon, auth: false },
+  { to: "/calendar", label: "Calendar", icon: CalendarDays, auth: false },
+  { to: "/saved", label: "Saved", icon: Bookmark, auth: true },
+  { to: "/profile", label: "Profile", icon: User, auth: true },
 ] as const
 
 interface AppLayoutProps {
@@ -208,7 +208,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {!isMobile ? (
         <nav className="sticky top-14 z-30 border-b border-border/40 bg-background/95 backdrop-blur">
           <div className="mx-auto flex max-w-[1280px] items-center gap-1 px-4 md:px-6 lg:px-8">
-            {DESKTOP_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+            {DESKTOP_NAV_ITEMS.filter((item) => !item.auth || user).map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -265,8 +265,8 @@ export function AppLayout({ children }: AppLayoutProps) {
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
           aria-label="Primary"
         >
-          <div className="mx-auto grid max-w-[640px] grid-cols-3">
-            {PRIMARY_TABS.map(({ to, label, icon: Icon }) => (
+          <div className={cn("mx-auto grid max-w-[640px]", user ? "grid-cols-3" : "grid-cols-1")}>
+            {PRIMARY_TABS.filter((item) => !item.auth || user).map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
