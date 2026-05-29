@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Family Events">
+  <rect width="64" height="64" rx="16" fill="#6f52d9" />
+  <text
+    x="32"
+    y="40"
+    fill="#ffffff"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="32"
+    font-weight="700"
+    text-anchor="middle"
+  >F</text>
+</svg>
