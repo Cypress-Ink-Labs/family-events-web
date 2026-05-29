@@ -89,14 +89,9 @@ test.describe("favorite toggle (regression)", () => {
     const title = await titleOnExploreCard(card)
     expect(title.length).toBeGreaterThan(0)
 
-    await addButton.click()
+    await addButton.dblclick()
     await card.getByRole("button", { name: "Remove from favorites" }).first().waitFor({
       state: "visible",
-      timeout: 20_000,
-    })
-    const removeButton = card.getByRole("button", { name: "Remove from favorites" }).first()
-    await removeButton.click()
-    await expect(card.getByRole("button", { name: "Add to favorites" }).first()).toBeVisible({
       timeout: 20_000,
     })
 

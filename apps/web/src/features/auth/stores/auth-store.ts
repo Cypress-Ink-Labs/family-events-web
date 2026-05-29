@@ -232,10 +232,6 @@ export const useAuthStore = create<AuthStore>()(
           provider,
           options: {
             redirectTo: callback.toString(),
-            // Apple: scopes default to "email name" — sufficient for our display_name.
-            // Google: also defaults to email + profile.
-            queryParams:
-              provider === "google" ? { access_type: "offline", prompt: "consent" } : undefined,
           },
         })
         return { error: error ?? null }

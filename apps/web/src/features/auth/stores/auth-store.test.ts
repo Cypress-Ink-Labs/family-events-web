@@ -4,6 +4,7 @@ import type { UserAccess, UserProfile } from "@/shared/types"
 
 const {
   mockAuthSignOut,
+  mockSignInWithOAuth,
   mockCaptureException,
   mockClearQueryCache,
   mockFrom,
@@ -21,6 +22,7 @@ const {
   return {
     state,
     mockAuthSignOut: vi.fn(),
+    mockSignInWithOAuth: vi.fn(),
     mockCaptureException: vi.fn(),
     mockClearQueryCache: vi.fn(),
     mockGetSession: vi.fn(),
@@ -44,6 +46,7 @@ vi.mock("@/infrastructure/supabase/client", () => ({
     auth: {
       getSession: mockGetSession,
       onAuthStateChange: mockOnAuthStateChange,
+      signInWithOAuth: mockSignInWithOAuth,
       signOut: mockAuthSignOut,
     },
     from: mockFrom,
@@ -122,6 +125,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   setAuthRows()
   mockAuthSignOut.mockResolvedValue({ error: null })
+  mockSignInWithOAuth.mockResolvedValue({ error: null })
   mockGetSession.mockResolvedValue({ data: { session: null } })
   mockOnAuthStateChange.mockReturnValue({
     data: { subscription: { unsubscribe: vi.fn() } },
@@ -131,6 +135,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers()
+  vi.unstubAllGlobals()
 })
 
 describe("useAuthStore", () => {
@@ -233,6 +238,20 @@ describe("useAuthStore", () => {
       profile: null,
       access: null,
       authError: null,
+    })
+  })
+
+  it("starts Google OAuth without forcing the consent screen", async () => {
+    vi.stubGlobal("window", { location: { origin: "http://localhost:3000" } })
+    const useAuthStore = await loadStore()
+
+    await useAuthStore.getState().signInWithProvider("google", { next: "/events/evt-1" })
+
+    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:3000/auth/callback?next=%2Fevents%2Fevt-1",
+      },
     })
   })
 })
