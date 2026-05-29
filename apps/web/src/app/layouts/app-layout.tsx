@@ -265,7 +265,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
           aria-label="Primary"
         >
-          <div className={cn("mx-auto grid max-w-[640px]", user ? "grid-cols-3" : "grid-cols-1")}>
+          <div className="mx-auto grid max-w-[640px]" style={{ gridTemplateColumns: `repeat(${PRIMARY_TABS.filter((t) => !t.auth || user).length}, 1fr)` }}>
             {PRIMARY_TABS.filter((item) => !item.auth || user).map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
