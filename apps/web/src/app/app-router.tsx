@@ -4,7 +4,7 @@ import { AppErrorBoundary } from "@/app/app-error-boundary"
 import { ScrollToTop } from "@/app/scroll-to-top"
 import { AdminLayout } from "@/app/layouts/admin-layout"
 import { AppLayout } from "@/app/layouts/app-layout"
-import { HomeRoute, RootLandingRoute } from "@/app/app-route-elements"
+import { HomeRoute } from "@/app/app-route-elements"
 import {
   AdminAccessPage,
   AdminCitiesPage,
@@ -54,7 +54,7 @@ export const appRouter = createBrowserRouter(
     {
       element: <AppRouteShell />,
       children: [
-        { index: true, element: <RootLandingRoute /> },
+        { index: true, element: <Navigate to={HOME_PATH} replace /> },
         { path: "/share/:eventId", element: <PublicEventPreviewPage /> },
 
         {
