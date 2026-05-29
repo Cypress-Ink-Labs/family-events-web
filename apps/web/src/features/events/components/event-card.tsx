@@ -1,4 +1,5 @@
 import { safeImageSrc } from "@/infrastructure/safe-url"
+import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
 import type { EventWithDetails } from "@/shared/types"
 import { CompactEventCard } from "@/features/events/components/event-card/compact-card"
 import { DefaultEventCard } from "@/features/events/components/event-card/default-card"
@@ -22,7 +23,8 @@ export function EventCard({
   className,
 }: EventCardProps) {
   const imageUrl =
-    safeImageSrc(event.images?.[0]) ?? `https://picsum.photos/seed/${event.id}/600/400`
+    safeImageSrc(event.images?.[0]) ??
+    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 600, 400)
   const startDate = new Date(event.start_datetime)
 
   const shared = {

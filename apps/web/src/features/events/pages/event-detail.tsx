@@ -3,6 +3,7 @@ import { useParams } from "react-router"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { safeImageSrc } from "@/infrastructure/safe-url"
+import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
 import { formatDurationBetween } from "@/shared/utils/dates"
 import { formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@family-events/shared"
@@ -120,7 +121,7 @@ export function EventDetailPage() {
   const currentEvent = event
   const imageUrl =
     safeImageSrc(currentEvent.images?.[0]) ??
-    `https://picsum.photos/seed/${currentEvent.id}/800/500`
+    getFallbackImageUrl(currentEvent.id, (currentEvent.tags ?? []).map((t) => t.tag.slug), 800, 500)
   const startDate = new Date(currentEvent.start_datetime)
   const infoItems = [
     {

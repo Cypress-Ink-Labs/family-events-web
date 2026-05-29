@@ -8,6 +8,7 @@ import { SmartImage } from "@/shared/components/motion"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
 import type { EventWithDetails } from "@/shared/types"
 import { safeImageSrc } from "@/infrastructure/safe-url"
+import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
 import { formatEventPrice } from "@/shared/utils/format"
 
 interface EventRowProps {
@@ -20,7 +21,8 @@ interface EventRowProps {
 
 export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowProps) {
   const imageUrl =
-    safeImageSrc(event.images?.[0]) ?? `https://picsum.photos/seed/${event.id}/200/200`
+    safeImageSrc(event.images?.[0]) ??
+    getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 200, 200)
   const startDate = new Date(event.start_datetime)
 
   return (

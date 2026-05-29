@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/shared/components/ui/card"
 import { ClientDate } from "@/shared/components/client-date"
 import { SmartImage } from "@/shared/components/motion"
 import { safeImageSrc } from "@/infrastructure/safe-url"
+import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
 import { cn } from "@/shared/utils/format"
 import type { EventWithDetails } from "@/shared/types"
 
@@ -54,7 +55,7 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
                       <SmartImage
                         src={
                           safeImageSrc(event.images?.[0]) ??
-                          `https://picsum.photos/seed/${event.id}/200/200`
+                          getFallbackImageUrl(event.id, (event.tags ?? []).map((t) => t.tag.slug), 200, 200)
                         }
                         alt={event.title}
                         className="size-full object-cover"
