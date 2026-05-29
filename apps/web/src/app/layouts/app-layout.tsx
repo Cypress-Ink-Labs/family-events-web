@@ -9,7 +9,6 @@ import {
   Hop as Home,
   LogOut,
   Map as MapIcon,
-  Search,
   Shield,
   User,
 } from "lucide-react"
@@ -36,6 +35,7 @@ import { useApp } from "@/app/stores/app-store"
 import { useBreakpoint } from "@/shared/hooks/use-breakpoint"
 import { PageTransition } from "@/shared/components/motion"
 import { BrandLogo } from "@/shared/components/brand-logo"
+import { ThemeToggle } from "@/shared/components/theme-toggle"
 
 const PRIMARY_TABS = [
   { to: HOME_PATH, label: "Plan", icon: Home, auth: true },
@@ -100,16 +100,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-10 min-h-[44px] min-w-[44px]"
-              asChild
-            >
-              <Link to="/explore" aria-label="Search events">
-                <Search className="size-4" />
-              </Link>
-            </Button>
+            <ThemeToggle />
 
             {user ? (
               <DropdownMenu>

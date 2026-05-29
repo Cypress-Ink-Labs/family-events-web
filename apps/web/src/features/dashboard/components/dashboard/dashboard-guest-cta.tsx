@@ -11,7 +11,7 @@ export function DashboardGuestCta() {
         Get a weekly curated list of weekend family events in your city.
       </p>
       <Button className="w-full sm:w-auto" asChild>
-        <Link to="/sign-up">Get Started Free</Link>
+        <Link to="/explore">Get Started Free</Link>
       </Button>
     </div>
   )

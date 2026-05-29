@@ -63,7 +63,9 @@ export function MarketingPage() {
               <Link to="/sign-in">Sign In</Link>
             </Button>
             <Button asChild>
-              <Link to="/sign-up">{requiresInvite ? "Use Invite" : "Get Started"}</Link>
+              <Link to={requiresInvite ? "/sign-up" : "/explore"}>
+                {requiresInvite ? "Use Invite" : "Get Started"}
+              </Link>
             </Button>
           </div>
         </header>
@@ -109,7 +111,7 @@ export function MarketingPage() {
                 ) : (
                   <>
                     <Button size="lg" className="gap-2" asChild>
-                      <Link to="/sign-up">
+                      <Link to="/explore">
                         Get started free <ArrowRight className="size-4" />
                       </Link>
                     </Button>
