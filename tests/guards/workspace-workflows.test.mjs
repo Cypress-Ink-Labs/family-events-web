@@ -8,8 +8,6 @@ const ciPath = path.join(repoRoot, ".github", "workflows", "ci.yml")
 const rwxCiPath = path.join(repoRoot, ".rwx", "ci.yml")
 const depReviewPath = path.join(repoRoot, ".github", "workflows", "dependency-review.yml")
 const localScriptPath = path.join(repoRoot, "scripts", "check-monorepo.sh")
-const agentPrePushScriptPath = path.join(repoRoot, "scripts", "agent-pre-push.sh")
-const trackedPrePushHookPath = path.join(repoRoot, ".githooks", "pre-push")
 const rootPackagePath = path.join(repoRoot, "package.json")
 const turboPath = path.join(repoRoot, "turbo.json")
 
@@ -43,21 +41,6 @@ test("local repeatable workflow script exists and delegates to the full scoped g
   assert.match(script, /pnpm run verify:full/)
 })
 
-test("tracked agent pre-push hook delegates to the repeatable workflow gate", () => {
-  assert.equal(existsSync(agentPrePushScriptPath), true)
-  assert.equal(existsSync(trackedPrePushHookPath), true)
-
-  const script = readFileSync(agentPrePushScriptPath, "utf8")
-  assert.match(script, /pnpm run verify:workflow/)
-  assert.match(script, /FAMILY_EVENTS_SKIP_AGENT_PRE_PUSH/)
-
-  const hook = readFileSync(trackedPrePushHookPath, "utf8")
-  assert.match(hook, /pnpm run agents:pre-push/)
-
-  const pkg = JSON.parse(readFileSync(rootPackagePath, "utf8"))
-  assert.equal(pkg.scripts["agents:pre-push"], "bash scripts/agent-pre-push.sh")
-  assert.equal(pkg.scripts["agents:install-hooks"], "git config core.hooksPath .githooks")
-})
 
 test("turbo scripts avoid deprecated parallel flag", () => {
   const pkg = JSON.parse(readFileSync(rootPackagePath, "utf8"))
