@@ -48,8 +48,8 @@ export function DeadLettersPanel() {
           retryPending={retryTag.isPending}
           deletePending={deleteTag.isPending}
           titleForRow={(row) => row.events?.title ?? row.event_id}
-          retryIdForRow={(row) => row.event_id}
-          onRetry={(eventId) => retryTag.mutate(eventId)}
+          retryIdForRow={(row) => row.id}
+          onRetry={(queueId) => retryTag.mutate(queueId)}
           onDelete={(queueId) => deleteTag.mutate(queueId)}
         />
       </CardContent>

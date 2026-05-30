@@ -49,9 +49,9 @@ export async function fetchDeadTagQueueRows(): Promise<DeadTagQueueRow[]> {
   return (data ?? []) as DeadTagQueueRow[]
 }
 
-export async function retryTagQueue(eventId: string): Promise<boolean> {
-  const { data, error } = await supabase.rpc("admin_retry_tag_queue", {
-    p_event_id: eventId,
+export async function retryTagQueue(queueId: number): Promise<boolean> {
+  const { data, error } = await supabase.rpc("admin_retry_dead_tag_queue", {
+    p_queue_id: queueId,
   })
   if (error) throw error
   return Boolean(data)

@@ -24,12 +24,12 @@ export function useAdminTagQueueSummary() {
   })
 }
 
-// Admin retry: re-enqueue tag-event work for a specific event. Idempotent
-// against the partial-unique index on (event_id) WHERE status IN ('pending','processing').
+// Admin retry: move a dead-lettered tag queue row back to active work.
+// Idempotent against the partial-unique index on (event_id) WHERE status IN ('pending','processing').
 export function useAdminRetryTagQueue() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (eventId: string) => retryTagQueue(eventId),
+    mutationFn: (queueId: number) => retryTagQueue(queueId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: qk.admin.tagQueueSummary })
       void queryClient.invalidateQueries({ queryKey: qk.admin.deadTagQueueRows })
