@@ -42,6 +42,26 @@ describe("eventSourceRowSchema", () => {
     expect(result.success).toBe(false)
   })
 
+  it("accepts every supported source_type", () => {
+    for (const sourceType of [
+      "website",
+      "ical",
+      "rss",
+      "manual",
+      "macaronikid",
+      "brec",
+      "downtownlafayette",
+      "lcglafayette",
+      "localhop",
+    ] as const) {
+      const parsed = eventSourceRowSchema.parse({
+        ...baseSourceRow,
+        source_type: sourceType,
+      })
+      expect(parsed.source_type).toBe(sourceType)
+    }
+  })
+
   it("rejects an unknown processing_mode", () => {
     const result = eventSourceRowSchema.safeParse({
       ...baseSourceRow,

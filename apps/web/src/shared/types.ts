@@ -42,7 +42,16 @@ export type InviteRequestStatus = DbInviteRequestStatus
 export type TagQueueStatus = DbEventTagQueueStatus
 export type SourceQueueStatus = DbSourceScrapeQueueStatus
 export type SourceLastStatus = "pending" | "success" | "error" | "partial" | null
-export type SourceType = "website" | "ical" | "rss" | "manual" | "macaronikid" | "brec"
+export type SourceType =
+  | "website"
+  | "ical"
+  | "rss"
+  | "manual"
+  | "macaronikid"
+  | "brec"
+  | "downtownlafayette"
+  | "lcglafayette"
+  | "localhop"
 export type UserRole = "user" | "admin"
 
 export type UserAccess = Override<UserAccessRow, { access_expires_at?: string | null }>

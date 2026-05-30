@@ -26,6 +26,9 @@ const ADMIN_SOURCE_TYPE_REGISTRY: Record<AdminSourceType, AdminSourceTypeEntry> 
   manual: { label: "Manual", icon: FileText },
   macaronikid: { label: "Macaroni Kid", icon: Sparkles },
   brec: { label: "BREC", icon: MapPin },
+  downtownlafayette: { label: "Downtown Lafayette", icon: MapPin },
+  lcglafayette: { label: "LCG Lafayette", icon: MapPin },
+  localhop: { label: "LocalHop", icon: MapPin },
 }
 
 /** Back-compat alias maps derived from the registry. New code can read the
