@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 import type { LucideIcon } from "lucide-react"
 import { Check, Cpu, ShieldCheck, Tag } from "lucide-react"
 
-import type { AiFeatureConfig, ApprovedAiModel } from "@/features/admin/types"
+import type { AiFeatureConfig, AiFeatureId, ApprovedAiModel } from "@/features/admin/types"
 import { Button } from "@/shared/components/ui/button"
 import {
   Select,
@@ -53,7 +53,7 @@ function CostMeter({ tier }: { tier: "low" | "medium" | "high" }) {
 interface AiFeatureCardProps {
   title: string
   description: string
-  feature: "tagging" | "event-review"
+  feature: AiFeatureId
   config: AiFeatureConfig | undefined
   models: ApprovedAiModel[]
   showEnabledToggle: boolean

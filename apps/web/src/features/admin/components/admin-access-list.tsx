@@ -24,6 +24,7 @@ export function AdminAccessList({
         const profile = account.user_profiles
         const isSelf = account.user_id === currentUserId
         const canDisable = !isSelf && account.is_enabled
+        const canEnable = !isSelf && !account.is_enabled
 
         return (
           <Card key={account.user_id} className="border-border/60">
@@ -68,7 +69,7 @@ export function AdminAccessList({
               </div>
 
               <div className="flex shrink-0 flex-wrap gap-2">
-                {canDisable ? (
+                {canDisable && (
                   <Button
                     variant="destructive"
                     size="sm"
@@ -78,7 +79,8 @@ export function AdminAccessList({
                     <ShieldOff className="size-4" />
                     <span>Disable</span>
                   </Button>
-                ) : (
+                )}
+                {canEnable && (
                   <Button
                     variant="outline"
                     size="sm"

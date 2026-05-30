@@ -60,8 +60,7 @@ const TOGGLE_FEATURES: FeatureMeta[] = [
   {
     id: "tag-memory",
     title: "Tagging memory",
-    description:
-      "Tag extraction reuses embeddings from similar prior events to improve accuracy.",
+    description: "Tag extraction reuses embeddings from similar prior events to improve accuracy.",
     defaultEnabled: false,
     showEnabledToggle: true,
     icon: Brain,
@@ -228,8 +227,7 @@ export function AdminSettingsPage() {
             <span
               className="size-2 rounded-full"
               style={{
-                background:
-                  memoryOnCount > 0 ? "var(--color-success)" : "var(--color-text-muted)",
+                background: memoryOnCount > 0 ? "var(--color-success)" : "var(--color-text-muted)",
               }}
               aria-hidden
             />
