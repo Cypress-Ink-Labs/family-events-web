@@ -5,6 +5,7 @@ import {
   getApprovedAiModels,
   upsertAiFeatureConfig,
 } from "@/features/admin/api/ai-settings"
+import type { AiFeatureId } from "@/features/admin/types"
 
 export function useApprovedAiModels() {
   return useQuery({
@@ -29,7 +30,7 @@ export function useUpsertAiFeatureConfig() {
       modelId,
       enabled,
     }: {
-      feature: "tagging" | "event-review"
+      feature: AiFeatureId
       modelId: string
       enabled: boolean
     }) => upsertAiFeatureConfig(feature, modelId, enabled),

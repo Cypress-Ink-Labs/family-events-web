@@ -182,8 +182,16 @@ export interface ApprovedAiModel {
   cost_tier: "low" | "medium" | "high"
 }
 
+export type AiFeatureId =
+  | "tagging"
+  | "event-review"
+  | "parent-tips"
+  | "tag-memory"
+  | "review-memory"
+  | "source-auto-reject"
+
 export interface AiFeatureConfig {
-  feature: "tagging" | "event-review"
+  feature: AiFeatureId
   model_id: string
   enabled: boolean
   updated_at: string

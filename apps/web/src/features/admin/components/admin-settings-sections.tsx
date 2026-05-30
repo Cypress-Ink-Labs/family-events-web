@@ -1,3 +1,5 @@
+import type { ReactNode } from "react"
+import type { LucideIcon } from "lucide-react"
 import { Check, Cpu, ShieldCheck, Tag } from "lucide-react"
 
 import type { AiFeatureConfig, ApprovedAiModel } from "@/features/admin/types"
@@ -238,5 +240,101 @@ export function AiFeatureCard({
         </div>
       </div>
     </section>
+  )
+}
+
+interface FeatureSectionProps {
+  eyebrow: string
+  title: string
+  description?: string
+  children: ReactNode
+}
+
+export function FeatureSection({ eyebrow, title, description, children }: FeatureSectionProps) {
+  return (
+    <section className="space-y-4">
+      <div className="space-y-1">
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/70">
+          {eyebrow}
+        </span>
+        <h3 className="font-display text-xl font-semibold leading-tight">{title}</h3>
+        {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+interface MemoryToggleRowProps {
+  title: string
+  description: string
+  icon: LucideIcon
+  enabled: boolean
+  isSaving: boolean
+  isDirty: boolean
+  onEnabledChange: (enabled: boolean) => void
+  onSave: () => void
+  ariaLabel: string
+}
+
+export function MemoryToggleRow({
+  title,
+  description,
+  icon: Icon,
+  enabled,
+  isSaving,
+  isDirty,
+  onEnabledChange,
+  onSave,
+  ariaLabel,
+}: MemoryToggleRowProps) {
+  return (
+    <div className="relative flex items-start gap-4 p-5">
+      <span
+        aria-hidden
+        className="absolute inset-y-3 left-0 w-[3px] rounded-full transition-colors duration-300"
+        style={{ background: enabled ? "var(--color-accent-primary)" : "transparent" }}
+      />
+      <div
+        className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground"
+        aria-hidden
+      >
+        <Icon className="size-5" />
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <h4 className="text-sm font-semibold leading-tight">{title}</h4>
+          <span
+            className={cn(
+              "font-mono text-[10px] font-medium uppercase tracking-[0.12em]",
+              enabled ? "text-[var(--color-success)]" : "text-muted-foreground/70"
+            )}
+          >
+            {enabled ? "online" : "off"}
+          </span>
+        </div>
+        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</p>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-3">
+        {isDirty ? (
+          <span
+            className="size-1.5 animate-pulse rounded-full bg-[var(--color-warning)]"
+            aria-hidden
+          />
+        ) : null}
+        <Switch checked={enabled} onCheckedChange={onEnabledChange} aria-label={ariaLabel} />
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          disabled={isSaving || !isDirty}
+          onClick={onSave}
+        >
+          {isSaving ? "Saving…" : isDirty ? "Save" : <Check className="size-3.5" />}
+        </Button>
+      </div>
+    </div>
   )
 }

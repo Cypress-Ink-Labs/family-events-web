@@ -1,49 +1,120 @@
 import { useState } from "react"
-import { Sparkles } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import { Brain, Lightbulb, ShieldCheck, ShieldOff, Sparkles, Tag } from "lucide-react"
 import { toast } from "sonner"
 import {
   useAiFeatureConfigs,
   useApprovedAiModels,
   useUpsertAiFeatureConfig,
 } from "@/features/admin/hooks/use-admin-ai-settings"
-import { AiFeatureCard } from "@/features/admin/components/admin-settings-sections"
+import {
+  AiFeatureCard,
+  FeatureSection,
+  MemoryToggleRow,
+} from "@/features/admin/components/admin-settings-sections"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
-
-type AiFeatureId = "tagging" | "event-review"
+import type { AiFeatureId } from "@/features/admin/types"
 
 type AiFeatureDraft = {
   modelId?: string
   enabled?: boolean
 }
 
-const DEFAULT_ENABLED: Record<AiFeatureId, boolean> = {
-  tagging: true,
-  "event-review": false,
+type FeatureMeta = {
+  id: AiFeatureId
+  title: string
+  description: string
+  defaultEnabled: boolean
+  showEnabledToggle: boolean
+  icon: LucideIcon
 }
+
+const MODEL_FEATURES: FeatureMeta[] = [
+  {
+    id: "tagging",
+    title: "Event Tagging",
+    description: "Model used to classify events and extract tags, age range, price, and venue.",
+    defaultEnabled: true,
+    showEnabledToggle: false,
+    icon: Tag,
+  },
+  {
+    id: "event-review",
+    title: "Event Review",
+    description: "Model used to automatically approve or flag events before they are published.",
+    defaultEnabled: false,
+    showEnabledToggle: true,
+    icon: ShieldCheck,
+  },
+  {
+    id: "parent-tips",
+    title: "Parent Tips",
+    description: "Model used to generate parenting tips and guidance shown alongside events.",
+    defaultEnabled: false,
+    showEnabledToggle: true,
+    icon: Lightbulb,
+  },
+]
+
+const TOGGLE_FEATURES: FeatureMeta[] = [
+  {
+    id: "tag-memory",
+    title: "Tagging memory",
+    description:
+      "Tag extraction reuses embeddings from similar prior events to improve accuracy.",
+    defaultEnabled: false,
+    showEnabledToggle: true,
+    icon: Brain,
+  },
+  {
+    id: "review-memory",
+    title: "Review memory",
+    description: "Event review reuses decisions from similar prior events as added context.",
+    defaultEnabled: false,
+    showEnabledToggle: true,
+    icon: Brain,
+  },
+  {
+    id: "source-auto-reject",
+    title: "Source auto-reject",
+    description:
+      "Skip the LLM for sources rejected over 80% of the time — saves cost on low-quality feeds.",
+    defaultEnabled: false,
+    showEnabledToggle: true,
+    icon: ShieldOff,
+  },
+]
+
+const ALL_FEATURES = [...MODEL_FEATURES, ...TOGGLE_FEATURES]
+
+const DEFAULT_ENABLED = Object.fromEntries(
+  ALL_FEATURES.map((f) => [f.id, f.defaultEnabled])
+) as Record<AiFeatureId, boolean>
 
 export function AdminSettingsPage() {
   const { data: models = [], isLoading: isModelsLoading } = useApprovedAiModels()
   const { data: configs = [], isLoading: isConfigsLoading } = useAiFeatureConfigs()
-  const { mutate: save, isPending } = useUpsertAiFeatureConfig()
+  const { mutate: save } = useUpsertAiFeatureConfig()
   const { toastError } = useAdminToast()
   const [drafts, setDrafts] = useState<Partial<Record<AiFeatureId, AiFeatureDraft>>>({})
+  const [savingFeature, setSavingFeature] = useState<AiFeatureId | null>(null)
 
-  const taggingConfig = configs.find((c) => c.feature === "tagging")
-  const reviewConfig = configs.find((c) => c.feature === "event-review")
   const fallbackModelId = models[0]?.id ?? ""
 
+  function configFor(feature: AiFeatureId) {
+    return configs.find((c) => c.feature === feature)
+  }
+
   function selectedModelIdFor(feature: AiFeatureId) {
-    const config = feature === "tagging" ? taggingConfig : reviewConfig
-    return drafts[feature]?.modelId ?? config?.model_id ?? fallbackModelId
+    return drafts[feature]?.modelId ?? configFor(feature)?.model_id ?? fallbackModelId
   }
 
   function enabledFor(feature: AiFeatureId) {
-    const config = feature === "tagging" ? taggingConfig : reviewConfig
-    return drafts[feature]?.enabled ?? config?.enabled ?? DEFAULT_ENABLED[feature]
+    return drafts[feature]?.enabled ?? configFor(feature)?.enabled ?? DEFAULT_ENABLED[feature]
   }
 
   function isDirtyFor(feature: AiFeatureId) {
-    const config = feature === "tagging" ? taggingConfig : reviewConfig
+    const config = configFor(feature)
     const persistedModel = config?.model_id ?? fallbackModelId
     const persistedEnabled = config?.enabled ?? DEFAULT_ENABLED[feature]
     return (
@@ -70,6 +141,7 @@ export function AdminSettingsPage() {
   }
 
   function saveFeatureConfig(feature: AiFeatureId, modelId: string, enabled: boolean) {
+    setSavingFeature(feature)
     save(
       { feature, modelId, enabled },
       {
@@ -80,13 +152,16 @@ export function AdminSettingsPage() {
         onError: (error) => {
           toastError(error, "Couldn't save AI setting")
         },
+        onSettled: () => {
+          setSavingFeature(null)
+        },
       }
     )
   }
 
   if (isModelsLoading || isConfigsLoading) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-10">
         <div className="space-y-3">
           <div className="h-3 w-32 animate-pulse rounded-full bg-muted" />
           <div className="h-9 w-64 animate-pulse rounded-md bg-muted" />
@@ -96,25 +171,21 @@ export function AdminSettingsPage() {
           <div className="h-72 animate-pulse rounded-2xl border bg-card" />
           <div className="h-72 animate-pulse rounded-2xl border bg-card" />
         </div>
+        <div className="h-48 animate-pulse rounded-2xl border bg-card" />
       </div>
     )
   }
 
-  const taggingModel = models.find((m) => m.id === selectedModelIdFor("tagging"))
-  const reviewModel = models.find((m) => m.id === selectedModelIdFor("event-review"))
-  const reviewEnabled = enabledFor("event-review")
+  const memoryOnCount = TOGGLE_FEATURES.filter((f) => enabledFor(f.id)).length
 
-  const summary: { label: string; value: string; on: boolean }[] = [
-    { label: "Tagging", value: taggingModel?.display_name ?? "—", on: true },
-    {
-      label: "Review",
-      value: reviewEnabled ? (reviewModel?.display_name ?? "—") : "Disabled",
-      on: reviewEnabled,
-    },
-  ]
+  const summary = MODEL_FEATURES.map((f) => {
+    const on = f.showEnabledToggle ? enabledFor(f.id) : true
+    const model = models.find((m) => m.id === selectedModelIdFor(f.id))
+    return { label: f.title, value: on ? (model?.display_name ?? "—") : "Disabled", on }
+  })
 
   return (
-    <div className="relative space-y-8">
+    <div className="relative space-y-10">
       {/* atmospheric accent glow */}
       <div
         aria-hidden
@@ -133,10 +204,11 @@ export function AdminSettingsPage() {
           AI Settings
         </h2>
         <p className="max-w-xl text-sm text-muted-foreground">
-          Select the active model for each AI feature. Changes take effect on the next request.
+          Configure every AI feature in the pipeline — model assignments and the memory and
+          automation flags. Changes take effect on the next request.
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3 rounded-xl border border-border bg-card/60 px-5 py-3.5 backdrop-blur-sm">
+        <div className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-xl border border-border bg-card/60 px-5 py-3.5 backdrop-blur-sm">
           {summary.map((item) => (
             <div key={item.label} className="flex items-center gap-2.5">
               <span
@@ -152,47 +224,80 @@ export function AdminSettingsPage() {
               <span className="text-sm font-medium">{item.value}</span>
             </div>
           ))}
+          <div className="flex items-center gap-2.5">
+            <span
+              className="size-2 rounded-full"
+              style={{
+                background:
+                  memoryOnCount > 0 ? "var(--color-success)" : "var(--color-text-muted)",
+              }}
+              aria-hidden
+            />
+            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Memory
+            </span>
+            <span className="text-sm font-medium">
+              {memoryOnCount}/{TOGGLE_FEATURES.length} on
+            </span>
+          </div>
         </div>
       </header>
 
-      <div className="grid items-start gap-5 lg:grid-cols-2">
-        <AiFeatureCard
-          title="Event Tagging"
-          description="Model used to classify events and extract tags, age range, price, and venue."
-          feature="tagging"
-          index={0}
-          config={taggingConfig}
-          models={models}
-          showEnabledToggle={false}
-          selectedModelId={selectedModelIdFor("tagging")}
-          enabled={enabledFor("tagging")}
-          isSaving={isPending}
-          isDirty={isDirtyFor("tagging")}
-          onModelChange={(modelId) => updateDraft("tagging", { modelId })}
-          onEnabledChange={(enabled) => updateDraft("tagging", { enabled })}
-          onSave={(modelId, enabled) => {
-            saveFeatureConfig("tagging", modelId, enabled)
-          }}
-        />
-        <AiFeatureCard
-          title="Event Review"
-          description="Model used to automatically approve or flag events before they are published."
-          feature="event-review"
-          index={1}
-          config={reviewConfig}
-          models={models}
-          showEnabledToggle={true}
-          selectedModelId={selectedModelIdFor("event-review")}
-          enabled={enabledFor("event-review")}
-          isSaving={isPending}
-          isDirty={isDirtyFor("event-review")}
-          onModelChange={(modelId) => updateDraft("event-review", { modelId })}
-          onEnabledChange={(enabled) => updateDraft("event-review", { enabled })}
-          onSave={(modelId, enabled) => {
-            saveFeatureConfig("event-review", modelId, enabled)
-          }}
-        />
-      </div>
+      <FeatureSection
+        eyebrow="Models"
+        title="Model assignments"
+        description="Pick the active model for each model-backed feature. Cost tier shown per model."
+      >
+        <div className="grid items-start gap-5 lg:grid-cols-2">
+          {MODEL_FEATURES.map((f, i) => (
+            <AiFeatureCard
+              key={f.id}
+              title={f.title}
+              description={f.description}
+              feature={f.id}
+              index={i}
+              config={configFor(f.id)}
+              models={models}
+              showEnabledToggle={f.showEnabledToggle}
+              selectedModelId={selectedModelIdFor(f.id)}
+              enabled={enabledFor(f.id)}
+              isSaving={savingFeature === f.id}
+              isDirty={isDirtyFor(f.id)}
+              onModelChange={(modelId) => updateDraft(f.id, { modelId })}
+              onEnabledChange={(enabled) => updateDraft(f.id, { enabled })}
+              onSave={(modelId, enabled) => {
+                saveFeatureConfig(f.id, modelId, enabled)
+              }}
+            />
+          ))}
+        </div>
+      </FeatureSection>
+
+      <FeatureSection
+        eyebrow="Memory & automation"
+        title="Pipeline learning"
+        description="Toggle the embeddings-backed memory features and cost-saving automation."
+      >
+        <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-md)]">
+          {TOGGLE_FEATURES.map((f) => (
+            <MemoryToggleRow
+              key={f.id}
+              title={f.title}
+              description={f.description}
+              icon={f.icon}
+              ariaLabel={`${f.title} enabled`}
+              enabled={enabledFor(f.id)}
+              isSaving={savingFeature === f.id}
+              isDirty={isDirtyFor(f.id)}
+              onEnabledChange={(enabled) => updateDraft(f.id, { enabled })}
+              onSave={() => {
+                const modelId = configFor(f.id)?.model_id ?? fallbackModelId
+                saveFeatureConfig(f.id, modelId, enabledFor(f.id))
+              }}
+            />
+          ))}
+        </div>
+      </FeatureSection>
     </div>
   )
 }

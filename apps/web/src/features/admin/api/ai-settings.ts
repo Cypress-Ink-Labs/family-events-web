@@ -1,5 +1,5 @@
 import { supabase } from "@/infrastructure/supabase/client"
-import type { AiFeatureConfig, ApprovedAiModel } from "@/features/admin/types"
+import type { AiFeatureConfig, AiFeatureId, ApprovedAiModel } from "@/features/admin/types"
 
 export async function getApprovedAiModels(): Promise<ApprovedAiModel[]> {
   const { data, error } = await supabase.rpc("get_approved_ai_models")
@@ -17,7 +17,7 @@ export async function getAiFeatureConfigs(): Promise<AiFeatureConfig[]> {
 }
 
 export async function upsertAiFeatureConfig(
-  feature: "tagging" | "event-review",
+  feature: AiFeatureId,
   modelId: string,
   enabled: boolean
 ): Promise<void> {
