@@ -66,7 +66,7 @@ export function buildProxyUrl(options: ProxyUrlOptions): string | null {
  */
 export function buildSrcSet(
   src: string,
-  options?: { format?: ImageFormat; proxyBaseUrl?: string },
+  options?: { format?: ImageFormat; proxyBaseUrl?: string }
 ): string | undefined {
   if (!isValidHttpUrl(src)) return undefined
 
