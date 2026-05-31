@@ -51,13 +51,7 @@ export function EventDetailHero({
           imageUrl={imageUrl}
           className="absolute bottom-3 left-4 right-4 text-white/90 drop-shadow-sm"
         />
-        <div className="absolute top-4 right-4 flex gap-2">
-          <FavoriteButton
-            eventId={event.id}
-            isFavorited={isFavorited}
-            onToggle={onFavoriteToggle}
-            variant="overlay"
-          />
+        <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
           <button
             type="button"
             onClick={onShare}
@@ -66,6 +60,13 @@ export function EventDetailHero({
           >
             <Share2 className="size-4 text-foreground" />
           </button>
+          <FavoriteButton
+            eventId={event.id}
+            isFavorited={isFavorited}
+            onToggle={onFavoriteToggle}
+            variant="overlay"
+            className="static top-auto right-auto"
+          />
         </div>
       </div>
     </>
