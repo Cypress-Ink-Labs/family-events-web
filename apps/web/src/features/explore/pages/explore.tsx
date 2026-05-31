@@ -23,9 +23,11 @@ import {
 import { searchEvents } from "@/features/explore/lib/search-api"
 import type { SearchEventsParams } from "@/features/explore/lib/search-api"
 import { Page, Stack } from "@/components/v2"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 
 export function ExplorePage() {
   const { selectedCity } = useApp()
+  useDocumentTitle(selectedCity ? `Explore Events in ${selectedCity.name}` : "Explore Events")
   const keyword = useExploreStore((s) => s.keyword)
   const activeDateFilter = useExploreStore((s) => s.activeDateFilter)
   const selectedAge = useExploreStore((s) => s.selectedAge)
