@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
@@ -10,6 +11,8 @@ import { BrandLogo } from "@/shared/components/brand-logo"
 import { toast } from "sonner"
 
 export function ForgotPasswordPage() {
+  useDocumentTitle("Forgot Password")
+
   const { resetPassword } = useAuth()
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)

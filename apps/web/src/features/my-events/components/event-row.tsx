@@ -39,6 +39,7 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
               <SmartImage
                 src={imageUrl}
                 alt={event.title}
+                variant="thumbnail"
                 className="size-full object-cover"
                 placeholderClassName="size-full"
               />

@@ -1,5 +1,6 @@
 import { useReducer } from "react"
 import { Link, useNavigate } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Ticket } from "lucide-react"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Button } from "@/shared/components/ui/button"
@@ -39,6 +40,8 @@ function signUpReducer(state: SignUpState, patch: Partial<SignUpState>) {
 }
 
 export function SignUpPage() {
+  useDocumentTitle("Sign Up")
+
   const { signUp, signInWithProvider } = useAuth()
   const navigate = useNavigate()
   const {

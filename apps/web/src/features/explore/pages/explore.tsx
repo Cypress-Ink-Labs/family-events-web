@@ -1,9 +1,7 @@
-import { useMemo } from "react"
+import { useMemo, useCallback } from "react"
+import { useInfiniteQuery } from "@tanstack/react-query"
 import { useApp } from "@/app/stores/app-store"
-import { useAuth } from "@/features/auth/stores/auth-store"
 import { useExploreStore } from "@/features/explore/stores/explore-store"
-import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
-import { matchesAgeFilter } from "@/features/events/lib/event-filters"
 import { useTags } from "@/features/events/hooks/use-tags"
 import { EXPLORE_AGE_OPTIONS } from "@/features/explore/constants/categories"
 import {
@@ -13,7 +11,6 @@ import {
   LIST_CONTAINER_CLASSNAME,
 } from "@/features/explore/constants/view"
 import { useExploreViewStore } from "@/features/explore/stores/explore-view-store"
-import { sortEvents } from "@/features/explore/lib/sort-events"
 import {
   ExploreActiveFilters,
   ExploreCategoryGrid,
@@ -23,10 +20,11 @@ import {
   ExploreSearchFilters,
   ExploreViewControls,
 } from "@/features/explore/components/explore-sections"
+import { searchEvents } from "@/features/explore/lib/search-api"
+import type { SearchEventsParams } from "@/features/explore/lib/search-api"
 import { Page, Stack } from "@/components/v2"
 
 export function ExplorePage() {
-  const { user } = useAuth()
   const { selectedCity } = useApp()
   const keyword = useExploreStore((s) => s.keyword)
   const activeDateFilter = useExploreStore((s) => s.activeDateFilter)
@@ -34,6 +32,9 @@ export function ExplorePage() {
   const onlyFree = useExploreStore((s) => s.onlyFree)
   const selectedTagSlugs = useExploreStore((s) => s.selectedTagSlugs)
   const activeCategory = useExploreStore((s) => s.activeCategory)
+  const nearMeEnabled = useExploreStore((s) => s.nearMeEnabled)
+  const radiusKm = useExploreStore((s) => s.radiusKm)
+  const location = useExploreStore((s) => s.location)
   const setKeyword = useExploreStore((s) => s.setKeyword)
   const setActiveDateFilter = useExploreStore((s) => s.setActiveDateFilter)
   const setSelectedAge = useExploreStore((s) => s.setSelectedAge)
@@ -109,62 +110,75 @@ export function ExplorePage() {
     return all
   }, [activeCategory, selectedTagSlugs])
 
+  // Build stable search params for the RPC query key
+  const searchParams = useMemo((): SearchEventsParams => {
+    const params: SearchEventsParams = {
+      keyword: keyword.trim() || undefined,
+      cityId: selectedCity?.id,
+      dateFrom: dateRange.dateFrom,
+      dateTo: dateRange.dateTo,
+      ageMin: ageFilter?.min,
+      ageMax: ageFilter?.max ?? undefined,
+      isFree: onlyFree || undefined,
+      tagSlugs: combinedTagSlugs.length > 0 ? combinedTagSlugs : undefined,
+    }
+    // Radius filter: only when near-me is on and we have a location
+    if (nearMeEnabled && location) {
+      params.lat = location.lat
+      params.lng = location.lng
+      params.radiusKm = radiusKm
+    }
+    return params
+  }, [
+    keyword,
+    selectedCity?.id,
+    dateRange,
+    ageFilter,
+    onlyFree,
+    combinedTagSlugs,
+    nearMeEnabled,
+    location,
+    radiusKm,
+  ])
+
   const { data: tags = [] } = useTags()
+
   const {
-    data: allEvents = [],
+    data: infiniteData,
     isLoading: isEventsLoading,
     isError: isEventsError,
-  } = useEnrichedEvents({
-    cityId: selectedCity?.id,
-    userId: user?.id,
-    dateFrom: dateRange.dateFrom,
-    dateTo: dateRange.dateTo,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["search-events", searchParams],
+    queryFn: ({ pageParam }) =>
+      searchEvents({
+        ...searchParams,
+        afterStartDatetime: pageParam?.afterStartDatetime,
+        afterId: pageParam?.afterId,
+      }),
+    initialPageParam: null as { afterStartDatetime: string; afterId: string } | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   })
 
-  const filteredEvents = useMemo(() => {
-    const trimmedKeyword = keyword.trim().toLowerCase()
-    const from = dateRange.dateFrom ? new Date(dateRange.dateFrom) : null
-    const to = dateRange.dateTo ? new Date(dateRange.dateTo) : null
-    const tagSlugSet = combinedTagSlugs.length > 0 ? new Set(combinedTagSlugs) : null
+  // Flatten all pages into a single array
+  const allEvents = useMemo(
+    () => infiniteData?.pages.flatMap((page) => page.events) ?? [],
+    [infiniteData]
+  )
 
-    const filtered = allEvents.filter((event) => {
-      if (trimmedKeyword) {
-        const haystack =
-          `${event.title} ${event.description ?? ""} ${event.venue_name ?? ""}`.toLowerCase()
-        if (!haystack.includes(trimmedKeyword)) {
-          return false
-        }
-      }
-
-      if (from || to) {
-        const start = new Date(event.start_datetime)
-        if (from && start < from) return false
-        if (to && start >= to) return false
-      }
-
-      if (onlyFree && !event.is_free) {
-        return false
-      }
-
-      if (ageFilter && !matchesAgeFilter(event, ageFilter.min, ageFilter.max ?? undefined)) {
-        return false
-      }
-
-      if (tagSlugSet) {
-        const hasMatch = event.tags?.some((et) => tagSlugSet.has(et.tag.slug)) ?? false
-        if (!hasMatch) return false
-      }
-
-      return true
-    })
-
-    return sortEvents(filtered, sort)
-  }, [allEvents, keyword, dateRange, onlyFree, ageFilter, combinedTagSlugs, sort])
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const activeFilterCount = [
     activeDateFilter,
     selectedAge,
     onlyFree ? "free" : null,
+    nearMeEnabled ? "near-me" : null,
     ...selectedTagSlugs,
     activeCategory,
   ].filter(Boolean).length
@@ -217,13 +231,16 @@ export function ExplorePage() {
         />
         <ExploreEventsSection
           activeCategory={activeCategory}
-          filteredEvents={filteredEvents}
+          filteredEvents={allEvents}
           isEventsLoading={isEventsLoading}
           isEventsError={isEventsError}
           onClearAllFilters={resetFilters}
           cardVariant={cardVariant}
           containerClassName={containerClassName}
           showImages={showImages}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          onLoadMore={handleLoadMore}
         />
         <ExploreNeighborhoodCta />
       </Stack>

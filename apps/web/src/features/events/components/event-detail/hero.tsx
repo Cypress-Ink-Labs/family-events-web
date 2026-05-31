@@ -38,6 +38,8 @@ export function EventDetailHero({
         <SmartImage
           src={imageUrl}
           alt={event.title}
+          variant="hero"
+          priority
           className="w-full h-64 sm:h-80 object-cover"
           placeholderClassName="w-full h-64 sm:h-80"
         />

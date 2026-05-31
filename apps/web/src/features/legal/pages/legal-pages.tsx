@@ -1,7 +1,7 @@
-import { useEffect } from "react"
 import { Link } from "react-router"
 import { Page, Stack } from "@/components/v2"
 import { BrandLogo } from "@/shared/components/brand-logo"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 
 const CONTACT_EMAIL = "support@family-events.org"
 const LAST_UPDATED = "May 29, 2026"
@@ -134,9 +134,7 @@ function LegalPageShell({
   intro: string
   sections: LegalSection[]
 }) {
-  useEffect(() => {
-    document.title = `${title} | Family Events`
-  }, [title])
+  useDocumentTitle(title)
 
   return (
     <main className="min-h-screen bg-background">

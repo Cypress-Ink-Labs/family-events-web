@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { Loader2 } from "lucide-react"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { useAuth, useAuthStore } from "@/features/auth/stores/auth-store"
 import { HOME_PATH } from "@/shared/access-control"
 
@@ -20,6 +21,8 @@ function safeNext(raw: string | null): string {
  * state and route forward once the session lands in the store.
  */
 export function OAuthCallbackPage() {
+  useDocumentTitle("Signing In")
+
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const session = useAuth().session

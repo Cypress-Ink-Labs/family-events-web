@@ -33,6 +33,7 @@ export function CompactEventCard({
             <SmartImage
               src={imageUrl}
               alt={event.title}
+              variant="thumbnail"
               className="size-full object-cover"
               placeholderClassName="size-full"
             />

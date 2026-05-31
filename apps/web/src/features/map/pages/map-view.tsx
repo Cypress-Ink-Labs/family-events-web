@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, type RefObject } from "react"
 import { Link } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import {
   Map as MapGL,
   Marker,
@@ -68,6 +69,8 @@ function mapViewReducer(state: MapViewState, patch: MapViewStatePatch): MapViewS
 }
 
 export function MapViewPage() {
+  useDocumentTitle("Map")
+
   const { user } = useAuth()
   const { selectedCity, isCitiesLoading } = useApp()
   const mapStyle = useMapStyle()

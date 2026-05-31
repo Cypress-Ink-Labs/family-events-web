@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
@@ -12,6 +13,8 @@ import { BrandLogo } from "@/shared/components/brand-logo"
 import { toast } from "sonner"
 
 export function ResetPasswordPage() {
+  useDocumentTitle("Reset Password")
+
   const { updatePassword } = useAuth()
   const navigate = useNavigate()
   const [password, setPassword] = useState("")

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react"
 import { Link } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { ArrowRight, CalendarDays, MapPin, RefreshCw, Sparkles } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
@@ -77,6 +78,8 @@ function PlanContextBar({ cityName, childAge }: PlanContextBarProps) {
 }
 
 export function SaturdayPlanPage() {
+  useDocumentTitle("Saturday Plan")
+
   const { user, profile } = useAuth()
   const { selectedCity } = useApp()
   const errorToastRef = useRef(false)

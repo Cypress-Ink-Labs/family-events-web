@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { Link } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Bookmark, Clock, Star } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
@@ -34,6 +35,8 @@ export function buildSavedEventIds(
 }
 
 export function MyEventsPage() {
+  useDocumentTitle("Saved Events")
+
   const { user } = useAuth()
   const [ratings, setRatings] = useState<Record<string, number>>({})
   const { data: favorites = [] } = useFavorites(user?.id)

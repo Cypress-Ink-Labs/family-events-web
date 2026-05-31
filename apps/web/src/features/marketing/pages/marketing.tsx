@@ -1,4 +1,5 @@
 import { Link } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { ArrowRight, CalendarDays, MapPinned, ShieldCheck, Sparkles, Ticket } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Badge } from "@/shared/components/ui/badge"
@@ -44,6 +45,8 @@ const HIGHLIGHTS_OPEN = [
 ]
 
 export function MarketingPage() {
+  useDocumentTitle("Family-Friendly Events Near You")
+
   const { data: inviteRequired } = useInvitesRequired()
 
   // Marketing defaults to gate-off on error to avoid blocking new user acquisition.

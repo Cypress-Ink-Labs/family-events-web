@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
@@ -16,6 +17,7 @@ import {
   ProfileAdminLink,
   ProfileChangePasswordCard,
   ProfileGuestState,
+  ProfileNotificationPreferencesCard,
   ProfileSignOutButton,
   ProfileThemeCard,
   ProfileUserSummary,
@@ -25,9 +27,14 @@ import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useTheme } from "@/app/providers/theme-provider"
 import { useUpdateProfile } from "@/features/profile/hooks/use-profile"
+import {
+  useNotificationPreferences,
+  useUpdateNotificationPreferences,
+} from "@/features/profile/hooks/use-notification-preferences"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack } from "@/components/v2"
+import type { NotificationPreferences } from "@family-events/contracts"
 
 export function ProfilePage() {
   const { user, profile, signOut, isAdmin, refreshProfile, updatePassword } = useAuth()
@@ -35,6 +42,10 @@ export function ProfilePage() {
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
   const updateProfile = useUpdateProfile(user?.id)
+  const { data: notifPrefs } = useNotificationPreferences(user?.id)
+  const updateNotifPrefs = useUpdateNotificationPreferences(user?.id)
+
+  useDocumentTitle("Profile")
 
   const [displayNameDraft, setDisplayNameDraft] = useState<string | null>(null)
   const [childNameDraft, setChildNameDraft] = useState<string | null>(null)
@@ -69,6 +80,16 @@ export function ProfilePage() {
     } catch (error) {
       toast.error(humanizeSupabaseError(error, "Failed to update profile."))
     }
+  }
+
+  function handleNotificationToggle(field: keyof NotificationPreferences, value: boolean) {
+    if (!notifPrefs) return
+    const updated = { ...notifPrefs, [field]: value }
+    updateNotifPrefs.mutate(updated, {
+      onSuccess: () => toast.success("Notification preference updated"),
+      onError: (error) =>
+        toast.error(humanizeSupabaseError(error, "Failed to update notification preferences.")),
+    })
   }
 
   if (!user) {
@@ -151,6 +172,15 @@ export function ProfilePage() {
         {/* Security */}
         {user.email && (
           <ProfileChangePasswordCard email={user.email} onUpdatePassword={updatePassword} />
+        )}
+
+        {/* Notification preferences */}
+        {notifPrefs && (
+          <ProfileNotificationPreferencesCard
+            preferences={notifPrefs}
+            isPending={updateNotifPrefs.isPending}
+            onToggle={handleNotificationToggle}
+          />
         )}
 
         {/* Theme */}

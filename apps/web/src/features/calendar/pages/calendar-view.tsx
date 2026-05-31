@@ -23,6 +23,7 @@ import {
 } from "@/features/calendar/components/calendar-view-sections"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useFavorites } from "@/features/events/hooks/use-favorites"
 import { useCalendarEvents } from "@/features/events/hooks/use-calendar-events"
@@ -33,6 +34,8 @@ function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<
 }
 
 export function CalendarViewPage() {
+  useDocumentTitle("Calendar")
+
   const { user } = useAuth()
   const { selectedCity } = useApp()
   const [currentMonth, setCurrentMonth] = useState(new Date())

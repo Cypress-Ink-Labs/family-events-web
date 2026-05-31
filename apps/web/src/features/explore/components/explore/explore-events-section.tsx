@@ -1,4 +1,4 @@
-import { Search } from "lucide-react"
+import { Loader2, Search } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { EventCard, EventCardSkeleton } from "@/features/events/components/event-card"
@@ -16,6 +16,9 @@ interface ExploreEventsSectionProps {
   cardVariant: EventCardVariant
   containerClassName: string
   showImages: boolean
+  hasNextPage?: boolean
+  isFetchingNextPage?: boolean
+  onLoadMore?: () => void
 }
 
 export function ExploreEventsSection({
@@ -27,6 +30,9 @@ export function ExploreEventsSection({
   cardVariant,
   containerClassName,
   showImages,
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
 }: ExploreEventsSectionProps) {
   const activeCategoryLabel = EXPLORE_CATEGORIES.find(
     (category) => category.slug === activeCategory
@@ -78,13 +84,34 @@ export function ExploreEventsSection({
             </Button>
           </div>
         ) : (
-          <StaggerList className={containerClassName}>
-            {filteredEvents.map((event) => (
-              <StaggerItem key={event.id}>
-                <EventCard event={event} variant={cardVariant} showImages={showImages} />
-              </StaggerItem>
-            ))}
-          </StaggerList>
+          <div>
+            <StaggerList className={containerClassName}>
+              {filteredEvents.map((event) => (
+                <StaggerItem key={event.id}>
+                  <EventCard event={event} variant={cardVariant} showImages={showImages} />
+                </StaggerItem>
+              ))}
+            </StaggerList>
+            {hasNextPage && onLoadMore && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  variant="outline"
+                  onClick={onLoadMore}
+                  disabled={isFetchingNextPage}
+                  className="min-w-[140px]"
+                >
+                  {isFetchingNextPage ? (
+                    <>
+                      <Loader2 className="size-4 mr-2 animate-spin" />
+                      Loading…
+                    </>
+                  ) : (
+                    "Load more"
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
         )}
       </FadeSwap>
     </section>

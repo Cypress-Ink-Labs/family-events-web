@@ -63,6 +63,7 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
                           )
                         }
                         alt={event.title}
+                        variant="thumbnail"
                         className="size-full object-cover"
                         placeholderClassName="size-full"
                       />

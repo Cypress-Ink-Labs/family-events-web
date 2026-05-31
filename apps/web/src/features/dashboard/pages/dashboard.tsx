@@ -1,4 +1,5 @@
 import { useMemo, useReducer } from "react"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
@@ -24,6 +25,8 @@ function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<
 }
 
 export function DashboardPage() {
+  useDocumentTitle("Home")
+
   const { user, profile } = useAuth()
   const { selectedCity } = useApp()
   const [favoriteOverrides, setFavoriteOverrides] = useReducer(favoriteOverridesReducer, {})

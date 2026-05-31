@@ -1,4 +1,5 @@
 import { Calendar, Database, CircleCheck as CheckCircle, Clock } from "lucide-react"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import {
   AdminDashboardConfidenceCard,
   AdminDashboardHeader,
@@ -15,6 +16,7 @@ import { useAdminDashboardPresence } from "@/features/admin/hooks/operations/use
 import { useAdminEventsRealtime } from "@/features/admin/hooks/operations/use-admin-events-realtime"
 
 export function AdminDashboardPage() {
+  useDocumentTitle("Admin Dashboard")
   useAdminEventsRealtime()
   const { data: stats, isLoading: isStatsLoading } = useAdminStats()
   const { data: runs = [], isLoading: isRunsLoading } = useAdminSourceRuns()

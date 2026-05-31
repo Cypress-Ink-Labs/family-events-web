@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from "react"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { resolveInAppRedirectTarget } from "@/shared/access-control"
@@ -40,6 +41,8 @@ function signInReducer(state: SignInState, patch: Partial<SignInState>) {
 }
 
 export function SignInPage() {
+  useDocumentTitle("Sign In")
+
   const { signIn, sendMagicLink, signInWithProvider, authError, clearAuthError } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()

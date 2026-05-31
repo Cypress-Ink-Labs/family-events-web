@@ -1,5 +1,6 @@
 import { useReducer } from "react"
 import { useParams } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { safeImageSrc } from "@/infrastructure/safe-url"
@@ -19,6 +20,7 @@ import {
   EventDetailReviews,
   EventDetailSectionLayout,
   EventDetailSummary,
+  SimilarEventsSection,
 } from "@/features/events/components/event-detail/event-detail-sections"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useToggleCalendarEvent } from "@/features/events/hooks/use-calendar-events"
@@ -26,6 +28,7 @@ import { useComments, useAddComment } from "@/features/events/hooks/use-comments
 import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { deriveFallbackTips } from "@/features/events/lib/parent-tips-fallback"
 import { useUpsertRating, useUserRating } from "@/features/events/hooks/use-ratings"
+import { EventJsonLd } from "@/features/events/components/event-json-ld"
 import { FadeSwap } from "@/shared/components/motion"
 import { toast } from "sonner"
 
@@ -79,6 +82,8 @@ export function EventDetailPage() {
   const addComment = useAddComment(user?.id)
   const upsertRating = useUpsertRating(user?.id)
   const toggleCalendarEvent = useToggleCalendarEvent(user?.id)
+
+  useDocumentTitle(event?.title)
 
   const [uiState, setUiState] = useReducer(eventDetailUiReducer, initialEventDetailUiState)
   const { attendees, comment, userRatingOverride, favoritedOverride, calendarOverride } = uiState
@@ -206,6 +211,7 @@ export function EventDetailPage() {
 
   return (
     <FadeSwap stateKey={stateKey} className="max-w-2xl mx-auto">
+      <EventJsonLd event={currentEvent} />
       <EventDetailHero
         event={currentEvent}
         imageUrl={imageUrl}
@@ -256,6 +262,12 @@ export function EventDetailPage() {
           onSubmitComment={handleSubmitComment}
           isSubmitting={addComment.isPending}
           comments={comments}
+        />
+        <Separator />
+        <SimilarEventsSection
+          eventId={currentEvent.id}
+          cityId={currentEvent.city_id}
+          userId={user?.id}
         />
       </EventDetailSectionLayout>
     </FadeSwap>

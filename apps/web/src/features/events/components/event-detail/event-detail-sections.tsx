@@ -14,3 +14,4 @@ export { EventDetailAbout } from "@/features/events/components/event-detail/abou
 export { EventDetailLocation } from "@/features/events/components/event-detail/location"
 export { EventDetailBooking } from "@/features/events/components/event-detail/booking"
 export { EventDetailReviews } from "@/features/events/components/event-detail/reviews"
+export { SimilarEventsSection } from "@/features/events/components/event-detail/similar-events"

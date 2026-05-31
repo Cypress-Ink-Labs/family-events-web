@@ -34,6 +34,7 @@ import {
   TermsPage,
 } from "@/app/app-route-pages"
 import { RouteFallback } from "@/app/route-fallback"
+import { FeatureErrorBoundary } from "@/shared/components/feature-error-boundary"
 import { ProtectedRoute } from "@/features/auth/components/protected-route"
 import { PublicOnlyRoute } from "@/features/auth/components/public-only-route"
 import { HOME_PATH } from "@/shared/access-control"
@@ -77,10 +78,38 @@ export const appRouter = createBrowserRouter(
         {
           element: <AppLayout />,
           children: [
-            { path: "/explore", element: <ExplorePage /> },
-            { path: "/map", element: <MapViewPage /> },
-            { path: "/events/:id", element: <EventDetailPage /> },
-            { path: "/calendar", element: <CalendarViewPage /> },
+            {
+              path: "/explore",
+              element: (
+                <FeatureErrorBoundary featureName="Explore">
+                  <ExplorePage />
+                </FeatureErrorBoundary>
+              ),
+            },
+            {
+              path: "/map",
+              element: (
+                <FeatureErrorBoundary featureName="Map">
+                  <MapViewPage />
+                </FeatureErrorBoundary>
+              ),
+            },
+            {
+              path: "/events/:id",
+              element: (
+                <FeatureErrorBoundary featureName="Event Detail">
+                  <EventDetailPage />
+                </FeatureErrorBoundary>
+              ),
+            },
+            {
+              path: "/calendar",
+              element: (
+                <FeatureErrorBoundary featureName="Calendar">
+                  <CalendarViewPage />
+                </FeatureErrorBoundary>
+              ),
+            },
           ],
         },
 
@@ -92,13 +121,31 @@ export const appRouter = createBrowserRouter(
               element: <AppLayout />,
               children: [
                 { path: HOME_PATH, element: <HomeRoute /> },
-                { path: "/saved", element: <MyEventsPage /> },
-                { path: "/profile", element: <ProfilePage /> },
+                {
+                  path: "/saved",
+                  element: (
+                    <FeatureErrorBoundary featureName="Saved Events">
+                      <MyEventsPage />
+                    </FeatureErrorBoundary>
+                  ),
+                },
+                {
+                  path: "/profile",
+                  element: (
+                    <FeatureErrorBoundary featureName="Profile">
+                      <ProfilePage />
+                    </FeatureErrorBoundary>
+                  ),
+                },
               ],
             },
             {
               path: "/admin",
-              element: <AdminLayout />,
+              element: (
+                <FeatureErrorBoundary featureName="Admin">
+                  <AdminLayout />
+                </FeatureErrorBoundary>
+              ),
               children: [
                 { index: true, element: <AdminDashboardPage /> },
                 { path: "sources", element: <AdminSourcesPage /> },

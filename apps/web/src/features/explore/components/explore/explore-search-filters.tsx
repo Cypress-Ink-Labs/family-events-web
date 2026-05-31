@@ -16,6 +16,7 @@ import {
   EXPLORE_AGE_OPTIONS,
   EXPLORE_DATE_QUICK_FILTERS,
 } from "@/features/explore/constants/categories"
+import { RadiusFilter } from "@/features/explore/components/radius-filter"
 
 interface ExploreSearchFiltersProps {
   keyword: string
@@ -170,6 +171,13 @@ export function ExploreSearchFilters({
                   onCheckedChange={onOnlyFreeChange}
                 />
               </label>
+
+              <div>
+                <p className="text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/70 uppercase mb-3">
+                  Location
+                </p>
+                <RadiusFilter />
+              </div>
 
               <div>
                 <p className="text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/70 uppercase mb-2">

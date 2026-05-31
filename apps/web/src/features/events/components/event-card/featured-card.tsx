@@ -29,6 +29,7 @@ export function FeaturedEventCard({
           <SmartImage
             src={imageUrl}
             alt={event.title}
+            variant="card"
             className="w-full h-48 object-cover"
             placeholderClassName="w-full h-48"
           />

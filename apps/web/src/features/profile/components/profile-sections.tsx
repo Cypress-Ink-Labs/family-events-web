@@ -1,14 +1,16 @@
 import { useState } from "react"
 import { Link } from "react-router"
-import { KeyRound, LogOut, Monitor, Moon, Shield, Sun, User } from "lucide-react"
+import { Bell, KeyRound, LogOut, Monitor, Moon, Shield, Sun, User } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
+import { Switch } from "@/shared/components/ui/switch"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar"
 import { supabase } from "@/infrastructure/supabase/client"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
+import type { NotificationPreferences } from "@family-events/contracts"
 import type { CityRow as City } from "@/lib/db"
 type ThemeOption = "light" | "dark" | "system"
 
@@ -216,6 +218,128 @@ export function ProfileChangePasswordCard({
             {loading ? "Updating..." : "Update password"}
           </Button>
         </form>
+      </CardContent>
+    </Card>
+  )
+}
+
+// ─── Notification Preferences ───────────────────────────────────────────────
+
+interface NotificationToggleRowProps {
+  id: string
+  label: string
+  checked: boolean
+  disabled?: boolean
+  onCheckedChange: (checked: boolean) => void
+}
+
+function NotificationToggleRow({
+  id,
+  label,
+  checked,
+  disabled,
+  onCheckedChange,
+}: NotificationToggleRowProps) {
+  return (
+    <div className="flex items-center justify-between py-1.5">
+      <Label htmlFor={id} className="text-sm font-normal cursor-pointer">
+        {label}
+      </Label>
+      <Switch
+        id={id}
+        size="sm"
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        disabled={disabled}
+      />
+    </div>
+  )
+}
+
+interface NotificationCategoryProps {
+  title: string
+  children: React.ReactNode
+}
+
+function NotificationCategory({ title, children }: NotificationCategoryProps) {
+  return (
+    <div className="space-y-1">
+      <h4 className="text-sm font-medium text-foreground">{title}</h4>
+      <div className="pl-1">{children}</div>
+    </div>
+  )
+}
+
+interface ProfileNotificationPreferencesCardProps {
+  preferences: NotificationPreferences
+  isPending: boolean
+  onToggle: (field: keyof NotificationPreferences, value: boolean) => void
+}
+
+export function ProfileNotificationPreferencesCard({
+  preferences,
+  isPending,
+  onToggle,
+}: ProfileNotificationPreferencesCardProps) {
+  return (
+    <Card className="border-border/60">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Bell className="size-4 text-muted-foreground" />
+          Notification Settings
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <NotificationCategory title="Reminders">
+          <NotificationToggleRow
+            id="reminder-email"
+            label="Email"
+            checked={preferences.reminder_email}
+            disabled={isPending}
+            onCheckedChange={(v) => onToggle("reminder_email", v)}
+          />
+          <NotificationToggleRow
+            id="reminder-push"
+            label="Push"
+            checked={preferences.reminder_push}
+            disabled={isPending}
+            onCheckedChange={(v) => onToggle("reminder_push", v)}
+          />
+        </NotificationCategory>
+
+        <NotificationCategory title="Event Changes">
+          <NotificationToggleRow
+            id="change-email"
+            label="Email"
+            checked={preferences.change_email}
+            disabled={isPending}
+            onCheckedChange={(v) => onToggle("change_email", v)}
+          />
+          <NotificationToggleRow
+            id="change-push"
+            label="Push"
+            checked={preferences.change_push}
+            disabled={isPending}
+            onCheckedChange={(v) => onToggle("change_push", v)}
+          />
+        </NotificationCategory>
+
+        <NotificationCategory title="Weekly Digest">
+          <NotificationToggleRow
+            id="digest-email"
+            label="Email"
+            checked={preferences.digest_email}
+            disabled={isPending}
+            onCheckedChange={(v) => onToggle("digest_email", v)}
+          />
+          <NotificationToggleRow
+            id="digest-push"
+            label="Push"
+            checked={preferences.digest_push}
+            disabled={isPending}
+            onCheckedChange={(v) => onToggle("digest_push", v)}
+          />
+        </NotificationCategory>
       </CardContent>
     </Card>
   )

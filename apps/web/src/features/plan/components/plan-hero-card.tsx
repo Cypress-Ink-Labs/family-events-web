@@ -44,6 +44,8 @@ export function PlanHeroCard({ event }: PlanHeroCardProps) {
         <SmartImage
           src={imageUrl}
           alt={event.title}
+          variant="hero"
+          priority
           className="h-64 w-full object-cover sm:h-72"
           placeholderClassName="h-64 w-full sm:h-72"
         />

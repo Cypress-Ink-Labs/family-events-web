@@ -37,6 +37,7 @@ export function ListEventCard({
             <SmartImage
               src={imageUrl}
               alt={event.title}
+              variant="card"
               className="w-full h-52 object-cover group-hover:scale-[1.02] transition-transform duration-300"
               placeholderClassName="w-full h-52"
             />

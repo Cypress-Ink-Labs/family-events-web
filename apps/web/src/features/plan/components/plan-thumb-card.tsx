@@ -36,6 +36,7 @@ export function PlanThumbCard({ event }: PlanThumbCardProps) {
           <SmartImage
             src={imageUrl}
             alt={event.title}
+            variant="card"
             className="h-36 w-full object-cover"
             placeholderClassName="h-36 w-full"
           />

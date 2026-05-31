@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router"
+import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { format } from "date-fns"
 import { CalendarDays, MapPin } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
@@ -48,6 +49,8 @@ export function PublicEventPreviewPage() {
       return data
     },
   })
+
+  useDocumentTitle(event?.title ?? "Event Preview")
 
   if (isLoading) {
     return (

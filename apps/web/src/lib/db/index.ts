@@ -23,6 +23,7 @@ export type SourceRunRow = Tables<"source_runs">
 export type TagRow = Tables<"tags">
 export type UserAccessRow = Tables<"user_access">
 export type UserCalendarEventRow = Tables<"user_calendar_events">
+export type UserNotificationPreferencesRow = Tables<"user_notification_preferences">
 export type UserProfileRow = Tables<"user_profiles">
 export type PlanEventsRow =
   Database["public"]["Functions"]["plan_events_for_user"]["Returns"][number]
