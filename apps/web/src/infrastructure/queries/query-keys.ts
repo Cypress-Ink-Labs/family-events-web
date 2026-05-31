@@ -147,6 +147,12 @@ export const qk = {
     all: ["notification-preferences"] as const,
     byUser: (userId: string | undefined) => ["notification-preferences", nil(userId)] as const,
   },
+  notifications: {
+    all: ["notifications"] as const,
+    byUser: (userId: string | undefined) => ["notifications", nil(userId)] as const,
+    unreadCount: (userId: string | undefined) =>
+      ["notifications", "unread-count", nil(userId)] as const,
+  },
   cities: {
     all: ["cities"] as const,
     active: ["cities", "active"] as const,

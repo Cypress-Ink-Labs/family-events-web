@@ -21,6 +21,21 @@ export function RadiusFilter() {
   const setLocation = useExploreStore((s) => s.setLocation)
   const { selectedCity } = useApp()
 
+  const applyCityFallback = useCallback(() => {
+    if (selectedCity?.latitude != null && selectedCity?.longitude != null) {
+      const loc: LocationState = {
+        lat: selectedCity.latitude,
+        lng: selectedCity.longitude,
+        source: "city-center",
+      }
+      setLocation(loc)
+      setNearMeEnabled(true)
+      toast.info("Using city center as location")
+    } else {
+      toast.error("Location unavailable. Select a city first.")
+    }
+  }, [selectedCity, setLocation, setNearMeEnabled])
+
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
       // No geolocation support — fall back to city center
@@ -44,22 +59,7 @@ export function RadiusFilter() {
       },
       { enableHighAccuracy: false, timeout: 10000 }
     )
-  }, [selectedCity, setLocation, setNearMeEnabled])
-
-  function applyCityFallback() {
-    if (selectedCity?.latitude != null && selectedCity?.longitude != null) {
-      const loc: LocationState = {
-        lat: selectedCity.latitude,
-        lng: selectedCity.longitude,
-        source: "city-center",
-      }
-      setLocation(loc)
-      setNearMeEnabled(true)
-      toast.info("Using city center as location")
-    } else {
-      toast.error("Location unavailable. Select a city first.")
-    }
-  }
+  }, [applyCityFallback, setLocation, setNearMeEnabled])
 
   const handleToggle = useCallback(() => {
     if (nearMeEnabled) {

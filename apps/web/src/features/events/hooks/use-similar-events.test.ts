@@ -40,7 +40,13 @@ describe("fetchSimilarEvents (RPC layer)", () => {
 
   it("calls find_similar_events_by_id with event ID and limit", async () => {
     const similar = [
-      { event_id: "evt-2", title: "Similar Event", cosine_distance: 0.15, city_id: null, source_id: null },
+      {
+        event_id: "evt-2",
+        title: "Similar Event",
+        cosine_distance: 0.15,
+        city_id: null,
+        source_id: null,
+      },
     ]
     mockRpc.mockResolvedValueOnce(mockRpcResponse(similar))
 

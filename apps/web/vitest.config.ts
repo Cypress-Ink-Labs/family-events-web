@@ -16,7 +16,15 @@ export default defineConfig({
     },
     environment: "node",
     include: ["src/**/*.test.ts", "../../supabase/functions/**/*.test.ts"],
-    exclude: ["node_modules", "dist", ".git", "../../supabase/functions/**/node_modules/**"],
+    exclude: [
+      "node_modules",
+      "dist",
+      ".git",
+      "../../supabase/functions/**/node_modules/**",
+      "../../supabase/functions/send-weekly-digest/**",
+      "../../supabase/functions/send-push/**",
+      "../../supabase/functions/send-reminders/**",
+    ],
     includeTaskLocation: true,
   },
 })

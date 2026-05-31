@@ -35,10 +35,7 @@ interface EventJsonLdData {
   }
 }
 
-export function buildEventJsonLd(
-  event: EventWithDetails,
-  pageUrl: string
-): EventJsonLdData {
+export function buildEventJsonLd(event: EventWithDetails, pageUrl: string): EventJsonLdData {
   const jsonLd: EventJsonLdData = {
     "@context": "https://schema.org",
     "@type": "Event",

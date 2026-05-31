@@ -36,6 +36,7 @@ import { useBreakpoint } from "@/shared/hooks/use-breakpoint"
 import { PageTransition } from "@/shared/components/motion"
 import { BrandLogo } from "@/shared/components/brand-logo"
 import { ThemeToggle } from "@/shared/components/theme-toggle"
+import { NotificationBell } from "@/features/notifications/components/notification-bell"
 
 const PRIMARY_TABS = [
   { to: HOME_PATH, label: "Plan", icon: Home, auth: true },
@@ -100,6 +101,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
+            {user ? <NotificationBell /> : null}
             <ThemeToggle />
 
             {user ? (

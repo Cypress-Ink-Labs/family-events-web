@@ -24,7 +24,7 @@ trap cleanup EXIT INT TERM
 bash scripts/supabase.sh start
 pnpm run setup:local
 
-bash scripts/supabase.sh functions serve &
+bash scripts/supabase-functions-serve.sh &
 pids+=("$!")
 
 pnpm run dev &

@@ -62,10 +62,7 @@ describe("buildEventJsonLd", () => {
   })
 
   it("includes location with place name and address", () => {
-    const result = buildEventJsonLd(
-      makeEvent(),
-      "https://family-events.org/events/event-123"
-    )
+    const result = buildEventJsonLd(makeEvent(), "https://family-events.org/events/event-123")
 
     expect(result.location).toEqual({
       "@type": "Place",
@@ -75,10 +72,7 @@ describe("buildEventJsonLd", () => {
   })
 
   it("includes images when present", () => {
-    const result = buildEventJsonLd(
-      makeEvent(),
-      "https://family-events.org/events/event-123"
-    )
+    const result = buildEventJsonLd(makeEvent(), "https://family-events.org/events/event-123")
 
     expect(result.image).toEqual(["https://images.example.com/workshop.jpg"])
   })
@@ -93,10 +87,7 @@ describe("buildEventJsonLd", () => {
   })
 
   it("includes organizer from source_name", () => {
-    const result = buildEventJsonLd(
-      makeEvent(),
-      "https://family-events.org/events/event-123"
-    )
+    const result = buildEventJsonLd(makeEvent(), "https://family-events.org/events/event-123")
 
     expect(result.organizer).toEqual({
       "@type": "Organization",
@@ -134,10 +125,7 @@ describe("buildEventJsonLd", () => {
 
   it("uses page URL as offer URL when source_url is null", () => {
     const pageUrl = "https://family-events.org/events/event-123"
-    const result = buildEventJsonLd(
-      makeEvent({ source_url: null }),
-      pageUrl
-    )
+    const result = buildEventJsonLd(makeEvent({ source_url: null }), pageUrl)
 
     expect(result.offers?.url).toBe(pageUrl)
   })
