@@ -51,6 +51,7 @@ function event(overrides: Partial<Event> & Pick<Event, "id">): Event {
     llm_review_prompt_version: null,
     llm_reviewed_at: null,
     llm_review_error: null,
+    submitted_by: null,
     last_enrichment_attempt_at: null,
     parent_tips: null,
     parent_tips_generated_at: null,

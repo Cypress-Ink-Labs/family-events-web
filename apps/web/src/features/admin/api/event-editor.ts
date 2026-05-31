@@ -27,7 +27,7 @@ export async function updateAdminEvent({
     p_patch: patch as Json,
     p_tag_ids: tagIds,
     p_lock_edited_fields: lockEditedFields,
-    p_decision_reason: decisionReason || null,
+    p_decision_reason: decisionReason || undefined,
   })
   if (error) throw error
   return data as Event

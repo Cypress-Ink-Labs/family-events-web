@@ -60,6 +60,7 @@ function adminEvent(overrides: Partial<Event> = {}): Event {
     llm_review_prompt_version: null,
     llm_reviewed_at: null,
     llm_review_error: null,
+    submitted_by: null,
     recurrence_info: null,
     is_featured: false,
     view_count: 0,
@@ -291,6 +292,7 @@ describe("AdminVirtualEventsList", () => {
       llm_review_status: LLM_EVENT_REVIEW_STATUS.FAILED,
       llm_review_decision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
       llm_review_error: "provider timeout",
+      submitted_by: null,
     })
     const lowConfidence = adminEvent({
       id: "low-confidence",

@@ -87,6 +87,14 @@ export function AdminVirtualEventRow({
             >
               {status.label}
             </span>
+            {event.source_name === "community" && (
+              <Badge
+                variant="outline"
+                className="shrink-0 text-[10px] border-violet-500/50 text-violet-600 bg-violet-50 dark:bg-violet-950/30 dark:text-violet-400"
+              >
+                Community
+              </Badge>
+            )}
           </div>
 
           <div className="flex items-center gap-3 flex-wrap text-xs text-muted-foreground">

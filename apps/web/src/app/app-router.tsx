@@ -31,6 +31,7 @@ import {
   ResetPasswordPage,
   SignInPage,
   SignUpPage,
+  SubmitEventPage,
   TermsPage,
 } from "@/app/app-route-pages"
 import { RouteFallback } from "@/app/route-fallback"
@@ -134,6 +135,14 @@ export const appRouter = createBrowserRouter(
                   element: (
                     <FeatureErrorBoundary featureName="Profile">
                       <ProfilePage />
+                    </FeatureErrorBoundary>
+                  ),
+                },
+                {
+                  path: "/submit-event",
+                  element: (
+                    <FeatureErrorBoundary featureName="Submit Event">
+                      <SubmitEventPage />
                     </FeatureErrorBoundary>
                   ),
                 },

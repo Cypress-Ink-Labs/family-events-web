@@ -147,3 +147,8 @@ export const AdminSettingsPage = lazy(() =>
     default: module.AdminSettingsPage,
   }))
 )
+export const SubmitEventPage = lazy(() =>
+  import("@/features/events/pages/submit-event").then((module) => ({
+    default: module.SubmitEventPage,
+  }))
+)
