@@ -29,6 +29,7 @@ import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { deriveFallbackTips } from "@/features/events/lib/parent-tips-fallback"
 import { useUpsertRating, useUserRating } from "@/features/events/hooks/use-ratings"
 import { EventJsonLd } from "@/features/events/components/event-json-ld"
+import { useShareEvent } from "@/features/events/hooks/use-share-event"
 import { FadeSwap } from "@/shared/components/motion"
 import { toast } from "sonner"
 
@@ -84,6 +85,12 @@ export function EventDetailPage() {
   const toggleCalendarEvent = useToggleCalendarEvent(user?.id)
 
   useDocumentTitle(event?.title)
+
+  const { share } = useShareEvent({
+    eventId: id ?? "",
+    title: event?.title ?? "",
+    description: event?.description ?? undefined,
+  })
 
   const [uiState, setUiState] = useReducer(eventDetailUiReducer, initialEventDetailUiState)
   const { attendees, comment, userRatingOverride, favoritedOverride, calendarOverride } = uiState
@@ -219,6 +226,7 @@ export function EventDetailPage() {
         onFavoriteToggle={(_, state) =>
           setUiState({ favoritedOverride: { eventId: currentEvent.id, value: state } })
         }
+        onShare={share}
       />
 
       <EventDetailSectionLayout>

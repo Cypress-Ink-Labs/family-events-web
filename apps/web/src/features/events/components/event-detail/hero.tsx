@@ -14,6 +14,7 @@ interface EventDetailHeroProps {
   imageUrl: string
   isFavorited: boolean
   onFavoriteToggle: (eventId: string, state: boolean) => void
+  onShare?: () => void
 }
 
 export function EventDetailHero({
@@ -21,6 +22,7 @@ export function EventDetailHero({
   imageUrl,
   isFavorited,
   onFavoriteToggle,
+  onShare,
 }: EventDetailHeroProps) {
   const attribution = findUnsplashAttribution(event.image_attributions, imageUrl)
 
@@ -58,7 +60,9 @@ export function EventDetailHero({
           />
           <button
             type="button"
-            className="size-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md"
+            onClick={onShare}
+            aria-label="Share event"
+            className="size-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-colors"
           >
             <Share2 className="size-4 text-foreground" />
           </button>
