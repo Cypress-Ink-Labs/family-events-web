@@ -29,6 +29,7 @@ import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { deriveFallbackTips } from "@/features/events/lib/parent-tips-fallback"
 import { useUpsertRating, useUserRating } from "@/features/events/hooks/use-ratings"
 import { EventJsonLd } from "@/features/events/components/event-json-ld"
+import { useCalendarExport } from "@/features/events/hooks/use-calendar-export"
 import { useShareEvent } from "@/features/events/hooks/use-share-event"
 import { FadeSwap } from "@/shared/components/motion"
 import { toast } from "sonner"
@@ -90,6 +91,15 @@ export function EventDetailPage() {
     eventId: id ?? "",
     title: event?.title ?? "",
     description: event?.description ?? undefined,
+  })
+
+  const { exportToCalendar } = useCalendarExport({
+    eventId: id ?? "",
+    title: event?.title ?? "",
+    startDatetime: event?.start_datetime ?? "",
+    endDatetime: event?.end_datetime,
+    venueName: event?.venue_name,
+    description: event?.description,
   })
 
   const [uiState, setUiState] = useReducer(eventDetailUiReducer, initialEventDetailUiState)
@@ -258,6 +268,7 @@ export function EventDetailPage() {
           onIncrement={() => setUiState({ attendees: Math.min(8, attendees + 1) })}
           isInCalendar={isInCalendar}
           onAddToCalendar={handleAddToCalendar}
+          onExportCalendar={exportToCalendar}
         />
         <Separator />
         <EventDetailReviews

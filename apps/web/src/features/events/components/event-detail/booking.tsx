@@ -1,4 +1,4 @@
-import { CalendarPlus } from "lucide-react"
+import { CalendarPlus, Download } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { formatEventDate, formatEventTime } from "@/shared/utils/dates"
 import { safeHref } from "@/infrastructure/safe-url"
@@ -13,6 +13,7 @@ interface EventDetailBookingProps {
   onIncrement: () => void
   isInCalendar: boolean
   onAddToCalendar: () => void
+  onExportCalendar?: () => void
 }
 
 export function EventDetailBooking({
@@ -23,6 +24,7 @@ export function EventDetailBooking({
   onIncrement,
   isInCalendar,
   onAddToCalendar,
+  onExportCalendar,
 }: EventDetailBookingProps) {
   return (
     <div>
@@ -67,17 +69,25 @@ export function EventDetailBooking({
               : "Book Now"}
         </a>
       </Button>
-      <Button
-        variant="outline"
-        className={cn(
-          "w-full h-11 mt-3 gap-2",
-          isInCalendar && "border-primary text-primary bg-primary/5"
+      <div className="flex gap-2 mt-3">
+        <Button
+          variant="outline"
+          className={cn(
+            "flex-1 h-11 gap-2",
+            isInCalendar && "border-primary text-primary bg-primary/5"
+          )}
+          onClick={onAddToCalendar}
+        >
+          <CalendarPlus className="size-4" />
+          {isInCalendar ? "Saved" : "Save Event"}
+        </Button>
+        {onExportCalendar && (
+          <Button variant="outline" className="h-11 gap-2" onClick={onExportCalendar}>
+            <Download className="size-4" />
+            Export .ics
+          </Button>
         )}
-        onClick={onAddToCalendar}
-      >
-        <CalendarPlus className="size-4" />
-        {isInCalendar ? "Added to Calendar" : "Add to Calendar"}
-      </Button>
+      </div>
 
       <div className="flex items-center justify-center gap-1.5 mt-3">
         <div className="size-1.5 rounded-full bg-[var(--color-success)]" />
