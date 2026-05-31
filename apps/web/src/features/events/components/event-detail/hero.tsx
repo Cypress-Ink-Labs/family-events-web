@@ -28,7 +28,7 @@ export function EventDetailHero({
 
   return (
     <>
-      <div className="sticky top-14 z-30 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
+      <div className="sticky top-14 z-20 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
         <Button variant="ghost" size="sm" className="gap-2 -ml-2" asChild>
           <Link to="/explore">
             <ArrowLeft className="size-4" /> Back

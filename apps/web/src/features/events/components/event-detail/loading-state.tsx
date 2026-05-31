@@ -4,7 +4,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton"
 export function EventDetailLoadingState() {
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="sticky top-14 z-30 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
+      <div className="sticky top-14 z-20 bg-background/90 backdrop-blur border-b border-border/40 px-4 py-2">
         <div className="flex items-center gap-2 -ml-2">
           <Skeleton className="size-4 rounded" />
           <Skeleton className="h-4 w-12" />
