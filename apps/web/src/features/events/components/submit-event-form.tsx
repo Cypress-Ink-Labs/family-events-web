@@ -1,12 +1,12 @@
 import { useState } from "react"
 import { z } from "zod"
+import { CalendarDays, DollarSign, FileText, Loader2, MapPin, Type, Users } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
 import { Textarea } from "@/shared/components/ui/textarea"
 import { Switch } from "@/shared/components/ui/switch"
-import { Card, CardContent } from "@/shared/components/ui/card"
-import { Loader2 } from "lucide-react"
+import { Separator } from "@/shared/components/ui/separator"
 
 export const communityEventSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title too long"),
@@ -28,6 +28,54 @@ interface SubmitEventFormProps {
   cityId: string | undefined
   onSubmit: (data: CommunityEventFormData) => Promise<void>
   isSubmitting: boolean
+}
+
+function FormSection({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+          <Icon className="size-4 text-primary" />
+        </div>
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+      </div>
+      <div className="space-y-4 pl-10">{children}</div>
+    </div>
+  )
+}
+
+function FormField({
+  label,
+  required,
+  error,
+  hint,
+  children,
+}: {
+  label: string
+  required?: boolean
+  error?: string
+  hint?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-sm font-medium">
+        {label}
+        {required && <span className="text-destructive ml-0.5">*</span>}
+      </Label>
+      {children}
+      {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  )
 }
 
 export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventFormProps) {
@@ -81,157 +129,181 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
   }
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <Label htmlFor="title">Event Title *</Label>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Event Details */}
+      <FormSection icon={Type} title="Event Details">
+        <FormField label="Event Title" required error={errors.title}>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Neighborhood Playdate at the Park"
+            maxLength={200}
+            className="h-11"
+          />
+        </FormField>
+
+        <FormField label="Description" hint="Help families know what to expect">
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe the event, what to bring, parking info..."
+            rows={4}
+            maxLength={5000}
+            className="resize-none"
+          />
+          <div className="flex justify-end">
+            <span className="text-xs text-muted-foreground">{description.length}/5000</span>
+          </div>
+        </FormField>
+      </FormSection>
+
+      <Separator />
+
+      {/* Date & Time */}
+      <FormSection icon={CalendarDays} title="Date & Time">
+        <div className="grid grid-cols-2 gap-3">
+          <FormField label="Date" required error={errors.start_datetime}>
             <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Neighborhood Playdate at the Park"
-              maxLength={200}
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="h-11"
             />
-            {errors.title && <p className="text-sm text-destructive mt-1">{errors.title}</p>}
-          </div>
-
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Tell families what to expect..."
-              rows={4}
-              maxLength={5000}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="start-date">Date *</Label>
-              <Input
-                id="start-date"
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-              {errors.start_datetime && (
-                <p className="text-sm text-destructive mt-1">{errors.start_datetime}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="start-time">Start Time *</Label>
-              <Input
-                id="start-time"
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="end-time">End Time (optional)</Label>
-              <Input
-                id="end-time"
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="venue">Venue Name</Label>
+          </FormField>
+          <FormField label="Start Time" required>
             <Input
-              id="venue"
-              value={venueName}
-              onChange={(e) => setVenueName(e.target.value)}
-              placeholder="e.g. Moncus Park"
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="h-11"
             />
-          </div>
-
-          <div>
-            <Label htmlFor="address">Address</Label>
+          </FormField>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <FormField label="End Time" hint="Optional">
             <Input
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="e.g. 2913 Johnston St, Lafayette, LA"
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              className="h-11"
             />
-          </div>
+          </FormField>
+        </div>
+      </FormSection>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="age-min">Min Age</Label>
-              <Input
-                id="age-min"
-                type="number"
-                min={0}
-                max={18}
-                value={ageMin}
-                onChange={(e) => setAgeMin(e.target.value)}
-                placeholder="0"
-              />
-            </div>
-            <div>
-              <Label htmlFor="age-max">Max Age</Label>
-              <Input
-                id="age-max"
-                type="number"
-                min={0}
-                max={18}
-                value={ageMax}
-                onChange={(e) => setAgeMax(e.target.value)}
-                placeholder="18"
-              />
-            </div>
-          </div>
+      <Separator />
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="is-free" className="cursor-pointer">
-              Free Event
-            </Label>
-            <Switch id="is-free" checked={isFree} onCheckedChange={setIsFree} />
-          </div>
+      {/* Location */}
+      <FormSection icon={MapPin} title="Location">
+        <FormField label="Venue Name" hint="e.g. Moncus Park, Lafayette Public Library">
+          <Input
+            value={venueName}
+            onChange={(e) => setVenueName(e.target.value)}
+            placeholder="Where is the event?"
+            className="h-11"
+          />
+        </FormField>
+        <FormField label="Address">
+          <Input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Street address or cross streets"
+            className="h-11"
+          />
+        </FormField>
+      </FormSection>
 
-          {!isFree && (
-            <div>
-              <Label htmlFor="price">Price ($)</Label>
+      <Separator />
+
+      {/* Audience */}
+      <FormSection icon={Users} title="Audience">
+        <div className="grid grid-cols-2 gap-3">
+          <FormField label="Min Age" hint="Leave blank for all ages">
+            <Input
+              type="number"
+              min={0}
+              max={18}
+              value={ageMin}
+              onChange={(e) => setAgeMin(e.target.value)}
+              placeholder="Any"
+              className="h-11"
+            />
+          </FormField>
+          <FormField label="Max Age">
+            <Input
+              type="number"
+              min={0}
+              max={18}
+              value={ageMax}
+              onChange={(e) => setAgeMax(e.target.value)}
+              placeholder="Any"
+              className="h-11"
+            />
+          </FormField>
+        </div>
+      </FormSection>
+
+      <Separator />
+
+      {/* Pricing */}
+      <FormSection icon={DollarSign} title="Pricing">
+        <div className="flex items-center justify-between rounded-lg border border-border p-3">
+          <div>
+            <p className="text-sm font-medium">Free Event</p>
+            <p className="text-xs text-muted-foreground">Toggle off to set a price</p>
+          </div>
+          <Switch checked={isFree} onCheckedChange={setIsFree} />
+        </div>
+
+        {!isFree && (
+          <FormField label="Ticket Price" hint="Per person">
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
-                id="price"
                 type="number"
                 min={0}
                 step={0.01}
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                placeholder="10.00"
+                placeholder="0.00"
+                className="h-11 pl-9"
               />
             </div>
+          </FormField>
+        )}
+      </FormSection>
+
+      <Separator />
+
+      {/* Submit */}
+      <div className="space-y-3 pt-2">
+        {errors.city_id && <p className="text-sm text-destructive text-center">{errors.city_id}</p>}
+
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full h-12 text-base font-semibold"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="size-4 mr-2 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              <FileText className="size-4 mr-2" />
+              Submit Event for Review
+            </>
           )}
+        </Button>
 
-          {errors.city_id && <p className="text-sm text-destructive">{errors.city_id}</p>}
-
-          <Button type="submit" className="w-full h-11" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="size-4 mr-2 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              "Submit Event for Review"
-            )}
-          </Button>
-
-          <p className="text-xs text-muted-foreground text-center">
-            Your event will be reviewed by our team before being published. Max 5 submissions per
-            day.
-          </p>
-        </form>
-      </CardContent>
-    </Card>
+        <p className="text-xs text-muted-foreground text-center leading-relaxed">
+          Your event will be reviewed by our team before being published.
+          <br />
+          Max 5 submissions per day.
+        </p>
+      </div>
+    </form>
   )
 }

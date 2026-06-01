@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
+import { ArrowLeft, Sparkles } from "lucide-react"
+import { Link } from "react-router"
 import { supabase } from "@/infrastructure/supabase/client"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { useApp } from "@/app/stores/app-store"
@@ -9,7 +11,9 @@ import {
   SubmitEventForm,
   type CommunityEventFormData,
 } from "@/features/events/components/submit-event-form"
-import { Page, Stack } from "@/components/v2"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
+import { Page } from "@/components/v2"
 import { toast } from "sonner"
 
 export function SubmitEventPage() {
@@ -55,21 +59,42 @@ export function SubmitEventPage() {
   }
 
   return (
-    <Page width="content" className="py-6 max-w-xl mx-auto">
-      <Stack gap="4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Submit a Community Event</h1>
-          <p className="text-muted-foreground mt-1">
-            Know about a family-friendly event the community should know about? Share it here and
-            we&apos;ll review it.
+    <Page width="content" className="py-6">
+      <div className="mx-auto max-w-xl">
+        {/* Back navigation */}
+        <Button variant="ghost" size="sm" className="gap-2 -ml-2 mb-4" asChild>
+          <Link to="/explore">
+            <ArrowLeft className="size-4" /> Back to Explore
+          </Link>
+        </Button>
+
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+              <Sparkles className="size-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Submit a Community Event</h1>
+            </div>
+          </div>
+          <p className="text-muted-foreground text-sm leading-relaxed pl-[52px]">
+            Know about a family-friendly event? Share it with the community and we&apos;ll get it
+            published after a quick review.
           </p>
         </div>
-        <SubmitEventForm
-          cityId={selectedCity?.id}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-        />
-      </Stack>
+
+        {/* Form */}
+        <Card className="border-border/60">
+          <CardContent className="p-6">
+            <SubmitEventForm
+              cityId={selectedCity?.id}
+              onSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+            />
+          </CardContent>
+        </Card>
+      </div>
     </Page>
   )
 }
