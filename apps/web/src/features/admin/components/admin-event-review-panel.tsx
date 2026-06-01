@@ -107,14 +107,15 @@ export function AdminEventReviewDialog({
             className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"
             aria-hidden
           />
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4 rounded-full bg-black/40 text-white backdrop-blur hover:bg-black/60 focus-visible:ring-2 focus-visible:ring-white"
             onClick={() => onOpenChange(false)}
-            className="absolute right-4 top-4 inline-flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             aria-label="Close review panel"
           >
             <X className="size-4" />
-          </button>
+          </Button>
           <SheetHeader className="absolute inset-x-0 bottom-0 gap-2 p-5">
             <p className="font-mono text-2xs uppercase tracking-[0.18em] text-white/70">
               Review event

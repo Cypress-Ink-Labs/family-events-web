@@ -2,6 +2,7 @@ import { RefreshCw } from "lucide-react"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
+import { Label } from "@/shared/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -85,7 +86,7 @@ export function SourceCard({
 
         {/* Controls row: collapses to two-col grid on narrow card, single-row on wider. */}
         <div className="grid grid-cols-1 gap-2 border-t border-border/60 pt-3 @[480px]/src-card:grid-cols-[auto_auto_1fr] @[480px]/src-card:items-center @[480px]/src-card:gap-4">
-          <label
+          <Label
             htmlFor={`source-${source.id}-active`}
             className="inline-flex min-h-[44px] cursor-pointer items-center gap-2"
           >
@@ -96,7 +97,7 @@ export function SourceCard({
               aria-label={`Toggle ${source.name} active`}
             />
             <span className="text-xs text-muted-foreground">Active</span>
-          </label>
+          </Label>
           <div className={cn("space-y-1", !source.is_active && "opacity-40")}>
             <span className="text-[11px] text-muted-foreground">Processing</span>
             <Select

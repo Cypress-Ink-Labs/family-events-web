@@ -53,14 +53,15 @@ export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowP
                   {event.title}
                 </h3>
               </Link>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                className="text-muted-foreground hover:text-destructive shrink-0"
                 onClick={() => onRemove(event.id)}
-                className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
                 aria-label="Remove"
               >
                 <Trash2 className="size-4" />
-              </button>
+              </Button>
             </div>
 
             <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">

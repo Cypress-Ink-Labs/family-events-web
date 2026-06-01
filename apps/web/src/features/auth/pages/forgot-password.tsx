@@ -58,13 +58,13 @@ export function ForgotPasswordPage() {
                 </p>
                 <p className="text-muted-foreground">
                   Didn't get it? Check spam, or wait a minute and{" "}
-                  <button
-                    type="button"
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-sm"
                     onClick={() => setSubmitted(false)}
-                    className="text-primary font-medium hover:underline"
                   >
                     try again
-                  </button>
+                  </Button>
                   .
                 </p>
               </div>

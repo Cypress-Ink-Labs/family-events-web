@@ -1,6 +1,7 @@
 import { X } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
 import { popInVariants } from "@/shared/components/motion"
 import type { Tag } from "@/shared/types"
 
@@ -41,9 +42,9 @@ export function ExploreActiveFilters({
           >
             <Badge variant="secondary" className="gap-1">
               Free only
-              <button type="button" onClick={() => onOnlyFreeChange(false)}>
+              <Button variant="ghost" size="icon-xs" className="size-4" onClick={() => onOnlyFreeChange(false)}>
                 <X className="size-3" />
-              </button>
+              </Button>
             </Badge>
           </m.div>
         )}
@@ -58,9 +59,9 @@ export function ExploreActiveFilters({
           >
             <Badge variant="secondary" className="gap-1 capitalize">
               {activeCategory}
-              <button type="button" onClick={() => onActiveCategoryChange(null)}>
+              <Button variant="ghost" size="icon-xs" className="size-4" onClick={() => onActiveCategoryChange(null)}>
                 <X className="size-3" />
-              </button>
+              </Button>
             </Badge>
           </m.div>
         )}
@@ -77,9 +78,9 @@ export function ExploreActiveFilters({
             >
               <Badge variant="secondary" className="gap-1">
                 {tag.name}
-                <button type="button" onClick={() => onToggleTagSlug(slug)}>
+                <Button variant="ghost" size="icon-xs" className="size-4" onClick={() => onToggleTagSlug(slug)}>
                   <X className="size-3" />
-                </button>
+                </Button>
               </Badge>
             </m.div>
           ) : null

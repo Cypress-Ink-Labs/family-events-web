@@ -3,6 +3,7 @@ import { toast } from "sonner"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
+import { Label } from "@/shared/components/ui/label"
 import { ClientDistanceToNow } from "@/shared/components/client-date"
 import { Switch } from "@/shared/components/ui/switch"
 import { cn } from "@/shared/utils/format"
@@ -124,7 +125,7 @@ export function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
             )}
             <span>Run</span>
           </Button>
-          <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+          <Label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
             <Switch
               checked={job.enabled}
               onCheckedChange={handleToggle}
@@ -134,7 +135,7 @@ export function RailwayCronJobCard({ job }: { job: RailwayCronJob }) {
             <span className="text-xs text-muted-foreground">
               {job.enabled ? "Active" : "Paused"}
             </span>
-          </label>
+          </Label>
         </div>
       </CardContent>
     </Card>

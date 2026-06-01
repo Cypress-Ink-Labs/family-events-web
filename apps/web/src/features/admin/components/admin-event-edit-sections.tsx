@@ -1,6 +1,7 @@
 import { Bot, Sparkles } from "lucide-react"
 import type { ReactNode } from "react"
 import { Badge } from "@/shared/components/ui/badge"
+import { Button } from "@/shared/components/ui/button"
 import { ClientDate } from "@/shared/components/client-date"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { cn, formatSlugLabel } from "@/shared/utils/format"
@@ -61,14 +62,14 @@ export function LockedFieldsSummary({
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm font-medium">{fields.length} scraper-protected fields</p>
         {fields.length > 0 ? (
-          <button
-            type="button"
-            className="text-xs font-medium text-primary underline-offset-4 hover:underline disabled:opacity-50"
+          <Button
+            variant="link"
+            className="h-auto p-0 text-xs"
             onClick={onUnlock}
             disabled={isUnlocking}
           >
             Unlock all fields
-          </button>
+          </Button>
         ) : null}
       </div>
       {fields.length > 0 ? (

@@ -57,13 +57,13 @@ export function PasswordSignInForm({
       <Button type="submit" className="min-h-[44px] w-full" disabled={loading}>
         {loading ? "Signing in..." : "Sign In"}
       </Button>
-      <button
-        type="button"
+      <Button
+        variant="link"
+        className="block w-full text-center text-xs text-muted-foreground hover:text-primary"
         onClick={onSwitchToMagic}
-        className="block w-full text-center text-xs text-muted-foreground hover:text-primary hover:underline"
       >
         Email me a link instead
-      </button>
+      </Button>
     </form>
   )
 }

@@ -4,6 +4,7 @@ import { Check, Cpu, ShieldCheck, Tag } from "lucide-react"
 
 import type { AiFeatureConfig, AiFeatureId, ApprovedAiModel } from "@/features/admin/types"
 import { Button } from "@/shared/components/ui/button"
+import { Label } from "@/shared/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -142,7 +143,7 @@ export function AiFeatureCard({
 
       <div className={cn("space-y-5 p-6 transition-opacity duration-300", !active && "opacity-55")}>
         <div className="space-y-2">
-          <label
+          <Label
             className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
             htmlFor={`${feature}-model`}
           >
@@ -152,7 +153,7 @@ export function AiFeatureCard({
                 {selectedModel.provider}
               </span>
             ) : null}
-          </label>
+          </Label>
 
           <Select value={selectedModelId} onValueChange={onModelChange} disabled={!active}>
             <SelectTrigger id={`${feature}-model`} className="w-full">

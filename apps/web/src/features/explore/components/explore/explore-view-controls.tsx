@@ -1,5 +1,6 @@
 import { LayoutGrid, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
+import { Label } from "@/shared/components/ui/label"
 import {
   Sheet,
   SheetClose,
@@ -119,7 +120,7 @@ export function ExploreViewControls({
               </div>
             </div>
 
-            <label
+            <Label
               htmlFor="show-images-switch"
               className={cn(
                 "flex items-center justify-between px-4 py-3.5 rounded-xl cursor-pointer transition-all duration-150",
@@ -132,7 +133,7 @@ export function ExploreViewControls({
                 checked={showImages}
                 onCheckedChange={onShowImagesChange}
               />
-            </label>
+            </Label>
           </div>
         </div>
       </SheetContent>

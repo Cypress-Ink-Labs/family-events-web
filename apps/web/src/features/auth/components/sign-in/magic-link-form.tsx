@@ -47,13 +47,13 @@ export function MagicLinkForm({
       >
         {loading ? "Sending..." : "Send magic link"}
       </Button>
-      <button
-        type="button"
+      <Button
+        variant="link"
+        className="block w-full text-center text-xs text-muted-foreground hover:text-primary"
         onClick={onSwitchToPassword}
-        className="block w-full text-center text-xs text-muted-foreground hover:text-primary hover:underline"
       >
         Use password instead
-      </button>
+      </Button>
     </form>
   )
 }

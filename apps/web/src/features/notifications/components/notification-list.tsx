@@ -1,5 +1,6 @@
 import type { UserNotification } from "@family-events/contracts"
 import { Link } from "react-router"
+import { Button } from "@/shared/components/ui/button"
 import { cn } from "@/shared/utils/format"
 
 function formatRelativeTime(dateString: string): string {
@@ -48,17 +49,17 @@ export function NotificationList({
       <div className="flex items-center justify-between border-b border-border/60 px-4 py-2">
         <span className="text-sm font-medium">Notifications</span>
         {hasUnread ? (
-          <button
-            type="button"
+          <Button
+            variant="link"
+            className="h-auto p-0 text-xs"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               onMarkAllRead()
             }}
-            className="text-xs font-medium text-primary hover:text-primary/80"
           >
             Mark all read
-          </button>
+          </Button>
         ) : null}
       </div>
 
@@ -114,14 +115,14 @@ export function NotificationList({
           }
 
           return (
-            <button
+            <Button
               key={notification.id}
-              type="button"
+              variant="ghost"
+              className="h-auto w-full justify-start rounded-none p-0 font-normal"
               onClick={handleClick}
-              className="w-full text-left"
             >
               {content}
-            </button>
+            </Button>
           )
         })}
       </div>

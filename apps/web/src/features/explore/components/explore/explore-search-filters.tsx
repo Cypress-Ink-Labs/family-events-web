@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { Check, Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
+import { Label } from "@/shared/components/ui/label"
 import {
   Sheet,
   SheetClose,
@@ -64,13 +65,14 @@ export function ExploreSearchFilters({
           className="pl-9 bg-muted border-0 h-11"
         />
         {keyword && (
-          <button
-            type="button"
-            onClick={onClearKeyword}
+          <Button
+            variant="ghost"
+            size="icon-xs"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            onClick={onClearKeyword}
           >
             <X className="size-4" />
-          </button>
+          </Button>
         )}
       </div>
       <Sheet>
@@ -90,13 +92,13 @@ export function ExploreSearchFilters({
             <SheetTitle className="text-sm font-semibold tracking-tight">Filters</SheetTitle>
             <div className="flex items-center gap-3">
               {activeFilterCount > 0 && (
-                <button
-                  type="button"
+                <Button
+                  variant="link"
+                  className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
                   onClick={onClearAllFilters}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Clear all
-                </button>
+                </Button>
               )}
               <SheetClose className="rounded-sm opacity-60 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
                 <X className="size-4" />
@@ -157,7 +159,7 @@ export function ExploreSearchFilters({
                 </div>
               </div>
 
-              <label
+              <Label
                 htmlFor="free-only-switch"
                 className={cn(
                   "flex items-center justify-between px-4 py-3.5 rounded-xl cursor-pointer transition-all duration-150",
@@ -170,7 +172,7 @@ export function ExploreSearchFilters({
                   checked={onlyFree}
                   onCheckedChange={onOnlyFreeChange}
                 />
-              </label>
+              </Label>
 
               <div>
                 <p className="text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/70 uppercase mb-3">
