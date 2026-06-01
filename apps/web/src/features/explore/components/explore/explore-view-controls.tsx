@@ -1,6 +1,7 @@
 import { LayoutGrid, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Label } from "@/shared/components/ui/label"
+import { TogglePill } from "@/shared/components/ui/toggle-pill"
 import {
   Sheet,
   SheetClose,
@@ -29,14 +30,6 @@ interface ExploreViewControlsProps {
   onSortChange: (sort: ExploreSortOption) => void
   onShowImagesChange: (showImages: boolean) => void
 }
-
-const pillClass = (active: boolean) =>
-  cn(
-    "px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150",
-    active
-      ? "bg-primary text-primary-foreground"
-      : "bg-muted text-muted-foreground hover:text-foreground"
-  )
 
 const sectionLabel =
   "text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/70 uppercase mb-3"
@@ -74,14 +67,15 @@ export function ExploreViewControls({
               <p className={sectionLabel}>Layout</p>
               <div className="flex flex-wrap gap-1.5">
                 {EXPLORE_LAYOUT_OPTIONS.map((option) => (
-                  <button
-                    type="button"
+                  <TogglePill
                     key={option.value}
+                    variant="soft"
+                    active={layout === option.value}
                     onClick={() => onLayoutChange(option.value)}
-                    className={pillClass(layout === option.value)}
+                    className="px-3.5 py-1.5"
                   >
                     {option.label}
-                  </button>
+                  </TogglePill>
                 ))}
               </div>
             </div>
@@ -91,14 +85,15 @@ export function ExploreViewControls({
                 <p className={sectionLabel}>Cards per row</p>
                 <div className="flex flex-wrap gap-1.5">
                   {EXPLORE_COLUMN_OPTIONS.map((option) => (
-                    <button
-                      type="button"
+                    <TogglePill
                       key={option}
+                      variant="soft"
+                      active={columns === option}
                       onClick={() => onColumnsChange(option)}
-                      className={pillClass(columns === option)}
+                      className="px-3.5 py-1.5"
                     >
                       {option}
-                    </button>
+                    </TogglePill>
                   ))}
                 </div>
               </div>
@@ -108,14 +103,15 @@ export function ExploreViewControls({
               <p className={sectionLabel}>Sort by</p>
               <div className="flex flex-wrap gap-1.5">
                 {EXPLORE_SORT_OPTIONS.map((option) => (
-                  <button
-                    type="button"
+                  <TogglePill
                     key={option.value}
+                    variant="soft"
+                    active={sort === option.value}
                     onClick={() => onSortChange(option.value)}
-                    className={pillClass(sort === option.value)}
+                    className="px-3.5 py-1.5"
                   >
                     {option.label}
-                  </button>
+                  </TogglePill>
                 ))}
               </div>
             </div>

@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 import { MapPin } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
+import { TogglePill } from "@/shared/components/ui/toggle-pill"
 import { cn } from "@/shared/utils/format"
 import { useExploreStore, type LocationState } from "@/features/explore/stores/explore-store"
 import { useApp } from "@/app/stores/app-store"
@@ -91,19 +92,15 @@ export function RadiusFilter() {
       {nearMeEnabled && (
         <div className="flex items-center gap-0.5">
           {RADIUS_OPTIONS.map((km) => (
-            <button
-              type="button"
+            <TogglePill
               key={km}
+              variant="soft"
+              active={radiusKm === km}
               onClick={() => setRadiusKm(km)}
-              className={cn(
-                "px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150",
-                radiusKm === km
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
-              )}
+              className="px-2.5 py-1 min-h-0"
             >
               {km}km
-            </button>
+            </TogglePill>
           ))}
         </div>
       )}

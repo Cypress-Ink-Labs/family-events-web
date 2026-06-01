@@ -3,6 +3,7 @@ import { Check, Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
+import { TogglePill } from "@/shared/components/ui/toggle-pill"
 import {
   Sheet,
   SheetClose,
@@ -115,21 +116,17 @@ export function ExploreSearchFilters({
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {EXPLORE_DATE_QUICK_FILTERS.map((filter) => (
-                    <button
-                      type="button"
+                    <TogglePill
                       key={filter.value}
+                      variant="soft"
+                      active={activeDateFilter === filter.value}
                       onClick={() =>
                         onDateFilterChange(activeDateFilter === filter.value ? null : filter.value)
                       }
-                      className={cn(
-                        "px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150",
-                        activeDateFilter === filter.value
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      )}
+                      className="px-3.5 py-1.5"
                     >
                       {filter.label}
-                    </button>
+                    </TogglePill>
                   ))}
                 </div>
               </div>
@@ -140,21 +137,17 @@ export function ExploreSearchFilters({
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {EXPLORE_AGE_OPTIONS.map((option) => (
-                    <button
-                      type="button"
+                    <TogglePill
                       key={option.label}
+                      variant="soft"
+                      active={selectedAge === option.label}
                       onClick={() =>
                         onAgeChange(selectedAge === option.label ? null : option.label)
                       }
-                      className={cn(
-                        "px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150",
-                        selectedAge === option.label
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      )}
+                      className="px-3.5 py-1.5"
                     >
                       {option.label}
-                    </button>
+                    </TogglePill>
                   ))}
                 </div>
               </div>

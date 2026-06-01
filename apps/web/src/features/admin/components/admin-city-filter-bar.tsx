@@ -1,6 +1,6 @@
-import { cn } from "@/shared/utils/format"
 import { UNASSIGNED_CITY_KEY, type CityFilterValue } from "@/lib/events/group-by-city"
 import { FilterBar } from "@/components/v2"
+import { TogglePill } from "@/shared/components/ui/toggle-pill"
 import type { City } from "@/shared/types"
 
 interface CityCount {
@@ -70,19 +70,9 @@ interface CityChipProps {
 
 function CityChip({ label, count, active, onClick }: CityChipProps) {
   return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border hover:bg-accent"
-      )}
-    >
+    <TogglePill active={active} onClick={onClick}>
       {label}
       <span className="opacity-70">({count.toLocaleString()})</span>
-    </button>
+    </TogglePill>
   )
 }

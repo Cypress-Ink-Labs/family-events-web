@@ -9,6 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/shared/components/ui/collapsible"
 import { cn } from "@/shared/utils/format"
+import { TogglePill } from "@/shared/components/ui/toggle-pill"
 import type { CronRun } from "@/features/admin/types"
 import {
   ALL_RUNS_DOMAIN,
@@ -69,17 +70,7 @@ interface RunDomainChipProps {
 
 export function RunDomainChip({ label, count, active, onClick }: RunDomainChipProps) {
   return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border hover:bg-accent"
-      )}
-    >
+    <TogglePill active={active} onClick={onClick} className="gap-1.5">
       <span>{label}</span>
       <Badge
         variant={active ? "outline" : "secondary"}
@@ -90,7 +81,7 @@ export function RunDomainChip({ label, count, active, onClick }: RunDomainChipPr
       >
         {count}
       </Badge>
-    </button>
+    </TogglePill>
   )
 }
 

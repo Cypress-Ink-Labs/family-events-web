@@ -3,6 +3,7 @@ import type { Event } from "@/shared/types"
 import { cn, formatSlugLabel } from "@/shared/utils/format"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
+import { TogglePill } from "@/shared/components/ui/toggle-pill"
 import {
   Select,
   SelectContent,
@@ -43,16 +44,10 @@ export function AdminEventStatusFilterBar({
       </span>
       <FilterBar>
         {(["all", "draft", "published", "rejected"] as const).map((status) => (
-          <button
-            type="button"
+          <TogglePill
             key={status}
+            active={statusFilter === status}
             onClick={() => onChange(status)}
-            className={cn(
-              "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-              statusFilter === status
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:bg-accent"
-            )}
           >
             {formatSlugLabel(status)}
             {status !== "all" && counts[status] ? (
@@ -60,7 +55,7 @@ export function AdminEventStatusFilterBar({
             ) : status === "all" ? (
               <span className="opacity-70">({total})</span>
             ) : null}
-          </button>
+          </TogglePill>
         ))}
       </FilterBar>
     </div>
@@ -88,19 +83,13 @@ export function AdminLlmReviewFilterBar({ llmReviewFilter, onChange }: LlmFilter
       </span>
       <FilterBar>
         {ADMIN_LLM_REVIEW_FILTER_OPTIONS.map((option) => (
-          <button
-            type="button"
+          <TogglePill
             key={option.value}
+            active={llmReviewFilter === option.value}
             onClick={() => onChange(option.value)}
-            className={cn(
-              "inline-flex min-h-[36px] shrink-0 snap-start items-center gap-1 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-              llmReviewFilter === option.value
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:bg-accent"
-            )}
           >
             {displayLlmLabel(option)}
-          </button>
+          </TogglePill>
         ))}
       </FilterBar>
     </div>
