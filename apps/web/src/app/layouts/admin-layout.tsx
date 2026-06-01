@@ -74,9 +74,9 @@ export function AdminLayout() {
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <Sidebar collapsible="icon">
-          <SidebarHeader className="p-4">
-            <div className="flex items-center gap-2">
-              <BrandMark className="size-8" />
+          <SidebarHeader className="p-2 group-data-[collapsible=icon]:p-2">
+            <div className="flex items-center gap-2 px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+              <BrandMark className="size-8 shrink-0" />
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="text-sm font-bold text-sidebar-foreground">Family Events</p>
                 <p className="text-xs text-sidebar-foreground/60">Admin Dashboard</p>
@@ -104,7 +104,7 @@ export function AdminLayout() {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="p-4">
+          <SidebarFooter className="p-2">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Back to site">
