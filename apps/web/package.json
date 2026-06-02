@@ -41,7 +41,7 @@
     "radix-ui": "^1.4.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-hook-form": "^7.76.1",
+    "react-hook-form": "^7.77.0",
     "react-map-gl": "^8.1.1",
     "react-router": "^7.16.0",
     "recharts": "^3.8.1",
