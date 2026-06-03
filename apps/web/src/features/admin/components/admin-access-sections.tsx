@@ -4,6 +4,7 @@ import { Toolbar } from "@/components/v2"
 
 export { AdminAccessList } from "@/features/admin/components/admin-access-list"
 export { AdminAccessDisableDialog } from "@/features/admin/components/admin-access-disable-dialog"
+export { AdminAccessDeleteDialog } from "@/features/admin/components/admin-access-delete-dialog"
 
 interface AdminAccessHeaderProps {
   query: string
@@ -14,7 +15,7 @@ export function AdminAccessHeader({ query, onQueryChange }: AdminAccessHeaderPro
   return (
     <Toolbar
       title="Account Access"
-      subtitle="Enable or disable invited accounts without deleting them."
+      subtitle="Enable, disable, or permanently delete invited accounts."
       actions={
         <div className="relative w-full min-w-[200px] max-w-xs">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />

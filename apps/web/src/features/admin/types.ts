@@ -27,6 +27,39 @@ export interface AdminUserAccessRecord extends UserAccess {
   user_profiles: Pick<UserProfile, "display_name" | "email" | "role" | "created_at"> | null
 }
 
+/**
+ * Helper functions for working with AdminUserAccessRecord (the "account" rows
+ * shown in the admin access list). These encapsulate the permission and role
+ * logic that was previously repeated inline.
+ *
+ * They are intentionally plain functions (not methods on the interface) because
+ * AdminUserAccessRecord is a plain data shape coming from Supabase queries.
+ * Attaching real methods would require wrapping every row, which we avoid to
+ * keep data serializable, simple, and consistent with the rest of the app.
+ */
+
+export function isAdminAccount(record: AdminUserAccessRecord): boolean {
+  return record.user_profiles?.role === "admin"
+}
+
+export function isSelfAccount(record: AdminUserAccessRecord, currentUserId?: string): boolean {
+  return record.user_id === currentUserId
+}
+
+export function canDisableAccount(record: AdminUserAccessRecord, currentUserId?: string): boolean {
+  // Note: we currently allow admins to disable *other* admins (only self is blocked).
+  // Delete is stricter (see canDeleteAccount).
+  return !isSelfAccount(record, currentUserId) && record.is_enabled
+}
+
+export function canEnableAccount(record: AdminUserAccessRecord, currentUserId?: string): boolean {
+  return !isSelfAccount(record, currentUserId) && !record.is_enabled
+}
+
+export function canDeleteAccount(record: AdminUserAccessRecord, currentUserId?: string): boolean {
+  return !isSelfAccount(record, currentUserId) && !isAdminAccount(record)
+}
+
 export interface AdminStats {
   totalEvents: number
   pendingReview: number

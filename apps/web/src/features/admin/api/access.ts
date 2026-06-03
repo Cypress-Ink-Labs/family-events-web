@@ -34,3 +34,10 @@ export async function setAdminUserAccess({
   })
   if (error) throw error
 }
+
+export async function deleteAdminUser(userId: string): Promise<void> {
+  const { error } = await supabase.rpc("admin_delete_user", {
+    p_user_id: userId,
+  })
+  if (error) throw error
+}
