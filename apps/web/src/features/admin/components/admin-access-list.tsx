@@ -2,24 +2,37 @@ import { ShieldCheck, ShieldOff, Trash2, UserRound } from "lucide-react"
 import { Badge } from "@/shared/components/ui/badge"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
+import { Checkbox } from "@/shared/components/ui/checkbox"
 import { ClientDate } from "@/shared/components/client-date"
+import { cn } from "@/shared/utils/format"
 import type { AdminUserAccessRecord } from "@/features/admin/types"
 import { useAccountPermissions } from "@/features/admin/hooks/use-admin-access"
 
 interface AdminAccessListProps {
   accounts: AdminUserAccessRecord[]
+  selectedIds: Set<string>
+  onToggleSelect: (id: string) => void
   onDisable: (userId: string) => void
   onEnable: (userId: string) => void
   onDelete: (userId: string) => void
 }
 
-export function AdminAccessList({ accounts, onDisable, onEnable, onDelete }: AdminAccessListProps) {
+export function AdminAccessList({
+  accounts,
+  selectedIds,
+  onToggleSelect,
+  onDisable,
+  onEnable,
+  onDelete,
+}: AdminAccessListProps) {
   return (
     <div className="space-y-3">
       {accounts.map((account) => (
         <AccountRow
           key={account.user_id}
           account={account}
+          isSelected={selectedIds.has(account.user_id)}
+          onToggleSelect={onToggleSelect}
           onDisable={onDisable}
           onEnable={onEnable}
           onDelete={onDelete}
@@ -39,11 +52,15 @@ export function AdminAccessList({ accounts, onDisable, onEnable, onDelete }: Adm
 
 function AccountRow({
   account,
+  isSelected,
+  onToggleSelect,
   onDisable,
   onEnable,
   onDelete,
 }: {
   account: AdminUserAccessRecord
+  isSelected: boolean
+  onToggleSelect: (id: string) => void
   onDisable: (userId: string) => void
   onEnable: (userId: string) => void
   onDelete: (userId: string) => void
@@ -57,9 +74,15 @@ function AccountRow({
   const canDelete = perms.canDelete
 
   return (
-    <Card className="border-border/60">
+    <Card className={cn("border-border/60", isSelected && "border-primary/50 bg-primary/5")}>
       <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-center">
         <div className="flex min-w-0 flex-1 items-start gap-3">
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => onToggleSelect(account.user_id)}
+            className="mt-1 shrink-0"
+            aria-label={`Select ${profile?.display_name || profile?.email || account.user_id}`}
+          />
           <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <UserRound className="size-5" />
           </div>

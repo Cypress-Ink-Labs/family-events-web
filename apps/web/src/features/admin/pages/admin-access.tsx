@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import {
+  AdminAccessBulkBar,
   AdminAccessDeleteDialog,
   AdminAccessDisableDialog,
   AdminAccessHeader,
@@ -24,6 +25,15 @@ export function AdminAccessPage() {
 
   const query = useAdminStore((s) => s.accessQuery)
   const setQuery = useAdminStore((s) => s.setAccessQuery)
+  const selectedIds = useAdminStore((s) => s.selectedIds)
+  const toggleSelectedId = useAdminStore((s) => s.toggleSelectedId)
+  const clearSelectedIds = useAdminStore((s) => s.clearSelectedIds)
+  const setSelectedIds = useAdminStore((s) => s.setSelectedIds)
+
+  function handleQueryChange(value: string) {
+    setQuery(value)
+    clearSelectedIds()
+  }
   const [dialogUserId, setDialogUserId] = useState<string | null>(null)
   const [disabledReason, setDisabledReason] = useState("")
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null)
@@ -46,6 +56,18 @@ export function AdminAccessPage() {
       return haystack.includes(normalized)
     })
   }, [accounts, query])
+
+  const selectedVisibleIds = useMemo(() => {
+    const result = new Set<string>()
+    for (const account of filteredAccounts) {
+      if (selectedIds.has(account.user_id)) result.add(account.user_id)
+    }
+    return result
+  }, [filteredAccounts, selectedIds])
+
+  const selectedLoadedIds = useMemo(() => [...selectedVisibleIds], [selectedVisibleIds])
+  const allLoadedSelected =
+    filteredAccounts.length > 0 && selectedLoadedIds.length === filteredAccounts.length
 
   async function applyAccessChange(userId: string, isEnabled: boolean, reason?: string) {
     try {
@@ -87,11 +109,55 @@ export function AdminAccessPage() {
     setDeleteUserId(null)
   }
 
+  async function deleteSelectedAccounts() {
+    const ids = selectedLoadedIds
+    if (ids.length === 0) return
+    if (
+      !window.confirm(
+        `Delete ${ids.length} account${ids.length === 1 ? "" : "s"}? This cannot be undone.`
+      )
+    ) {
+      return
+    }
+    const results = await Promise.allSettled(ids.map((id) => deleteUser.mutateAsync(id)))
+    const succeeded = results.filter((r) => r.status === "fulfilled").length
+    const failed = ids.length - succeeded
+    if (succeeded > 0) {
+      toast.success(`${succeeded} account${succeeded > 1 ? "s" : ""} deleted`)
+    }
+    if (failed > 0) {
+      toast.error(`${failed} delete${failed > 1 ? "s" : ""} failed`)
+    }
+    clearSelectedIds()
+  }
+
+  function toggleSelectAll() {
+    if (allLoadedSelected) {
+      clearSelectedIds()
+    } else {
+      setSelectedIds(new Set(filteredAccounts.map((a) => a.user_id)))
+    }
+  }
+
   return (
     <div className="space-y-6">
-      <AdminAccessHeader query={query} onQueryChange={setQuery} />
+      <AdminAccessHeader
+        query={query}
+        onQueryChange={handleQueryChange}
+        loadedCount={filteredAccounts.length}
+        allLoadedSelected={allLoadedSelected}
+        onToggleSelectAll={toggleSelectAll}
+      />
+      <AdminAccessBulkBar
+        selectedCount={selectedLoadedIds.length}
+        isDeletePending={deleteUser.isPending}
+        onDelete={deleteSelectedAccounts}
+        onClear={clearSelectedIds}
+      />
       <AdminAccessList
         accounts={filteredAccounts}
+        selectedIds={selectedIds}
+        onToggleSelect={toggleSelectedId}
         onDisable={setDialogUserId}
         onEnable={(userId) => applyAccessChange(userId, true)}
         onDelete={setDeleteUserId}
