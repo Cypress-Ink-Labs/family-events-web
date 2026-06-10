@@ -1,57 +1,54 @@
 import { supabase } from "@/infrastructure/supabase/client"
 import type { AdminStats } from "@/features/admin/types"
 
+interface AdminDashboardStatsPayload {
+  total_events: number
+  draft_events: number
+  published_events: number
+  ai_confidence: { high: number; medium: number; low: number }
+  sources: { active: number; errors: number }
+  dead_letters: {
+    tag_queue: number
+    source_queue: number
+    oldest_tag_dead_at: string | null
+    oldest_source_dead_at: string | null
+  }
+  generated_at: string
+}
+
 /**
- * Aggregates admin dashboard stats from the events + event_sources tables in
- * a single round-trip. Pure data-access — the UI hook (`useAdminStats`)
- * just hands the result to TanStack Query.
+ * Aggregates admin dashboard stats via the admin_dashboard_stats RPC — one
+ * round-trip replacing the previous five parallel queries. Pure data-access —
+ * the UI hook (`useAdminStats`) just hands the result to TanStack Query.
  */
 export async function fetchAdminStats(): Promise<AdminStats> {
-  const [
-    { count: totalCount, error: totalError },
-    { count: draftCount, error: draftError },
-    { count: publishedCount, error: publishedError },
-    { data: confidenceData, error: confidenceError },
-    { data: sources, error: sourcesError },
-  ] = await Promise.all([
-    supabase.from("events").select("*", { count: "exact", head: true }),
-    supabase.from("events").select("*", { count: "exact", head: true }).eq("status", "draft"),
-    supabase.from("events").select("*", { count: "exact", head: true }).eq("status", "published"),
-    supabase.from("events").select("ai_confidence").not("ai_confidence", "is", null),
-    supabase.from("event_sources").select("is_active, last_status"),
-  ])
-  if (totalError) throw totalError
-  if (draftError) throw draftError
-  if (publishedError) throw publishedError
-  if (confidenceError) throw confidenceError
-  if (sourcesError) throw sourcesError
+  const { data, error } = await supabase.rpc("admin_dashboard_stats")
+  if (error) throw error
+  // RPC returns Json; shape is defined by the SQL function.
+  const stats = data as unknown as AdminDashboardStatsPayload
 
-  const sourceRows = sources ?? []
-  let totalConfidenceRows = 0
-  let highConfidenceRows = 0
-  let mediumConfidenceRows = 0
-  for (const event of confidenceData ?? []) {
-    const value = event.ai_confidence
-    if (typeof value !== "number") continue
-    totalConfidenceRows += 1
-    if (value >= 0.9) highConfidenceRows += 1
-    else if (value >= 0.7) mediumConfidenceRows += 1
-  }
-  const confidenceDenominator = totalConfidenceRows || 1
-  const high = Math.round((highConfidenceRows / confidenceDenominator) * 100)
-  const medium = Math.round((mediumConfidenceRows / confidenceDenominator) * 100)
+  // aiBuckets are percentages of events that have a confidence score.
+  const { high: highCount, medium: mediumCount, low: lowCount } = stats.ai_confidence
+  const confidenceDenominator = highCount + mediumCount + lowCount || 1
+  const high = Math.round((highCount / confidenceDenominator) * 100)
+  const medium = Math.round((mediumCount / confidenceDenominator) * 100)
 
   return {
-    totalEvents: totalCount ?? 0,
-    pendingReview: draftCount ?? 0,
-    published: publishedCount ?? 0,
-    activeSources: sourceRows.filter((source) => source.is_active).length,
-    sourceErrors: sourceRows.filter((source) => source.is_active && source.last_status === "error")
-      .length,
+    totalEvents: stats.total_events,
+    pendingReview: stats.draft_events,
+    published: stats.published_events,
+    activeSources: stats.sources.active,
+    sourceErrors: stats.sources.errors,
     aiBuckets: {
       high,
       medium,
       low: Math.max(0, 100 - high - medium),
+    },
+    deadLetters: {
+      tagQueue: stats.dead_letters.tag_queue,
+      sourceQueue: stats.dead_letters.source_queue,
+      oldestTagDeadAt: stats.dead_letters.oldest_tag_dead_at,
+      oldestSourceDeadAt: stats.dead_letters.oldest_source_dead_at,
     },
   }
 }

@@ -50,6 +50,8 @@ interface ChartLegendContentProps extends React.ComponentProps<"div"> {
 
 interface ResponsiveContainerProps {
   children?: React.ReactNode
+  minHeight?: number | string
+  minWidth?: number | string
   initialDimension?: {
     width: number
     height: number
@@ -130,7 +132,9 @@ function ChartContainer({
       >
         <ChartStyle id={chartId} config={config} />
         <React.Suspense fallback={null}>
-          <ResponsiveContainer initialDimension={initialDimension}>{children}</ResponsiveContainer>
+          <ResponsiveContainer initialDimension={initialDimension} minHeight={1} minWidth={1}>
+            {children}
+          </ResponsiveContainer>
         </React.Suspense>
       </div>
     </ChartContext.Provider>

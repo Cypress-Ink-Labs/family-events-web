@@ -14,6 +14,7 @@ export interface AdminEventsFilters {
   status?: Event["status"]
   cityId?: string
   cityIsNull?: boolean
+  sourceId?: string
   keyword?: string
   llmReviewStatus?: Event["llm_review_status"]
   llmReviewDecision?: Event["llm_review_decision"]
@@ -29,6 +30,7 @@ export interface AdminEventsPageResult {
 
 export interface AdminEventFacetRow {
   city_id: string | null
+  source_id: string | null
   status: Event["status"]
   count: number
 }
@@ -73,6 +75,7 @@ export async function fetchAdminEventsPage(
     p_status: filters.status,
     p_city_id: filters.cityId,
     p_city_is_null: filters.cityIsNull,
+    p_source_id: filters.sourceId,
     p_keyword: keyword,
     p_after_created_at: cursor?.afterCreatedAt,
     p_after_id: cursor?.afterId,

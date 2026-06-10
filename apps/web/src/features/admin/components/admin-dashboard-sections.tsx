@@ -1,9 +1,11 @@
 import { lazy, type ComponentType } from "react"
+import { Link } from "react-router"
 import {
   ChartBar as BarChart3,
   Calendar,
   TriangleAlert as AlertTriangle,
   CircleCheck as CheckCircle,
+  Inbox,
   Circle as XCircle,
 } from "lucide-react"
 import { Badge } from "@/shared/components/ui/badge"
@@ -192,6 +194,86 @@ export function AdminDashboardRecentRuns({ runs, isLoading }: AdminDashboardRece
             </div>
           </div>
         ))}
+      </CardContent>
+    </Card>
+  )
+}
+
+interface AdminDashboardQueueHealthCardProps {
+  deadLetters?: {
+    tagQueue: number
+    sourceQueue: number
+    oldestTagDeadAt: string | null
+    oldestSourceDeadAt: string | null
+  }
+  isLoading: boolean
+}
+
+export function AdminDashboardQueueHealthCard({
+  deadLetters,
+  isLoading,
+}: AdminDashboardQueueHealthCardProps) {
+  const totalDead = (deadLetters?.tagQueue ?? 0) + (deadLetters?.sourceQueue ?? 0)
+  const rows = [
+    {
+      label: "Tag queue",
+      count: deadLetters?.tagQueue ?? 0,
+      oldest: deadLetters?.oldestTagDeadAt,
+    },
+    {
+      label: "Source scrape queue",
+      count: deadLetters?.sourceQueue ?? 0,
+      oldest: deadLetters?.oldestSourceDeadAt,
+    },
+  ]
+
+  return (
+    <Card className="border-border/60">
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <Inbox className="size-4 text-primary" />
+          Queue Health
+          {totalDead > 0 && (
+            <Badge variant="destructive" className="text-[10px]">
+              {totalDead} dead
+            </Badge>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+        {!isLoading && totalDead === 0 && (
+          <p className="text-sm text-muted-foreground">
+            No dead jobs. All queue items are retrying or completed.
+          </p>
+        )}
+        {!isLoading &&
+          totalDead > 0 &&
+          rows.map((row) => (
+            <div key={row.label} className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate">{row.label}</p>
+                {row.count > 0 && row.oldest && (
+                  <p className="text-xs text-muted-foreground">
+                    oldest died {new Date(row.oldest).toLocaleString()}
+                  </p>
+                )}
+              </div>
+              <Badge
+                variant={row.count > 0 ? "destructive" : "secondary"}
+                className="text-[10px] shrink-0"
+              >
+                {row.count} dead
+              </Badge>
+            </div>
+          ))}
+        <p className="text-xs text-muted-foreground pt-2">
+          Retry or delete dead jobs from the{" "}
+          <Link to="/admin/logs" className="underline underline-offset-2 hover:text-foreground">
+            queue panels in Logs
+          </Link>
+          .
+        </p>
       </CardContent>
     </Card>
   )

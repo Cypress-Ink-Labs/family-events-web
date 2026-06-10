@@ -8,6 +8,7 @@ import {
   AdminLlmReviewFilterBar,
   AdminEventsToolbar,
   AdminEventStatusFilterBar,
+  AdminSourceFilterBar,
   type AdminLlmReviewFilter,
 } from "@/features/admin/components/admin-events-sections"
 import { AdminCityFilterBar } from "@/features/admin/components/admin-city-filter-bar"
@@ -21,6 +22,7 @@ import {
 } from "@/features/admin/hooks/events/use-admin-events"
 import { useAdminEventFacetCounts } from "@/features/admin/hooks/events/use-admin-event-facet-counts"
 import { useAdminCities } from "@/features/admin/hooks/use-admin-cities"
+import { useAdminSources } from "@/features/admin/hooks/sources/use-admin-sources"
 import { useCityFilter } from "@/features/admin/hooks/use-city-filter"
 import { useAdminEventsRealtime } from "@/features/admin/hooks/operations/use-admin-events-realtime"
 import { ADMIN_EVENT_STATUS_DISPLAY } from "@/features/admin/constants/event-status-display"
@@ -58,6 +60,7 @@ export function AdminEventsPage() {
   const [llmReviewFilter, setLlmReviewFilter] = useState<AdminLlmReviewFilter>(
     ADMIN_LLM_REVIEW_FILTER.ALL
   )
+  const [sourceFilter, setSourceFilter] = useState("all")
   const [pageSize, setPageSize] = useState<AdminEventsPageSize>(readStoredPageSize)
 
   useEffect(() => {
@@ -88,6 +91,7 @@ export function AdminEventsPage() {
     keyword,
     status: statusFilter,
     cityFilter,
+    sourceFilter,
     llmReviewFilter,
     pageSize,
   })
@@ -100,9 +104,17 @@ export function AdminEventsPage() {
 
   const { data: facets = [] } = useAdminEventFacets(keyword)
   const { data: cities = [] } = useAdminCities()
+  const { data: sources = [] } = useAdminSources()
 
-  const { statusCounts, statusTotal, cityCounts, cityTotal, activeTotal } =
-    useAdminEventFacetCounts({ facets, statusFilter, cityFilter })
+  const {
+    statusCounts,
+    statusTotal,
+    cityCounts,
+    cityTotal,
+    sourceCounts,
+    sourceTotal,
+    activeTotal,
+  } = useAdminEventFacetCounts({ facets, statusFilter, cityFilter, sourceFilter })
 
   const totalCountForToolbar = totalCount > 0 ? totalCount : activeTotal
 
@@ -146,6 +158,11 @@ export function AdminEventsPage() {
 
   function handleLlmReviewFilterChange(nextFilter: AdminLlmReviewFilter) {
     setLlmReviewFilter(nextFilter)
+    clearSelectedIds()
+  }
+
+  function handleSourceFilterChange(nextSourceFilter: string) {
+    setSourceFilter(nextSourceFilter)
     clearSelectedIds()
   }
 
@@ -231,6 +248,13 @@ export function AdminEventsPage() {
         <AdminLlmReviewFilterBar
           llmReviewFilter={llmReviewFilter}
           onChange={handleLlmReviewFilterChange}
+        />
+        <AdminSourceFilterBar
+          sources={sources}
+          counts={sourceCounts}
+          total={sourceTotal}
+          value={sourceFilter}
+          onChange={handleSourceFilterChange}
         />
         <AdminEventsToolbar
           keyword={keyword}

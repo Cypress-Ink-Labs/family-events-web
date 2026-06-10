@@ -30,6 +30,7 @@ interface AdminEventsInfiniteOptions {
   keyword: string
   status: Event["status"] | "all"
   cityFilter?: CityFilterValue
+  sourceFilter?: string
   llmReviewFilter?: AdminLlmReviewFilter
   pageSize?: number
 }
@@ -68,6 +69,7 @@ export function useAdminEventsInfinite({
   keyword,
   status,
   cityFilter = "all",
+  sourceFilter = "all",
   llmReviewFilter = ADMIN_LLM_REVIEW_FILTER.ALL,
   pageSize = 200,
 }: AdminEventsInfiniteOptions) {
@@ -78,6 +80,7 @@ export function useAdminEventsInfinite({
     status: status !== "all" ? status : undefined,
     cityId: cityFilter !== "all" && cityFilter !== UNASSIGNED_CITY_KEY ? cityFilter : undefined,
     cityIsNull: cityFilter === UNASSIGNED_CITY_KEY ? true : undefined,
+    sourceId: sourceFilter !== "all" ? sourceFilter : undefined,
     keyword: sanitizedKeyword,
     llmReviewStatus,
     llmReviewDecision,
@@ -90,6 +93,7 @@ export function useAdminEventsInfinite({
       keyword: sanitizedKeyword ?? "",
       status,
       cityFilter,
+      sourceFilter,
       llmReviewFilter,
       pageSize,
     }),

@@ -5,6 +5,7 @@ import {
   AdminDashboardHeader,
   AdminDashboardIngestionChart,
   AdminDashboardPresence,
+  AdminDashboardQueueHealthCard,
   AdminDashboardRecentRuns,
   AdminDashboardStatsGrid,
 } from "@/features/admin/components/admin-dashboard-sections"
@@ -100,6 +101,7 @@ export function AdminDashboardPage() {
           published={stats?.published ?? 0}
           pendingReview={stats?.pendingReview ?? 0}
         />
+        <AdminDashboardQueueHealthCard deadLetters={stats?.deadLetters} isLoading={isStatsLoading} />
       </div>
       <AdminPipelineLearning stats={pipelineStats} isLoading={isPipelineStatsLoading} />
     </div>

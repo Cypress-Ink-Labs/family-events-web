@@ -1,5 +1,5 @@
 import { Check, CheckCheck, Search, Trash2, XCircle } from "lucide-react"
-import type { Event } from "@/shared/types"
+import type { Event, EventSource } from "@/shared/types"
 import { cn, formatSlugLabel } from "@/shared/utils/format"
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
@@ -92,6 +92,47 @@ export function AdminLlmReviewFilterBar({ llmReviewFilter, onChange }: LlmFilter
           </TogglePill>
         ))}
       </FilterBar>
+    </div>
+  )
+}
+
+interface SourceFilterBarProps {
+  sources: EventSource[]
+  counts: Record<string, number>
+  total: number
+  value: string
+  onChange: (value: string) => void
+}
+
+export function AdminSourceFilterBar({
+  sources,
+  counts,
+  total,
+  value,
+  onChange,
+}: SourceFilterBarProps) {
+  const visibleSources = sources
+    .map((source) => ({ source, count: counts[source.id] ?? 0 }))
+    .filter(({ source, count }) => count > 0 || value === source.id)
+
+  return (
+    <div className="flex items-center gap-3">
+      <span className="shrink-0 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        Source
+      </span>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="min-h-[44px] w-full max-w-[360px] text-xs" aria-label="Source">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All ({total.toLocaleString()})</SelectItem>
+          {visibleSources.map(({ source, count }) => (
+            <SelectItem key={source.id} value={source.id}>
+              {source.name} ({count.toLocaleString()})
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }

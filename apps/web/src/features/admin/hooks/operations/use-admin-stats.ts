@@ -6,5 +6,6 @@ export function useAdminStats() {
   return useQuery({
     queryKey: qk.admin.stats,
     queryFn: fetchAdminStats,
+    staleTime: 60_000,
   })
 }

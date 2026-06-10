@@ -42,6 +42,11 @@ export type EventSourceRow = z.infer<typeof eventSourceRowSchema>
 // the dashboard needs to render the city/status filter bar counts.
 export const adminEventFacetRowSchema = z.object({
   city_id: z.string().nullable(),
+  source_id: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((value) => value ?? null),
   status: z.enum(["draft", "published", "rejected", "archived"]),
   count: z.coerce.number().int().nonnegative(),
 })

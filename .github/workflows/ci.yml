@@ -158,6 +158,14 @@ jobs:
           head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           extra_args: --only-verified
 
+      # Second engine alongside TruffleHog: TruffleHog runs --only-verified
+      # (live credentials), gitleaks catches unverifiable/generic patterns.
+      # Config + false-positive allowlist: .gitleaks.toml at the repo root.
+      - name: Gitleaks scan
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Reject committed database dumps
         shell: bash
         run: |

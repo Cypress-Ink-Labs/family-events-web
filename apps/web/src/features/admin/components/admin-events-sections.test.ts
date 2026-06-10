@@ -4,9 +4,14 @@ import { MemoryRouter } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 import type { Event } from "@/shared/types"
 import { LLM_EVENT_REVIEW_DECISION, LLM_EVENT_REVIEW_STATUS } from "@/shared/constants/llm-review"
+import type { EventSource } from "@/shared/types"
 
 import { AdminEventsList } from "./admin-events-list"
-import { AdminEventsToolbar, AdminLlmReviewFilterBar } from "./admin-events-sections"
+import {
+  AdminEventsToolbar,
+  AdminLlmReviewFilterBar,
+  AdminSourceFilterBar,
+} from "./admin-events-sections"
 
 vi.mock("@tanstack/react-virtual", () => ({
   useWindowVirtualizer: vi.fn((options: { count: number; estimateSize: () => number }) => ({
@@ -165,6 +170,23 @@ describe("AdminLlmReviewFilterBar", () => {
     expect(html).toContain("rejected")
     expect(html).toContain("Needs Review")
     expect(html).toContain("failed")
+  })
+})
+
+describe("AdminSourceFilterBar", () => {
+  it("renders a source picker", () => {
+    const html = renderToStaticMarkup(
+      createElement(AdminSourceFilterBar, {
+        sources: [{ id: "source-1", name: "Library Calendar" } as EventSource],
+        counts: { "source-1": 7 },
+        total: 10,
+        value: "source-1",
+        onChange: vi.fn(),
+      })
+    )
+
+    expect(html).toContain("Source")
+    expect(html).toContain('aria-label="Source"')
   })
 })
 

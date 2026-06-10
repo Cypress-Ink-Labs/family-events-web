@@ -85,6 +85,7 @@ describe("adminEventFacetRowSchema", () => {
     })
     expect(withStringCount.count).toBe(1001)
     expect(withStringCount.city_id).toBeNull()
+    expect(withStringCount.source_id).toBeNull()
     expect(withStringCount.status).toBe("draft")
   })
 

@@ -91,6 +91,7 @@ describe("fetchAdminEventsPage", () => {
       p_status: "draft",
       p_city_id: "city-1",
       p_city_is_null: undefined,
+      p_source_id: undefined,
       p_keyword: "cat and dog",
       p_after_created_at: undefined,
       p_after_id: undefined,
@@ -120,6 +121,7 @@ describe("fetchAdminEventsPage", () => {
       p_status: "draft",
       p_city_id: undefined,
       p_city_is_null: undefined,
+      p_source_id: undefined,
       p_keyword: undefined,
       p_after_created_at: "2026-05-01T00:00:00Z",
       p_after_id: "first-event",
@@ -150,6 +152,7 @@ describe("fetchAdminEventsPage", () => {
       p_status: undefined,
       p_city_id: undefined,
       p_city_is_null: undefined,
+      p_source_id: undefined,
       p_keyword: undefined,
       p_after_created_at: undefined,
       p_after_id: undefined,
@@ -157,6 +160,35 @@ describe("fetchAdminEventsPage", () => {
       p_llm_review_status: LLM_EVENT_REVIEW_STATUS.FAILED,
       p_llm_review_decision: LLM_EVENT_REVIEW_DECISION.NEEDS_ADMIN_REVIEW,
       p_llm_reviewed: true,
+    })
+  })
+
+  it("passes source filter to admin_events_enriched", async () => {
+    mockRpc.mockResolvedValueOnce(
+      mockRpcResponse([
+        {
+          ...event({ id: "source-filtered", total_count: 1 }),
+        },
+      ])
+    )
+
+    await fetchAdminEventsPage({
+      sourceId: "source-1",
+      limit: 20,
+    })
+
+    expect(mockRpc).toHaveBeenLastCalledWith("admin_events_enriched", {
+      p_status: undefined,
+      p_city_id: undefined,
+      p_city_is_null: undefined,
+      p_source_id: "source-1",
+      p_keyword: undefined,
+      p_after_created_at: undefined,
+      p_after_id: undefined,
+      p_limit: 20,
+      p_llm_review_status: undefined,
+      p_llm_review_decision: undefined,
+      p_llm_reviewed: undefined,
     })
   })
 

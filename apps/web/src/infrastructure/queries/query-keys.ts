@@ -35,6 +35,7 @@ type AdminEventsKeyOptions = {
   keyword: string
   status: Event["status"] | "all"
   cityFilter?: "all" | "none" | string
+  sourceFilter?: "all" | string
   llmReviewFilter?: AdminLlmReviewFilter
   pageSize?: number
 }
@@ -80,6 +81,7 @@ function normalizeAdminEventsParams({
   keyword,
   status,
   cityFilter = "all",
+  sourceFilter = "all",
   llmReviewFilter = "all",
   pageSize = 200,
 }: AdminEventsKeyOptions) {
@@ -87,6 +89,7 @@ function normalizeAdminEventsParams({
     keyword: sanitizePostgrestLike(keyword),
     status,
     cityFilter,
+    sourceFilter,
     llmReviewFilter,
     pageSize,
   } as const

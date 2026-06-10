@@ -71,6 +71,12 @@ export interface AdminStats {
     medium: number
     low: number
   }
+  deadLetters: {
+    tagQueue: number
+    sourceQueue: number
+    oldestTagDeadAt: string | null
+    oldestSourceDeadAt: string | null
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
