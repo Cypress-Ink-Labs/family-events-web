@@ -101,7 +101,10 @@ export function AdminDashboardPage() {
           published={stats?.published ?? 0}
           pendingReview={stats?.pendingReview ?? 0}
         />
-        <AdminDashboardQueueHealthCard deadLetters={stats?.deadLetters} isLoading={isStatsLoading} />
+        <AdminDashboardQueueHealthCard
+          deadLetters={stats?.deadLetters}
+          isLoading={isStatsLoading}
+        />
       </div>
       <AdminPipelineLearning stats={pipelineStats} isLoading={isPipelineStatsLoading} />
     </div>
