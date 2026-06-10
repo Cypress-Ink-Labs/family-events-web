@@ -22,13 +22,12 @@ export interface PipelineLearningStats {
 }
 
 async function fetchPipelineStats(): Promise<PipelineLearningStats> {
-  // pipeline_learning_stats is a new RPC not yet in generated DB types.
-  // Use .rpc() with a type assertion via unknown until types are regenerated.
-  const { data, error } = await (supabase.rpc as CallableFunction)("pipeline_learning_stats", {
+  const { data, error } = await supabase.rpc("pipeline_learning_stats", {
     p_window_days: 30,
   })
   if (error) throw error
-  return data as PipelineLearningStats
+  // RPC returns Json; shape is defined by the SQL function.
+  return data as unknown as PipelineLearningStats
 }
 
 export function useAdminPipelineStats() {

@@ -103,9 +103,9 @@ export function ResetPasswordPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Min. 6 characters"
+                    placeholder="Min. 8 characters"
                     required
-                    minLength={6}
+                    minLength={8}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -117,7 +117,7 @@ export function ResetPasswordPage() {
                     onChange={(e) => setConfirm(e.target.value)}
                     placeholder="Type it again"
                     required
-                    minLength={6}
+                    minLength={8}
                   />
                 </div>
                 <Button

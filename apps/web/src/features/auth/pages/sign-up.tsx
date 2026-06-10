@@ -166,9 +166,9 @@ export function SignUpPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setState({ password: e.target.value })}
-                  placeholder="Min. 6 characters"
+                  placeholder="Min. 8 characters"
                   required
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
               <Button
