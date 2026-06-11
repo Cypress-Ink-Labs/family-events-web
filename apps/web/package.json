@@ -22,7 +22,7 @@
     "clean": "rm -rf dist .next out"
   },
   "dependencies": {
-    "@family-events/contracts": "workspace:*",
+    "@family-events/contracts": "^0.0.1",
     "@family-events/shared": "workspace:*",
     "@hookform/resolvers": "^5.4.0",
     "@sentry/react": "^10.57.0",

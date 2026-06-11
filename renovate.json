@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchPackagePrefixes": ["@family-events/"],
+      "groupName": "family-events packages",
+      "automerge": false,
+      "labels": ["dependencies", "family-events"]
+    }
+  ],
+  "registryAliases": {
+    "https://npm.pkg.github.com": "https://npm.pkg.github.com"
+  },
+  "npmrc": "@family-events:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}"
+}

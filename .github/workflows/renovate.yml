@@ -32,3 +32,5 @@ jobs:
         uses: renovatebot/github-action@8217b3fc286df088d7c27f3255fe8414463bc0fd # v46.1.15
         with:
           token: ${{ secrets.RENOVATE_TOKEN || secrets.GITHUB_TOKEN }}
+        env:
+          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
