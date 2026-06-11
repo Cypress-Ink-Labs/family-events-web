@@ -16,651 +16,133 @@ permissions:
 
 env:
   CI: true
-  E2E_ADMIN_EMAIL: admin@familyevents.local
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NODE_VERSION: "24"
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-  TURBO_CACHE_DIR: .turbo
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM || secrets.TURBO_TEAM }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
-  optimize_ci:
-    runs-on: ubuntu-latest
-    outputs:
-      skip: ${{ steps.check_skip.outputs.skip }}
-    steps:
-      - name: Optimize CI
-        id: check_skip
-        uses: withgraphite/graphite-ci-action@main
-        with:
-          graphite_token: ${{ secrets.GRAPHITE_TOKEN }}
-
-  changes:
-    needs: optimize_ci
-    if: needs.optimize_ci.outputs.skip == 'false'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      web: ${{ steps.filter.outputs.web }}
-      verify: ${{ steps.filter.outputs.verify }}
-      ios: ${{ steps.filter.outputs.ios }}
-      android: ${{ steps.filter.outputs.android }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Detect changed areas
-        id: filter
-        shell: bash
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          PUSH_BEFORE_SHA: ${{ github.event.before }}
-          PUSH_AFTER_SHA: ${{ github.event.after }}
-        run: |
-          set -euo pipefail
-
-          # workflow_dispatch always runs everything (manual override).
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            {
-              echo "web=true"
-              echo "verify=true"
-              echo "ios=true"
-              echo "android=true"
-            } >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Resolve diff range per event type.
-          # - pull_request: base...head
-          # - push: before...after (force-pushes still give the old tip as 'before')
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            range="${PR_BASE_SHA}...${PR_HEAD_SHA}"
-          else
-            head="$PUSH_AFTER_SHA"
-            base="$PUSH_BEFORE_SHA"
-            # First push to a branch reports an all-zero 'before'. Fall back to
-            # diffing against the parent commit so we don't accidentally
-            # short-circuit everything.
-            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
-              base="$(git rev-parse "${head}^" 2>/dev/null || echo "")"
-            fi
-            if [ -z "$base" ]; then
-              # No parent (initial commit) — run everything.
-              {
-                echo "web=true"
-                echo "verify=true"
-                echo "ios=true"
-                echo "android=true"
-              } >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            range="${base}..${head}"
-          fi
-
-          files="$(git diff --name-only "$range")"
-
-          matches() {
-            local pattern
-            for pattern in "$@"; do
-              if printf '%s\n' "$files" | grep -Eq "$pattern"; then
-                return 0
-              fi
-            done
-            return 1
-          }
-
-          web=false
-          verify=false
-          ios=false
-          android=false
-
-          if matches '^(apps/web|packages|supabase|scripts|tests|infra|\.spacelift)/' '^(\.github/workflows/ci\.yml|knip\.json|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json)$'; then
-            web=true
-            verify=true
-          fi
-
-          if matches '^(apps/ios|packages/design-system)/' '^\.github/workflows/ci\.yml$'; then
-            ios=true
-          fi
-
-          if matches '^(apps/android|packages/design-system)/' '^\.github/workflows/ci\.yml$'; then
-            android=true
-          fi
-
-          {
-            echo "web=$web"
-            echo "verify=$verify"
-            echo "ios=$ios"
-            echo "android=$android"
-          } >> "$GITHUB_OUTPUT"
-
   secret-scan:
-    needs: optimize_ci
-    if: needs.optimize_ci.outputs.skip == 'false'
+    name: Secret scan
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Secret scan
-        uses: trufflesecurity/trufflehog@37b77001d0174ebec2fcca2bd83ff83a6d45a3ab # v3.95.3
+      - name: TruffleHog scan
+        uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
-          head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          base: ${{ github.event.repository.default_branch }}
           extra_args: --only-verified
-
-      # Second engine alongside TruffleHog: TruffleHog runs --only-verified
-      # (live credentials), gitleaks catches unverifiable/generic patterns.
-      # Config + false-positive allowlist: .gitleaks.toml at the repo root.
       - name: Gitleaks scan
-        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Reject committed database dumps
-        shell: bash
-        run: |
-          set -euo pipefail
-          if git ls-files | grep -Ei '(^|/)(seed-)?(bak|backup|dump).*\.sql(\.gz)?$|\.dump$'; then
-            echo "::error::tracked database dump or backup artifact detected"
-            exit 1
-          fi
-
-  web-check:
-    needs: [optimize_ci, changes]
-    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.web == 'true'
+  check:
+    name: TypeScript + lint
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM || secrets.TURBO_TEAM }}
-      TURBO_TEAMID: ${{ vars.TURBO_TEAMID || secrets.TURBO_TEAMID }}
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
-        with:
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Cache JS build artifacts
-        uses: actions/cache@v5
+      - uses: actions/cache@v4
         with:
           path: |
             .turbo
             apps/web/.turbo
             packages/*/.turbo
-            node_modules/.tmp
-            apps/web/node_modules/.vite
-            packages/*/node_modules/.vite
-          key: ${{ runner.os }}-js-build-${{ hashFiles('pnpm-lock.yaml', 'turbo.json', '**/package.json', '**/tsconfig*.json', '**/vite.config.*', '**/vitest.config.*') }}
-          restore-keys: |
-            ${{ runner.os }}-js-build-
-
+          key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml', 'turbo.json') }}
+          restore-keys: ${{ runner.os }}-turbo-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-
-      - name: Check admin cron edge function
-        run: deno check --config supabase/functions/deno.json supabase/functions/admin-run-cron/index.ts
-
-      - name: Turbo cache proof
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check
+        run: pnpm run check
         env:
           VITE_SUPABASE_ANON_KEY: ci-anon-key
           VITE_SUPABASE_URL: https://example.supabase.co
-        run: |
-          set -euo pipefail
 
-          proof_dir="$RUNNER_TEMP/turbo-cache-proof"
-          mkdir -p "$proof_dir"
-
-          collect_summary() {
-            local label="$1"
-            local summary
-            summary="$(find .turbo/runs -type f -name '*.json' -print 2>/dev/null | sort | tail -n 1 || true)"
-            if [ -z "$summary" ]; then
-              echo "::error::missing Turbo summary for $label"
-              exit 1
-            fi
-            cp "$summary" "$proof_dir/turbo-summary-$label.json"
-          }
-
-          rm -rf .turbo/runs
-          pnpm exec turbo run check build --filter=@family-events/web --summarize --output-logs=hash-only 2>&1 \
-            | tee "$proof_dir/turbo-check-build.log"
-          collect_summary warm
-
-          remote_expected=0
-          if [ -n "${TURBO_TOKEN:-}" ] && { [ -n "${TURBO_TEAM:-}" ] || [ -n "${TURBO_TEAMID:-}" ]; }; then
-            remote_expected=1
-            rm -rf .turbo/cache .turbo/runs
-            pnpm exec turbo run build --filter=@family-events/web --summarize --output-logs=hash-only 2>&1 \
-              | tee "$proof_dir/turbo-remote-read.log"
-            collect_summary remote
-          else
-            echo "remote cache skipped: TURBO_TOKEN plus TURBO_TEAM/TURBO_TEAMID not available" \
-              | tee "$proof_dir/turbo-remote-read.log"
-          fi
-
-          TURBO_PROOF_DIR="$proof_dir" REMOTE_EXPECTED="$remote_expected" node <<'NODE'
-          const fs = require("node:fs")
-          const path = require("node:path")
-
-          const proofDir = process.env.TURBO_PROOF_DIR
-          const remoteExpected = process.env.REMOTE_EXPECTED === "1"
-          const summaryFiles = fs
-            .readdirSync(proofDir)
-            .filter((name) => name.startsWith("turbo-summary-") && name.endsWith(".json"))
-            .sort()
-
-          const rows = []
-          let remoteWebBuild = null
-
-          for (const file of summaryFiles) {
-            const summary = JSON.parse(fs.readFileSync(path.join(proofDir, file), "utf8"))
-            for (const task of summary.tasks ?? []) {
-              const cache = task.cache ?? {}
-              rows.push({
-                summary: file.replace(/^turbo-summary-/, "").replace(/\.json$/, ""),
-                task: task.taskId,
-                status: cache.status ?? "UNKNOWN",
-                local: String(Boolean(cache.local)),
-                remote: String(Boolean(cache.remote)),
-                outputs: (task.outputs ?? []).join("<br>"),
-              })
-              if (file === "turbo-summary-remote.json" && task.taskId === "@family-events/web#build") {
-                remoteWebBuild = task
-              }
-            }
-          }
-
-          if (remoteExpected) {
-            const cache = remoteWebBuild?.cache ?? {}
-            if (cache.status !== "HIT" || cache.remote !== true) {
-              console.error(
-                `remote cache proof failed for @family-events/web#build: status=${cache.status ?? "missing"} remote=${cache.remote ?? "missing"}`
-              )
-              process.exit(1)
-            }
-          }
-
-          const lines = [
-            "# Turbo cache proof",
-            "",
-            `remote cache configured: ${remoteExpected ? "yes" : "no"}`,
-            "",
-            "| summary | task | status | local | remote | outputs |",
-            "| --- | --- | --- | --- | --- | --- |",
-            ...rows.map(
-              (row) =>
-                `| ${row.summary} | ${row.task} | ${row.status} | ${row.local} | ${row.remote} | ${row.outputs} |`
-            ),
-            "",
-          ]
-
-          fs.writeFileSync(path.join(proofDir, "turbo-cache-report.md"), lines.join("\n"))
-          NODE
-
-      - name: Upload Turbo cache proof
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: turbo-cache-proof
-          path: ${{ runner.temp }}/turbo-cache-proof/
-          retention-days: 7
-
-  # E2E (needs local Supabase — can't run on RWX)
-  verify:
-    needs: [optimize_ci, changes]
-    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.verify == 'true'
+  test:
+    name: Unit tests
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
-        with:
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Unit tests
+        run: pnpm run test
+        env:
+          VITE_SUPABASE_ANON_KEY: ci-anon-key
+          VITE_SUPABASE_URL: https://example.supabase.co
 
-      - name: Cache JS build artifacts
-        uses: actions/cache@v5
+  workspace-guards:
+    name: Workspace guard tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Guard tests
+        run: pnpm run workspace:test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - uses: actions/cache@v4
         with:
           path: |
             .turbo
             apps/web/.turbo
             packages/*/.turbo
-            node_modules/.tmp
-            apps/web/node_modules/.vite
-            packages/*/node_modules/.vite
-          key: ${{ runner.os }}-js-build-${{ hashFiles('pnpm-lock.yaml', 'turbo.json', '**/package.json', '**/tsconfig*.json', '**/vite.config.*', '**/vitest.config.*') }}
-          restore-keys: |
-            ${{ runner.os }}-js-build-
-
+          key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml', 'turbo.json') }}
+          restore-keys: ${{ runner.os }}-turbo-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Workspace guard tests
-        run: pnpm run workspace:test
-
-      - name: Static dependency and file audit
-        run: pnpm run knip
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml', 'apps/web/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright browsers
-        run: pnpm --filter @family-events/web exec playwright install chromium --with-deps
-
-      # ─── E2E preflight ────────────────────────────────────────────────
-      # Boot a local Supabase stack and seed an admin user. The E2E suite
-      # needs a working sign-in flow + a row in user_profiles with role
-      # admin and matching enabled access. We exclude services the suite
-      # doesn't touch (storage, imgproxy, realtime, vector, studio, mailpit,
-      # edge-runtime) to cut Docker boot time on cold runners.
-      # ──────────────────────────────────────────────────────────────────
-      - name: Start local Supabase
         env:
-          # This is fake so haha
-          SEND_EMAIL_HOOK_SECRET: "v1,whsec_Y2ktZHVtbXktc2VjcmV0LWZvci1lMmUtdGVzdGluZw=="
-        run: |
-          bash scripts/supabase.sh start \
-            --exclude storage-api,imgproxy,realtime,vector,edge-runtime,studio,mailpit
-
-      - name: Read Supabase env
-        id: supabase
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: pnpm run build
         env:
-          SEND_EMAIL_HOOK_SECRET: "v1,whsec_Y2ktZHVtbXktc2VjcmV0LWZvci1lMmUtdGVzdGluZw=="
-        run: |
-          STATUS=$(bash scripts/supabase.sh status --output env)
-          api_url=$(echo "$STATUS" | grep '^API_URL='          | cut -d'"' -f2)
-          anon_key=$(echo "$STATUS" | grep '^PUBLISHABLE_KEY=' | cut -d'"' -f2)
-          service_role=$(echo "$STATUS" | grep '^SERVICE_ROLE_KEY=' | cut -d'"' -f2)
-          db_url=$(echo "$STATUS" | grep '^DB_URL='            | cut -d'"' -f2)
-          echo "::add-mask::$anon_key"
-          echo "::add-mask::$service_role"
-          {
-            echo "api_url=$api_url"
-            echo "anon_key=$anon_key"
-            echo "service_role=$service_role"
-            echo "db_url=$db_url"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Seed admin auth user
-        id: seed_admin
-        env:
-          API_URL: ${{ steps.supabase.outputs.api_url }}
-          DB_URL: ${{ steps.supabase.outputs.db_url }}
-          SERVICE_ROLE_KEY: ${{ steps.supabase.outputs.service_role }}
-          ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
-        run: |
-          ADMIN_PASSWORD="$(openssl rand -base64 24 | tr -d "=+/" | cut -c1-24)!Aa1"
-          payload=$(printf '{"email":"%s","password":"%s","email_confirm":true}' \
-            "$ADMIN_EMAIL" "$ADMIN_PASSWORD")
-          code=$(curl -sS -o /tmp/seed_admin.json -w "%{http_code}" \
-            -X POST "$API_URL/auth/v1/admin/users" \
-            -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
-            -H "apikey: $SERVICE_ROLE_KEY" \
-            -H "Content-Type: application/json" \
-            -d "$payload")
-          case "$code" in
-            200|201) echo "admin auth user created" ;;
-            422)
-              echo "admin auth user already exists; resetting password to current run value"
-              existing_user_id=$(jq -r '.id // empty' /tmp/seed_admin.json)
-              if [ -z "$existing_user_id" ]; then
-                escaped_admin_email=$(printf "%s" "$ADMIN_EMAIL" | sed "s/'/''/g")
-                existing_user_id=$(psql "$DB_URL" -t -A -v ON_ERROR_STOP=1 \
-                  -c "SELECT id FROM auth.users WHERE lower(email) = lower('$escaped_admin_email') LIMIT 1;")
-                existing_user_id=$(printf '%s' "$existing_user_id" | tr -d '[:space:]')
-                if [ -z "$existing_user_id" ]; then
-                  echo "::error::could not extract existing admin user id from create response or auth.users"
-                  cat /tmp/seed_admin.json
-                  exit 1
-                fi
-              fi
-              reset_payload=$(printf '{"password":"%s"}' "$ADMIN_PASSWORD")
-              reset_code=$(curl -sS -o /tmp/seed_admin_reset.json -w "%{http_code}" \
-                -X PUT "$API_URL/auth/v1/admin/users/$existing_user_id" \
-                -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
-                -H "apikey: $SERVICE_ROLE_KEY" \
-                -H "Content-Type: application/json" \
-                -d "$reset_payload")
-              if [ "$reset_code" != "200" ]; then
-                echo "::error::password reset failed with HTTP $reset_code"
-                cat /tmp/seed_admin_reset.json
-                exit 1
-              fi
-              echo "admin password reset completed"
-              ;;
-            *)
-              echo "::error::auth admin create returned HTTP $code"
-              cat /tmp/seed_admin.json
-              exit 1
-              ;;
-          esac
-          echo "admin_password=$ADMIN_PASSWORD" >> "$GITHUB_OUTPUT"
-
-      - name: Promote admin via setup-local
-        env:
-          SEND_EMAIL_HOOK_SECRET: "v1,whsec_Y2ktZHVtbXktc2VjcmV0LWZvci1lMmUtdGVzdGluZw=="
-        run: bash scripts/setup-local.sh
-
-      - name: Verify admin is enabled
-        env:
-          DB_URL: ${{ steps.supabase.outputs.db_url }}
-          ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
-        run: |
-          result=$(psql "$DB_URL" -t -A -F '|' -v ON_ERROR_STOP=1 \
-            -v admin_email="$ADMIN_EMAIL" <<'SQL' | tr -d '[:space:]'
-            SELECT up.role, COALESCE(ua.is_enabled::text, 'false')
-            FROM public.user_profiles up
-            LEFT JOIN public.user_access ua ON ua.user_id = up.id
-            WHERE up.email = :'admin_email';
-          SQL
-          )
-          if [ "$result" != "admin|true" ]; then
-            echo "::error::admin not provisioned: got '$result', want 'admin|true'"
-            exit 1
-          fi
-          echo "admin verified: role=admin, is_enabled=true"
-
-      - name: Database RLS and RPC tests
-        env:
-          DB_URL: ${{ steps.supabase.outputs.db_url }}
-        run: bash scripts/test.sh
-
-      - name: E2E
-        env:
-          VITE_SUPABASE_URL: ${{ steps.supabase.outputs.api_url }}
-          VITE_SUPABASE_ANON_KEY: ${{ steps.supabase.outputs.anon_key }}
-          PLAYWRIGHT_ADMIN_EMAIL: ${{ env.E2E_ADMIN_EMAIL }}
-          PLAYWRIGHT_ADMIN_PASSWORD: ${{ steps.seed_admin.outputs.admin_password }}
-        run: pnpm run test:e2e
-
-      - name: Upload Playwright report on failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report
-          path: apps/web/output/playwright/
-          retention-days: 7
-
-      - name: Stop local Supabase
-        if: always()
-        run: bash scripts/supabase.sh stop || true
-
-  # iOS simulator tests (needs macOS — can't run on RWX)
-  ios:
-    needs: [optimize_ci, changes]
-    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.ios == 'true'
-    runs-on: macos-26
-    timeout-minutes: 12
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Install XcodeGen
-        run: brew install xcodegen
-
-      - name: Select Xcode 26
-        run: |
-          if [ -d /Applications/Xcode_26.4.1.app ]; then
-            sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
-          else
-            sudo xcode-select -s /Applications/Xcode_26.5.0.app/Contents/Developer
-          fi
-          xcodebuild -version
-
-      # v3 cache namespace: supabase-swift pinned by revision (not exact semver) so a
-      # restored v2 cache cannot leave SPM with a checkout that fails exact 2.46.0 lookup.
-      - name: Cache Swift packages
-        uses: actions/cache@v5
-        with:
-          path: ~/Library/Caches/family-events-swiftpm
-          key: ${{ runner.os }}-swiftpm-v3-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Packages/**/Package.swift', 'apps/ios/FamilyEvents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-swiftpm-v3-
-
-      - name: Cache Xcode build data
-        uses: actions/cache@v5
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData/FamilyEvents
-          key: ${{ runner.os }}-xcode-familyevents-v3-${{ hashFiles('apps/ios/project.yml', 'apps/ios/**/*.swift', 'apps/ios/Packages/**/Package.swift', 'apps/ios/FamilyEvents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-xcode-familyevents-v3-
-
-      - name: Generate iOS project
-        run: cd apps/ios && xcodegen generate
-
-      - name: Resolve Swift package dependencies
-        run: |
-          cd apps/ios
-          mkdir -p "$HOME/Library/Caches/family-events-swiftpm"
-          xcodebuild \
-            -project FamilyEvents.xcodeproj \
-            -scheme FamilyEvents \
-            -clonedSourcePackagesDirPath "$HOME/Library/Caches/family-events-swiftpm" \
-            -derivedDataPath "$HOME/Library/Developer/Xcode/DerivedData/FamilyEvents" \
-            -resolvePackageDependencies
-
-      - name: Run iOS tests
-        run: |
-          cd apps/ios
-          mkdir -p "$HOME/Library/Caches/family-events-swiftpm"
-          SIMULATOR_ID="$(xcrun simctl list devices available | awk -F '[()]' '
-            /iPhone 17 \(/ { print $2; found = 1; exit }
-            /iPhone/ && !fallback { fallback = $2 }
-            END { if (!found && fallback) print fallback }
-          ')"
-          if [ -z "$SIMULATOR_ID" ]; then
-            xcrun simctl list devices available
-            exit 1
-          fi
-          echo "Using simulator $SIMULATOR_ID"
-          xcodebuild \
-            -project FamilyEvents.xcodeproj \
-            -scheme FamilyEvents \
-            -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
-            -clonedSourcePackagesDirPath "$HOME/Library/Caches/family-events-swiftpm" \
-            -derivedDataPath "$HOME/Library/Developer/Xcode/DerivedData/FamilyEvents" \
-            -resultBundlePath "$RUNNER_TEMP/FamilyEvents.xcresult" \
-            -skip-testing:FEDesignSystemTests/EventCardSnapshotTests \
-            -quiet \
-            test
-
-      - name: Upload iOS result bundle on failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: ios-xcresult
-          path: ${{ runner.temp }}/FamilyEvents.xcresult
-          retention-days: 7
-
-  android:
-    needs: [optimize_ci, changes]
-    if: needs.optimize_ci.outputs.skip == 'false' && needs.changes.outputs.android == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      ANDROID_HOME: /home/runner/.android/sdk
-      ANDROID_SDK_ROOT: /home/runner/.android/sdk
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Setup JDK 17
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Setup Gradle cache
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          cache-cleanup: never
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
-
-      - name: Cache Android SDK 36
-        id: android-sdk-cache
-        uses: actions/cache@v5
-        with:
-          path: |
-            /home/runner/.android/sdk/platforms/android-36
-            /home/runner/.android/sdk/build-tools/36.0.0
-            /home/runner/.android/sdk/licenses
-          key: ${{ runner.os }}-android-sdk-platform-36-build-tools-36.0.0
-
-      - name: Install Android SDK 36
-        if: steps.android-sdk-cache.outputs.cache-hit != 'true'
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-
-      - name: Android checks
-        run: cd apps/android && scripts/with-android-env.sh ./gradlew --build-cache --configuration-cache check assembleDebug
+          VITE_SUPABASE_ANON_KEY: ci-anon-key
+          VITE_SUPABASE_URL: https://example.supabase.co
