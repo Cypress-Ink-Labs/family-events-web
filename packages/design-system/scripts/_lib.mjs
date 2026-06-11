@@ -7,6 +7,9 @@ const here = path.dirname(fileURLToPath(import.meta.url))
 export const PKG_ROOT = path.resolve(here, "..")
 export const REPO_ROOT = path.resolve(PKG_ROOT, "..", "..")
 export const TOKENS_PATH = path.join(PKG_ROOT, "tokens", "tokens.json")
+// Canonical codegen output shipped in the npm tarball. App-tree copies are
+// sync targets so consumers build without running this package's toolchain.
+export const DIST_ROOT = path.join(PKG_ROOT, "dist")
 
 export function loadTokens() {
   return JSON.parse(readFileSync(TOKENS_PATH, "utf8"))

@@ -1,0 +1,75 @@
+name: Publish Packages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - packages/contracts/src/**
+      - packages/design-system/tokens/**
+      - packages/design-system/src/**
+      - packages/design-system/dist/**
+      - .changeset/**
+
+concurrency:
+  group: publish-packages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Version or Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: https://npm.pkg.github.com
+          scope: "@family-events"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build design-system dist artifacts
+        run: pnpm --filter @family-events/design-system build
+
+      - name: Create Release PR or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+          title: "chore: release packages"
+          commit: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify-mobile:
+    name: Notify Mobile Repo
+    needs: publish
+    runs-on: ubuntu-latest
+    if: ${{ needs.publish.outputs.published == 'true' }}
+    steps:
+      - name: Fire repository_dispatch to family-events-mobile
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MOBILE_DISPATCH_TOKEN }}
+          repository: ${{ github.repository_owner }}/family-events-mobile
+          event-type: tokens-updated
+          client-payload: |
+            {
+              "version": "${{ needs.publish.outputs.publishedPackages }}",
+              "sha": "${{ github.sha }}"
+            }

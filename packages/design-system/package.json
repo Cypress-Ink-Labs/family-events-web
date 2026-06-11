@@ -1,12 +1,23 @@
 {
   "name": "@family-events/design-system",
-  "private": true,
   "version": "0.1.0",
   "type": "module",
   "description": "Single source of truth for family-events design tokens. Codegen feeds apps/web, apps/ios, and apps/android.",
   "exports": {
     ".": "./src/index.ts",
-    "./tokens": "./tokens/tokens.json"
+    "./tokens": "./tokens/tokens.json",
+    "./dist/ios/Tokens.swift": "./dist/ios/Tokens.swift",
+    "./dist/android/Tokens.kt": "./dist/android/Tokens.kt"
+  },
+  "files": [
+    "src",
+    "tokens",
+    "dist/ios",
+    "dist/android"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
   },
   "scripts": {
     "build": "node scripts/build.mjs",

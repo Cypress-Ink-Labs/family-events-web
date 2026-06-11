@@ -1,8 +1,13 @@
 import { mkdirSync, writeFileSync } from "node:fs"
 import path from "node:path"
-import { REPO_ROOT, SWIFT_BANNER, loadTokens } from "./_lib.mjs"
+import { DIST_ROOT, REPO_ROOT, SWIFT_BANNER, loadTokens } from "./_lib.mjs"
 
-const OUTPUT = path.join(
+// Primary: dist/ artifact shipped in npm tarball and consumed by mobile sync workflow.
+const OUTPUT = path.join(DIST_ROOT, "ios", "Tokens.swift")
+
+// App-tree copy kept in sync while this package and apps/ios share a monorepo.
+// Remove after the repo split; mobile will consume from the npm package instead.
+export const APP_COPY_PATH = path.join(
   REPO_ROOT,
   "apps",
   "ios",
@@ -140,6 +145,9 @@ export function run() {
   const swift = buildSwift(tokens)
   mkdirSync(path.dirname(OUTPUT), { recursive: true })
   writeFileSync(OUTPUT, swift, "utf8")
+  // Keep app-tree copy current while still in the monorepo.
+  mkdirSync(path.dirname(APP_COPY_PATH), { recursive: true })
+  writeFileSync(APP_COPY_PATH, swift, "utf8")
   return OUTPUT
 }
 

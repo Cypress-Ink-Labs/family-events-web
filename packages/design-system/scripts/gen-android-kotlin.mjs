@@ -1,8 +1,13 @@
 import { mkdirSync, writeFileSync } from "node:fs"
 import path from "node:path"
-import { REPO_ROOT, loadTokens } from "./_lib.mjs"
+import { DIST_ROOT, REPO_ROOT, loadTokens } from "./_lib.mjs"
 
-const OUTPUT = path.join(
+// Primary: dist/ artifact shipped in npm tarball and consumed by mobile sync workflow.
+const OUTPUT = path.join(DIST_ROOT, "android", "Tokens.kt")
+
+// App-tree copy kept in sync while this package and apps/android share a monorepo.
+// Remove after the repo split; mobile will consume from the npm package instead.
+export const APP_COPY_PATH = path.join(
   REPO_ROOT,
   "apps",
   "android",
@@ -122,6 +127,9 @@ export function run() {
   const kotlin = buildKotlin(tokens)
   mkdirSync(path.dirname(OUTPUT), { recursive: true })
   writeFileSync(OUTPUT, kotlin, "utf8")
+  // Keep app-tree copy current while still in the monorepo.
+  mkdirSync(path.dirname(APP_COPY_PATH), { recursive: true })
+  writeFileSync(APP_COPY_PATH, kotlin, "utf8")
   return OUTPUT
 }
 
