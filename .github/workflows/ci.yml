@@ -56,6 +56,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com
+          scope: "@cypress-ink-labs"
           cache: pnpm
       - uses: actions/cache@v5
         with:
@@ -87,6 +89,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com
+          scope: "@cypress-ink-labs"
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -110,6 +114,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com
+          scope: "@cypress-ink-labs"
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -130,6 +136,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com
+          scope: "@cypress-ink-labs"
           cache: pnpm
       - uses: actions/cache@v5
         with:
