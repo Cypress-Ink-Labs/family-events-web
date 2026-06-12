@@ -1,1 +1,1 @@
-export * from "@family-events/contracts/database-types"
+export * from "@cypress-ink-labs/contracts/database-types"

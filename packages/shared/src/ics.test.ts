@@ -47,7 +47,7 @@ describe("buildIcsEvent", () => {
 
   it("includes UID with domain suffix", () => {
     const ics = buildIcsEvent(baseOptions)
-    expect(ics).toContain("UID:evt-001@family-events")
+    expect(ics).toContain("UID:evt-001@cypress-ink-labs")
   })
 
   it("includes SUMMARY, DESCRIPTION, LOCATION, URL", () => {

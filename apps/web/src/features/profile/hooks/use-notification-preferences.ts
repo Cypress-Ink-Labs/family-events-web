@@ -5,7 +5,7 @@ import {
   DEFAULT_NOTIFICATION_PREFERENCES,
   toUpsertParams,
   type NotificationPreferences,
-} from "@family-events/contracts"
+} from "@cypress-ink-labs/contracts"
 
 /**
  * Fetch the current user's notification preferences.

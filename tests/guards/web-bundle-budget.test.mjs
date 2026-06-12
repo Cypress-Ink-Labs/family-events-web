@@ -38,7 +38,7 @@ test("web bundle preload budget — first-paint JS stays under 1 MB", () => {
   if (!existsSync(indexPath)) {
     console.warn(
       `[web-bundle-budget] Skipping: ${path.relative(repoRoot, indexPath)} does not exist. ` +
-        `Run \`pnpm --filter @family-events/web build\` before this guard to enforce it.`
+        `Run \`pnpm --filter @cypress-ink-labs/web build\` before this guard to enforce it.`
     )
     return
   }

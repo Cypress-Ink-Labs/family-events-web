@@ -16,7 +16,7 @@ test("config-quality package files exist", () => {
 
 test("config-quality package exports lint/format presets", () => {
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"))
-  assert.equal(pkg.name, "@family-events/config-quality")
+  assert.equal(pkg.name, "@cypress-ink-labs/config-quality")
   assert.equal(pkg.exports["./oxlint.base.json"], "./oxlint.base.json")
   assert.equal(pkg.exports["./oxfmt.base.json"], "./oxfmt.base.json")
 })

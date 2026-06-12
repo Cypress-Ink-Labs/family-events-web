@@ -80,13 +80,13 @@ test("shared and contracts packages remain platform neutral", () => {
     /\bsessionStorage\b/,
   ]
 
-  assertNoMatchInFiles(sharedFiles, [...platformImports, /from ["']@family-events\/contracts/], "must stay pure")
-  assertNoMatchInFiles(contractFiles, [...platformImports, /from ["']@family-events\/shared/], "must stay contract-only")
+  assertNoMatchInFiles(sharedFiles, [...platformImports, /from ["']@cypress-ink-labs\/contracts/], "must stay pure")
+  assertNoMatchInFiles(contractFiles, [...platformImports, /from ["']@cypress-ink-labs\/shared/], "must stay contract-only")
 
   const sharedPkg = JSON.parse(read(path.join(repoRoot, "packages", "shared", "package.json")))
   const contractsPkg = JSON.parse(read(path.join(repoRoot, "packages", "contracts", "package.json")))
-  assert.equal(sharedPkg.dependencies?.["@family-events/contracts"], undefined)
-  assert.equal(contractsPkg.dependencies?.["@family-events/shared"], undefined)
+  assert.equal(sharedPkg.dependencies?.["@cypress-ink-labs/contracts"], undefined)
+  assert.equal(contractsPkg.dependencies?.["@cypress-ink-labs/shared"], undefined)
 })
 
 test("web runtime Supabase SDK imports stay behind the web adapter", () => {

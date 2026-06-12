@@ -3,7 +3,7 @@
   "extends": ["config:recommended"],
   "packageRules": [
     {
-      "matchPackagePrefixes": ["@family-events/"],
+      "matchPackagePrefixes": ["@cypress-ink-labs/"],
       "groupName": "family-events packages",
       "automerge": false,
       "labels": ["dependencies", "family-events"]
@@ -12,5 +12,5 @@
   "registryAliases": {
     "https://npm.pkg.github.com": "https://npm.pkg.github.com"
   },
-  "npmrc": "@family-events:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}"
+  "npmrc": "@cypress-ink-labs:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}"
 }

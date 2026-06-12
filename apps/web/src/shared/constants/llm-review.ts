@@ -3,7 +3,7 @@ import {
   LLM_EVENT_REVIEW_DECISIONS,
   LLM_EVENT_REVIEW_STATUS,
   LLM_EVENT_REVIEW_STATUSES,
-} from "@family-events/contracts"
+} from "@cypress-ink-labs/contracts"
 
 export {
   LLM_EVENT_REVIEW_DECISION,

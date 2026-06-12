@@ -1,5 +1,5 @@
 {
-  "extends": "@family-events/config-typescript/node.json",
+  "extends": "@cypress-ink-labs/config-typescript/node.json",
   "compilerOptions": {
     "tsBuildInfoFile": "../../node_modules/.tmp/apps-web-node.tsbuildinfo"
   },

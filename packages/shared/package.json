@@ -1,5 +1,5 @@
 {
-  "name": "@family-events/shared",
+  "name": "@cypress-ink-labs/shared",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -13,7 +13,7 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@family-events/config-quality": "workspace:*",
-    "@family-events/config-typescript": "workspace:*"
+    "@cypress-ink-labs/config-quality": "workspace:*",
+    "@cypress-ink-labs/config-typescript": "workspace:*"
   }
 }

@@ -1,8 +1,8 @@
 import { QueryClient } from "@tanstack/react-query"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { qk } from "@/infrastructure/queries/query-keys"
-import { DEFAULT_NOTIFICATION_PREFERENCES } from "@family-events/contracts"
-import type { NotificationPreferences } from "@family-events/contracts"
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "@cypress-ink-labs/contracts"
+import type { NotificationPreferences } from "@cypress-ink-labs/contracts"
 
 const USER_ID = "user-test-123"
 
@@ -139,7 +139,7 @@ describe("notification preferences optimistic update", () => {
 
 describe("toUpsertParams", () => {
   it("maps preference fields to p_ prefixed RPC params", async () => {
-    const { toUpsertParams } = await import("@family-events/contracts")
+    const { toUpsertParams } = await import("@cypress-ink-labs/contracts")
 
     const prefs: NotificationPreferences = {
       reminder_email: false,

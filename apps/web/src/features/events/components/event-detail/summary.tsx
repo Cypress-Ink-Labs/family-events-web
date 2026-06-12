@@ -1,5 +1,5 @@
 import { format } from "date-fns"
-import { cleanDescription } from "@family-events/shared"
+import { cleanDescription } from "@cypress-ink-labs/shared"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
 import type { EventWithDetails } from "@/shared/types"
 

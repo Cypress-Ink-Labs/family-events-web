@@ -1,4 +1,4 @@
-import type { UserNotification } from "@family-events/contracts"
+import type { UserNotification } from "@cypress-ink-labs/contracts"
 import { Link } from "react-router"
 import { Button } from "@/shared/components/ui/button"
 import { cn } from "@/shared/utils/format"

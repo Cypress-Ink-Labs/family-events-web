@@ -3,7 +3,7 @@ import type { SourceQueueStatus, TagQueueStatus } from "@/shared/types"
 /**
  * Labels and ordering for the admin queue dashboards. Sourced from
  * `pages/admin-logs.tsx` so the queue cards stay aligned with the upstream
- * status enum in `@family-events/contracts`.
+ * status enum in `@cypress-ink-labs/contracts`.
  */
 
 export const TAG_QUEUE_STATUS_LABELS: Record<TagQueueStatus, string> = {

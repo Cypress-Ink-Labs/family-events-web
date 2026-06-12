@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { buildShareUrl } from "@family-events/shared"
+import { buildShareUrl } from "@cypress-ink-labs/shared"
 import { toast } from "sonner"
 
 interface ShareEventOptions {

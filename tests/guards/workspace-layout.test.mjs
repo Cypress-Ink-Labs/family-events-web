@@ -27,7 +27,7 @@ test("workspace root files exist", () => {
 
 test("android workspace exposes Gradle-backed package scripts", () => {
   const androidPkg = JSON.parse(readFileSync(androidPkgPath, "utf8"))
-  assert.equal(androidPkg.name, "@family-events/android")
+  assert.equal(androidPkg.name, "@cypress-ink-labs/android")
   assert.match(androidPkg.scripts.check, /\.\/gradlew check/)
   assert.match(androidPkg.scripts.test, /\.\/gradlew test/)
   assert.match(androidPkg.scripts.build, /\.\/gradlew assembleDebug/)
@@ -43,18 +43,18 @@ test("workspace configuration includes apps, packages, supabase/functions", () =
 
 test("web workspace wires explicit workspace dependencies", () => {
   const webPkg = JSON.parse(readFileSync(webPkgPath, "utf8"))
-  assert.equal(webPkg.name, "@family-events/web")
-  assert.equal(webPkg.dependencies["@family-events/shared"], "workspace:*")
-  assert.equal(webPkg.dependencies["@family-events/contracts"], "workspace:*")
-  assert.equal(webPkg.devDependencies["@family-events/config-typescript"], "workspace:*")
-  assert.equal(webPkg.devDependencies["@family-events/config-quality"], undefined)
+  assert.equal(webPkg.name, "@cypress-ink-labs/web")
+  assert.equal(webPkg.dependencies["@cypress-ink-labs/shared"], "workspace:*")
+  assert.equal(webPkg.dependencies["@cypress-ink-labs/contracts"], "workspace:*")
+  assert.equal(webPkg.devDependencies["@cypress-ink-labs/config-typescript"], "workspace:*")
+  assert.equal(webPkg.devDependencies["@cypress-ink-labs/config-quality"], undefined)
 })
 
 test("web tsconfig consumers extend config-typescript presets", () => {
   const appCfg = JSON.parse(readFileSync(webTsAppPath, "utf8"))
   const nodeCfg = JSON.parse(readFileSync(webTsNodePath, "utf8"))
-  assert.equal(appCfg.extends, "@family-events/config-typescript/react-vite.json")
-  assert.equal(nodeCfg.extends, "@family-events/config-typescript/node.json")
+  assert.equal(appCfg.extends, "@cypress-ink-labs/config-typescript/react-vite.json")
+  assert.equal(nodeCfg.extends, "@cypress-ink-labs/config-typescript/node.json")
 })
 
 test("turbo cache directory is ignored", () => {
@@ -71,11 +71,11 @@ test("app ownership docs exist for web, iOS, and Android", () => {
   const ios = readFileSync(iosAgentsPath, "utf8")
   const android = readFileSync(androidAgentsPath, "utf8")
 
-  assert.match(web, /pnpm --filter @family-events\/web check/)
+  assert.match(web, /pnpm --filter @cypress-ink-labs\/web check/)
   assert.match(web, /docs\/DESIGN\.md/)
-  assert.match(web, /@family-events\/contracts/)
-  assert.match(web, /@family-events\/shared/)
-  assert.match(web, /@family-events\/design-system/)
+  assert.match(web, /@cypress-ink-labs\/contracts/)
+  assert.match(web, /@cypress-ink-labs\/shared/)
+  assert.match(web, /@cypress-ink-labs\/design-system/)
 
   assert.match(ios, /pnpm run ios:test/)
   assert.match(ios, /XcodeGen/)
@@ -84,7 +84,7 @@ test("app ownership docs exist for web, iOS, and Android", () => {
   assert.match(ios, /FEData/)
   assert.match(ios, /FEDesignSystem/)
 
-  assert.match(android, /pnpm --filter @family-events\/android check/)
+  assert.match(android, /pnpm --filter @cypress-ink-labs\/android check/)
   assert.match(android, /consumer/i)
   assert.match(android, /:core/)
   assert.match(android, /:data/)

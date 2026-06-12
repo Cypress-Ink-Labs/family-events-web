@@ -1,4 +1,4 @@
-import type { UserNotification } from "@family-events/contracts"
+import type { UserNotification } from "@cypress-ink-labs/contracts"
 import { supabase } from "@/infrastructure/supabase/client"
 
 /**

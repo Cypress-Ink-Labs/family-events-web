@@ -42,7 +42,7 @@ for (const [label, p, expected] of targets) {
 
 if (drift > 0) {
   console.error(
-    `\n${drift} generated file(s) drifted. Run: pnpm --filter @family-events/design-system build`
+    `\n${drift} generated file(s) drifted. Run: pnpm --filter @cypress-ink-labs/design-system build`
   )
   process.exit(1)
 }

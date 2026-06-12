@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { buildSrcSet, IMAGE_WIDTHS } from "@family-events/shared"
+import { buildSrcSet, IMAGE_WIDTHS } from "@cypress-ink-labs/shared"
 
 /**
  * SmartImage component tests — logic-level verification.

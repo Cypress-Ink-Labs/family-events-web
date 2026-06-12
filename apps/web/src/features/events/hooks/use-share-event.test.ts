@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { buildShareUrl } from "@family-events/shared"
+import { buildShareUrl } from "@cypress-ink-labs/shared"
 
 // Test the share URL builder (the pure function underlying the hook)
 // and the share logic branches without needing React rendering.

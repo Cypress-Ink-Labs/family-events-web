@@ -1,4 +1,4 @@
-import { validateExternalUrl } from "@family-events/shared"
+import { validateExternalUrl } from "@cypress-ink-labs/shared"
 import { eventSourceRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import type { Json } from "@/lib/db"
 import { supabase } from "@/infrastructure/supabase/client"

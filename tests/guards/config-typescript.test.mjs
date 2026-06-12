@@ -18,7 +18,7 @@ test("config-typescript package files exist", () => {
 
 test("config-typescript package exports named tsconfig presets", () => {
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"))
-  assert.equal(pkg.name, "@family-events/config-typescript")
+  assert.equal(pkg.name, "@cypress-ink-labs/config-typescript")
   assert.equal(pkg.private, true)
   assert.equal(pkg.exports["./base.json"], "./base.json")
   assert.equal(pkg.exports["./react-vite.json"], "./react-vite.json")

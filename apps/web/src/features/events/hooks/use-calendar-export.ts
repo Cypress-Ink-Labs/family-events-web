@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { buildIcsEvent } from "@family-events/shared"
+import { buildIcsEvent } from "@cypress-ink-labs/shared"
 
 interface CalendarExportOptions {
   eventId: string

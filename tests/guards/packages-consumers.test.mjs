@@ -57,8 +57,8 @@ test("web workspace has source-level imports for shared and contracts", () => {
   assert.equal(existsSync(webSharedConsumerPath), true);
   const contractsConsumer = readFileSync(webContractsConsumerPath, "utf8");
   const sharedConsumer = readFileSync(webSharedConsumerPath, "utf8");
-  assert.match(contractsConsumer, /from "@family-events\/contracts"/);
-  assert.match(sharedConsumer, /from "@family-events\/shared"/);
+  assert.match(contractsConsumer, /from "@cypress-ink-labs\/contracts"/);
+  assert.match(sharedConsumer, /from "@cypress-ink-labs\/shared"/);
 });
 
 test("contracts package owns generated Supabase database types", () => {

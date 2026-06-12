@@ -1,5 +1,5 @@
 {
-  "name": "@family-events/web",
+  "name": "@cypress-ink-labs/web",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -22,8 +22,8 @@
     "clean": "rm -rf dist .next out"
   },
   "dependencies": {
-    "@family-events/contracts": "^0.0.1",
-    "@family-events/shared": "workspace:*",
+    "@cypress-ink-labs/contracts": "^0.0.1",
+    "@cypress-ink-labs/shared": "workspace:*",
     "@hookform/resolvers": "^5.4.0",
     "@sentry/react": "^10.57.0",
     "@supabase/supabase-js": "^2.108.0",
@@ -55,8 +55,8 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@family-events/config-typescript": "workspace:*",
-    "@family-events/design-system": "workspace:*",
+    "@cypress-ink-labs/config-typescript": "workspace:*",
+    "@cypress-ink-labs/design-system": "workspace:*",
     "@playwright/test": "^1.60.0",
     "@sentry/vite-plugin": "^5.3.0",
     "@tailwindcss/vite": "^4.3.0",

@@ -43,7 +43,7 @@ export function buildIcsEvent(options: IcsEventOptions): string {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `UID:${options.uid}@family-events`,
+    `UID:${options.uid}@cypress-ink-labs`,
     `DTSTAMP:${formatUtcDate(new Date())}`,
     `DTSTART:${formatUtcDate(start)}`,
     `DTEND:${formatUtcDate(end)}`,

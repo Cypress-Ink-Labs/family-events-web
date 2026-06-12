@@ -1,7 +1,7 @@
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it, vi } from "vitest"
-import { DEFAULT_NOTIFICATION_PREFERENCES } from "@family-events/contracts"
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "@cypress-ink-labs/contracts"
 
 import { ProfileNotificationPreferencesCard } from "./profile-sections"
 

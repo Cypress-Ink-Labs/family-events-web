@@ -34,7 +34,7 @@ import {
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack } from "@/components/v2"
-import type { NotificationPreferences } from "@family-events/contracts"
+import type { NotificationPreferences } from "@cypress-ink-labs/contracts"
 
 export function ProfilePage() {
   const { user, profile, signOut, isAdmin, refreshProfile, updatePassword } = useAuth()

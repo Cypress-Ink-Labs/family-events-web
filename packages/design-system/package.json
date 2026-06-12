@@ -1,5 +1,5 @@
 {
-  "name": "@family-events/design-system",
+  "name": "@cypress-ink-labs/design-system",
   "version": "0.1.0",
   "type": "module",
   "description": "Single source of truth for family-events design tokens. Codegen feeds apps/web, apps/ios, and apps/android.",
@@ -33,7 +33,7 @@
     "clean": "rm -rf src/generated dist"
   },
   "devDependencies": {
-    "@family-events/config-quality": "workspace:*",
-    "@family-events/config-typescript": "workspace:*"
+    "@cypress-ink-labs/config-quality": "workspace:*",
+    "@cypress-ink-labs/config-typescript": "workspace:*"
   }
 }

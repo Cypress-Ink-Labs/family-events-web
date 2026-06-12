@@ -1,5 +1,5 @@
 import { useRef, useState, type ImgHTMLAttributes } from "react"
-import { buildSrcSet } from "@family-events/shared"
+import { buildSrcSet } from "@cypress-ink-labs/shared"
 import { cn } from "@/shared/utils/format"
 
 /** Rendering variant — controls `sizes` attribute and default width. */

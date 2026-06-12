@@ -7,7 +7,7 @@ import { safeImageSrc } from "@/infrastructure/safe-url"
 import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
 import { formatDurationBetween } from "@/shared/utils/dates"
 import { formatEventPrice } from "@/shared/utils/format"
-import { cleanDescription } from "@family-events/shared"
+import { cleanDescription } from "@cypress-ink-labs/shared"
 import { Separator } from "@/shared/components/ui/separator"
 import {
   EventDetailAbout,

@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avat
 import { supabase } from "@/infrastructure/supabase/client"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
-import type { NotificationPreferences } from "@family-events/contracts"
+import type { NotificationPreferences } from "@cypress-ink-labs/contracts"
 import type { CityRow as City } from "@/lib/db"
 type ThemeOption = "light" | "dark" | "system"
 

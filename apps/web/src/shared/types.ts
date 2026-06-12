@@ -26,7 +26,7 @@ import type {
   LlmEventReviewStatus as DbLlmEventReviewStatus,
   SourceExtractionMode,
   SourceScrapeQueueStatus as DbSourceScrapeQueueStatus,
-} from "@family-events/contracts"
+} from "@cypress-ink-labs/contracts"
 
 type Override<Row, Fields> = Omit<Row, keyof Fields> & Fields
 
