@@ -10,8 +10,6 @@
   "ignore": [
     "@cypress-ink-labs/config-typescript",
     "@cypress-ink-labs/config-quality",
-    "@cypress-ink-labs/email",
-    "@cypress-ink-labs/deploy-cli",
     "@cypress-ink-labs/shared",
     "@cypress-ink-labs/web"
   ]

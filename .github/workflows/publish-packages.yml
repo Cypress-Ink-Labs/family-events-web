@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - packages/contracts/src/**
       - packages/design-system/tokens/**
       - packages/design-system/src/**
       - packages/design-system/dist/**
+      - packages/design-system/scripts/**
       - .changeset/**
 
 concurrency:
