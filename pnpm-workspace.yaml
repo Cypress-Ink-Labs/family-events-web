@@ -20,3 +20,4 @@ minimumReleaseAgeExclude:
   - vite@8.0.14
   - '@tanstack/react-virtual@3.13.26'
   - '@tanstack/virtual-core@3.16.0'
+  - '@cypress-ink-labs/contracts@0.0.2'

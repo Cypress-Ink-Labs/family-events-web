@@ -38,10 +38,10 @@ importers:
 
   apps/web:
     dependencies:
-      '@family-events/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
-      '@family-events/shared':
+      '@cypress-ink-labs/contracts':
+        specifier: ^0.0.2
+        version: 0.0.2
+      '@cypress-ink-labs/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@hookform/resolvers':
@@ -132,10 +132,10 @@ importers:
         specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.17)(immer@11.1.8)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
     devDependencies:
-      '@family-events/config-typescript':
+      '@cypress-ink-labs/config-typescript':
         specifier: workspace:*
         version: link:../../packages/config-typescript
-      '@family-events/design-system':
+      '@cypress-ink-labs/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
       '@playwright/test':
@@ -173,30 +173,21 @@ importers:
 
   packages/config-typescript: {}
 
-  packages/contracts:
-    devDependencies:
-      '@family-events/config-quality':
-        specifier: workspace:*
-        version: link:../config-quality
-      '@family-events/config-typescript':
-        specifier: workspace:*
-        version: link:../config-typescript
-
   packages/design-system:
     devDependencies:
-      '@family-events/config-quality':
+      '@cypress-ink-labs/config-quality':
         specifier: workspace:*
         version: link:../config-quality
-      '@family-events/config-typescript':
+      '@cypress-ink-labs/config-typescript':
         specifier: workspace:*
         version: link:../config-typescript
 
   packages/shared:
     devDependencies:
-      '@family-events/config-quality':
+      '@cypress-ink-labs/config-quality':
         specifier: workspace:*
         version: link:../config-quality
-      '@family-events/config-typescript':
+      '@cypress-ink-labs/config-typescript':
         specifier: workspace:*
         version: link:../config-typescript
 
@@ -333,6 +324,9 @@ packages:
 
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
+
+  '@cypress-ink-labs/contracts@0.0.2':
+    resolution: {integrity: sha512-sa/GFgB5T/Dz9eOowzzaBDTxrRjtsKjB4ckF7SjmV4xwJrikj8YO7VSyz/whoA1orY8OLCRA/tQwDTGRfcTjIg==, tarball: https://npm.pkg.github.com/download/@cypress-ink-labs/contracts/0.0.2/97eceb38af6368ebfd25b5582993c2c7c2b8c1c8}
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -3992,6 +3986,8 @@ snapshots:
       fs-extra: 7.0.1
       human-id: 4.2.0
       prettier: 2.8.8
+
+  '@cypress-ink-labs/contracts@0.0.2': {}
 
   '@emnapi/core@1.10.0':
     dependencies:
