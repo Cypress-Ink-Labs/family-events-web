@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "steps": {
+    "install": {
+      "commands": [
+        ": ${NODE_AUTH_TOKEN:?NODE_AUTH_TOKEN is required for @cypress-ink-labs packages}",
+        "pnpm config set //npm.pkg.github.com/:_authToken $NODE_AUTH_TOKEN",
+        "..."
+      ]
+    }
+  }
+}
