@@ -36,3 +36,5 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
           RENOVATE_REPOSITORIES: Cypress-Ink-Labs/family-events-web
+          RENOVATE_HOST_RULES: >-
+            [{"matchHost":"npm.pkg.github.com","hostType":"npm","token":"${{ secrets.NODE_AUTH_TOKEN }}"}]
