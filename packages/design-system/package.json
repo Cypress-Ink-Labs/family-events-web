@@ -1,6 +1,6 @@
 {
   "name": "@cypress-ink-labs/design-system",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Single source of truth for family-events design tokens. Codegen feeds apps/web, apps/ios, and apps/android.",
   "exports": {
