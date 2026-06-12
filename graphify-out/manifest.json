@@ -1,0 +1,2492 @@
+{
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.changeset/config.json": {
+    "mtime": 1781234068.1966653,
+    "ast_hash": "e07f864f1e5f422ed874263e8bd0d0d2",
+    "semantic_hash": "e07f864f1e5f422ed874263e8bd0d0d2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/.oxfmtrc.json": {
+    "mtime": 1781148345.1865747,
+    "ast_hash": "6fa5aeb663921597a13e2277029cf35c",
+    "semantic_hash": "6fa5aeb663921597a13e2277029cf35c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/.oxlintrc.json": {
+    "mtime": 1781148345.1866207,
+    "ast_hash": "68c6259b08fa46c0253d131f2135aa43",
+    "semantic_hash": "68c6259b08fa46c0253d131f2135aa43"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/components.json": {
+    "mtime": 1781148345.186719,
+    "ast_hash": "99b875c74c56001d12d43258ffe0fe0c",
+    "semantic_hash": "99b875c74c56001d12d43258ffe0fe0c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/e2e/auth.setup.ts": {
+    "mtime": 1781148345.186877,
+    "ast_hash": "947652c8b386346db52195176c13c7b6",
+    "semantic_hash": "947652c8b386346db52195176c13c7b6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/e2e/favorite-toggle.spec.ts": {
+    "mtime": 1781148345.1871326,
+    "ast_hash": "0bac8a3c91b4ee3025669ec3bc0197e9",
+    "semantic_hash": "0bac8a3c91b4ee3025669ec3bc0197e9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/e2e/smoke.spec.ts": {
+    "mtime": 1781148345.1872106,
+    "ast_hash": "9f39c346c72b71a54fba8a529ea2faa0",
+    "semantic_hash": "9f39c346c72b71a54fba8a529ea2faa0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/package.json": {
+    "mtime": 1781274973.3606715,
+    "ast_hash": "35f3b6434d8ac1dcee5a3f4bf6f37024",
+    "semantic_hash": "35f3b6434d8ac1dcee5a3f4bf6f37024"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/playwright.config.ts": {
+    "mtime": 1781148345.1874468,
+    "ast_hash": "6b9bcce11b1ff4be172482272da52ed0",
+    "semantic_hash": "6b9bcce11b1ff4be172482272da52ed0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/.well-known/assetlinks.json": {
+    "mtime": 1781148345.1876252,
+    "ast_hash": "903c740369cd19ab7e007633d94e6945",
+    "semantic_hash": "903c740369cd19ab7e007633d94e6945"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/serve.json": {
+    "mtime": 1781148345.1884706,
+    "ast_hash": "e4b8eb5a773e77e09ab39c4195f46c3d",
+    "semantic_hash": "e4b8eb5a773e77e09ab39c4195f46c3d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/sw-push.js": {
+    "mtime": 1781148345.1885219,
+    "ast_hash": "b1af949cd133a98f212fe7b4d8098cfc",
+    "semantic_hash": "b1af949cd133a98f212fe7b4d8098cfc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/App.tsx": {
+    "mtime": 1781148345.18869,
+    "ast_hash": "276e50b2403506b0fed41bae0ff3c080",
+    "semantic_hash": "276e50b2403506b0fed41bae0ff3c080"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/app-error-boundary.tsx": {
+    "mtime": 1781148345.18875,
+    "ast_hash": "165e48c165d2fb7877e0718a87d410ed",
+    "semantic_hash": "165e48c165d2fb7877e0718a87d410ed"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/app-providers.tsx": {
+    "mtime": 1781148345.1888013,
+    "ast_hash": "a31b2e5fdb986f72c57c57336d3e4ccb",
+    "semantic_hash": "a31b2e5fdb986f72c57c57336d3e4ccb"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/app-route-elements.tsx": {
+    "mtime": 1781148345.1888702,
+    "ast_hash": "6062cc8898133b396a90fb5a62bdac57",
+    "semantic_hash": "6062cc8898133b396a90fb5a62bdac57"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/app-route-pages.ts": {
+    "mtime": 1781148345.1889238,
+    "ast_hash": "59b0be5660977c3a976dcbbfa295d7aa",
+    "semantic_hash": "59b0be5660977c3a976dcbbfa295d7aa"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/app-router.tsx": {
+    "mtime": 1781148345.1889782,
+    "ast_hash": "436dfb65790f83d2be59eb37d18bdf0c",
+    "semantic_hash": "436dfb65790f83d2be59eb37d18bdf0c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/layouts/admin-layout.tsx": {
+    "mtime": 1781148345.1890714,
+    "ast_hash": "ff42791e88fd15178f7082f110a66549",
+    "semantic_hash": "ff42791e88fd15178f7082f110a66549"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/layouts/app-layout.tsx": {
+    "mtime": 1781148345.1891637,
+    "ast_hash": "907c4d6190bd1a888e0289cf22a13fe9",
+    "semantic_hash": "907c4d6190bd1a888e0289cf22a13fe9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/providers/theme-provider.tsx": {
+    "mtime": 1781148345.1893606,
+    "ast_hash": "0863b308c0eeeecb0f6ee63d8f6b632e",
+    "semantic_hash": "0863b308c0eeeecb0f6ee63d8f6b632e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/route-fallback.tsx": {
+    "mtime": 1781148345.1894133,
+    "ast_hash": "f2d4900645bcdf2dd30156893c5bbd45",
+    "semantic_hash": "f2d4900645bcdf2dd30156893c5bbd45"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/scroll-to-top.tsx": {
+    "mtime": 1781148345.1894643,
+    "ast_hash": "ccf699accdb1e015afc9b78c60b9b0a6",
+    "semantic_hash": "ccf699accdb1e015afc9b78c60b9b0a6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/app/stores/app-store.ts": {
+    "mtime": 1781148345.1895518,
+    "ast_hash": "ad9b1f78b9fd270a0c845941f6b913ef",
+    "semantic_hash": "ad9b1f78b9fd270a0c845941f6b913ef"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/components/v2/filter-bar.tsx": {
+    "mtime": 1781148345.1897252,
+    "ast_hash": "18c128be2f2915528b3f0077b6f59273",
+    "semantic_hash": "18c128be2f2915528b3f0077b6f59273"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/components/v2/form-grid.tsx": {
+    "mtime": 1781148345.1897783,
+    "ast_hash": "5f9ca5c438901282edc03f9ef870c736",
+    "semantic_hash": "5f9ca5c438901282edc03f9ef870c736"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/components/v2/index.ts": {
+    "mtime": 1781148345.1898293,
+    "ast_hash": "cc5e960940aa2d1f1b6e041dc1927e03",
+    "semantic_hash": "cc5e960940aa2d1f1b6e041dc1927e03"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/components/v2/page.tsx": {
+    "mtime": 1781148345.1898808,
+    "ast_hash": "9ffe29d8e11904d6fea27deddca0fd3c",
+    "semantic_hash": "9ffe29d8e11904d6fea27deddca0fd3c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/components/v2/stack.tsx": {
+    "mtime": 1781148345.1899374,
+    "ast_hash": "49e44c4b8bfeaaef807f1a1bd975f4c3",
+    "semantic_hash": "49e44c4b8bfeaaef807f1a1bd975f4c3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/components/v2/toolbar.tsx": {
+    "mtime": 1781148345.1899881,
+    "ast_hash": "b9a0c57878bfd1e5610ba2bb258c9ec3",
+    "semantic_hash": "b9a0c57878bfd1e5610ba2bb258c9ec3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/env.d.ts": {
+    "mtime": 1781148345.1900377,
+    "ast_hash": "baed90355525121b50b64e9e44d58b28",
+    "semantic_hash": "baed90355525121b50b64e9e44d58b28"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/access.ts": {
+    "mtime": 1781148345.1901991,
+    "ast_hash": "bbcc26750e269534afbd6139746cbb5d",
+    "semantic_hash": "bbcc26750e269534afbd6139746cbb5d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/ai-settings.ts": {
+    "mtime": 1781148345.1902707,
+    "ast_hash": "ae96d6e79aecb1307d012cd61152778b",
+    "semantic_hash": "ae96d6e79aecb1307d012cd61152778b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/cities.ts": {
+    "mtime": 1781148345.1903203,
+    "ast_hash": "3e507a89b8ed68b0cccefdd7423c979b",
+    "semantic_hash": "3e507a89b8ed68b0cccefdd7423c979b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/comments.ts": {
+    "mtime": 1781148345.1903725,
+    "ast_hash": "4460ec61407943b0ebe0e44fea439663",
+    "semantic_hash": "4460ec61407943b0ebe0e44fea439663"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/crons.ts": {
+    "mtime": 1781148345.190426,
+    "ast_hash": "370261768679739fabff8780eb333ec6",
+    "semantic_hash": "370261768679739fabff8780eb333ec6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/event-ai-trace.ts": {
+    "mtime": 1781148345.1904933,
+    "ast_hash": "50d1f705c9b7c659c68843239e3772e9",
+    "semantic_hash": "50d1f705c9b7c659c68843239e3772e9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/event-editor.ts": {
+    "mtime": 1781148345.19055,
+    "ast_hash": "990ad23ecb9628850d9f74f0df7e77f0",
+    "semantic_hash": "990ad23ecb9628850d9f74f0df7e77f0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/events.ts": {
+    "mtime": 1781148345.1905994,
+    "ast_hash": "341a6d7f478654e9faeab44952d6723d",
+    "semantic_hash": "341a6d7f478654e9faeab44952d6723d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/invite-requests.ts": {
+    "mtime": 1781148345.1906612,
+    "ast_hash": "a98bda85e4ebc7eab492f12bc6fdae52",
+    "semantic_hash": "a98bda85e4ebc7eab492f12bc6fdae52"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/ratings.ts": {
+    "mtime": 1781148345.1907096,
+    "ast_hash": "39458f8d926e0bbea9cabb9e56231d1e",
+    "semantic_hash": "39458f8d926e0bbea9cabb9e56231d1e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/source-queue.ts": {
+    "mtime": 1781148345.1907697,
+    "ast_hash": "474f7e014073af83c5edc51067d58502",
+    "semantic_hash": "474f7e014073af83c5edc51067d58502"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/sources.ts": {
+    "mtime": 1781231758.5315447,
+    "ast_hash": "4b695030a6bd3d5f9e23b6b961e3992a",
+    "semantic_hash": "4b695030a6bd3d5f9e23b6b961e3992a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/stats.test.ts": {
+    "mtime": 1781148345.1908786,
+    "ast_hash": "e3a765885c3f69b18bb25d6ee9252339",
+    "semantic_hash": "e3a765885c3f69b18bb25d6ee9252339"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/stats.ts": {
+    "mtime": 1781148345.1909318,
+    "ast_hash": "43dfff8c644f9cebc1618382a7949f83",
+    "semantic_hash": "43dfff8c644f9cebc1618382a7949f83"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/api/tag-queue.ts": {
+    "mtime": 1781148345.19098,
+    "ast_hash": "b14e7978695f582cf146a26ed0817494",
+    "semantic_hash": "b14e7978695f582cf146a26ed0817494"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-access-delete-dialog.tsx": {
+    "mtime": 1781148345.1910677,
+    "ast_hash": "0966d5006c2b165b59e907cb2a6b0bc7",
+    "semantic_hash": "0966d5006c2b165b59e907cb2a6b0bc7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-access-disable-dialog.tsx": {
+    "mtime": 1781148345.1911306,
+    "ast_hash": "8697956bb2d3d05b16d76c8893bc7fcc",
+    "semantic_hash": "8697956bb2d3d05b16d76c8893bc7fcc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-access-list.tsx": {
+    "mtime": 1781148345.191189,
+    "ast_hash": "6e3be71dae098bd657d745d817b50d1d",
+    "semantic_hash": "6e3be71dae098bd657d745d817b50d1d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-access-sections.tsx": {
+    "mtime": 1781148345.19128,
+    "ast_hash": "82b99a6ee4e10be3d62a9c4ff2cdd545",
+    "semantic_hash": "82b99a6ee4e10be3d62a9c4ff2cdd545"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-city-filter-bar.test.ts": {
+    "mtime": 1781148345.191335,
+    "ast_hash": "8482e1b91b492e4598ad09351bb6a394",
+    "semantic_hash": "8482e1b91b492e4598ad09351bb6a394"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-city-filter-bar.tsx": {
+    "mtime": 1781148345.1913943,
+    "ast_hash": "6bd2fa581b83864c5d0a8efd9b80cc91",
+    "semantic_hash": "6bd2fa581b83864c5d0a8efd9b80cc91"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-crons/cron-domain.ts": {
+    "mtime": 1781148345.1914885,
+    "ast_hash": "ce2b55516418bfdbcddd708a0f20618d",
+    "semantic_hash": "ce2b55516418bfdbcddd708a0f20618d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-crons/cron-run-detail-sheet.tsx": {
+    "mtime": 1781148345.1916769,
+    "ast_hash": "2b9425c71ff8a30364e440612e19aeec",
+    "semantic_hash": "2b9425c71ff8a30364e440612e19aeec"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-crons/railway-cron-job-card.tsx": {
+    "mtime": 1781148345.1917791,
+    "ast_hash": "98ee027059001f5365a8da0f6c3b2917",
+    "semantic_hash": "98ee027059001f5365a8da0f6c3b2917"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-crons/run-history.tsx": {
+    "mtime": 1781148345.1918495,
+    "ast_hash": "b353f19708a151e28472463c1f76e56c",
+    "semantic_hash": "b353f19708a151e28472463c1f76e56c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-crons/run-status-badge.tsx": {
+    "mtime": 1781148345.1919117,
+    "ast_hash": "3d476e82d67c4444d8389558b0af929b",
+    "semantic_hash": "3d476e82d67c4444d8389558b0af929b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-dashboard-sections.tsx": {
+    "mtime": 1781148345.1919954,
+    "ast_hash": "38132fba6bf35e25c170af3aaeb1a2fe",
+    "semantic_hash": "38132fba6bf35e25c170af3aaeb1a2fe"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit-form.tsx": {
+    "mtime": 1781148345.1920753,
+    "ast_hash": "619f40b4fc57dc0ec120268a109b6548",
+    "semantic_hash": "619f40b4fc57dc0ec120268a109b6548"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit-sections.tsx": {
+    "mtime": 1781148345.1922662,
+    "ast_hash": "3794cfdca4c1b278c293d452f7e5bfb1",
+    "semantic_hash": "3794cfdca4c1b278c293d452f7e5bfb1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/_shared.ts": {
+    "mtime": 1781148345.1923826,
+    "ast_hash": "6d2a8e0b76dc189e30426be8fa82a923",
+    "semantic_hash": "6d2a8e0b76dc189e30426be8fa82a923"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/audience-pricing-fields.tsx": {
+    "mtime": 1781148345.19245,
+    "ast_hash": "8a474856bf777ef0bc915e580c566f76",
+    "semantic_hash": "8a474856bf777ef0bc915e580c566f76"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/audit-summary.tsx": {
+    "mtime": 1781148345.1925128,
+    "ast_hash": "70ba2d73282ad8e84ebb2795dbeaabe1",
+    "semantic_hash": "70ba2d73282ad8e84ebb2795dbeaabe1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/basics-fields.tsx": {
+    "mtime": 1781148345.1925788,
+    "ast_hash": "2a2dbfe242ca28bc648f607653f902a4",
+    "semantic_hash": "2a2dbfe242ca28bc648f607653f902a4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/location-fields.tsx": {
+    "mtime": 1781148345.1926389,
+    "ast_hash": "4f3669da46f468b6129b718b0032e0f8",
+    "semantic_hash": "4f3669da46f468b6129b718b0032e0f8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/media-fields.tsx": {
+    "mtime": 1781148345.1926985,
+    "ast_hash": "d3f12ba37f9ad91f32b5e37342cb8019",
+    "semantic_hash": "d3f12ba37f9ad91f32b5e37342cb8019"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/save-bar.tsx": {
+    "mtime": 1781148345.1927595,
+    "ast_hash": "e4bc4472d1e8aa78a8e7e35a3b7f5bc9",
+    "semantic_hash": "e4bc4472d1e8aa78a8e7e35a3b7f5bc9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/save-error-message.tsx": {
+    "mtime": 1781148345.1928165,
+    "ast_hash": "85fbdd64f996be16b935d8a59a696f8b",
+    "semantic_hash": "85fbdd64f996be16b935d8a59a696f8b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/schedule-fields.tsx": {
+    "mtime": 1781148345.1928732,
+    "ast_hash": "8922893fc2d34f290622d5a5d6515d16",
+    "semantic_hash": "8922893fc2d34f290622d5a5d6515d16"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/source-fields.tsx": {
+    "mtime": 1781148345.192935,
+    "ast_hash": "6cd59c6d629264b1f20d638892d995b3",
+    "semantic_hash": "6cd59c6d629264b1f20d638892d995b3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/tags-field.tsx": {
+    "mtime": 1781148345.1930027,
+    "ast_hash": "7d81706c56c7a27a172694c6a419dbae",
+    "semantic_hash": "7d81706c56c7a27a172694c6a419dbae"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-edit/visibility-fields.tsx": {
+    "mtime": 1781148345.1930602,
+    "ast_hash": "d84ee152cc511a97d14c03d8d315228e",
+    "semantic_hash": "d84ee152cc511a97d14c03d8d315228e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-review-panel.tsx": {
+    "mtime": 1781231758.5313332,
+    "ast_hash": "a90f7a646c28426ab395699861f7f0fe",
+    "semantic_hash": "a90f7a646c28426ab395699861f7f0fe"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-review/ai-trace-panel.tsx": {
+    "mtime": 1781148345.1933742,
+    "ast_hash": "1769211e3d5624b62596a55010fc1382",
+    "semantic_hash": "1769211e3d5624b62596a55010fc1382"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-review/llm-review-summary.tsx": {
+    "mtime": 1781148345.1934717,
+    "ast_hash": "730b241b5f42958b2e0ff00293a03999",
+    "semantic_hash": "730b241b5f42958b2e0ff00293a03999"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-event-review/tag-overrides-editor.tsx": {
+    "mtime": 1781148345.1935337,
+    "ast_hash": "499f7b9c8c1ca89f13e18b73101735d6",
+    "semantic_hash": "499f7b9c8c1ca89f13e18b73101735d6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events-list.tsx": {
+    "mtime": 1781148345.1936135,
+    "ast_hash": "a17a2edb8457c7e2e80c019051a8cc71",
+    "semantic_hash": "a17a2edb8457c7e2e80c019051a8cc71"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events-list/admin-events-list-loader-row.tsx": {
+    "mtime": 1781148345.1937182,
+    "ast_hash": "92733300fedd03b2b605ab40f9793906",
+    "semantic_hash": "92733300fedd03b2b605ab40f9793906"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events-list/admin-virtual-event-row.tsx": {
+    "mtime": 1781148345.1937857,
+    "ast_hash": "f457fee3db24c206b6a32b3e00a6243b",
+    "semantic_hash": "f457fee3db24c206b6a32b3e00a6243b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events-list/llm-review-badge.ts": {
+    "mtime": 1781148345.1938553,
+    "ast_hash": "af90819e3167d530eaeb6e020ebb3632",
+    "semantic_hash": "af90819e3167d530eaeb6e020ebb3632"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events-sections.test.ts": {
+    "mtime": 1781148345.1939368,
+    "ast_hash": "e0cb581dae781e48429f537fcd8ef3f1",
+    "semantic_hash": "e0cb581dae781e48429f537fcd8ef3f1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events-sections.tsx": {
+    "mtime": 1781148345.1940055,
+    "ast_hash": "5ebf0594d27352eca3435a42c089fb0b",
+    "semantic_hash": "5ebf0594d27352eca3435a42c089fb0b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-events/review-section.tsx": {
+    "mtime": 1781148345.1941013,
+    "ast_hash": "99777b53ccc6c58bcdea3043594938f8",
+    "semantic_hash": "99777b53ccc6c58bcdea3043594938f8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites-sections.tsx": {
+    "mtime": 1781148345.1941679,
+    "ast_hash": "12a212073624ab200250e607a35d97e3",
+    "semantic_hash": "12a212073624ab200250e607a35d97e3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invite-requests-empty-state.tsx": {
+    "mtime": 1781148345.1942728,
+    "ast_hash": "de3a9092cee1f36514c896b433eb306b",
+    "semantic_hash": "de3a9092cee1f36514c896b433eb306b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invite-requests-list.tsx": {
+    "mtime": 1781148345.1943333,
+    "ast_hash": "395ddfe551cd4df2a69347f59c1f5ec3",
+    "semantic_hash": "395ddfe551cd4df2a69347f59c1f5ec3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invites-created-reveal.tsx": {
+    "mtime": 1781148345.1943972,
+    "ast_hash": "2b639f5e4b81761fdf73a2ce6c6d8068",
+    "semantic_hash": "2b639f5e4b81761fdf73a2ce6c6d8068"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invites-empty-state.tsx": {
+    "mtime": 1781148345.1944582,
+    "ast_hash": "5c680d2bce5fbe25362f4ca124b55ed8",
+    "semantic_hash": "5c680d2bce5fbe25362f4ca124b55ed8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invites-footer.tsx": {
+    "mtime": 1781148345.1945229,
+    "ast_hash": "5dda3fdcaf44a3d9f5e28cecc6cdd9e6",
+    "semantic_hash": "5dda3fdcaf44a3d9f5e28cecc6cdd9e6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invites-header.tsx": {
+    "mtime": 1781148345.1945941,
+    "ast_hash": "05f3021054d01b709799a280724b5b95",
+    "semantic_hash": "05f3021054d01b709799a280724b5b95"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-invites/admin-invites-list.tsx": {
+    "mtime": 1781148345.1946554,
+    "ast_hash": "c5956dd5fa6fdfb1d22014420df901ef",
+    "semantic_hash": "c5956dd5fa6fdfb1d22014420df901ef"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/dead-letter-section.tsx": {
+    "mtime": 1781148345.1947591,
+    "ast_hash": "2ca3d6c9898ed181b74906d9ed934fea",
+    "semantic_hash": "2ca3d6c9898ed181b74906d9ed934fea"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/dead-letters-panel.tsx": {
+    "mtime": 1781148345.1948278,
+    "ast_hash": "29ed97615d28809a36bd54fd27c8f5ea",
+    "semantic_hash": "29ed97615d28809a36bd54fd27c8f5ea"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/elapsed-timer.tsx": {
+    "mtime": 1781148345.1948893,
+    "ast_hash": "1905bd217f1ff3321c86d19e07056ce8",
+    "semantic_hash": "1905bd217f1ff3321c86d19e07056ce8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/queue-summary-panel.tsx": {
+    "mtime": 1781148345.1949592,
+    "ast_hash": "72dfb9a5bf16fd5c724babcc46fbb471",
+    "semantic_hash": "72dfb9a5bf16fd5c724babcc46fbb471"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/source-queue-summary-panel.tsx": {
+    "mtime": 1781148345.1950262,
+    "ast_hash": "55adfffaaff219ae1974d65d5c1ce5e8",
+    "semantic_hash": "55adfffaaff219ae1974d65d5c1ce5e8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/source-run-card.tsx": {
+    "mtime": 1781148345.1950939,
+    "ast_hash": "5b1ffe4c6e3f36bffb047cb9fbb70c7c",
+    "semantic_hash": "5b1ffe4c6e3f36bffb047cb9fbb70c7c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-logs/tag-queue-summary-panel.tsx": {
+    "mtime": 1781148345.1951556,
+    "ast_hash": "015a80ec4b7a3c326413ae6b2c21b5c0",
+    "semantic_hash": "015a80ec4b7a3c326413ae6b2c21b5c0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-pipeline-learning.tsx": {
+    "mtime": 1781148345.1952186,
+    "ast_hash": "f0a29d41179bb72e4088d93a66336bc4",
+    "semantic_hash": "f0a29d41179bb72e4088d93a66336bc4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-settings-sections.tsx": {
+    "mtime": 1781148345.195306,
+    "ast_hash": "b2d106e29912fc357b27b9ff0ee45c89",
+    "semantic_hash": "b2d106e29912fc357b27b9ff0ee45c89"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources-sections.test.ts": {
+    "mtime": 1781148345.1953783,
+    "ast_hash": "c93fb844121d78e79def66cc6323a525",
+    "semantic_hash": "c93fb844121d78e79def66cc6323a525"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources-sections.tsx": {
+    "mtime": 1781148345.195438,
+    "ast_hash": "97d6a5ede6e691a05d7906f999f35f04",
+    "semantic_hash": "97d6a5ede6e691a05d7906f999f35f04"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources/add-source-dialog.tsx": {
+    "mtime": 1781148345.1955376,
+    "ast_hash": "8e4fad9262347493b72ac8c75fc985b8",
+    "semantic_hash": "8e4fad9262347493b72ac8c75fc985b8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources/empty-city-card.tsx": {
+    "mtime": 1781148345.195598,
+    "ast_hash": "8a3c5895c584866e35ac682addd30cc0",
+    "semantic_hash": "8a3c5895c584866e35ac682addd30cc0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources/source-card.tsx": {
+    "mtime": 1781148345.1956675,
+    "ast_hash": "f8800c764ccbdd3b87830529fbe6dfb3",
+    "semantic_hash": "f8800c764ccbdd3b87830529fbe6dfb3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources/sources-header.tsx": {
+    "mtime": 1781148345.1957355,
+    "ast_hash": "c00f85442657616abbb971794abf4563",
+    "semantic_hash": "c00f85442657616abbb971794abf4563"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources/sources-list.tsx": {
+    "mtime": 1781148345.1958044,
+    "ast_hash": "9318a967628bfd51740fd02300e93675",
+    "semantic_hash": "9318a967628bfd51740fd02300e93675"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/components/admin-sources/status-indicator.tsx": {
+    "mtime": 1781148345.1958606,
+    "ast_hash": "1d873175c77187b83ebbed70c5d7c551",
+    "semantic_hash": "1d873175c77187b83ebbed70c5d7c551"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/constants/cron.ts": {
+    "mtime": 1781148345.1959689,
+    "ast_hash": "fb658c378614329074a1f4f5d776744b",
+    "semantic_hash": "fb658c378614329074a1f4f5d776744b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/constants/event-status-display.ts": {
+    "mtime": 1781148345.196031,
+    "ast_hash": "87281f46de7b887a4867f3b0d4a11eb4",
+    "semantic_hash": "87281f46de7b887a4867f3b0d4a11eb4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/constants/queue.ts": {
+    "mtime": 1781231758.5309286,
+    "ast_hash": "23582450e256067839edccc03d75eede",
+    "semantic_hash": "23582450e256067839edccc03d75eede"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/constants/source-types.ts": {
+    "mtime": 1781148345.1961544,
+    "ast_hash": "07ff38c7d53597f8d2aac389f33e64a2",
+    "semantic_hash": "07ff38c7d53597f8d2aac389f33e64a2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/admin-events-shared.ts": {
+    "mtime": 1781148345.1962798,
+    "ast_hash": "4cd1e811e445185c5ca36b09761c528e",
+    "semantic_hash": "4cd1e811e445185c5ca36b09761c528e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/use-admin-event-ai-trace.ts": {
+    "mtime": 1781148345.196334,
+    "ast_hash": "55a2aacb3bb32229baafd9e260e8fda2",
+    "semantic_hash": "55a2aacb3bb32229baafd9e260e8fda2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/use-admin-event-detail.ts": {
+    "mtime": 1781148345.1964061,
+    "ast_hash": "f22df9f2e574b75a9cb75bdb57bba2c0",
+    "semantic_hash": "f22df9f2e574b75a9cb75bdb57bba2c0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/use-admin-event-editor.ts": {
+    "mtime": 1781148345.1964583,
+    "ast_hash": "bb87c746de2c015376297539e2ed0f62",
+    "semantic_hash": "bb87c746de2c015376297539e2ed0f62"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/use-admin-event-facet-counts.ts": {
+    "mtime": 1781148345.1965208,
+    "ast_hash": "7594cdcf697e70301f0a6add2ec0d60c",
+    "semantic_hash": "7594cdcf697e70301f0a6add2ec0d60c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/use-admin-events.test.ts": {
+    "mtime": 1781148345.1965783,
+    "ast_hash": "ab615150e3b834f727e9cbf3c3db7b34",
+    "semantic_hash": "ab615150e3b834f727e9cbf3c3db7b34"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/events/use-admin-events.ts": {
+    "mtime": 1781148345.1966403,
+    "ast_hash": "cb157cbfeb4671ce02e0603285dd5156",
+    "semantic_hash": "cb157cbfeb4671ce02e0603285dd5156"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-crons.test.ts": {
+    "mtime": 1781148345.1967466,
+    "ast_hash": "9ec35389e713e67709f2b1ce1a6b2b28",
+    "semantic_hash": "9ec35389e713e67709f2b1ce1a6b2b28"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-crons.ts": {
+    "mtime": 1781148345.1968224,
+    "ast_hash": "7b76a32490a623cc591a7883612f7740",
+    "semantic_hash": "7b76a32490a623cc591a7883612f7740"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-dashboard-presence.ts": {
+    "mtime": 1781148345.1968942,
+    "ast_hash": "7b0abf9bc16008c41401cfbff184655d",
+    "semantic_hash": "7b0abf9bc16008c41401cfbff184655d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-events-realtime.test.ts": {
+    "mtime": 1781148345.1969545,
+    "ast_hash": "35552da1e63bbe505a0414bc88369cfc",
+    "semantic_hash": "35552da1e63bbe505a0414bc88369cfc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-events-realtime.ts": {
+    "mtime": 1781148345.1970162,
+    "ast_hash": "deea7a00f686e43a5d8747cbd695990f",
+    "semantic_hash": "deea7a00f686e43a5d8747cbd695990f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-logs-realtime.ts": {
+    "mtime": 1781148345.1970897,
+    "ast_hash": "f3ec2583a7e7cf232f62dc8273b51beb",
+    "semantic_hash": "f3ec2583a7e7cf232f62dc8273b51beb"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-pipeline-stats.ts": {
+    "mtime": 1781148345.197153,
+    "ast_hash": "18d30bae257d8ae7204912356e9e0303",
+    "semantic_hash": "18d30bae257d8ae7204912356e9e0303"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-stats.ts": {
+    "mtime": 1781148345.1972163,
+    "ast_hash": "119bb6e989cf227fb79d49efb3ac40e8",
+    "semantic_hash": "119bb6e989cf227fb79d49efb3ac40e8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/operations/use-admin-tag-queue.ts": {
+    "mtime": 1781148345.1972902,
+    "ast_hash": "1eb24621b51ef7e9234aad0ef87e98d5",
+    "semantic_hash": "1eb24621b51ef7e9234aad0ef87e98d5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/sources/use-admin-source-queue.ts": {
+    "mtime": 1781148345.1973917,
+    "ast_hash": "7c721ec7d1f396825b8e8ebcbfd2acf6",
+    "semantic_hash": "7c721ec7d1f396825b8e8ebcbfd2acf6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/sources/use-admin-source-runs.ts": {
+    "mtime": 1781148345.1974614,
+    "ast_hash": "f065fcfa97e08ffa8d3a9316abbdfb0c",
+    "semantic_hash": "f065fcfa97e08ffa8d3a9316abbdfb0c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/sources/use-admin-sources.ts": {
+    "mtime": 1781148345.1975296,
+    "ast_hash": "0f96e28f14cda98b0713bed1ac7d0293",
+    "semantic_hash": "0f96e28f14cda98b0713bed1ac7d0293"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-access.ts": {
+    "mtime": 1781148345.1975973,
+    "ast_hash": "efb03a63cea45c8fb0ebe1280d16297d",
+    "semantic_hash": "efb03a63cea45c8fb0ebe1280d16297d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-ai-settings.ts": {
+    "mtime": 1781148345.1976569,
+    "ast_hash": "81fc0b7f0b82048624cf0a4d3af6e9e0",
+    "semantic_hash": "81fc0b7f0b82048624cf0a4d3af6e9e0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-cities.ts": {
+    "mtime": 1781148345.1977289,
+    "ast_hash": "7566535b5ba99f81fb1b046510ecc617",
+    "semantic_hash": "7566535b5ba99f81fb1b046510ecc617"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-comments.ts": {
+    "mtime": 1781148345.1977906,
+    "ast_hash": "b0c77b9ac15f4652b0181198724d494b",
+    "semantic_hash": "b0c77b9ac15f4652b0181198724d494b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-invite-requests.ts": {
+    "mtime": 1781148345.1978517,
+    "ast_hash": "cf42d2b9205a8cd64f274d130f60dedc",
+    "semantic_hash": "cf42d2b9205a8cd64f274d130f60dedc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-ratings.ts": {
+    "mtime": 1781148345.197916,
+    "ast_hash": "ced254736506289a21aefad440dd806f",
+    "semantic_hash": "ced254736506289a21aefad440dd806f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-admin-toast.ts": {
+    "mtime": 1781148345.197971,
+    "ast_hash": "3da546e50e01c31a1aa9c05d0260ac3a",
+    "semantic_hash": "3da546e50e01c31a1aa9c05d0260ac3a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/hooks/use-city-filter.ts": {
+    "mtime": 1781148345.1980298,
+    "ast_hash": "7e60d01957fb34bd33138f0510a19b28",
+    "semantic_hash": "7e60d01957fb34bd33138f0510a19b28"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/lib/event-editor-mappers.test.ts": {
+    "mtime": 1781148345.1981158,
+    "ast_hash": "b48de34989846ef1a63d8a0fc8730949",
+    "semantic_hash": "b48de34989846ef1a63d8a0fc8730949"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/lib/event-editor-mappers.ts": {
+    "mtime": 1781148345.1981783,
+    "ast_hash": "26bdad31ff23a09730df04dac468abd4",
+    "semantic_hash": "26bdad31ff23a09730df04dac468abd4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/lib/event-editor-schema.ts": {
+    "mtime": 1781148345.1982315,
+    "ast_hash": "7684cf2b96aebb591d2bc9e163919b75",
+    "semantic_hash": "7684cf2b96aebb591d2bc9e163919b75"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/lib/event-field-locks.ts": {
+    "mtime": 1781148345.1982818,
+    "ast_hash": "649ebc2b6cf564b48c18965f14c3d6af",
+    "semantic_hash": "649ebc2b6cf564b48c18965f14c3d6af"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-access.tsx": {
+    "mtime": 1781148345.1983724,
+    "ast_hash": "1110157d9c72b21c01f16eec25382bb3",
+    "semantic_hash": "1110157d9c72b21c01f16eec25382bb3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-cities.tsx": {
+    "mtime": 1781148345.1984334,
+    "ast_hash": "7fbf7e477231d47c011d498ac5123d78",
+    "semantic_hash": "7fbf7e477231d47c011d498ac5123d78"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-comments.tsx": {
+    "mtime": 1781148345.1985073,
+    "ast_hash": "0d7d08a5b88c1f44bcfc2a26ce247a0c",
+    "semantic_hash": "0d7d08a5b88c1f44bcfc2a26ce247a0c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-crons.tsx": {
+    "mtime": 1781148345.198589,
+    "ast_hash": "958212c55f8712e8d0c5b0303fb5637c",
+    "semantic_hash": "958212c55f8712e8d0c5b0303fb5637c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-dashboard.tsx": {
+    "mtime": 1781148345.198662,
+    "ast_hash": "15f555cde50c7c27e69bced33156d3ad",
+    "semantic_hash": "15f555cde50c7c27e69bced33156d3ad"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-event-edit.tsx": {
+    "mtime": 1781148345.1987398,
+    "ast_hash": "a7e13da2748801bd4e5e18341d5dd9fc",
+    "semantic_hash": "a7e13da2748801bd4e5e18341d5dd9fc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-events.tsx": {
+    "mtime": 1781148345.1988282,
+    "ast_hash": "b4ecf4fbe5038712b6b77dd62a691cd8",
+    "semantic_hash": "b4ecf4fbe5038712b6b77dd62a691cd8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-invites.tsx": {
+    "mtime": 1781148345.198907,
+    "ast_hash": "21781be6b1e39a19e29646e4c7050e15",
+    "semantic_hash": "21781be6b1e39a19e29646e4c7050e15"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-logs.test.ts": {
+    "mtime": 1781148345.1989596,
+    "ast_hash": "c87e7909b079378aa0db22baaa65dd2e",
+    "semantic_hash": "c87e7909b079378aa0db22baaa65dd2e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-logs.tsx": {
+    "mtime": 1781148345.1990197,
+    "ast_hash": "74da4cbbcb21d90786b964bfee61a4a1",
+    "semantic_hash": "74da4cbbcb21d90786b964bfee61a4a1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-ratings.tsx": {
+    "mtime": 1781148345.1990814,
+    "ast_hash": "3460644de8fec1bc2d63fa0e3c611921",
+    "semantic_hash": "3460644de8fec1bc2d63fa0e3c611921"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-settings.tsx": {
+    "mtime": 1781148345.199159,
+    "ast_hash": "7872d50c7f8c5e857662fe6ac55f7dbe",
+    "semantic_hash": "7872d50c7f8c5e857662fe6ac55f7dbe"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/pages/admin-sources.tsx": {
+    "mtime": 1781148345.1992202,
+    "ast_hash": "719c80d50f3540081372a93e7818b4a5",
+    "semantic_hash": "719c80d50f3540081372a93e7818b4a5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/stores/admin-store.test.ts": {
+    "mtime": 1781148345.1993036,
+    "ast_hash": "67199d3f01bee7d5ddec3f87177e192a",
+    "semantic_hash": "67199d3f01bee7d5ddec3f87177e192a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/stores/admin-store.ts": {
+    "mtime": 1781148345.1993647,
+    "ast_hash": "71773663f5498897b61e41ae81b1df04",
+    "semantic_hash": "71773663f5498897b61e41ae81b1df04"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/types.ts": {
+    "mtime": 1781148345.1994214,
+    "ast_hash": "8e46641953bc57536a83d8572313fa9c",
+    "semantic_hash": "8e46641953bc57536a83d8572313fa9c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/admin/utils/format-provider-label.ts": {
+    "mtime": 1781148345.1995013,
+    "ast_hash": "4fee2197c54229d127fb6ede9466237a",
+    "semantic_hash": "4fee2197c54229d127fb6ede9466237a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/api/load-profile-and-access.ts": {
+    "mtime": 1781148345.199621,
+    "ast_hash": "53bc2dfb0121c54ffd5324dd24ee11ed",
+    "semantic_hash": "53bc2dfb0121c54ffd5324dd24ee11ed"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/protected-route.tsx": {
+    "mtime": 1781148345.1997046,
+    "ast_hash": "596858daac564c5c2f0807d868fe6ae1",
+    "semantic_hash": "596858daac564c5c2f0807d868fe6ae1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/provider-icons.tsx": {
+    "mtime": 1781148345.1997545,
+    "ast_hash": "ee9cd6bef06deb639532c3df9221e9cf",
+    "semantic_hash": "ee9cd6bef06deb639532c3df9221e9cf"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/public-only-route.tsx": {
+    "mtime": 1781148345.199804,
+    "ast_hash": "d99aeeff8899bce84836f8bbdf187882",
+    "semantic_hash": "d99aeeff8899bce84836f8bbdf187882"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/request-invite-dialog.tsx": {
+    "mtime": 1781148345.199869,
+    "ast_hash": "d5704faccb95cf79960d96ed32818940",
+    "semantic_hash": "d5704faccb95cf79960d96ed32818940"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/sign-in/invite-code-field.tsx": {
+    "mtime": 1781148345.1999514,
+    "ast_hash": "95cd55282e68127a5c253cab1b034daa",
+    "semantic_hash": "95cd55282e68127a5c253cab1b034daa"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/sign-in/magic-link-form.tsx": {
+    "mtime": 1781148345.2000082,
+    "ast_hash": "2d716183b80a432661ad1709dccbd386",
+    "semantic_hash": "2d716183b80a432661ad1709dccbd386"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/sign-in/magic-link-sent.tsx": {
+    "mtime": 1781148345.2000563,
+    "ast_hash": "afd4fa7c909d23d973860f0637d786de",
+    "semantic_hash": "afd4fa7c909d23d973860f0637d786de"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/components/sign-in/oauth-buttons.tsx": {
+    "mtime": 1781148345.2001088,
+    "ast_hash": "dc9e80efab02a9d92a0ce11e427150b6",
+    "semantic_hash": "dc9e80efab02a9d92a0ce11e427150b6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/constants/messages.ts": {
+    "mtime": 1781148345.2002394,
+    "ast_hash": "ec1f951110ba2dbc68a79283ce46c5fe",
+    "semantic_hash": "ec1f951110ba2dbc68a79283ce46c5fe"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/hooks/use-invites.test.ts": {
+    "mtime": 1781148345.200319,
+    "ast_hash": "3a7375f6d46171da1f2f295a279c68ff",
+    "semantic_hash": "3a7375f6d46171da1f2f295a279c68ff"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/hooks/use-invites.ts": {
+    "mtime": 1781148345.200363,
+    "ast_hash": "710f76bdc206681d21f679091d26cbaf",
+    "semantic_hash": "710f76bdc206681d21f679091d26cbaf"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/hooks/use-request-invite.ts": {
+    "mtime": 1781148345.200411,
+    "ast_hash": "9f6347ffb3b4f7747020db43ed352922",
+    "semantic_hash": "9f6347ffb3b4f7747020db43ed352922"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/lib/auth-closed-beta.test.ts": {
+    "mtime": 1781148345.2004938,
+    "ast_hash": "c207003dfc911e92011a390e5ddd3d4b",
+    "semantic_hash": "c207003dfc911e92011a390e5ddd3d4b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/lib/auth-closed-beta.ts": {
+    "mtime": 1781148345.200544,
+    "ast_hash": "07348d8625e8933193f40c48a1f88310",
+    "semantic_hash": "07348d8625e8933193f40c48a1f88310"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/pages/oauth-callback.tsx": {
+    "mtime": 1781148345.2006862,
+    "ast_hash": "38845535b252c0a912615379f9848041",
+    "semantic_hash": "38845535b252c0a912615379f9848041"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/pages/sign-in.tsx": {
+    "mtime": 1781148345.2008398,
+    "ast_hash": "a0f2487bd705c122bf64c5c82f4226b7",
+    "semantic_hash": "a0f2487bd705c122bf64c5c82f4226b7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/pages/sign-up.tsx": {
+    "mtime": 1781148345.2009,
+    "ast_hash": "21db9efdd8f1d9abaa6eec26fb52d581",
+    "semantic_hash": "21db9efdd8f1d9abaa6eec26fb52d581"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/stores/auth-store.test.ts": {
+    "mtime": 1781148345.2009962,
+    "ast_hash": "06c11f241bcbea7d4a974d1f7870f510",
+    "semantic_hash": "06c11f241bcbea7d4a974d1f7870f510"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/stores/auth-store.ts": {
+    "mtime": 1781148345.2010846,
+    "ast_hash": "c8b8331fc7111ddf5839ebb86bd3c690",
+    "semantic_hash": "c8b8331fc7111ddf5839ebb86bd3c690"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/auth/utils/access-denied-message.ts": {
+    "mtime": 1781148345.2011807,
+    "ast_hash": "eee0db40faea544f9f9b97e3df0ab156",
+    "semantic_hash": "eee0db40faea544f9f9b97e3df0ab156"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view-sections.tsx": {
+    "mtime": 1781148345.2012985,
+    "ast_hash": "fe4b5bc25db3be09288f38bb2ab25ebf",
+    "semantic_hash": "fe4b5bc25db3be09288f38bb2ab25ebf"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/_shared.ts": {
+    "mtime": 1781148345.2013724,
+    "ast_hash": "bc843c7673f6194973d5697b4a0f4273",
+    "semantic_hash": "bc843c7673f6194973d5697b4a0f4273"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/calendar-error-state.tsx": {
+    "mtime": 1781148345.2014277,
+    "ast_hash": "ae56a80bdd2900c5c362d92ca7413860",
+    "semantic_hash": "ae56a80bdd2900c5c362d92ca7413860"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/calendar-month-panel.tsx": {
+    "mtime": 1781148345.2016106,
+    "ast_hash": "4c953b60d7a7c3ce048979d6a7cd2705",
+    "semantic_hash": "4c953b60d7a7c3ce048979d6a7cd2705"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/calendar-selected-date-panel.tsx": {
+    "mtime": 1781148345.201689,
+    "ast_hash": "c42134e1fc9eed3ddcb50336fb02d7a6",
+    "semantic_hash": "c42134e1fc9eed3ddcb50336fb02d7a6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/calendar-stats-panel.tsx": {
+    "mtime": 1781148345.2017481,
+    "ast_hash": "29b900376d855f0b4a6b462232335492",
+    "semantic_hash": "29b900376d855f0b4a6b462232335492"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/calendar-view-header.tsx": {
+    "mtime": 1781148345.2018087,
+    "ast_hash": "38e120074bdd1fe5de423afb4c3c5d1e",
+    "semantic_hash": "38e120074bdd1fe5de423afb4c3c5d1e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/calendar-week-panel.tsx": {
+    "mtime": 1781148345.2019935,
+    "ast_hash": "9aed670ad1bdd023d226e25d7b8841d1",
+    "semantic_hash": "9aed670ad1bdd023d226e25d7b8841d1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/components/calendar-view/saved-events-section.tsx": {
+    "mtime": 1781148345.2020752,
+    "ast_hash": "7056d7b928f6dba9e6a6afd6a7491aa6",
+    "semantic_hash": "7056d7b928f6dba9e6a6afd6a7491aa6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/calendar/pages/calendar-view.tsx": {
+    "mtime": 1781148345.2022796,
+    "ast_hash": "fba6d74676bf02b47f7aff27481c81ad",
+    "semantic_hash": "fba6d74676bf02b47f7aff27481c81ad"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard-sections.tsx": {
+    "mtime": 1781148345.2024066,
+    "ast_hash": "c5a067ff70703f99626d2d341f996102",
+    "semantic_hash": "c5a067ff70703f99626d2d341f996102"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-carousel-section.tsx": {
+    "mtime": 1781148345.2024994,
+    "ast_hash": "553ab31e0aa9e8d9d61e98bc9843e014",
+    "semantic_hash": "553ab31e0aa9e8d9d61e98bc9843e014"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-empty-state.tsx": {
+    "mtime": 1781148345.20255,
+    "ast_hash": "be0137f78db54043e10205525bace63e",
+    "semantic_hash": "be0137f78db54043e10205525bace63e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-guest-cta.tsx": {
+    "mtime": 1781148345.2026038,
+    "ast_hash": "12b471d2d62ef5d998437077e7c887bf",
+    "semantic_hash": "12b471d2d62ef5d998437077e7c887bf"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-header.tsx": {
+    "mtime": 1781148345.202654,
+    "ast_hash": "925441d8be9e21305e067f08adf32282",
+    "semantic_hash": "925441d8be9e21305e067f08adf32282"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-loading-state.tsx": {
+    "mtime": 1781148345.2027037,
+    "ast_hash": "b16ecb7a2574191d0dde0286111eb5c3",
+    "semantic_hash": "b16ecb7a2574191d0dde0286111eb5c3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-parent-pulse.tsx": {
+    "mtime": 1781148345.2027586,
+    "ast_hash": "82ca462fdcdf4c9bc5a2e9648a3b3278",
+    "semantic_hash": "82ca462fdcdf4c9bc5a2e9648a3b3278"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-saved-section.tsx": {
+    "mtime": 1781148345.2028146,
+    "ast_hash": "8a9455c7416036c5e65de39a64986b3a",
+    "semantic_hash": "8a9455c7416036c5e65de39a64986b3a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-soon-section.tsx": {
+    "mtime": 1781148345.2028766,
+    "ast_hash": "3a1f728b68c9d0542745113b733dcf9e",
+    "semantic_hash": "3a1f728b68c9d0542745113b733dcf9e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-states.tsx": {
+    "mtime": 1781148345.202931,
+    "ast_hash": "3f05070433ae294ee7868105e28ee78b",
+    "semantic_hash": "3f05070433ae294ee7868105e28ee78b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/components/dashboard/dashboard-today-section.tsx": {
+    "mtime": 1781148345.203107,
+    "ast_hash": "7f7a7316b1866bd574e8498a7dc2eb3e",
+    "semantic_hash": "7f7a7316b1866bd574e8498a7dc2eb3e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/dashboard/pages/dashboard.tsx": {
+    "mtime": 1781148345.2032123,
+    "ast_hash": "f396dc802545ddfaee115a6f4ff61c46",
+    "semantic_hash": "f396dc802545ddfaee115a6f4ff61c46"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/api/calendar.ts": {
+    "mtime": 1781148345.2033255,
+    "ast_hash": "e847cdb6ce296bc97595a9cdfdca685e",
+    "semantic_hash": "e847cdb6ce296bc97595a9cdfdca685e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/api/comments.ts": {
+    "mtime": 1781148345.2033753,
+    "ast_hash": "5bc9a88eaf3591556582f27f293796ee",
+    "semantic_hash": "5bc9a88eaf3591556582f27f293796ee"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/api/favorites.ts": {
+    "mtime": 1781148345.2034283,
+    "ast_hash": "9ff4c0402bff947f3298fa131174aa0b",
+    "semantic_hash": "9ff4c0402bff947f3298fa131174aa0b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/api/ratings.ts": {
+    "mtime": 1781148345.203476,
+    "ast_hash": "ca30a74c13c026c05f9b684aacd304d6",
+    "semantic_hash": "ca30a74c13c026c05f9b684aacd304d6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/api/tags.ts": {
+    "mtime": 1781148345.203525,
+    "ast_hash": "63bbd319c2ed5823502bf95ccc19f2a9",
+    "semantic_hash": "63bbd319c2ed5823502bf95ccc19f2a9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card.tsx": {
+    "mtime": 1781148345.2036095,
+    "ast_hash": "fef9ad340184dc7ead62a7b66e84116f",
+    "semantic_hash": "fef9ad340184dc7ead62a7b66e84116f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card/_shared.ts": {
+    "mtime": 1781148345.2036867,
+    "ast_hash": "6cbccc0f0416531dbc1786970d2c89e5",
+    "semantic_hash": "6cbccc0f0416531dbc1786970d2c89e5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card/compact-card.tsx": {
+    "mtime": 1781148345.2037482,
+    "ast_hash": "253a19bfb930e9bf44221d1cbf5189e0",
+    "semantic_hash": "253a19bfb930e9bf44221d1cbf5189e0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card/default-card.tsx": {
+    "mtime": 1781148345.2038014,
+    "ast_hash": "61eeb69e908b4c0fcbe29152ba039382",
+    "semantic_hash": "61eeb69e908b4c0fcbe29152ba039382"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card/featured-card.tsx": {
+    "mtime": 1781148345.2038639,
+    "ast_hash": "a860f416d2c99cf2fb379a6772dcb6cd",
+    "semantic_hash": "a860f416d2c99cf2fb379a6772dcb6cd"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card/list-card.tsx": {
+    "mtime": 1781148345.2041047,
+    "ast_hash": "ad7dbd13f282d161eabbdf61642b937e",
+    "semantic_hash": "ad7dbd13f282d161eabbdf61642b937e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-card/skeleton.tsx": {
+    "mtime": 1781148345.2041802,
+    "ast_hash": "34f1944d14e00357ab7257ea8ab4324c",
+    "semantic_hash": "34f1944d14e00357ab7257ea8ab4324c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/about.tsx": {
+    "mtime": 1781148345.2042742,
+    "ast_hash": "2d7ec78dcf2fb57cbe1ec936a897a7f2",
+    "semantic_hash": "2d7ec78dcf2fb57cbe1ec936a897a7f2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/booking.tsx": {
+    "mtime": 1781148345.2043326,
+    "ast_hash": "57ba8132a2502865efedb1ed8ed74f7b",
+    "semantic_hash": "57ba8132a2502865efedb1ed8ed74f7b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/error-state.tsx": {
+    "mtime": 1781148345.2043855,
+    "ast_hash": "d6609a0075cf79313768d2e6e5a1af81",
+    "semantic_hash": "d6609a0075cf79313768d2e6e5a1af81"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/event-detail-sections.tsx": {
+    "mtime": 1781148345.2044475,
+    "ast_hash": "f9e0b32505579deb1426af11fb790849",
+    "semantic_hash": "f9e0b32505579deb1426af11fb790849"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/hero.tsx": {
+    "mtime": 1781148345.2044992,
+    "ast_hash": "80ef4bd34b5f9b6e5381b4a17e036b91",
+    "semantic_hash": "80ef4bd34b5f9b6e5381b4a17e036b91"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/info-grid.tsx": {
+    "mtime": 1781148345.204551,
+    "ast_hash": "d37371b5c4f541e1a265114dbc8dde24",
+    "semantic_hash": "d37371b5c4f541e1a265114dbc8dde24"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/loading-state.tsx": {
+    "mtime": 1781148345.204616,
+    "ast_hash": "e6129f47e9f6ec0bbaf3541ffc51112e",
+    "semantic_hash": "e6129f47e9f6ec0bbaf3541ffc51112e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/location.tsx": {
+    "mtime": 1781148345.2046697,
+    "ast_hash": "378108178f451d0b5c398dc7240f7bc4",
+    "semantic_hash": "378108178f451d0b5c398dc7240f7bc4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/reviews.tsx": {
+    "mtime": 1781148345.2047212,
+    "ast_hash": "a0b871b15e4eaf45069e8a262e356fc4",
+    "semantic_hash": "a0b871b15e4eaf45069e8a262e356fc4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/section-layout.tsx": {
+    "mtime": 1781148345.2047703,
+    "ast_hash": "5013a1c5e48b6a3e639b07136bac999e",
+    "semantic_hash": "5013a1c5e48b6a3e639b07136bac999e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/similar-events.tsx": {
+    "mtime": 1781148345.2048361,
+    "ast_hash": "602f8a8c7e7e069632fe0c743ab8e756",
+    "semantic_hash": "602f8a8c7e7e069632fe0c743ab8e756"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-detail/summary.tsx": {
+    "mtime": 1781231758.5324168,
+    "ast_hash": "f3416b948e98214aff7548a0d23f18cd",
+    "semantic_hash": "f3416b948e98214aff7548a0d23f18cd"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-json-ld.test.ts": {
+    "mtime": 1781148345.2049634,
+    "ast_hash": "64982c62b15657023afdfb07ff57b11a",
+    "semantic_hash": "64982c62b15657023afdfb07ff57b11a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-json-ld.tsx": {
+    "mtime": 1781148345.2050154,
+    "ast_hash": "3db8c8f09101f060bac69fc724b87a07",
+    "semantic_hash": "3db8c8f09101f060bac69fc724b87a07"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-map-mini.tsx": {
+    "mtime": 1781148345.205074,
+    "ast_hash": "7b84308bac92038dc553b2cd185d8024",
+    "semantic_hash": "7b84308bac92038dc553b2cd185d8024"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/event-pin.tsx": {
+    "mtime": 1781148345.205129,
+    "ast_hash": "6a6b33574856475b9b39e091cc20d055",
+    "semantic_hash": "6a6b33574856475b9b39e091cc20d055"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/favorite-button.tsx": {
+    "mtime": 1781148345.2051885,
+    "ast_hash": "a503ae57205d99ebd2779df99d73e95e",
+    "semantic_hash": "a503ae57205d99ebd2779df99d73e95e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/star-rating.tsx": {
+    "mtime": 1781148345.2052436,
+    "ast_hash": "2c61e5347c2605dd3afaac83244344a7",
+    "semantic_hash": "2c61e5347c2605dd3afaac83244344a7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/submit-event-form.tsx": {
+    "mtime": 1781148345.2053225,
+    "ast_hash": "e67714b893ad529c3d7add560e2af26b",
+    "semantic_hash": "e67714b893ad529c3d7add560e2af26b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/tag-badge.tsx": {
+    "mtime": 1781148345.2053833,
+    "ast_hash": "202ce4610f91236b665b1d2cb6dd2988",
+    "semantic_hash": "202ce4610f91236b665b1d2cb6dd2988"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/unsplash-attribution.test.tsx": {
+    "mtime": 1781148345.2054312,
+    "ast_hash": "f985398934a8febee025a3cbaddf4b67",
+    "semantic_hash": "f985398934a8febee025a3cbaddf4b67"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/components/unsplash-attribution.tsx": {
+    "mtime": 1781148345.2054875,
+    "ast_hash": "475f665e3622b1972a2e2b10fa5b31d9",
+    "semantic_hash": "475f665e3622b1972a2e2b10fa5b31d9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/constants/status.ts": {
+    "mtime": 1781148345.20557,
+    "ast_hash": "cc419bb560d5d51210088c998ce0d466",
+    "semantic_hash": "cc419bb560d5d51210088c998ce0d466"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/event-filters.test.ts": {
+    "mtime": 1781148345.2056644,
+    "ast_hash": "bd9bd1d1715a8c8e0dff9e781009c972",
+    "semantic_hash": "bd9bd1d1715a8c8e0dff9e781009c972"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-calendar-events.ts": {
+    "mtime": 1781148345.2057173,
+    "ast_hash": "e8afe71100c384c407de1ac4fdf4fcd8",
+    "semantic_hash": "e8afe71100c384c407de1ac4fdf4fcd8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-calendar-export.ts": {
+    "mtime": 1781231758.5299046,
+    "ast_hash": "7a431a7ed38a3de5532a3b1820010b9d",
+    "semantic_hash": "7a431a7ed38a3de5532a3b1820010b9d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-comments.test.ts": {
+    "mtime": 1781148345.2058299,
+    "ast_hash": "1311bfbef00fefa1ab0dedb4916d2641",
+    "semantic_hash": "1311bfbef00fefa1ab0dedb4916d2641"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-comments.ts": {
+    "mtime": 1781148345.2058926,
+    "ast_hash": "687676f365b9a14dbf4819ddff7fb770",
+    "semantic_hash": "687676f365b9a14dbf4819ddff7fb770"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-enriched-events.test.ts": {
+    "mtime": 1781148345.2059586,
+    "ast_hash": "88bdc7e0aa10224b3f9c1b85409257fd",
+    "semantic_hash": "88bdc7e0aa10224b3f9c1b85409257fd"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-enriched-events.ts": {
+    "mtime": 1781148345.2060232,
+    "ast_hash": "b63e6430050a3e5178edbb86430e0461",
+    "semantic_hash": "b63e6430050a3e5178edbb86430e0461"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-favorites.test.ts": {
+    "mtime": 1781148345.2060766,
+    "ast_hash": "d9f02d131059134e91a6d35cbde63ca7",
+    "semantic_hash": "d9f02d131059134e91a6d35cbde63ca7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-favorites.ts": {
+    "mtime": 1781148345.2061417,
+    "ast_hash": "bc7e78e731cf31be227027861519b707",
+    "semantic_hash": "bc7e78e731cf31be227027861519b707"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-ratings.ts": {
+    "mtime": 1781148345.2061942,
+    "ast_hash": "9d7f08302b25559f11b50d7677eaa2ab",
+    "semantic_hash": "9d7f08302b25559f11b50d7677eaa2ab"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-share-event.test.ts": {
+    "mtime": 1781231758.5297468,
+    "ast_hash": "5fe4f931a422b4a71c4f1f129a471e29",
+    "semantic_hash": "5fe4f931a422b4a71c4f1f129a471e29"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-share-event.ts": {
+    "mtime": 1781231758.5294442,
+    "ast_hash": "a8ede3541d2ec414799f0fb2cd75456a",
+    "semantic_hash": "a8ede3541d2ec414799f0fb2cd75456a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-similar-events.test.ts": {
+    "mtime": 1781148345.2063663,
+    "ast_hash": "e62a80757451203d442744033cbdf667",
+    "semantic_hash": "e62a80757451203d442744033cbdf667"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-similar-events.ts": {
+    "mtime": 1781148345.2064257,
+    "ast_hash": "b8a8c4f06a3f6c3070ec08c9eb4442c5",
+    "semantic_hash": "b8a8c4f06a3f6c3070ec08c9eb4442c5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/hooks/use-tags.ts": {
+    "mtime": 1781148345.2064745,
+    "ast_hash": "b7a39dbad8899ae0d2723c99e8e480d5",
+    "semantic_hash": "b7a39dbad8899ae0d2723c99e8e480d5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/comments-channel-registry.ts": {
+    "mtime": 1781148345.2065556,
+    "ast_hash": "6dbb01dac8ca4b134b5054ee5c5481e8",
+    "semantic_hash": "6dbb01dac8ca4b134b5054ee5c5481e8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/event-cache.test.ts": {
+    "mtime": 1781148345.206608,
+    "ast_hash": "c3c758217674493555b7e77f25e17243",
+    "semantic_hash": "c3c758217674493555b7e77f25e17243"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/event-cache.ts": {
+    "mtime": 1781148345.2066638,
+    "ast_hash": "f9e56d140f456d49c9ef1279d26f13b6",
+    "semantic_hash": "f9e56d140f456d49c9ef1279d26f13b6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/event-filters.ts": {
+    "mtime": 1781148345.2067094,
+    "ast_hash": "1e439f25953aeca1c1870bce61f663ed",
+    "semantic_hash": "1e439f25953aeca1c1870bce61f663ed"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/fallback-images.ts": {
+    "mtime": 1781148345.2067647,
+    "ast_hash": "4fcbd670f2ff29bad11f5d7f2295465e",
+    "semantic_hash": "4fcbd670f2ff29bad11f5d7f2295465e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/parent-tips-fallback.test.ts": {
+    "mtime": 1781148345.2068262,
+    "ast_hash": "4a49a7f7a5c2fd5102a8e7f3fad7167a",
+    "semantic_hash": "4a49a7f7a5c2fd5102a8e7f3fad7167a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/lib/parent-tips-fallback.ts": {
+    "mtime": 1781148345.2068858,
+    "ast_hash": "dac7c29422723e9d2e916cdd8ddc419c",
+    "semantic_hash": "dac7c29422723e9d2e916cdd8ddc419c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/pages/event-detail.tsx": {
+    "mtime": 1781231758.530594,
+    "ast_hash": "e1b1174a7a86aeb7aaad81dfe510084d",
+    "semantic_hash": "e1b1174a7a86aeb7aaad81dfe510084d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/pages/public-event-preview.tsx": {
+    "mtime": 1781231758.530265,
+    "ast_hash": "3318620f88b794227c6826d1ac23bd97",
+    "semantic_hash": "3318620f88b794227c6826d1ac23bd97"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/events/pages/submit-event.tsx": {
+    "mtime": 1781148345.2072618,
+    "ast_hash": "858b4db8df529f27b8db3bdc645b52c4",
+    "semantic_hash": "858b4db8df529f27b8db3bdc645b52c4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore-sections.tsx": {
+    "mtime": 1781148345.207384,
+    "ast_hash": "2c0c90b34ed45a8d097e5a7cf9b1d6a0",
+    "semantic_hash": "2c0c90b34ed45a8d097e5a7cf9b1d6a0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-active-filters.tsx": {
+    "mtime": 1781148345.2074707,
+    "ast_hash": "774be54d1b24c25e3c7e445280530ffc",
+    "semantic_hash": "774be54d1b24c25e3c7e445280530ffc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-category-grid.tsx": {
+    "mtime": 1781148345.2075238,
+    "ast_hash": "cec3a3d8916517e58aafd79e04c29c11",
+    "semantic_hash": "cec3a3d8916517e58aafd79e04c29c11"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-events-section.tsx": {
+    "mtime": 1781148345.2075713,
+    "ast_hash": "957417a41249bd919590fcd33a6b1a9f",
+    "semantic_hash": "957417a41249bd919590fcd33a6b1a9f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-header.tsx": {
+    "mtime": 1781148345.207624,
+    "ast_hash": "dc254fc77ad2fbe8b43ce81ec8e162c4",
+    "semantic_hash": "dc254fc77ad2fbe8b43ce81ec8e162c4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-neighborhood-cta.tsx": {
+    "mtime": 1781148345.2076838,
+    "ast_hash": "a1cae6bf756758912b3e5ff43ee7601c",
+    "semantic_hash": "a1cae6bf756758912b3e5ff43ee7601c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-search-filters.tsx": {
+    "mtime": 1781148345.207763,
+    "ast_hash": "4cd92b828642df593c01f0d7dc9c22cd",
+    "semantic_hash": "4cd92b828642df593c01f0d7dc9c22cd"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/explore/explore-view-controls.tsx": {
+    "mtime": 1781148345.2078254,
+    "ast_hash": "463851ef9e42d373617afdf4d0112a53",
+    "semantic_hash": "463851ef9e42d373617afdf4d0112a53"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/components/radius-filter.tsx": {
+    "mtime": 1781148345.2078834,
+    "ast_hash": "20f2ec2dabf6be6601f396d438c5f51f",
+    "semantic_hash": "20f2ec2dabf6be6601f396d438c5f51f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/constants/categories.ts": {
+    "mtime": 1781148345.207969,
+    "ast_hash": "e9ed81ddbc78d2b925b6861c9c694178",
+    "semantic_hash": "e9ed81ddbc78d2b925b6861c9c694178"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/constants/view.ts": {
+    "mtime": 1781148345.2080178,
+    "ast_hash": "009cac11f8d3103383152a8ff1f49e31",
+    "semantic_hash": "009cac11f8d3103383152a8ff1f49e31"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/lib/search-api.test.ts": {
+    "mtime": 1781148345.2082267,
+    "ast_hash": "bdbaee58d55a2398780be2f487f1786e",
+    "semantic_hash": "bdbaee58d55a2398780be2f487f1786e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/lib/search-api.ts": {
+    "mtime": 1781148345.2083,
+    "ast_hash": "3dfcc914c9dfeef523b82a3d85e78a6c",
+    "semantic_hash": "3dfcc914c9dfeef523b82a3d85e78a6c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/lib/sort-events.test.ts": {
+    "mtime": 1781148345.2083583,
+    "ast_hash": "ac811164da5fb9adffa11d04e3a5ed24",
+    "semantic_hash": "ac811164da5fb9adffa11d04e3a5ed24"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/lib/sort-events.ts": {
+    "mtime": 1781148345.2084255,
+    "ast_hash": "510638b87c99538a1c1985d1d6fd10e3",
+    "semantic_hash": "510638b87c99538a1c1985d1d6fd10e3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/pages/explore.tsx": {
+    "mtime": 1781148345.2085738,
+    "ast_hash": "873e0ac92eec6a4bda7a47a202d9bd7b",
+    "semantic_hash": "873e0ac92eec6a4bda7a47a202d9bd7b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/stores/explore-store.test.ts": {
+    "mtime": 1781148345.2086723,
+    "ast_hash": "79eabbc78f7dc90158ba9036dbd7f4f0",
+    "semantic_hash": "79eabbc78f7dc90158ba9036dbd7f4f0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/stores/explore-store.ts": {
+    "mtime": 1781148345.208729,
+    "ast_hash": "2f2f43ddd09303dd771099d293bcab6f",
+    "semantic_hash": "2f2f43ddd09303dd771099d293bcab6f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/stores/explore-view-store.test.ts": {
+    "mtime": 1781148345.2087855,
+    "ast_hash": "fa6a042196eacdcfe5ea87d0a0e03be8",
+    "semantic_hash": "fa6a042196eacdcfe5ea87d0a0e03be8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/explore/stores/explore-view-store.ts": {
+    "mtime": 1781148345.208845,
+    "ast_hash": "6356c4a0656db23c7c0be4636c78a8be",
+    "semantic_hash": "6356c4a0656db23c7c0be4636c78a8be"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/legal/pages/legal-pages.tsx": {
+    "mtime": 1781231758.5277433,
+    "ast_hash": "87e71739c3a5b8b42ca9cfa1bc71c918",
+    "semantic_hash": "87e71739c3a5b8b42ca9cfa1bc71c918"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/map/components/map-pieces.tsx": {
+    "mtime": 1781148345.209151,
+    "ast_hash": "c5b297ea2841bc7ade0ce3b68f3dd2e7",
+    "semantic_hash": "c5b297ea2841bc7ade0ce3b68f3dd2e7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/map/hooks/use-clusters.ts": {
+    "mtime": 1781148345.2092595,
+    "ast_hash": "16c77cbf1400e5b7646b612af5c97587",
+    "semantic_hash": "16c77cbf1400e5b7646b612af5c97587"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/map/hooks/use-user-location.ts": {
+    "mtime": 1781148345.2093232,
+    "ast_hash": "dfb226a65a163513213a11e4f10fd1d7",
+    "semantic_hash": "dfb226a65a163513213a11e4f10fd1d7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/map/lib/map-helpers.test.ts": {
+    "mtime": 1781148345.209415,
+    "ast_hash": "5e31364f1aaf0d40e946e9f8ecddbbbc",
+    "semantic_hash": "5e31364f1aaf0d40e946e9f8ecddbbbc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/map/lib/map-helpers.ts": {
+    "mtime": 1781148345.2094727,
+    "ast_hash": "80d7e2ffa8357765d61c70932a8766a6",
+    "semantic_hash": "80d7e2ffa8357765d61c70932a8766a6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/map/pages/map-view.tsx": {
+    "mtime": 1781148345.2095923,
+    "ast_hash": "c11ac9a605ffc6cff8da9371ea0fc280",
+    "semantic_hash": "c11ac9a605ffc6cff8da9371ea0fc280"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/marketing/pages/marketing.tsx": {
+    "mtime": 1781148345.2097645,
+    "ast_hash": "b3c5da224cd436d86eda51eb9932b720",
+    "semantic_hash": "b3c5da224cd436d86eda51eb9932b720"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/my-events/components/event-row.tsx": {
+    "mtime": 1781148345.2098982,
+    "ast_hash": "661703a613395b1f316e8046bb45148f",
+    "semantic_hash": "661703a613395b1f316e8046bb45148f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/my-events/components/my-events-empty-state.tsx": {
+    "mtime": 1781148345.209962,
+    "ast_hash": "9875faeae3a5b74a0b3d584f1f2d92c0",
+    "semantic_hash": "9875faeae3a5b74a0b3d584f1f2d92c0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/my-events/components/my-events-sections.tsx": {
+    "mtime": 1781148345.2100163,
+    "ast_hash": "6d5a2a4f851953ca9c25b7e777c6e362",
+    "semantic_hash": "6d5a2a4f851953ca9c25b7e777c6e362"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/my-events/pages/my-events.test.tsx": {
+    "mtime": 1781148345.210101,
+    "ast_hash": "19d265e43229e6e8c6a8ae64b854e58f",
+    "semantic_hash": "19d265e43229e6e8c6a8ae64b854e58f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/my-events/pages/my-events.tsx": {
+    "mtime": 1781148345.2101896,
+    "ast_hash": "55c4a4d284c6a3d30e1c1214d200e314",
+    "semantic_hash": "55c4a4d284c6a3d30e1c1214d200e314"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/notifications/api/notifications-api.ts": {
+    "mtime": 1781231758.5274706,
+    "ast_hash": "3786c2e0ec6622941ccf37aa2101b4a0",
+    "semantic_hash": "3786c2e0ec6622941ccf37aa2101b4a0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/notifications/components/notification-bell.tsx": {
+    "mtime": 1781148345.2104204,
+    "ast_hash": "8fd9c0f9544baa4960bb2d4bec113c7e",
+    "semantic_hash": "8fd9c0f9544baa4960bb2d4bec113c7e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/notifications/components/notification-list.tsx": {
+    "mtime": 1781231758.5271685,
+    "ast_hash": "0b06cfdcec2add403b47342d093cfe69",
+    "semantic_hash": "0b06cfdcec2add403b47342d093cfe69"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/notifications/hooks/use-notifications.test.ts": {
+    "mtime": 1781148345.2105906,
+    "ast_hash": "e5f2b4277b3a2fc58ab23ecf75a61c45",
+    "semantic_hash": "e5f2b4277b3a2fc58ab23ecf75a61c45"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/notifications/hooks/use-notifications.ts": {
+    "mtime": 1781148345.2106526,
+    "ast_hash": "ddc4d035767e5c26058da54f41214668",
+    "semantic_hash": "ddc4d035767e5c26058da54f41214668"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/notifications/lib/notifications-channel-registry.ts": {
+    "mtime": 1781148345.2107666,
+    "ast_hash": "15cdf2249a9f02c005e020926d065de3",
+    "semantic_hash": "15cdf2249a9f02c005e020926d065de3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/components/plan-hero-card.tsx": {
+    "mtime": 1781148345.2108986,
+    "ast_hash": "a268e14cd6533da60e299b4130af36b1",
+    "semantic_hash": "a268e14cd6533da60e299b4130af36b1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/components/plan-thumb-card.tsx": {
+    "mtime": 1781148345.2109613,
+    "ast_hash": "703d320fd50b70b0ff3679a38c35a79b",
+    "semantic_hash": "703d320fd50b70b0ff3679a38c35a79b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/components/share-event-button.tsx": {
+    "mtime": 1781148345.211021,
+    "ast_hash": "4676da76545c2f06e3933e99ecb1d76e",
+    "semantic_hash": "4676da76545c2f06e3933e99ecb1d76e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/components/weather-strip.tsx": {
+    "mtime": 1781148345.2110815,
+    "ast_hash": "65b3c473730ca7c93ded141a90e17b95",
+    "semantic_hash": "65b3c473730ca7c93ded141a90e17b95"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/hooks/use-geolocation.ts": {
+    "mtime": 1781148345.2111773,
+    "ast_hash": "17dfcf1a7662dcc7154b0ad052b9c5e1",
+    "semantic_hash": "17dfcf1a7662dcc7154b0ad052b9c5e1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/hooks/use-plan-for-today.ts": {
+    "mtime": 1781148345.2112477,
+    "ast_hash": "2c4496cd2856b6460b1f3fcc81d6821b",
+    "semantic_hash": "2c4496cd2856b6460b1f3fcc81d6821b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/hooks/use-weather.ts": {
+    "mtime": 1781148345.2113218,
+    "ast_hash": "e93363267ef2ae60da3af5f6139e946f",
+    "semantic_hash": "e93363267ef2ae60da3af5f6139e946f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/plan/pages/saturday-plan.tsx": {
+    "mtime": 1781148345.2114317,
+    "ast_hash": "6add23d47d51c592eed11ff2961f3b16",
+    "semantic_hash": "6add23d47d51c592eed11ff2961f3b16"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/profile/components/notification-preferences-card.test.ts": {
+    "mtime": 1781231758.5283756,
+    "ast_hash": "f9c9bef999618ee2947734e5176acd5e",
+    "semantic_hash": "f9c9bef999618ee2947734e5176acd5e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/profile/components/profile-sections.tsx": {
+    "mtime": 1781231758.5281565,
+    "ast_hash": "1651fe6d7b3e53994d38d39672dba39e",
+    "semantic_hash": "1651fe6d7b3e53994d38d39672dba39e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/profile/hooks/use-notification-preferences.test.ts": {
+    "mtime": 1781231758.5288067,
+    "ast_hash": "5cef8bd17bf29b95180e32f5c3d5d5fa",
+    "semantic_hash": "5cef8bd17bf29b95180e32f5c3d5d5fa"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/profile/hooks/use-notification-preferences.ts": {
+    "mtime": 1781231758.5286045,
+    "ast_hash": "2a3cd54d1462a67200b3f8f93185482b",
+    "semantic_hash": "2a3cd54d1462a67200b3f8f93185482b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/profile/hooks/use-profile.ts": {
+    "mtime": 1781148345.2118728,
+    "ast_hash": "aba7e25c5587998c27585a2bf877bc1b",
+    "semantic_hash": "aba7e25c5587998c27585a2bf877bc1b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/features/profile/pages/profile.tsx": {
+    "mtime": 1781231758.52922,
+    "ast_hash": "eaea164837a846ddb09755aa1b8f33a1",
+    "semantic_hash": "eaea164837a846ddb09755aa1b8f33a1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/auth/auth-events.ts": {
+    "mtime": 1781148345.212162,
+    "ast_hash": "70fc37d90e27a9c5ff8ba805353af524",
+    "semantic_hash": "70fc37d90e27a9c5ff8ba805353af524"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/observability/sentry.test.ts": {
+    "mtime": 1781148345.212245,
+    "ast_hash": "728fd1842420a7d46c62d10c81888038",
+    "semantic_hash": "728fd1842420a7d46c62d10c81888038"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/observability/sentry.ts": {
+    "mtime": 1781148345.2123032,
+    "ast_hash": "885d81489996cfc95b65301db1b813a0",
+    "semantic_hash": "885d81489996cfc95b65301db1b813a0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/push/register.test.ts": {
+    "mtime": 1781148345.212391,
+    "ast_hash": "6f97ea4d55e0088b859157c4fc46551f",
+    "semantic_hash": "6f97ea4d55e0088b859157c4fc46551f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/push/register.ts": {
+    "mtime": 1781148345.2124414,
+    "ast_hash": "4a395a337d8010f1f46e074b10880e31",
+    "semantic_hash": "4a395a337d8010f1f46e074b10880e31"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/push/vapid.ts": {
+    "mtime": 1781148345.2124903,
+    "ast_hash": "53c44be329f34d715eb1547b0d3c0b1a",
+    "semantic_hash": "53c44be329f34d715eb1547b0d3c0b1a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/queries/query-client.test.ts": {
+    "mtime": 1781148345.2125754,
+    "ast_hash": "6d554ffe02f76fe6aef8d862157d2b9f",
+    "semantic_hash": "6d554ffe02f76fe6aef8d862157d2b9f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/queries/query-client.ts": {
+    "mtime": 1781148345.2126348,
+    "ast_hash": "a50c7febfdd61e55ddb51b9c45f6f630",
+    "semantic_hash": "a50c7febfdd61e55ddb51b9c45f6f630"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/queries/query-keys.test.ts": {
+    "mtime": 1781148345.2126856,
+    "ast_hash": "749a04d22af4857dd7ff450c689762f7",
+    "semantic_hash": "749a04d22af4857dd7ff450c689762f7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/queries/query-keys.ts": {
+    "mtime": 1781148345.2127583,
+    "ast_hash": "1fa128768332bb9a1a50b37eb25a12ee",
+    "semantic_hash": "1fa128768332bb9a1a50b37eb25a12ee"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/realtime/channel-registry.ts": {
+    "mtime": 1781148345.2128568,
+    "ast_hash": "95e1d4ca2bc5a55602e440be9dbafbda",
+    "semantic_hash": "95e1d4ca2bc5a55602e440be9dbafbda"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/safe-url.test.ts": {
+    "mtime": 1781148345.2129078,
+    "ast_hash": "fef5630f25bd11a31eccfde86e3e6408",
+    "semantic_hash": "fef5630f25bd11a31eccfde86e3e6408"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/safe-url.ts": {
+    "mtime": 1781148345.2129602,
+    "ast_hash": "8411c3ac75265e0c8b7d6ee2c151be46",
+    "semantic_hash": "8411c3ac75265e0c8b7d6ee2c151be46"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/supabase/client.ts": {
+    "mtime": 1781148345.2130437,
+    "ast_hash": "9f4b60eafdef542ed3bbf9139d5f4b93",
+    "semantic_hash": "9f4b60eafdef542ed3bbf9139d5f4b93"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/supabase/errors.test.ts": {
+    "mtime": 1781148345.2131007,
+    "ast_hash": "86bb5147be8af01b151a04a6068ed458",
+    "semantic_hash": "86bb5147be8af01b151a04a6068ed458"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/infrastructure/supabase/errors.ts": {
+    "mtime": 1781148345.2131603,
+    "ast_hash": "0878fa0b23a9ea6d9baafc9181e7e064",
+    "semantic_hash": "0878fa0b23a9ea6d9baafc9181e7e064"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/database.types.ts": {
+    "mtime": 1781231758.526381,
+    "ast_hash": "2c2c8bef016ed529c9e893d518f0cdf5",
+    "semantic_hash": "2c2c8bef016ed529c9e893d518f0cdf5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/db/errors.ts": {
+    "mtime": 1781148345.213317,
+    "ast_hash": "641334f6960f60f8ba55330185272de9",
+    "semantic_hash": "641334f6960f60f8ba55330185272de9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/db/index.ts": {
+    "mtime": 1781148345.2133677,
+    "ast_hash": "ae4ff1c5fe8dae52ec9c61d9305c9d37",
+    "semantic_hash": "ae4ff1c5fe8dae52ec9c61d9305c9d37"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/db/rpc-admin-events.test.ts": {
+    "mtime": 1781148345.213427,
+    "ast_hash": "d7b14b16d83a1842080235b849bbf6ba",
+    "semantic_hash": "d7b14b16d83a1842080235b849bbf6ba"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/db/rpc-admin-events.ts": {
+    "mtime": 1781148345.213481,
+    "ast_hash": "e0fd5182696ecd9f60c99c95fd44887e",
+    "semantic_hash": "e0fd5182696ecd9f60c99c95fd44887e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/db/rpc-events.ts": {
+    "mtime": 1781148345.213529,
+    "ast_hash": "cd1bd553be95718d05630c5b693ec05f",
+    "semantic_hash": "cd1bd553be95718d05630c5b693ec05f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/events/enrich-events.ts": {
+    "mtime": 1781148345.2136168,
+    "ast_hash": "86a18d9e7a8100de2b5e752314da7607",
+    "semantic_hash": "86a18d9e7a8100de2b5e752314da7607"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/events/group-by-city.test.ts": {
+    "mtime": 1781148345.2136724,
+    "ast_hash": "104aeac098a53c47d97358967a3a15d3",
+    "semantic_hash": "104aeac098a53c47d97358967a3a15d3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/events/group-by-city.ts": {
+    "mtime": 1781148345.2137232,
+    "ast_hash": "35e5b77bf3e136e55ce7e36cf852e986",
+    "semantic_hash": "35e5b77bf3e136e55ce7e36cf852e986"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/admin.test.ts": {
+    "mtime": 1781148345.2138002,
+    "ast_hash": "b9f65367978fc67e913326ae3b5d8a7f",
+    "semantic_hash": "b9f65367978fc67e913326ae3b5d8a7f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/admin.ts": {
+    "mtime": 1781148345.2138536,
+    "ast_hash": "381587c94715ab474bf6704d88c5692e",
+    "semantic_hash": "381587c94715ab474bf6704d88c5692e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/auth.test.ts": {
+    "mtime": 1781148345.213908,
+    "ast_hash": "5aa2c59259c15ee31e10e7510da8a26c",
+    "semantic_hash": "5aa2c59259c15ee31e10e7510da8a26c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/auth.ts": {
+    "mtime": 1781148345.213961,
+    "ast_hash": "8ce1570782253f809347627d205dd2e9",
+    "semantic_hash": "8ce1570782253f809347627d205dd2e9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/event.test.ts": {
+    "mtime": 1781148345.2140183,
+    "ast_hash": "0d3a8c8041f9bc2d9c0b9cfec3d384c5",
+    "semantic_hash": "0d3a8c8041f9bc2d9c0b9cfec3d384c5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/event.ts": {
+    "mtime": 1781148345.2140782,
+    "ast_hash": "0e18746e005e51a2b559dffe74a38154",
+    "semantic_hash": "0e18746e005e51a2b559dffe74a38154"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/index.ts": {
+    "mtime": 1781148345.2141237,
+    "ast_hash": "de35536fb6dcb2a4dc2bd724e6af603c",
+    "semantic_hash": "de35536fb6dcb2a4dc2bd724e6af603c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/parse-rows.test.ts": {
+    "mtime": 1781148345.2141814,
+    "ast_hash": "ecb2ca5157cd2853d5a023badeb69ab0",
+    "semantic_hash": "ecb2ca5157cd2853d5a023badeb69ab0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/parse-rows.ts": {
+    "mtime": 1781148345.2142444,
+    "ast_hash": "2c1ea1fcd668889aaa7861fb6d5cec4d",
+    "semantic_hash": "2c1ea1fcd668889aaa7861fb6d5cec4d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/plan.test.ts": {
+    "mtime": 1781148345.2142959,
+    "ast_hash": "f5dfbd5e762ae712db0f88da75e5257b",
+    "semantic_hash": "f5dfbd5e762ae712db0f88da75e5257b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/lib/schemas/plan.ts": {
+    "mtime": 1781148345.2143505,
+    "ast_hash": "fa50169820244974d2fe9cf722c16c4b",
+    "semantic_hash": "fa50169820244974d2fe9cf722c16c4b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/main.tsx": {
+    "mtime": 1781148345.2144022,
+    "ast_hash": "903eb48dfd1688039efbf399d945836e",
+    "semantic_hash": "903eb48dfd1688039efbf399d945836e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/access-control.test.ts": {
+    "mtime": 1781148345.214494,
+    "ast_hash": "1f50ec4bc596e28380eadeae6eeab922",
+    "semantic_hash": "1f50ec4bc596e28380eadeae6eeab922"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/access-control.ts": {
+    "mtime": 1781148345.2145522,
+    "ast_hash": "55f37ae2a7d87c119a74cd40351024f1",
+    "semantic_hash": "55f37ae2a7d87c119a74cd40351024f1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/brand-logo.tsx": {
+    "mtime": 1781148345.214641,
+    "ast_hash": "02c47059b5fb70920f5f7a8f07731d1a",
+    "semantic_hash": "02c47059b5fb70920f5f7a8f07731d1a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/client-date.tsx": {
+    "mtime": 1781148345.214694,
+    "ast_hash": "0ee027a8acb24d2a4c9587bef7808241",
+    "semantic_hash": "0ee027a8acb24d2a4c9587bef7808241"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/feature-error-boundary.test.ts": {
+    "mtime": 1781148345.2147417,
+    "ast_hash": "f56c181c83aacfebf6a5d4f1cd1ea5b3",
+    "semantic_hash": "f56c181c83aacfebf6a5d4f1cd1ea5b3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/feature-error-boundary.tsx": {
+    "mtime": 1781148345.2147937,
+    "ast_hash": "dbf94c07f4fd9e4ab9d54781387f8ccf",
+    "semantic_hash": "dbf94c07f4fd9e4ab9d54781387f8ccf"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/fade-swap.tsx": {
+    "mtime": 1781148345.214872,
+    "ast_hash": "fdcb3e08a6425031143d450b586dd03e",
+    "semantic_hash": "fdcb3e08a6425031143d450b586dd03e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/index.ts": {
+    "mtime": 1781148345.2149198,
+    "ast_hash": "eac858cb992a1c1ff1c7dcc3726c548c",
+    "semantic_hash": "eac858cb992a1c1ff1c7dcc3726c548c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/motion-config.tsx": {
+    "mtime": 1781148345.2149706,
+    "ast_hash": "4cb8a2e8e33b1b8a1efe48c1b9cf1f41",
+    "semantic_hash": "4cb8a2e8e33b1b8a1efe48c1b9cf1f41"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/motion-presets.ts": {
+    "mtime": 1781148345.2150195,
+    "ast_hash": "81a9cbeb4ae6e4a5c1db878186356240",
+    "semantic_hash": "81a9cbeb4ae6e4a5c1db878186356240"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/page-transition.test.ts": {
+    "mtime": 1781148345.2150674,
+    "ast_hash": "f5c2d02cc8d05548f5e0a3c21405991a",
+    "semantic_hash": "f5c2d02cc8d05548f5e0a3c21405991a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/page-transition.tsx": {
+    "mtime": 1781148345.2151237,
+    "ast_hash": "97590ae98b13d2e77ec21dd5e15cf1a6",
+    "semantic_hash": "97590ae98b13d2e77ec21dd5e15cf1a6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/smart-image.test.ts": {
+    "mtime": 1781231758.53221,
+    "ast_hash": "7b44a908b450df13c9c9d2fceb623466",
+    "semantic_hash": "7b44a908b450df13c9c9d2fceb623466"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/smart-image.tsx": {
+    "mtime": 1781231758.5318203,
+    "ast_hash": "0fc35074bd932dc1ac54bfd73f2e5a6f",
+    "semantic_hash": "0fc35074bd932dc1ac54bfd73f2e5a6f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/motion/stagger-children.tsx": {
+    "mtime": 1781148345.2153003,
+    "ast_hash": "fe13c991a038dac259edd0b4ae20eb93",
+    "semantic_hash": "fe13c991a038dac259edd0b4ae20eb93"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/theme-toggle.tsx": {
+    "mtime": 1781148345.215348,
+    "ast_hash": "76278b8dd93fafb3347fc6ac5dd554db",
+    "semantic_hash": "76278b8dd93fafb3347fc6ac5dd554db"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/affordance-pill.tsx": {
+    "mtime": 1781148345.215428,
+    "ast_hash": "984dfb1af820b80b22d378a20b3d4403",
+    "semantic_hash": "984dfb1af820b80b22d378a20b3d4403"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/alert-dialog.tsx": {
+    "mtime": 1781148345.215492,
+    "ast_hash": "cba15bcf4ee691778c6eb8d43eede5d6",
+    "semantic_hash": "cba15bcf4ee691778c6eb8d43eede5d6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/avatar.tsx": {
+    "mtime": 1781148345.2155435,
+    "ast_hash": "a015aa6928708288d27a87c93e38826b",
+    "semantic_hash": "a015aa6928708288d27a87c93e38826b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/badge.tsx": {
+    "mtime": 1781148345.2155936,
+    "ast_hash": "e1fbbf4eaf7477455baff035471ec0f1",
+    "semantic_hash": "e1fbbf4eaf7477455baff035471ec0f1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/button.tsx": {
+    "mtime": 1781148345.2156467,
+    "ast_hash": "c556b892e509e05a00d774827205c9de",
+    "semantic_hash": "c556b892e509e05a00d774827205c9de"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/card.tsx": {
+    "mtime": 1781148345.215703,
+    "ast_hash": "0cc6eac2741ba302ca6478df840db450",
+    "semantic_hash": "0cc6eac2741ba302ca6478df840db450"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/carousel.tsx": {
+    "mtime": 1781148345.2157638,
+    "ast_hash": "8107c099972f438633606a5090b87c13",
+    "semantic_hash": "8107c099972f438633606a5090b87c13"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/chart.tsx": {
+    "mtime": 1781148345.2158377,
+    "ast_hash": "63f5e01a2274b0cfcd85d34aaed10297",
+    "semantic_hash": "63f5e01a2274b0cfcd85d34aaed10297"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/checkbox.tsx": {
+    "mtime": 1781148345.2158873,
+    "ast_hash": "c6c0448131edce016ea72deef32920ab",
+    "semantic_hash": "c6c0448131edce016ea72deef32920ab"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/collapsible-content.tsx": {
+    "mtime": 1781148345.2159352,
+    "ast_hash": "9692f13236a3c5652e3e8aeab270f2c3",
+    "semantic_hash": "9692f13236a3c5652e3e8aeab270f2c3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/collapsible-trigger.tsx": {
+    "mtime": 1781148345.215993,
+    "ast_hash": "940f08ab7bb46da925bb7daf3725cd55",
+    "semantic_hash": "940f08ab7bb46da925bb7daf3725cd55"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/collapsible.tsx": {
+    "mtime": 1781148345.2160428,
+    "ast_hash": "b1911bde9c55c424bb4a85d1ff239e78",
+    "semantic_hash": "b1911bde9c55c424bb4a85d1ff239e78"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/dialog.tsx": {
+    "mtime": 1781148345.2161043,
+    "ast_hash": "328a652a3c228ae857105e3162732cc2",
+    "semantic_hash": "328a652a3c228ae857105e3162732cc2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/dropdown-menu.tsx": {
+    "mtime": 1781148345.216184,
+    "ast_hash": "086c6e088438c400b5ac7c0a54ae4af1",
+    "semantic_hash": "086c6e088438c400b5ac7c0a54ae4af1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/input.tsx": {
+    "mtime": 1781148345.2162359,
+    "ast_hash": "5297b65738eb41af8b7f41826eac3cf4",
+    "semantic_hash": "5297b65738eb41af8b7f41826eac3cf4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/label.tsx": {
+    "mtime": 1781148345.216287,
+    "ast_hash": "32d3e5aa94bf402e52c2fd3da179cd9f",
+    "semantic_hash": "32d3e5aa94bf402e52c2fd3da179cd9f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/progress.tsx": {
+    "mtime": 1781148345.2163405,
+    "ast_hash": "bfb7759a98d9882d9671df84ed057934",
+    "semantic_hash": "bfb7759a98d9882d9671df84ed057934"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/select.tsx": {
+    "mtime": 1781148345.2164018,
+    "ast_hash": "ab3e72e3f40aa5bc7c34b6be25c5ef8c",
+    "semantic_hash": "ab3e72e3f40aa5bc7c34b6be25c5ef8c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/separator.tsx": {
+    "mtime": 1781148345.2164485,
+    "ast_hash": "17e9668d80d2fb3308b6c238f4c8a95f",
+    "semantic_hash": "17e9668d80d2fb3308b6c238f4c8a95f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/sheet.tsx": {
+    "mtime": 1781148345.2165039,
+    "ast_hash": "6458d52ed2d07d1136dfe060f9eee589",
+    "semantic_hash": "6458d52ed2d07d1136dfe060f9eee589"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/sidebar.tsx": {
+    "mtime": 1781148345.216578,
+    "ast_hash": "dd2c517878e38d75b48c367c2095cf29",
+    "semantic_hash": "dd2c517878e38d75b48c367c2095cf29"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/skeleton.tsx": {
+    "mtime": 1781148345.216639,
+    "ast_hash": "b5160ed0c97b74820207d65ad8e227fd",
+    "semantic_hash": "b5160ed0c97b74820207d65ad8e227fd"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/sonner.tsx": {
+    "mtime": 1781148345.21669,
+    "ast_hash": "5dde0d04f3ecf6b5e812104aca12c546",
+    "semantic_hash": "5dde0d04f3ecf6b5e812104aca12c546"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/switch.tsx": {
+    "mtime": 1781148345.2167401,
+    "ast_hash": "25d291c88ad20b12e745ff695c66e776",
+    "semantic_hash": "25d291c88ad20b12e745ff695c66e776"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/tabs.tsx": {
+    "mtime": 1781148345.2167923,
+    "ast_hash": "f94e46575e466bef5b110afeb6345e43",
+    "semantic_hash": "f94e46575e466bef5b110afeb6345e43"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/textarea.tsx": {
+    "mtime": 1781148345.2168388,
+    "ast_hash": "b4fbbcdc3d612279a7d71565d43fc05c",
+    "semantic_hash": "b4fbbcdc3d612279a7d71565d43fc05c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/toggle-pill.tsx": {
+    "mtime": 1781148345.2168865,
+    "ast_hash": "1eea724f0de5b8bd17f5a9f1f40867ac",
+    "semantic_hash": "1eea724f0de5b8bd17f5a9f1f40867ac"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/ui/tooltip.tsx": {
+    "mtime": 1781148345.2169375,
+    "ast_hash": "014919422b491f669ec2aeff04a673e7",
+    "semantic_hash": "014919422b491f669ec2aeff04a673e7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/components/update-banner.tsx": {
+    "mtime": 1781148345.216985,
+    "ast_hash": "ff5a2d13203ca19bd24c4e3c1249979f",
+    "semantic_hash": "ff5a2d13203ca19bd24c4e3c1249979f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/constants/llm-review.ts": {
+    "mtime": 1781231758.526846,
+    "ast_hash": "1eb0446e43e8045637e76b67d557792f",
+    "semantic_hash": "1eb0446e43e8045637e76b67d557792f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/constants/pagination.ts": {
+    "mtime": 1781148345.2171185,
+    "ast_hash": "0643b0544546111fbd2e083d481b7cd2",
+    "semantic_hash": "0643b0544546111fbd2e083d481b7cd2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/constants/sidebar.ts": {
+    "mtime": 1781148345.2171683,
+    "ast_hash": "8e89e6302a99cf0a1aeb7cb364bc855b",
+    "semantic_hash": "8e89e6302a99cf0a1aeb7cb364bc855b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/constants/status-colors.ts": {
+    "mtime": 1781148345.2172174,
+    "ast_hash": "f6a1b85c6fb9c2b9fe435b6408f6c5a0",
+    "semantic_hash": "f6a1b85c6fb9c2b9fe435b6408f6c5a0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/constants/time.ts": {
+    "mtime": 1781148345.2172644,
+    "ast_hash": "e3d79b3bec2d136b6d75a1bb57ac7a44",
+    "semantic_hash": "e3d79b3bec2d136b6d75a1bb57ac7a44"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-breakpoint.ts": {
+    "mtime": 1781148345.217341,
+    "ast_hash": "033a5cad3ce8f5b690979b4f3dd5943e",
+    "semantic_hash": "033a5cad3ce8f5b690979b4f3dd5943e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-cities.ts": {
+    "mtime": 1781148345.2173939,
+    "ast_hash": "6587ef42e6e9c04ee5b76e5f0c430d0f",
+    "semantic_hash": "6587ef42e6e9c04ee5b76e5f0c430d0f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-document-title.test.ts": {
+    "mtime": 1781148345.2174425,
+    "ast_hash": "587451c0f0aba349257df95a322901ad",
+    "semantic_hash": "587451c0f0aba349257df95a322901ad"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-document-title.ts": {
+    "mtime": 1781148345.2174976,
+    "ast_hash": "22d96974d05f8730b6d850c395a5aba1",
+    "semantic_hash": "22d96974d05f8730b6d850c395a5aba1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-map-style.ts": {
+    "mtime": 1781148345.2175431,
+    "ast_hash": "12445fdfa60f7dea0c7a5d6101005fe6",
+    "semantic_hash": "12445fdfa60f7dea0c7a5d6101005fe6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-mobile.ts": {
+    "mtime": 1781148345.2175992,
+    "ast_hash": "00c4e0037a9f8b7dedd72dddac468c7f",
+    "semantic_hash": "00c4e0037a9f8b7dedd72dddac468c7f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-now-ms.test.ts": {
+    "mtime": 1781148345.2176569,
+    "ast_hash": "6cbd097cb6402dfe6f891ea2dc29b9d2",
+    "semantic_hash": "6cbd097cb6402dfe6f891ea2dc29b9d2"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-now-ms.ts": {
+    "mtime": 1781148345.2177048,
+    "ast_hash": "f276eee1d90e08cf24c994cb6c6cdd5e",
+    "semantic_hash": "f276eee1d90e08cf24c994cb6c6cdd5e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/hooks/use-resolved-theme.ts": {
+    "mtime": 1781148345.217757,
+    "ast_hash": "d7a5a25569b125b45e6b9068f202195f",
+    "semantic_hash": "d7a5a25569b125b45e6b9068f202195f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/lib/app-version/update-store.ts": {
+    "mtime": 1781148345.217874,
+    "ast_hash": "118a0b1adeab13f202fc4252f981ca84",
+    "semantic_hash": "118a0b1adeab13f202fc4252f981ca84"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/lib/app-version/use-version-check.ts": {
+    "mtime": 1781148345.2179263,
+    "ast_hash": "bf372e4532bd12de56e209c06da7ca3e",
+    "semantic_hash": "bf372e4532bd12de56e209c06da7ca3e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/lib/app-version/version-check.test.ts": {
+    "mtime": 1781148345.2179868,
+    "ast_hash": "533ea8b87023533a0781f9fb8b8e383e",
+    "semantic_hash": "533ea8b87023533a0781f9fb8b8e383e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/lib/app-version/version-check.ts": {
+    "mtime": 1781148345.2180374,
+    "ast_hash": "7297c6c3fd42cf88084b5ec3741e2bf8",
+    "semantic_hash": "7297c6c3fd42cf88084b5ec3741e2bf8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/lib/intl-formatters.ts": {
+    "mtime": 1781148345.218091,
+    "ast_hash": "07942f42fa234c50124f4798d2ffa027",
+    "semantic_hash": "07942f42fa234c50124f4798d2ffa027"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/map-styles.ts": {
+    "mtime": 1781148345.2181613,
+    "ast_hash": "0c7a0f26d824bc5a876f3cda29af794d",
+    "semantic_hash": "0c7a0f26d824bc5a876f3cda29af794d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/types.ts": {
+    "mtime": 1781231758.52604,
+    "ast_hash": "8d6c1645e2d677a2b44933b5c7f3dfae",
+    "semantic_hash": "8d6c1645e2d677a2b44933b5c7f3dfae"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/utils/dates.test.ts": {
+    "mtime": 1781148345.2183123,
+    "ast_hash": "08f45a550c9e5d54a0b601f892930ec9",
+    "semantic_hash": "08f45a550c9e5d54a0b601f892930ec9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/utils/dates.ts": {
+    "mtime": 1781148345.2183676,
+    "ast_hash": "a1e2fccca773885459a3a784a14dd13d",
+    "semantic_hash": "a1e2fccca773885459a3a784a14dd13d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/utils/format.test.ts": {
+    "mtime": 1781148345.2184303,
+    "ast_hash": "ffe8a940ecf66c6b136c03b4c33fee61",
+    "semantic_hash": "ffe8a940ecf66c6b136c03b4c33fee61"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/utils/format.ts": {
+    "mtime": 1781148345.218478,
+    "ast_hash": "6fc79a2c1d12191e69acf83beb4307f8",
+    "semantic_hash": "6fc79a2c1d12191e69acf83beb4307f8"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/src/shared/utils/toast.ts": {
+    "mtime": 1781148345.2185323,
+    "ast_hash": "4801e0cdb060478417e6c3150893dcc9",
+    "semantic_hash": "4801e0cdb060478417e6c3150893dcc9"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/tsconfig.app.json": {
+    "mtime": 1781231758.5239062,
+    "ast_hash": "a638cf59be08af985b7c29abcd032e16",
+    "semantic_hash": "a638cf59be08af985b7c29abcd032e16"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/tsconfig.json": {
+    "mtime": 1781148345.2187743,
+    "ast_hash": "597111e0871da06310089fd23d923ad7",
+    "semantic_hash": "597111e0871da06310089fd23d923ad7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/tsconfig.node.json": {
+    "mtime": 1781231758.5236254,
+    "ast_hash": "77b25c055d13c1648143b16c0531112b",
+    "semantic_hash": "77b25c055d13c1648143b16c0531112b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/vite.config.ts": {
+    "mtime": 1781148345.218891,
+    "ast_hash": "4f18a7ba682b2c0cf5c52ec3698bf046",
+    "semantic_hash": "4f18a7ba682b2c0cf5c52ec3698bf046"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/vitest.config.ts": {
+    "mtime": 1781148345.2189443,
+    "ast_hash": "aae692f8875fa3b711e29c1e5562179e",
+    "semantic_hash": "aae692f8875fa3b711e29c1e5562179e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/package.json": {
+    "mtime": 1781274973.3609076,
+    "ast_hash": "842a0d706877d767f8d342b69e516b04",
+    "semantic_hash": "842a0d706877d767f8d342b69e516b04"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-quality/oxfmt.base.json": {
+    "mtime": 1781148345.2228465,
+    "ast_hash": "2331039f50d61244d86b29ac639a73a4",
+    "semantic_hash": "2331039f50d61244d86b29ac639a73a4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-quality/oxlint.base.json": {
+    "mtime": 1781148345.2229145,
+    "ast_hash": "2564e7018eb912c0f010c8408dfa7d02",
+    "semantic_hash": "2564e7018eb912c0f010c8408dfa7d02"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-quality/package.json": {
+    "mtime": 1781231758.5228581,
+    "ast_hash": "bb467c38fa4941e50290728bdab64e6c",
+    "semantic_hash": "bb467c38fa4941e50290728bdab64e6c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-typescript/base.json": {
+    "mtime": 1781148345.2230604,
+    "ast_hash": "1b6fff251496a71c622b21df204f542b",
+    "semantic_hash": "1b6fff251496a71c622b21df204f542b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-typescript/node.json": {
+    "mtime": 1781148345.2231133,
+    "ast_hash": "d216bee3657d55d050d3571e355f7aa0",
+    "semantic_hash": "d216bee3657d55d050d3571e355f7aa0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-typescript/package.json": {
+    "mtime": 1781231758.5225313,
+    "ast_hash": "c1126d5a194062862b694f406632f4f7",
+    "semantic_hash": "c1126d5a194062862b694f406632f4f7"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/config-typescript/react-vite.json": {
+    "mtime": 1781148345.2232153,
+    "ast_hash": "180e4fd80bf04bc9c1b84641cd613806",
+    "semantic_hash": "180e4fd80bf04bc9c1b84641cd613806"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/package.json": {
+    "mtime": 1781274973.3614926,
+    "ast_hash": "8baf51f65d1dc8ea93e871087a11b57c",
+    "semantic_hash": "8baf51f65d1dc8ea93e871087a11b57c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/scripts/_lib.mjs": {
+    "mtime": 1781233830.9214253,
+    "ast_hash": "d222022f0671d02394c30583d95d0527",
+    "semantic_hash": "d222022f0671d02394c30583d95d0527"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/scripts/build.mjs": {
+    "mtime": 1781148345.2263217,
+    "ast_hash": "682989fa8750085da58d7e912679283d",
+    "semantic_hash": "682989fa8750085da58d7e912679283d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/scripts/gen-android-kotlin.mjs": {
+    "mtime": 1781233628.1665654,
+    "ast_hash": "6961b40735dc46731937d41dae5d119b",
+    "semantic_hash": "6961b40735dc46731937d41dae5d119b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/scripts/gen-ios-swift.mjs": {
+    "mtime": 1781233628.1660073,
+    "ast_hash": "7b8bc1c077d7065cf12dcbfd3cd78c82",
+    "semantic_hash": "7b8bc1c077d7065cf12dcbfd3cd78c82"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/scripts/gen-web-css.mjs": {
+    "mtime": 1781148345.2265625,
+    "ast_hash": "4e6d3ed7f331fe62c089a3adaf41bc54",
+    "semantic_hash": "4e6d3ed7f331fe62c089a3adaf41bc54"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/scripts/verify-drift.mjs": {
+    "mtime": 1781233628.1668391,
+    "ast_hash": "39ad0f7057f575fe58e772d18d238465",
+    "semantic_hash": "39ad0f7057f575fe58e772d18d238465"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/src/index.ts": {
+    "mtime": 1781148345.226893,
+    "ast_hash": "71a63b1fcaa9eb20e36a7bb14f3fc876",
+    "semantic_hash": "71a63b1fcaa9eb20e36a7bb14f3fc876"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/src/types.ts": {
+    "mtime": 1781148345.2269392,
+    "ast_hash": "1a9d36f8efe013cf0a7150c56a61f338",
+    "semantic_hash": "1a9d36f8efe013cf0a7150c56a61f338"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/tsconfig.json": {
+    "mtime": 1781148345.2270842,
+    "ast_hash": "7bf7dddb87a4a7c4f96f63c2623c7dc1",
+    "semantic_hash": "7bf7dddb87a4a7c4f96f63c2623c7dc1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/vitest.config.ts": {
+    "mtime": 1781148345.2271352,
+    "ast_hash": "66c12199ddd70f8554efac3e9fae334c",
+    "semantic_hash": "66c12199ddd70f8554efac3e9fae334c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/package.json": {
+    "mtime": 1781231758.5222225,
+    "ast_hash": "c98c0bca828b8ca3da9a0c8f0ef4b407",
+    "semantic_hash": "c98c0bca828b8ca3da9a0c8f0ef4b407"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/date.test.ts": {
+    "mtime": 1781148345.2282956,
+    "ast_hash": "501f976e2de0e091b181e75cfef0427d",
+    "semantic_hash": "501f976e2de0e091b181e75cfef0427d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/date.ts": {
+    "mtime": 1781148345.2283552,
+    "ast_hash": "fe2c65ab1c65501691efa08c80a3709f",
+    "semantic_hash": "fe2c65ab1c65501691efa08c80a3709f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/description-sanitizer.test.ts": {
+    "mtime": 1781148345.2284172,
+    "ast_hash": "55b1ad00f6434470ac09498ee7601478",
+    "semantic_hash": "55b1ad00f6434470ac09498ee7601478"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/description-sanitizer.ts": {
+    "mtime": 1781148345.2284825,
+    "ast_hash": "9e23c5cfe9c395183e50265dc269d776",
+    "semantic_hash": "9e23c5cfe9c395183e50265dc269d776"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/ics.test.ts": {
+    "mtime": 1781231758.5247178,
+    "ast_hash": "b8c00aa7522a34b96a943ff3a6c036a4",
+    "semantic_hash": "b8c00aa7522a34b96a943ff3a6c036a4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/ics.ts": {
+    "mtime": 1781231758.5245056,
+    "ast_hash": "ba3577951e271accb06326b7ed91e53a",
+    "semantic_hash": "ba3577951e271accb06326b7ed91e53a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/image-proxy.test.ts": {
+    "mtime": 1781148345.2286558,
+    "ast_hash": "ab3c0b2f3c3424724594be34e56e84ec",
+    "semantic_hash": "ab3c0b2f3c3424724594be34e56e84ec"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/image-proxy.ts": {
+    "mtime": 1781148345.2287083,
+    "ast_hash": "3b917822b377b071813573e6fbcbb212",
+    "semantic_hash": "3b917822b377b071813573e6fbcbb212"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/index.ts": {
+    "mtime": 1781148345.2287686,
+    "ast_hash": "7764495488015ba84d7174f3c714bd86",
+    "semantic_hash": "7764495488015ba84d7174f3c714bd86"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/share-url.test.ts": {
+    "mtime": 1781148345.228823,
+    "ast_hash": "1e93ddcb2298541bccd8f3a68c1a4bde",
+    "semantic_hash": "1e93ddcb2298541bccd8f3a68c1a4bde"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/share-url.ts": {
+    "mtime": 1781148345.2288756,
+    "ast_hash": "5fca37dbce87e167c7636d121753dde4",
+    "semantic_hash": "5fca37dbce87e167c7636d121753dde4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/src/url-validation.ts": {
+    "mtime": 1781148345.228944,
+    "ast_hash": "abd241ea32d387b7ee8ed60714954434",
+    "semantic_hash": "abd241ea32d387b7ee8ed60714954434"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/tsconfig.json": {
+    "mtime": 1781148345.2289882,
+    "ast_hash": "13c4321b3c5091747bfa4306281774c4",
+    "semantic_hash": "13c4321b3c5091747bfa4306281774c4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/shared/vitest.config.ts": {
+    "mtime": 1781148345.2290342,
+    "ast_hash": "86c4a3217f81da66f88f5b12f7a7789d",
+    "semantic_hash": "86c4a3217f81da66f88f5b12f7a7789d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/renovate.json": {
+    "mtime": 1781236674.399543,
+    "ast_hash": "84ec600c0fc54ed4c6f9b0972eefc6d3",
+    "semantic_hash": "84ec600c0fc54ed4c6f9b0972eefc6d3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/scripts/check-monorepo.sh": {
+    "mtime": 1781233758.1463046,
+    "ast_hash": "080cc6377d53616e00460c5aca21f54e",
+    "semantic_hash": "080cc6377d53616e00460c5aca21f54e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/scripts/clean-generated-artifacts.sh": {
+    "mtime": 1781148345.2297742,
+    "ast_hash": "c77f4ae16eed4527a12a22f1a045309b",
+    "semantic_hash": "c77f4ae16eed4527a12a22f1a045309b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/scripts/dev-all.sh": {
+    "mtime": 1781148345.230165,
+    "ast_hash": "e7af4f82e7364f67d0d9b7e8980f063b",
+    "semantic_hash": "e7af4f82e7364f67d0d9b7e8980f063b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/config-quality.test.mjs": {
+    "mtime": 1781231758.5217917,
+    "ast_hash": "dbc5bd04ab7622b3e2684847a6fca61c",
+    "semantic_hash": "dbc5bd04ab7622b3e2684847a6fca61c"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/config-typescript.test.mjs": {
+    "mtime": 1781231758.520833,
+    "ast_hash": "6bcd6c0baf63a2d91e6ae9a6ddc536cf",
+    "semantic_hash": "6bcd6c0baf63a2d91e6ae9a6ddc536cf"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/docs-coverage.test.mjs": {
+    "mtime": 1781233667.829222,
+    "ast_hash": "6e9fecab3d851354abb62ac35466aa6b",
+    "semantic_hash": "6e9fecab3d851354abb62ac35466aa6b"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/domain-boundaries.test.mjs": {
+    "mtime": 1781233830.9218736,
+    "ast_hash": "c52666b4b58441db92d99057004ecee4",
+    "semantic_hash": "c52666b4b58441db92d99057004ecee4"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/packages-consumers.test.mjs": {
+    "mtime": 1781233667.8285272,
+    "ast_hash": "9a7c02b0bfc3f665547db0593e88b378",
+    "semantic_hash": "9a7c02b0bfc3f665547db0593e88b378"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/shared-boundary.test.mjs": {
+    "mtime": 1781148345.2527204,
+    "ast_hash": "391ac2988bf46347883180022747dda3",
+    "semantic_hash": "391ac2988bf46347883180022747dda3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/url-validation-boundary.test.mjs": {
+    "mtime": 1781233667.8295383,
+    "ast_hash": "d5e5ce7962645875cfac80989f7ca421",
+    "semantic_hash": "d5e5ce7962645875cfac80989f7ca421"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/web-bundle-budget.test.mjs": {
+    "mtime": 1781231758.5211499,
+    "ast_hash": "6f4d67a38cad7323b41f5115f479f949",
+    "semantic_hash": "6f4d67a38cad7323b41f5115f479f949"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/workspace-layout.test.mjs": {
+    "mtime": 1781233667.8277488,
+    "ast_hash": "b19c182b9ec92df6ce55952fd4201936",
+    "semantic_hash": "b19c182b9ec92df6ce55952fd4201936"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/tests/guards/workspace-workflows.test.mjs": {
+    "mtime": 1781233715.3285103,
+    "ast_hash": "8a1fb198742b75d4c32b399b5a5351f0",
+    "semantic_hash": "8a1fb198742b75d4c32b399b5a5351f0"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/turbo.json": {
+    "mtime": 1781233604.6680837,
+    "ast_hash": "bb24edf2777be770b365ec89952927b1",
+    "semantic_hash": "bb24edf2777be770b365ec89952927b1"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.changeset/README.md": {
+    "mtime": 1781148345.1340299,
+    "ast_hash": "ee7f8da8dbf1e56238d932d47bed7ab5",
+    "semantic_hash": "ee7f8da8dbf1e56238d932d47bed7ab5"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.github/workflows/ci.yml": {
+    "mtime": 1781275040.002425,
+    "ast_hash": "ba788d8f052f6c1bbeccc47c4aab75fc",
+    "semantic_hash": "ba788d8f052f6c1bbeccc47c4aab75fc"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.github/workflows/codeql.yml": {
+    "mtime": 1781275422.6893017,
+    "ast_hash": "d606bd6eefc00aa622b927afd188ae66",
+    "semantic_hash": "d606bd6eefc00aa622b927afd188ae66"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.github/workflows/dependency-review.yml": {
+    "mtime": 1781148345.1395469,
+    "ast_hash": "8356883e65e09edafd9f6fdf08ff6ecb",
+    "semantic_hash": "8356883e65e09edafd9f6fdf08ff6ecb"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.github/workflows/publish-packages.yml": {
+    "mtime": 1781236145.6957114,
+    "ast_hash": "25607f7f8c894224167b208fb7643507",
+    "semantic_hash": "25607f7f8c894224167b208fb7643507"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/.github/workflows/renovate.yml": {
+    "mtime": 1781236476.7231143,
+    "ast_hash": "2acead41368f788950ce58b1309f039a",
+    "semantic_hash": "2acead41368f788950ce58b1309f039a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/README.md": {
+    "mtime": 1781233758.1458468,
+    "ast_hash": "e62b4cde6fe0c2dfa2f4332d92b2f61a",
+    "semantic_hash": "e62b4cde6fe0c2dfa2f4332d92b2f61a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/AGENTS.md": {
+    "mtime": 1781233604.6751187,
+    "ast_hash": "6e225d911513445d5a2506a2f541772e",
+    "semantic_hash": "6e225d911513445d5a2506a2f541772e"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/index.html": {
+    "mtime": 1781148345.1872692,
+    "ast_hash": "fc0fef3bfbde2735329b29bd3833b87f",
+    "semantic_hash": "fc0fef3bfbde2735329b29bd3833b87f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/knowledge.md": {
+    "mtime": 1781148345.1873307,
+    "ast_hash": "8055db6b33e2b68f8cedf520c6ef7ea3",
+    "semantic_hash": "8055db6b33e2b68f8cedf520c6ef7ea3"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/docs/DEVELOPMENT.md": {
+    "mtime": 1781233758.1460438,
+    "ast_hash": "46a4c4218b4cb0de6288d924f8c8e904",
+    "semantic_hash": "46a4c4218b4cb0de6288d924f8c8e904"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/docs/rfcs/2026-06-11-web-package-boundaries.md": {
+    "mtime": 1781233758.1461937,
+    "ast_hash": "c3e3cb77647a3494ae34fb26457056ab",
+    "semantic_hash": "c3e3cb77647a3494ae34fb26457056ab"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/CHANGELOG.md": {
+    "mtime": 1781274973.361272,
+    "ast_hash": "d236c7a50898f6b00a66c0bf159ca822",
+    "semantic_hash": "d236c7a50898f6b00a66c0bf159ca822"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/packages/design-system/README.md": {
+    "mtime": 1781148345.2261403,
+    "ast_hash": "3d452fe599470d2f82f32999e60f0db6",
+    "semantic_hash": "3d452fe599470d2f82f32999e60f0db6"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/pnpm-workspace.yaml": {
+    "mtime": 1781275110.5466917,
+    "ast_hash": "944821ff7614f8400941670682a6a597",
+    "semantic_hash": "944821ff7614f8400941670682a6a597"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/brand/family-events-icon.png": {
+    "mtime": 1781148345.1878092,
+    "ast_hash": "80d14b4d7c97b45bc6e7e98704b2836a",
+    "semantic_hash": "80d14b4d7c97b45bc6e7e98704b2836a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/brand/family-events-logo.png": {
+    "mtime": 1781148345.1882868,
+    "ast_hash": "068d1b58bc41b7e84f18e39744555a9f",
+    "semantic_hash": "068d1b58bc41b7e84f18e39744555a9f"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/brand/family-events-mark.svg": {
+    "mtime": 1781148345.1883526,
+    "ast_hash": "e3af08afd83bce8072ea98167207d92a",
+    "semantic_hash": "e3af08afd83bce8072ea98167207d92a"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/og-fallback.png": {
+    "mtime": 1781148345.1884031,
+    "ast_hash": "5bdde9f6962e1be6c620ac5bfe91986d",
+    "semantic_hash": "5bdde9f6962e1be6c620ac5bfe91986d"
+  },
+  "/Users/lecoqjacob/Developer/personal/family-events-web/apps/web/public/vite.svg": {
+    "mtime": 1781148345.18857,
+    "ast_hash": "16ae23255d48f467f45da5f0cf2e8844",
+    "semantic_hash": "16ae23255d48f467f45da5f0cf2e8844"
+  }
+}
