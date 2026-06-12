@@ -39,8 +39,8 @@ importers:
   apps/web:
     dependencies:
       '@cypress-ink-labs/contracts':
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
       '@cypress-ink-labs/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -325,8 +325,8 @@ packages:
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
 
-  '@cypress-ink-labs/contracts@0.0.2':
-    resolution: {integrity: sha512-sa/GFgB5T/Dz9eOowzzaBDTxrRjtsKjB4ckF7SjmV4xwJrikj8YO7VSyz/whoA1orY8OLCRA/tQwDTGRfcTjIg==, tarball: https://npm.pkg.github.com/download/@cypress-ink-labs/contracts/0.0.2/97eceb38af6368ebfd25b5582993c2c7c2b8c1c8}
+  '@cypress-ink-labs/contracts@0.0.3':
+    resolution: {integrity: sha512-durAmXL+en4T2yL0aZ/8dHbypuBd2E6ID024gl5y+TcM0zTkavxHIe1JWSBVab35sf+c7aIvoQx8mRJ6Uebljg==, tarball: https://npm.pkg.github.com/download/@cypress-ink-labs/contracts/0.0.3/c2bdf6452e56c13fc0375af816a3e12bbdfa9c85}
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -3987,7 +3987,7 @@ snapshots:
       human-id: 4.2.0
       prettier: 2.8.8
 
-  '@cypress-ink-labs/contracts@0.0.2': {}
+  '@cypress-ink-labs/contracts@0.0.3': {}
 
   '@emnapi/core@1.10.0':
     dependencies:
