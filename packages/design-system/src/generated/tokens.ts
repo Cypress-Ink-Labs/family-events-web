@@ -13,7 +13,7 @@ export const designTokens = {
     name: "family-events design tokens",
     version: "0.3.0",
     designRef: "docs/DESIGN.md",
-    lockedAt: "2026-05-25",
+    lockedAt: "2026-06-11",
   },
   color: {
     light: {
