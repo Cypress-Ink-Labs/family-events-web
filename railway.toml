@@ -1,2 +1,9 @@
 [build]
 buildCommand = "turbo run build --filter=@cypress-ink-labs/web"
+
+[deploy]
+startCommand = "pnpm --filter=@cypress-ink-labs/web start"
+healthcheckPath = "/"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
