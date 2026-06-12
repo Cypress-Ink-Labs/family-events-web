@@ -1,0 +1,2 @@
+[build]
+buildCommand = "turbo run build --filter=@cypress-ink-labs/web"
