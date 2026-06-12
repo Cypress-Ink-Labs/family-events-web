@@ -4,7 +4,7 @@ import path from "node:path"
 import test from "node:test"
 
 const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..")
-const rfcPath = path.join(repoRoot, "docs", "rfcs", "2026-05-17-cross-platform-domain-boundaries.md")
+const rfcPath = path.join(repoRoot, "docs", "rfcs", "2026-06-11-web-package-boundaries.md")
 
 const ignoredDirs = new Set([
   ".gradle",
@@ -49,25 +49,23 @@ function assertNoMatchInFiles(files, forbidden, message) {
   }
 }
 
-test("architecture RFC documents boundaries and anti-corruption contracts", () => {
+test("architecture RFC documents web package boundaries", () => {
   assert.equal(existsSync(rfcPath), true)
   const source = read(rfcPath)
 
   for (const required of [
     "TypeScript Packages",
     "Web",
-    "iOS",
-    "Android",
-    "Anti-Corruption Contracts",
+    "External Contracts Package",
+    "Design Tokens",
     "tests/guards/domain-boundaries.test.mjs",
   ]) {
     assert.match(source, new RegExp(required.replaceAll("/", "\\/")))
   }
 })
 
-test("shared and contracts packages remain platform neutral", () => {
+test("shared package remains platform neutral", () => {
   const sharedFiles = walk(path.join(repoRoot, "packages", "shared", "src"), [".ts", ".tsx"])
-  const contractFiles = walk(path.join(repoRoot, "packages", "contracts", "src"), [".ts", ".tsx"])
   const platformImports = [
     /from ["']@\/[^"']+["']/,
     /from ["']react(?:["'/-])/,
@@ -81,12 +79,9 @@ test("shared and contracts packages remain platform neutral", () => {
   ]
 
   assertNoMatchInFiles(sharedFiles, [...platformImports, /from ["']@cypress-ink-labs\/contracts/], "must stay pure")
-  assertNoMatchInFiles(contractFiles, [...platformImports, /from ["']@cypress-ink-labs\/shared/], "must stay contract-only")
 
   const sharedPkg = JSON.parse(read(path.join(repoRoot, "packages", "shared", "package.json")))
-  const contractsPkg = JSON.parse(read(path.join(repoRoot, "packages", "contracts", "package.json")))
   assert.equal(sharedPkg.dependencies?.["@cypress-ink-labs/contracts"], undefined)
-  assert.equal(contractsPkg.dependencies?.["@cypress-ink-labs/shared"], undefined)
 })
 
 test("web runtime Supabase SDK imports stay behind the web adapter", () => {
@@ -111,78 +106,5 @@ test("web runtime Supabase SDK imports stay behind the web adapter", () => {
       runtimeSupabaseImport,
       `${relative(filePath)} must consume web lib adapters instead of runtime Supabase SDK imports`,
     )
-  }
-})
-
-test("iOS platform SDK imports stay in adapter packages", () => {
-  const swiftFiles = walk(path.join(repoRoot, "apps", "ios"), [".swift"])
-  const supabaseImport = /^\s*import\s+Supabase\b/m
-  const coreLocationOrWeatherKitImport = /^\s*import\s+(?:CoreLocation|WeatherKit)\b/m
-
-  for (const filePath of swiftFiles) {
-    const rel = relative(filePath)
-    const source = read(filePath)
-    const inData = rel.startsWith("apps/ios/Packages/FEData/")
-    const inAuth = rel.startsWith("apps/ios/Packages/FEAuth/")
-
-    if (!inData && !inAuth) {
-      assert.doesNotMatch(source, supabaseImport, `${rel} must not import Supabase directly`)
-    }
-
-    if (!inData) {
-      assert.doesNotMatch(source, coreLocationOrWeatherKitImport, `${rel} must use FEData service protocols`)
-    }
-  }
-})
-
-test("Android platform SDK imports stay in data/admin/app assembly", () => {
-  const kotlinFiles = walk(path.join(repoRoot, "apps", "android"), [".kt"])
-  const dataSdkImport = /^\s*import\s+(?:io\.github\.jan\.supabase|io\.ktor)\b/m
-  const roomImport = /^\s*import\s+androidx\.room\b/m
-
-  for (const filePath of kotlinFiles) {
-    const rel = relative(filePath)
-    const source = read(filePath)
-    const inData = rel.startsWith("apps/android/data/")
-    const inAdmin = rel.startsWith("apps/android/admin/")
-    const inApp = rel.startsWith("apps/android/app/")
-
-    if (!inData && !inAdmin) {
-      assert.doesNotMatch(source, dataSdkImport, `${rel} must use :data or :admin adapters instead of data SDK imports`)
-    }
-
-    if (!inData && !inApp) {
-      assert.doesNotMatch(source, roomImport, `${rel} must not import Room directly`)
-    }
-  }
-})
-
-test("mobile package manifests keep external data SDK dependencies in adapter modules", () => {
-  const iosPackages = walk(path.join(repoRoot, "apps", "ios", "Packages"), ["Package.swift"])
-  for (const filePath of iosPackages) {
-    const rel = relative(filePath)
-    const source = read(filePath)
-    const mayDependOnSupabase =
-      rel === "apps/ios/Packages/FEData/Package.swift" || rel === "apps/ios/Packages/FEAuth/Package.swift"
-    if (!mayDependOnSupabase) {
-      assert.doesNotMatch(source, /supabase-swift|product\(name: "(?:Supabase|Auth)"/, `${rel} must not depend on Supabase`)
-    }
-  }
-
-  const androidGradleFiles = walk(path.join(repoRoot, "apps", "android"), ["build.gradle.kts"])
-  for (const filePath of androidGradleFiles) {
-    const rel = relative(filePath)
-    const source = read(filePath)
-    const inData = rel === "apps/android/data/build.gradle.kts"
-    const inAdmin = rel === "apps/android/admin/build.gradle.kts"
-    const inApp = rel === "apps/android/app/build.gradle.kts"
-
-    if (!inData && !inAdmin) {
-      assert.doesNotMatch(source, /libs\.(?:supabase|ktor)\b/, `${rel} must not depend on Supabase/Ktor directly`)
-    }
-
-    if (!inData && !inApp) {
-      assert.doesNotMatch(source, /libs\.androidx\.room\b/, `${rel} must not depend on Room directly`)
-    }
   }
 })

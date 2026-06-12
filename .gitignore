@@ -1,6 +1,8 @@
 node_modules
 .turbo
 dist
+!packages/design-system/dist/
+!packages/design-system/dist/**
 dist-ssr
 *.local
 **/build/
@@ -9,3 +11,4 @@ dist-ssr
 .env.*
 !.env.example
 apps/web/dist/
+apps/web/output/

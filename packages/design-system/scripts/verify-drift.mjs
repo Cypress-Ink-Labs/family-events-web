@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs"
 import path from "node:path"
 import { buildCss } from "./gen-web-css.mjs"
-import { buildSwift, APP_COPY_PATH as IOS_APP_COPY } from "./gen-ios-swift.mjs"
-import { buildKotlin, APP_COPY_PATH as ANDROID_APP_COPY } from "./gen-android-kotlin.mjs"
+import { buildSwift } from "./gen-ios-swift.mjs"
+import { buildKotlin } from "./gen-android-kotlin.mjs"
 import { buildTs } from "./gen-ts-tokens.mjs"
 import { OUTPUT_PATH as WEB_OUT } from "./gen-web-css.mjs"
 import { OUTPUT_PATH as IOS_DIST_OUT } from "./gen-ios-swift.mjs"
@@ -19,13 +19,11 @@ function readOrEmpty(p) {
 }
 
 const tokens = loadTokens()
-// Check dist/ outputs (canonical, shipped in tarball) and app-tree copies.
+// Check generated outputs that are canonical for this web package.
 const targets = [
   ["web CSS", WEB_OUT, buildCss(tokens)],
   ["iOS Swift (dist)", IOS_DIST_OUT, buildSwift(tokens)],
-  ["iOS Swift (app copy)", IOS_APP_COPY, buildSwift(tokens)],
   ["Android Kotlin (dist)", ANDROID_DIST_OUT, buildKotlin(tokens)],
-  ["Android Kotlin (app copy)", ANDROID_APP_COPY, buildKotlin(tokens)],
   ["TS tokens", TS_OUT, buildTs(tokens)],
 ]
 
