@@ -73,6 +73,6 @@ jobs:
           event-type: tokens-updated
           client-payload: |
             {
-              "version": "${{ needs.publish.outputs.publishedPackages }}",
+              "version": ${{ needs.publish.outputs.publishedPackages }},
               "sha": "${{ github.sha }}"
             }
