@@ -1,6 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "hostRules": [
+    {
+      "matchHost": "npm.pkg.github.com",
+      "hostType": "npm",
+      "token": "{{ env.NPM_TOKEN }}"
+    }
+  ],
   "packageRules": [
     {
       "matchPackagePrefixes": ["@cypress-ink-labs/"],
@@ -8,9 +15,5 @@
       "automerge": false,
       "labels": ["dependencies", "family-events"]
     }
-  ],
-  "registryAliases": {
-    "https://npm.pkg.github.com": "https://npm.pkg.github.com"
-  },
-  "npmrc": "@cypress-ink-labs:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}"
+  ]
 }
