@@ -23,6 +23,9 @@ jobs:
       contents: write
       packages: write
       pull-requests: write
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
     steps:
       - uses: actions/checkout@v6
         with:
