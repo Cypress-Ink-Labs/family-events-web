@@ -19,10 +19,11 @@ onlyBuiltDependencies:
 minimumReleaseAgeExclude:
   - '@vitest/*'
   - vitest
+  # framer-motion/motion-dom/motion are excluded as a release trio; framer-motion is a transitive of motion, kept intentionally
   - framer-motion@12.40.0
   - motion-dom@12.40.0
   - motion@12.40.0
-  - vite@8.0.14
+  - vite@8.0.16
   - '@tanstack/react-virtual@3.13.26'
   - '@tanstack/virtual-core@3.16.0'
   - '@cypress-ink-labs/contracts'
