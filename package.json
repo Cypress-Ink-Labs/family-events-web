@@ -26,7 +26,8 @@
     "clean:artifacts": "bash scripts/clean-generated-artifacts.sh",
     "clean": "turbo run clean && find . -name 'node_modules' -prune -o -name '.turbo' -print | xargs rm -rf",
     "clean:dist": "find apps packages -name 'dist' -not -path '*/node_modules/*' -exec rm -rf {} + ; find apps packages -name 'build' -not -path '*/node_modules/*' -exec rm -rf {} + ; find apps packages -name '.next' -not -path '*/node_modules/*' -exec rm -rf {} +",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "knip": "knip"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",

@@ -124,6 +124,28 @@ jobs:
       - name: Guard tests
         run: pnpm run docs:test && pnpm run workspace:test
 
+  knip:
+    name: Dead-code detection (knip)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://npm.pkg.github.com
+          scope: "@cypress-ink-labs"
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      - name: Knip
+        run: pnpm run knip
+
   build:
     name: Build
     runs-on: ubuntu-latest
