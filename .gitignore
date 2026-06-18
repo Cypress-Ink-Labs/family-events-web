@@ -12,3 +12,4 @@ dist-ssr
 !.env.example
 apps/web/dist/
 apps/web/output/
+apps/web/coverage/
