@@ -15,7 +15,7 @@ export default defineConfig({
       VITE_SUPABASE_ANON_KEY: "test-anon-key",
     },
     environment: "node",
-    include: ["src/**/*.test.ts", "../../supabase/functions/**/*.test.ts"],
+    include: ["src/**/*.test.{ts,tsx}", "../../supabase/functions/**/*.test.ts"],
     exclude: [
       "node_modules",
       "dist",
