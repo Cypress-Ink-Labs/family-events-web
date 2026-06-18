@@ -1,174 +1,232 @@
 # Submission Status and Rejection Feedback for Submitting Users
 
+**Date**: 2026-06-17 (spike) · **fleshed to build-ready 2026-06-18**
+**Status**: design — ready to build (blocked on one backend RPC)
+**Source plan**: 013 · [CIL-74](https://linear.app/hexsleeves/issue/CIL-74)
+**Related**: [012 / CIL-73](https://linear.app/hexsleeves/issue/CIL-73) (edit/cancel — shares this surface)
+
+---
+
 ## Problem
 
 When a user submits a community event, the app runs an LLM-assisted review and stores a structured
 result — status, decision, human-readable reason, and a list of flags. Admins see all of this
 through the `LlmReviewSummary` component. The submitter sees nothing: `submit-event.tsx` calls
-`submit_community_event`, shows a success toast, then navigates to `/explore`. There is no "my
-submissions" page, no post-submit confirmation, and no mechanism for the submitter to learn whether
+`submit_community_event`, shows a success toast, then navigates to `/explore`. There is no "My
+Submissions" page, no post-submit confirmation, and no mechanism for the submitter to learn whether
 their event was approved, rejected, or is still under review.
 
-In a closed beta this creates a silent failure mode. A rejected event never appears on `/explore`,
-and the submitter has no way to distinguish "still pending" from "silently rejected". Surfacing
-status and rejection reasons builds submitter trust, reduces support load, and improves future
-submission quality by explaining what went wrong.
+In a closed beta this is a silent failure mode. A rejected event never appears on `/explore`, and
+the submitter cannot distinguish "still pending" from "silently rejected". Surfacing status and
+rejection reasons builds submitter trust, reduces support load, and improves future submission
+quality by explaining what went wrong.
 
 ## Current State
 
 ### Review fields stored on the event row
 
-Verified at commit `4e739e4` against `apps/web/src/shared/types.ts` (lines 138–148) and the
-upstream `@cypress-ink-labs/contracts` package (version 0.0.3, `database.types.ts`):
+Verified against `apps/web/src/shared/types.ts` (lines 138–148) and `@cypress-ink-labs/contracts`
+(v0.0.3, `database.types.ts`):
 
 | Field | Type | Purpose |
 |---|---|---|
 | `llm_review_status` | `"not_required" \| "pending" \| "succeeded" \| "failed" \| "skipped"` | Whether the LLM review ran and how it ended |
 | `llm_review_decision` | `"approve" \| "reject" \| "needs_admin_review"` | The LLM's verdict |
 | `llm_review_reason` | `string \| null` | Human-readable explanation of the decision |
-| `llm_review_flags` | `string[]` | Machine-readable flag slugs (e.g. policy violation categories) |
+| `llm_review_flags` | `string[]` | Machine-readable flag slugs (e.g. policy categories) |
 | `llm_review_confidence` | `number \| null` | Model confidence score |
 | `llm_review_error` | `string \| null` | Error detail when `llm_review_status = "failed"` |
 | `status` | `"draft" \| "published" \| "rejected" \| "archived"` | Canonical event lifecycle status |
 | `submitted_by` | `string \| null` | UUID of the authenticated user who submitted |
 
-The `submitted_by` column is the ownership field. Its presence is confirmed in the generated DB
-types (contracts `database.types.ts` line 908).
+`submitted_by` is the ownership anchor (confirmed in contracts `database.types.ts` line 908).
 
 ### Who can read these fields today
 
-Admins call `admin_events_enriched` (an RPC that returns all LLM review fields). The public
-`events_enriched` RPC returns only `status`, `title`, and other display fields — it does **not**
-return `llm_review_*` fields or `submitted_by`. No client-scoped RPC or view exists that lets a
-user query their own submissions and receive review data.
+- Admins call `admin_events_enriched` (returns all `llm_review_*` fields).
+- The public `events_enriched` RPC returns only display fields (`status`, `title`, …) — **not**
+  `llm_review_*` or `submitted_by`.
+- **No client-scoped path exists** for a user to read their own submissions with review data.
 
-**Conclusion: a new backend RPC (or an RLS-secured direct table query) is required.** There is no
-existing path for a user to read their own submissions with review status. The backend repo must add
-either:
+### Routing / surfaces that exist
 
-- A new RPC `get_user_submissions(p_user_id uuid)` that enforces `submitted_by = auth.uid()` at
-  the database level and returns the subset of fields safe to expose to the submitter, or
-- A row-level security policy on the `events` table granting each user `SELECT` on their own rows
-  (where `submitted_by = auth.uid()`), accompanied by a Supabase direct table query in the web
-  client.
+- `/submit-event` (note: **not** `/submit`) → `SubmitEventPage`, protected, under `AppLayout`
+  inside `ProtectedRoute` (`apps/web/src/app/app-router.tsx:142`).
+- No `/submissions` route. `ProfilePage` already renders six sections.
 
-The RPC approach is preferred: it lets the backend control which review fields are returned to the
-submitter (specifically, the reason but not raw internal metadata such as `llm_review_model` or
-`llm_review_prompt_version`).
+## Decisions (resolved open questions)
 
-### What admins see (via `LlmReviewSummary`)
+| # | Question | Decision | Rationale |
+|---|----------|----------|-----------|
+| D1 | Surface location | **Dedicated `/submissions` route** + a pill link on the profile page | Profile already has 6 sections; a list is independently navigable/bookmarkable and is the natural target for the post-submit redirect and the 012 edit entry point |
+| D2 | Read path | **New backend RPC `get_user_submissions`** (not a raw RLS table query) | RPC lets the backend pick exactly which review fields are returned and strip internal metadata at the DB layer |
+| D3 | Which review fields to expose | `status`, `llm_review_decision`, `llm_review_reason`, derived chip only. **Hide** confidence, model, provider, prompt-version, raw error | Model internals are a gaming surface + leak vendor/pricing signal; not useful to submitters |
+| D4 | Show rejection reason at all? | **Yes — show `llm_review_reason`** in a collapsed accordion on "Not approved" rows | Transparency reduces support load; mild gaming risk accepted for a closed beta (revisit if abused) |
+| D5 | `llm_review_flags` | **Do not render raw slugs.** Omit at launch; optional friendly-label map later | Slugs (`policy_violation`) are internal and unfriendly |
+| D6 | Post-submit behavior | Navigate to `/submissions?submitted=1` (banner) instead of `/explore`; keep success toast | Gives the submitter an anchor to check status |
+| D7 | Pagination | `LIMIT 50` + "show more" at launch; cursor later | Beta submitters have 1–5 submissions |
+| D8 | Realtime | Out of scope for v1 (manual reload / refetch on focus) | Nice-to-have; not worth the realtime channel cost yet |
 
-`apps/web/src/features/admin/components/admin-event-review/llm-review-summary.tsx` renders:
-status, decision, confidence, reviewed-at, reason, flags, provider/model, prompt version, and
-error. All of this is appropriate for admin debugging but the provider/model/prompt-version and
-raw flags are internal implementation details that should not be exposed verbatim to submitters.
+## Backend contract (separate repo — blocks web work)
 
-## Proposed User-Facing Surface
+**`get_user_submissions()` → `setof user_submission`**
 
-### Surface location: dedicated `/submissions` route (recommended over profile section)
+```
+get_user_submissions() returns table (
+  id                  uuid,
+  title               text,
+  start_datetime      timestamptz,
+  status              event_status,        -- draft | published | rejected | archived
+  llm_review_decision text,                -- approve | reject | needs_admin_review | null
+  llm_review_reason   text,                -- nullable; safe natural-language reason only
+  created_at          timestamptz
+)
+```
 
-A "My Submissions" section bolted onto `ProfilePage` (`apps/web/src/features/profile/pages/profile.tsx`)
-would work for a small list, but a standalone `/submissions` route is preferred for the following
-reasons:
+- Enforces `submitted_by = auth.uid()` inside the function (no parameter — derive from JWT; do not
+  trust a client-supplied user id).
+- Returns **only** the columns above — confidence/model/provider/prompt-version/error are never
+  selected, so they cannot leak.
+- Orders by `created_at desc`, `LIMIT 50` (add cursor param later).
 
-1. `ProfilePage` already has six distinct sections; adding a paginated list makes it unwieldy.
-2. `plans/012` proposes an edit entry point for own submissions — that edit flow naturally links
-   back to a dedicated submissions list, not a sub-section of a settings page.
-3. A dedicated route is independently navigable, shareable, and bookmarkable.
-4. Post-submit confirmation can link directly to `/submissions` without requiring a deep-link into
-   the profile page's scroll position.
+## Web implementation
 
-The profile page should show a prominent link or pill badge ("My Submissions — 2 pending") that
-navigates to `/submissions`. This keeps the profile page from growing while still surfacing the
-page to users who do not know it exists.
+### 1. Query key (`infrastructure/queries/query-keys.ts`)
 
-### What each row shows
+Add to `qk`:
 
-Each submission row renders:
+```ts
+submissions: {
+  all: ["submissions"] as const,
+  byUser: (userId: string | undefined) => ["submissions", nil(userId)] as const,
+},
+```
 
-- **Title** (truncated at ~80 chars)
-- **Event date** (`start_datetime`, formatted as "Jun 21 at 10:00 AM")
-- **Submission status chip**: derived from the combination of `status` and `llm_review_decision`:
+### 2. Data hook — `features/events/hooks/use-user-submissions.ts` (new)
 
-  | `status` | `llm_review_decision` | Shown to user |
-  |---|---|---|
-  | `draft` | any | Pending review |
-  | `draft` | `needs_admin_review` | Under manual review |
-  | `published` | any | Approved — view event link |
-  | `rejected` | any | Not approved |
-  | `archived` | any | Archived |
+Mirror the `useNotificationPreferences` pattern (`useQuery` + `enabled: !!userId`):
 
-- **Rejection detail** (collapsed by default, shown only when status chip is "Not approved"):
-  the value of `llm_review_reason`, rendered in a collapsible `<details>` or accordion element.
-  The raw `llm_review_flags` slugs are NOT shown verbatim — a display mapping or omission is
-  preferred (see open questions).
+```ts
+export interface UserSubmission {
+  id: string
+  title: string
+  start_datetime: string
+  status: Event["status"]
+  llm_review_decision: "approve" | "reject" | "needs_admin_review" | null
+  llm_review_reason: string | null
+  created_at: string
+}
 
-- **Submitted on** date (`created_at`).
+export function useUserSubmissions(userId: string | undefined) {
+  return useQuery({
+    queryKey: qk.submissions.byUser(userId),
+    queryFn: async (): Promise<UserSubmission[]> => {
+      if (!userId) return []
+      const { data, error } = await supabase.rpc("get_user_submissions")
+      if (error) throw error
+      return data ?? []
+    },
+    enabled: !!userId,
+  })
+}
+```
 
-### Empty state
+### 3. Pure status mapping — `features/events/lib/submission-status.ts` (new, unit-tested)
 
-When a user has no submissions: "You haven't submitted any events yet. Submit one and it'll appear
-here after review." with a link to `/submit`.
+```ts
+export type SubmissionChip =
+  | "pending" | "under-review" | "approved" | "not-approved" | "archived"
 
-### Post-submit confirmation
+export function toSubmissionChip(
+  status: Event["status"],
+  decision: UserSubmission["llm_review_decision"],
+): SubmissionChip {
+  switch (status) {
+    case "published": return "approved"
+    case "rejected":  return "not-approved"
+    case "archived":  return "archived"
+    case "draft":     return decision === "needs_admin_review" ? "under-review" : "pending"
+  }
+}
+```
 
-After a successful `submit_community_event` call, instead of navigating to `/explore`, the page
-should navigate to `/submissions` (or a transient `/submissions?submitted=true` that triggers a
-visible "Thank you — we'll review your event" banner). This gives the submitter an immediate anchor
-to check back on their submission.
+| chip | label | tone |
+|---|---|---|
+| `pending` | Pending review | muted |
+| `under-review` | Under manual review | info |
+| `approved` | Approved · view event | success |
+| `not-approved` | Not approved | destructive |
+| `archived` | Archived | muted |
 
-The current success toast ("Event submitted! Our team will review it shortly.") can be kept as a
-secondary confirmation alongside the navigation change.
+### 4. Route wiring
 
-## Open Questions and Risks
+- `app/app-route-pages.ts`: `export const SubmissionsPage = lazy(() => import("@/features/events/pages/submissions").then(m => ({ default: m.SubmissionsPage })))`
+- `app/app-router.tsx`: add under the existing `ProtectedRoute` → `AppLayout` children block (next
+  to `/submit-event`):
+  ```tsx
+  { path: "/submissions",
+    element: <FeatureErrorBoundary featureName="My Submissions"><SubmissionsPage /></FeatureErrorBoundary> }
+  ```
+- Import `SubmissionsPage` in the `app-route-pages` barrel import list in `app-router.tsx`.
 
-1. **Which fields to expose to submitters.** `llm_review_reason` is a natural-language string
-   written to be human-readable; it is appropriate to expose. `llm_review_flags` are machine
-   slugs (e.g. `policy_violation`, `duplicate_event`) that could be mapped to friendly labels or
-   omitted. The raw model/provider/prompt-version metadata should not be shown to submitters —
-   exposing model internals creates a gaming surface and is not useful to the submitter.
+### 5. Components — `features/events/pages/submissions.tsx` + `components/`
 
-2. **Does showing a rejection reason invite gaming?** A submitter who learns "rejected: duplicate
-   event" will resubmit with minor edits. Whether that is acceptable is a product decision. The
-   alternative (showing "not approved" with no reason) is less transparent but harder to game.
+- `SubmissionsPage`: `useAuth()` → `useUserSubmissions(user?.id)`; render loading / empty / list;
+  read `?submitted=1` to show a one-time "Thank you — we'll review your event" banner.
+- `SubmissionRow`: title (truncate ~80), `start_datetime` ("Jun 21 at 10:00 AM"), `SubmissionStatusChip`,
+  `created_at`. On `not-approved`, a collapsible `<details>`/accordion showing `llm_review_reason`.
+  On `approved`, a link to `/events/:id`. (012 adds Edit/Cancel actions on `draft` rows here.)
+- Empty state: "You haven't submitted any events yet." + link to `/submit-event`.
 
-3. **Privacy of review internals.** Confidence scores, provider names, and model versions are
-   operational metadata. Exposing them leaks pricing/vendor signals and could be used to reverse-
-   engineer the review pipeline. The proposed RPC should strip these fields at the database layer.
+### 6. Post-submit nav (`features/events/pages/submit-event.tsx`)
 
-4. **RLS policy scope.** If using a direct table query rather than an RPC, the RLS policy must
-   allow `SELECT` only on rows where `submitted_by = auth.uid()` and only return columns that are
-   safe for the submitter to see. The simpler choice is an RPC with an explicit `RETURNS` set.
+Change line 53 `navigate("/explore")` → `navigate("/submissions?submitted=1")`. Keep the success
+toast as secondary confirmation.
 
-5. **Pairing with a resubmit/edit flow.** A "Not approved" row that shows a reason is most
-   useful when the submitter can act on it. `plans/012` designs the edit-submission surface; the
-   two plans should be built in the same sprint so that rejected-with-reason rows can offer an
-   "Edit and resubmit" action rather than a dead end.
+### 7. Profile pill (`features/profile/pages/profile.tsx`)
 
-6. **Pagination.** Most beta submitters will have 1–5 submissions. Simple `LIMIT 50` with a "show
-   more" fallback is sufficient at launch; cursor pagination matches `events_enriched` and can be
-   added later.
+Add a link/badge ("My Submissions — N pending") that routes to `/submissions`. Pending count =
+submissions where `toSubmissionChip(...) === "pending" | "under-review"`.
 
-7. **Real-time updates.** Supabase realtime could push a status change when an event is approved
-   or rejected, allowing the submissions page to update without a refresh. This is a nice-to-have;
-   a polling refresh or manual reload is acceptable for a v1.
+## Test plan
 
-## Rough Build Effort
+- **Unit** (`submission-status.test.ts`): every `(status, decision)` combination → expected chip
+  (exhaustive table). Runs in the default Node vitest env.
+- **Component** (`submissions.test.tsx`, jsdom docblock per plan 008 infra): loading skeleton;
+  empty state with `/submit-event` link; list renders N rows; `not-approved` row expands to show
+  the reason; `?submitted=1` shows the banner. Mock `useUserSubmissions`.
+- **E2E** (best-effort, needs live Supabase + a seeded draft): submit → lands on `/submissions` →
+  row visible with "Pending review".
+
+## Acceptance criteria
+
+- [ ] `get_user_submissions` RPC exists, JWT-scoped, returns only the 7 safe columns.
+- [ ] `/submissions` route renders for authed users; loading/empty/list states all covered.
+- [ ] Rejected rows show `llm_review_reason`; confidence/model/provider/flags never reach the client.
+- [ ] Submitting redirects to `/submissions?submitted=1` with a banner.
+- [ ] Profile shows a "My Submissions" pill with a pending count.
+- [ ] `submission-status` unit tests + `submissions` component tests pass under `verify:web`.
+
+## Phased rollout
+
+1. **Backend**: ship `get_user_submissions` (S–M).
+2. **Web read-only**: hook + status lib + `/submissions` page + profile pill + post-submit redirect (M).
+3. **012 actions**: edit/cancel buttons on `draft` rows land on top of this surface — see CIL-73.
+
+## Effort
 
 | Work item | Effort |
 |---|---|
-| Backend: new RPC `get_user_submissions` + RLS scope | S–M (backend repo) |
-| Web: `useUserSubmissions` hook + query key | S |
-| Web: `/submissions` route + page component | M |
-| Web: `SubmissionRow` display component + status mapping | S |
-| Web: post-submit navigation change in `submit-event.tsx` | S |
-| Web: profile page link/badge to `/submissions` | S |
+| Backend RPC + RLS scope | S–M (backend repo) |
+| `useUserSubmissions` hook + query key | S |
+| `submission-status` pure lib + tests | S |
+| `/submissions` route + page + row/chip components | M |
+| Post-submit redirect + profile pill | S |
 
-Total web estimate: M. Backend coordination required before any web work can land.
+Total web: **M**. Backend RPC must land first.
 
-## Cross-References
+## Cross-references
 
-- `plans/012`: designs user edit/delete of own submissions; shares the `/submissions` surface as
-  the entry point for the edit action. These two plans should be built together to avoid shipping
-  a dead-end rejection-reason display with no follow-up action.
-- `plans/013` (this document): design only; no source code changed.
+- [CIL-73 / Plan 012](https://linear.app/hexsleeves/issue/CIL-73) — edit/cancel of own submissions;
+  consumes this `/submissions` surface as its entry point. Build in the same sprint so a
+  "Not approved" row offers "Edit & resubmit" instead of a dead end.

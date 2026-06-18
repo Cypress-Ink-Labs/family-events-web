@@ -1,182 +1,137 @@
 # Push Pipeline Gap Analysis
 
-**Date**: 2026-06-17
-**Status**: findings / spike
-**Author**: spike (plan 014)
-**Related plans**: [005 (CIL-66)](https://linear.app/hexsleeves/issue/CIL-66), [014 (CIL-75)](https://linear.app/hexsleeves/issue/CIL-75)
+**Date**: 2026-06-17 (spike) · **updated + fleshed 2026-06-18** (post plan 015)
+**Status**: findings → primary gap CLOSED by plan 015; remaining web gaps specified below
+**Source plan**: 014 · [CIL-75](https://linear.app/hexsleeves/issue/CIL-75)
+**Related**: [005 / CIL-66](https://linear.app/hexsleeves/issue/CIL-66) (env docs),
+[015 / CIL-58](https://linear.app/hexsleeves/issue/CIL-58) (wired the registration call)
 
 ---
 
 ## Purpose
 
-An earlier audit suggested "no send path exists" for push notifications. This spike
-re-examines that claim end to end, maps the verified web-side pipeline, names the
-backend send-side evidence, distinguishes what is confirmed from what requires
-backend-repo inspection, and recommends the smallest high-value next step.
+An earlier audit claimed "no send path exists" for push. This spike re-examined that end to end,
+mapped the verified web-side pipeline, and recommended the smallest high-value next step (wire
+`registerWebPush()`). That step shipped as **plan 015 ([CIL-58](https://linear.app/hexsleeves/issue/CIL-58))**.
+This doc is now the living tracker for the **remaining** web-side push gaps, each specified
+build-ready.
 
 ---
 
-## Verified: the web-side client pipeline
+## Status update — what plan 015 changed
 
-The following is confirmed by reading the source at commit `4e739e4` in this repo.
+The spike's headline gap was: *`registerWebPush()` is fully implemented and tested but never called.*
+**That is now CLOSED.**
 
-### 1. Service worker (`apps/web/public/sw-push.js`)
+- `features/profile/pages/profile.tsx:86` `handleNotificationToggle(field, value)` calls
+  `registerWebPush()` when a user enables any `*_push` field (line 89–90).
+- All non-success results (`denied` / `unsupported` / `no-vapid-key` / `error`) `toast` and
+  **`return` before** `updateNotifPrefs.mutate()` (lines 94–110) — so a push-enabled preference is
+  never persisted without a real browser subscription. (This early-return was the plan-015 REVISE
+  fix, commit `888653e`.)
+- On `subscribed`, the toggle falls through and saves the preference (lines 113–118).
 
-A push-only service worker is present. It handles two browser events:
+So: a user can now opt in to push from the profile UI, and the subscription is stored in
+`push_subscriptions` via `register_push_subscription`.
 
-- `push` — parses the server payload (JSON with `title`, `body`, `url`, `icon`, `tag`)
-  and calls `showNotification`.
-- `notificationclick` — closes the notification and focuses or opens the target `url`.
+## Verified web-side pipeline (still accurate)
 
-No caching logic. Does not conflict with Vite HMR. The payload format the backend must
-produce is: `{ title, body, url?, icon?, tag? }`.
-
-### 2. VAPID key (`apps/web/src/infrastructure/push/vapid.ts`)
-
-`getVapidPublicKey()` reads `import.meta.env.VITE_VAPID_PUBLIC_KEY` (a Vite build-time
-replacement). Returns `null` if unset. `urlBase64ToUint8Array()` converts the base64url
-key for `PushManager.subscribe()`.
-
-**Documentation gap**: `VITE_VAPID_PUBLIC_KEY` is absent from both `.env.example` and
-`apps/web/.env.example`. A developer who clones the repo and runs `pnpm dev` will get
-`status: "no-vapid-key"` silently — push will not work and there is no error surfaced
-to the UI. See [plan 005 (CIL-66)](https://linear.app/hexsleeves/issue/CIL-66) for the broader
-onboarding env-docs work; adding `VITE_VAPID_PUBLIC_KEY` to `.env.example` belongs
-there.
-
-### 3. Registration flow (`apps/web/src/infrastructure/push/register.ts`)
-
-`registerWebPush()` is fully implemented and idempotent:
-
-1. Guards: checks `serviceWorker` and `PushManager` browser support.
-2. Guards: returns `{ status: "no-vapid-key" }` if env is unset.
-3. Registers `/sw-push.js` with scope `/`.
-4. Calls `Notification.requestPermission()`.
-5. Subscribes via `PushManager.subscribe({ userVisibleOnly: true, applicationServerKey })`.
-6. Stores the subscription with `supabase.rpc("register_push_subscription", { p_platform: "web", p_endpoint, p_p256dh, p_auth_key })`.
-
-`unregisterWebPush()` is also implemented — unsubscribes the PushManager subscription
-(does not call a delete RPC; the endpoint becomes stale server-side on next send attempt).
-
-**Web-side unit tests** exist in `register.test.ts` and cover all result paths.
-
-**Critical gap**: `registerWebPush()` is NOT called anywhere in the current UI. No
-component, hook, or page imports or calls it. The flow exists in infrastructure but has
-no entrypoint. The user has no way to opt in to push without a developer invoking the
-function directly.
-
-### 4. Notification preferences (`apps/web/src/features/profile/hooks/use-notification-preferences.ts`)
-
-`useNotificationPreferences` reads and `useUpdateNotificationPreferences` upserts the
-`user_notification_preferences` table via RPCs:
-- Read: direct `supabase.from("user_notification_preferences").select(...)`.
-- Write: `supabase.rpc("upsert_notification_preferences", toUpsertParams(prefs))`.
-
-Six boolean columns are exposed to the user:
-`reminder_email`, `reminder_push`, `change_email`, `change_push`, `digest_email`, `digest_push`.
-
-The preferences UI (`ProfileNotificationPreferencesCard`) is wired and rendered on the
-profile page — it works. The data is persisted. Whether the backend send functions read
-this table before sending is unverified (see section below).
-
-### 5. In-app notification inbox (`apps/web/src/features/notifications/`)
-
-Separate from push: the app has a `user_notifications` table-backed inbox (bell icon,
-unread count, mark-read RPCs). This is a pull model, not push. It is not the same as web
-push and appears fully functional on the web side.
+- **Service worker** `apps/web/public/sw-push.js`: handles `push` (parses `{ title, body, url?,
+  icon?, tag? }`, `showNotification`) and `notificationclick` (focus/open `url`). No caching; no HMR
+  conflict. **This is the payload contract the backend must produce.**
+- **VAPID** `infrastructure/push/vapid.ts`: `getVapidPublicKey()` reads
+  `import.meta.env.VITE_VAPID_PUBLIC_KEY`, returns `null` if unset; `urlBase64ToUint8Array()` for
+  `PushManager.subscribe()`.
+- **Registration** `infrastructure/push/register.ts`: `registerWebPush()` — support guards →
+  no-vapid-key guard → register `/sw-push.js` (scope `/`) → `Notification.requestPermission()` →
+  `pushManager.subscribe({ userVisibleOnly: true, applicationServerKey })` → store via
+  `register_push_subscription({ p_platform:"web", p_endpoint, p_p256dh, p_auth_key })` → returns
+  `{ status:"subscribed", subscriptionId }`. Idempotent. Fully unit-tested (`register.test.ts`).
+- **`unregisterWebPush()`**: unsubscribes the local `PushManager` subscription **only** — it does
+  **not** call any delete RPC, and **nothing in the UI calls it** (see Gap 1).
+- **Preferences** `features/profile/hooks/use-notification-preferences.ts`: six booleans
+  (`reminder_email/push`, `change_email/push`, `digest_email/push`) read via `select` and written
+  via `upsert_notification_preferences`. Optimistic update with rollback.
+- **In-app inbox** `features/notifications/`: separate pull-model (`user_notifications`, bell,
+  unread count). Not push; functional.
 
 ---
 
-## Backend send-side: what the evidence shows (cannot be fully verified here)
+## Remaining web-side gaps (build-ready)
 
-`apps/web/vitest.config.ts` excludes three Supabase edge function directories from the
-web test run:
+### Gap 1 — Disabling push never unsubscribes (stale subscriptions accumulate)
+
+**Today**: enabling a `*_push` toggle subscribes; **disabling** it just saves `false` to prefs. The
+browser `PushManager` subscription and the `push_subscriptions` row both persist. `unregisterWebPush()`
+exists but is unwired, and even it only unsubscribes locally — no DB delete. Result: the backend
+keeps sending to endpoints the user "disabled", and dead endpoints pile up.
+
+**Fix**
+
+1. Backend RPC (separate repo): **`unregister_push_subscription(p_endpoint text) returns void`** —
+   deletes the row where `endpoint = p_endpoint AND user_id = auth.uid()`.
+2. `register.ts`: have `unregisterWebPush()` call `unregister_push_subscription(endpoint)` with the
+   current subscription's endpoint **before** `subscription.unsubscribe()`, and return its result.
+3. `profile.tsx handleNotificationToggle`: when `value === false && field.endsWith("_push")` **and
+   no other `*_push` field remains enabled**, call `unregisterWebPush()` (toast on failure). Compute
+   "last push toggle off" from the current `notifPrefs` snapshot.
+
+### Gap 2 — `VITE_VAPID_PUBLIC_KEY` undocumented (silent dev breakage)
+
+Verified 2026-06-18: the var is **still absent** from both `.env.example` and `apps/web/.env.example`
+(plan 005 synced general onboarding but did not add this one). A fresh clone runs `pnpm dev`, the
+user enables push, and gets a `no-vapid-key` toast with no setup guidance.
+
+**Fix**: add to `apps/web/.env.example`:
 
 ```
-../../supabase/functions/send-weekly-digest/**
-../../supabase/functions/send-push/**
-../../supabase/functions/send-reminders/**
+# Web push (VAPID public key, base64url). Subscriptions no-op without it.
+VITE_VAPID_PUBLIC_KEY=
 ```
 
-These paths are relative to `apps/web/` — i.e. they resolve to
-`<repo-root>/supabase/functions/...`. **Those directories are NOT present in this web
-repo checkout.** The web repo's vitest config references them because at some point both
-the web app and the Supabase backend live (or lived) in the same monorepo tree, or the
-config was written anticipating that layout. The edge functions themselves cannot be read
-here.
+Optionally downgrade the dev-mode `no-vapid-key` path to a `console.warn` with a pointer to this var.
 
-**What this evidence confirms:**
+### Gap 3 — No end-to-end round-trip test
 
-- Three edge functions named `send-push`, `send-reminders`, and `send-weekly-digest` are
-  expected to exist somewhere in the backend.
-- They are excluded from the web vitest run — meaning they have their own `.test.ts`
-  files that were previously runnable from this config, or the exclusion was added
-  preemptively to avoid glob noise.
+No test confirms register → backend-send → SW `showNotification`. **Fix**: a best-effort Playwright
+spec (parses via `--list`; requires live Supabase + `VITE_VAPID_PUBLIC_KEY` + a test send) following
+the existing e2e auth/storageState patterns. Mark UNVERIFIED until run against a live env (same
+posture as the plan-batch e2e specs).
 
-**What requires backend-repo inspection to confirm:**
+### Gap 4 — Backend send-side unverified (cross-repo)
 
-- Do the three functions actually exist and are they deployed?
-- Does `send-push` read the `push_subscriptions` table (populated by
-  `register_push_subscription` RPC) to find endpoints?
-- Does `send-push` / `send-reminders` check `user_notification_preferences` (e.g.
-  `reminder_push`, `change_push`) before sending, or does it send to all subscribers?
-- What triggers each function: scheduled cron, database webhook, Supabase function
-  invocation from another function?
-- What payload format does `send-push` produce — does it match the service worker's
-  expected `{ title, body, url?, icon?, tag? }` shape?
-- Does `send-reminders` send both email and push, or only email?
-- Is there a VAPID private key configured in the backend edge function environment?
+`apps/web/vitest.config.ts` excludes `../../supabase/functions/{send-push,send-reminders,send-weekly-digest}/**`
+— paths resolving to `<repo-root>/supabase/functions/...`, **not present in this checkout**. The
+exclusion implies those functions exist in the backend repo, but their behavior can't be read here.
+
+This is a **backend-repo task**, tracked here so it isn't lost — see open questions. It does not
+block Gaps 1–3.
 
 ---
 
-## The real web-side gap
+## Recommended sequence
 
-The "no send path" claim was wrong about the server side — evidence points to edge
-functions existing. The real gap is on the web client:
+1. **Gap 2** (env doc) — trivial, unblocks dev. Pairs naturally with the next env touch.
+2. **Gap 1** (unsubscribe + delete RPC) — the real correctness gap now that opt-in works; needs one
+   backend RPC + small web wiring.
+3. **Gap 4** (backend inspection) — confirm the send side actually reads `push_subscriptions` and
+   respects `user_notification_preferences`; can run in parallel.
+4. **Gap 3** (e2e) — last, once a live env + VAPID keypair are available.
 
-**`registerWebPush()` is never called.** The function is fully implemented and tested,
-but no component triggers it. A user visiting the profile page sees notification
-preference toggles but cannot enable push delivery because the browser subscription step
-never runs. The push toggle for "Reminders / Push" etc. saves to `user_notification_preferences`
-but there is no corresponding push subscription stored in `push_subscriptions` — the
-backend has nowhere to send.
+## Acceptance criteria
 
-Secondary gaps (lower priority, pending backend confirmation):
-
-- `VITE_VAPID_PUBLIC_KEY` undocumented in `.env.example` (onboarding break; plan 005).
-- No end-to-end test confirming a subscription survives a full register → backend-send
-  round trip.
-- `unregisterWebPush()` does not call a delete RPC — stale subscriptions accumulate in
-  `push_subscriptions`; whether the backend handles 410 Gone cleanup is unknown.
-
----
-
-## Recommended smallest next step
-
-**Wire `registerWebPush()` into the profile notification preferences UI.**
-
-Concretely: when the user enables any push channel toggle (`reminder_push`,
-`change_push`, or `digest_push`) for the first time (i.e. the browser has no active push
-subscription yet), call `registerWebPush()` and surface the result to the user (success
-toast, or an explanatory error if permission is denied or VAPID key is missing).
-
-This is a single-hook addition to the existing preferences flow. It does not require
-backend changes. It closes the only confirmed web-side gap. It also makes
-`VITE_VAPID_PUBLIC_KEY` observable in dev (the `no-vapid-key` result can produce a
-clearer dev-mode warning).
-
-The backend send-side should be inspected in parallel (or first, if there is doubt about
-whether the edge functions exist) — but that inspection is independent of wiring the
-registration call.
-
----
+- [ ] `apps/web/.env.example` documents `VITE_VAPID_PUBLIC_KEY`.
+- [ ] Disabling the last `*_push` toggle calls `unregisterWebPush()`, which deletes the
+      `push_subscriptions` row via `unregister_push_subscription` and unsubscribes the browser.
+- [ ] `register.test.ts` covers the unregister-with-delete path.
+- [ ] Backend send-side confirmed to (a) read `push_subscriptions`, (b) honor `*_push` prefs,
+      (c) emit the `{ title, body, url?, icon?, tag? }` payload, (d) clean `410 Gone` endpoints.
 
 ## Open questions requiring backend-repo inspection
 
 1. Do `send-push`, `send-reminders`, `send-weekly-digest` exist as deployed functions?
 2. Does `send-push` join `push_subscriptions` and respect `user_notification_preferences`?
-3. What triggers `send-reminders` and `send-weekly-digest` — cron schedule or event?
-4. What payload shape does `send-push` send to the push endpoint?
-5. Does the backend handle `410 Gone` responses from push services to clean stale
-   subscriptions?
-6. Is the VAPID private key set in the backend function environment?
+3. What triggers `send-reminders` / `send-weekly-digest` — cron or DB event?
+4. What payload shape does `send-push` emit (must match `sw-push.js`)?
+5. Does the backend handle `410 Gone` to prune stale subscriptions?
+6. Is the VAPID **private** key set in the backend function environment?

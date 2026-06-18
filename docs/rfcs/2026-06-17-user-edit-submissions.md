@@ -1,53 +1,60 @@
 # User Edit/Delete of Own Event Submissions
 
+**Date**: 2026-06-17 (spike) · **fleshed to build-ready 2026-06-18**
+**Status**: design — ready to build (blocked on backend RPCs)
+**Source plan**: 012 · [CIL-73](https://linear.app/hexsleeves/issue/CIL-73)
+**Related**: [013 / CIL-74](https://linear.app/hexsleeves/issue/CIL-74) (the `/submissions` surface this builds on)
+
+---
+
 ## Problem
 
-Users who submit community events via `submit_community_event` can only create — there is no path
-to edit or delete their own submission after the fact. After submitting, `submit-event.tsx`
-navigates to `/explore` and the event is out of the submitter's hands. Admins hold full CRUD via
-`admin_update_event` / `admin_create_event`. In a closed beta, the inability to fix a typo or
-cancel a submission generates support load and discourages future submissions.
+Users who submit community events via `submit_community_event` can only create — there is no path to
+edit or delete their own submission afterward. After submitting, `submit-event.tsx` navigates away
+and the event leaves the submitter's hands. Admins hold full CRUD via `admin_update_event` /
+`admin_create_event`. In a closed beta, the inability to fix a typo or cancel a submission generates
+support load and discourages future submissions.
 
 ## Current State
 
-Verified at commit `4e739e4`:
+Verified against the live tree (post plans 001–018):
 
-**Submission lifecycle:**
+**Submission lifecycle**
 
-1. `apps/web/src/features/events/pages/submit-event.tsx` calls
-   `supabase.rpc("submit_community_event", { p_title, p_description, p_start_datetime, ... })`
-   (line 34) with eleven fields, then unconditionally `navigate("/explore")` (line 53).
-2. The RPC inserts a row into `events` with `status = "draft"` (inferred from the `EventStatus`
-   union: `"draft" | "published" | "rejected" | "archived"` in `apps/web/src/shared/types.ts`
-   line 36; fresh community submissions are not directly published).
-3. The row carries a `submitted_by` field (visible in test fixtures:
-   `apps/web/src/features/admin/components/admin-events-sections.test.ts` line 68,
-   `apps/web/src/features/admin/hooks/operations/use-admin-events-realtime.test.ts`). This is the
-   ownership anchor.
-4. Admins review via `apps/web/src/features/admin/pages/admin-event-edit.tsx`, which calls
-   `admin_update_event` (RPC) to patch fields and change `status` to `published`, `rejected`, or
-   `archived`. A `p_decision_reason` parameter carries a review note. Admins also call
-   `admin_create_event` for manual entries and `admin_unlock_event_fields` to clear field locks.
-5. There is no user-facing read path for a submitter to retrieve their own submissions, and no
-   user-scoped edit or delete RPC. The client cannot verify ownership — that boundary lives in
-   Supabase RLS in the backend repo.
+1. `features/events/pages/submit-event.tsx` calls `supabase.rpc("submit_community_event", {...})`
+   (line 34) with eleven fields, then `navigate("/explore")` (line 53).
+2. The RPC inserts an `events` row with `status = "draft"` (`EventStatus` union in
+   `shared/types.ts:36`).
+3. The row carries `submitted_by` — the ownership anchor (contracts `database.types.ts:908`).
+4. Admins review via `features/admin/pages/admin-event-edit.tsx` → `admin_update_event`
+   (sets `status`, carries `p_decision_reason`); also `admin_create_event` and
+   `admin_unlock_event_fields`. Admin edit route is `/admin/events/:eventId/edit`.
+5. **No user-scoped read, edit, or delete RPC exists.** The client cannot be the ownership
+   boundary — that lives in Supabase RLS in the backend repo.
 
-**Form component:** `apps/web/src/features/events/components/submit-event-form.tsx` exports
-`SubmitEventForm` (controlled, unmanaged state) and `CommunityEventFormData`. The form is
-currently create-only; it has no `initialValues` / prefill props.
+**Form component** — `features/events/components/submit-event-form.tsx`
 
-## Proposal
+- Exports `SubmitEventForm`, `CommunityEventFormData`, and `communityEventSchema` (zod).
+- Props today: `{ cityId, onSubmit, isSubmitting }` — **create-only, no prefill**.
+- ⚠️ State is held in **11 internal `useState("")` calls** seeded to empty (lines 82–93). Adding
+  prefill is **not** a zero-logic change (the original spike under-stated this): the state must be
+  seeded from props. See "Form refactor" below.
 
-### Authorization boundary
+## Decisions (resolved open questions)
 
-**Enforcement is Supabase RLS/RPC, not client-side.** The web client cannot be the security
-boundary for ownership checks. Every mutating operation must be gated by a backend RPC that
-verifies `submitted_by = auth.uid()` AND checks the event's current `status` before acting.
-Client code only calls these RPCs; it never filters or validates ownership itself.
+| # | Question | Decision | Rationale |
+|---|----------|----------|-----------|
+| D1 | Which states are user-editable | **`draft` only** (edit + cancel). `published`/`rejected`/`archived` are locked | Once an admin acts, user changes must go through an admin — avoids silent edits to live events |
+| D2 | Delete semantics | **Soft-delete → `status = 'archived'`** via `cancel_user_community_event` | Preserves audit history; invisible to public queries. Hard-delete only if a PII-erasure pipeline is later required |
+| D3 | Reset LLM review on edit | **Yes — RPC nulls `llm_review_*` and re-queues** | Stale LLM flags would mislead the admin reviewing edited content |
+| D4 | Concurrency with admin edits | **Optimistic concurrency on `updated_at`**; RPC rejects if the row changed since load | Prevents user/admin clobber. Simpler than locking |
+| D5 | Admin-locked fields | RPC **rejects edits to any field in `admin_locked_fields`** | Don't overwrite intentional admin corrections |
+| D6 | Edit after rejection | **No** at launch. Future: "Edit & resubmit" creates a fresh draft copy | Keeps rejected events terminal; resubmit-as-copy is a separate scope |
+| D7 | Rate limiting | `update_user_community_event` rate-limited **separately** (~10 edits/day) | Submit RPC already caps 5/day; edits need their own cap |
+| D8 | Edit route path | **`/submissions/:id/edit`** (protected), not `/events/:id/edit` | `/events/:id` is a **public** route; nesting the edit under the protected submissions surface avoids the public clash and anchors discovery |
+| D9 | Notify admin on user edit | Out of scope for v1; rely on the LLM re-queue (D3) putting it back in the review flow | Avoids extra notification plumbing now |
 
-### Backend RPC contract
-
-Two new RPCs are needed in the backend repo:
+## Backend contract (separate repo — blocks web work)
 
 **`update_user_community_event`**
 
@@ -64,111 +71,131 @@ update_user_community_event(
   p_age_min    int | null,
   p_age_max    int | null,
   p_is_free    bool,
-  p_price      numeric | null
+  p_price      numeric | null,
+  p_expected_updated_at timestamptz   -- optimistic concurrency (D4)
 ) returns events
 ```
 
-Preconditions (enforced server-side):
-- `events.submitted_by = auth.uid()` — caller owns the event.
-- `events.status IN ('draft')` — event has not yet been approved, rejected, or archived. Once an
-  admin has acted on it the submitter's edit window closes.
+Preconditions (server-enforced): `submitted_by = auth.uid()`; `status = 'draft'`;
+`events.updated_at = p_expected_updated_at` (else raise a conflict); no edited field is in
+`admin_locked_fields` (D5). On success: update mutable fields, **null the `llm_review_*` set and
+re-queue review** (D3), return the row.
 
-On success: updates the mutable fields, resets any LLM review fields to null (the updated content
-needs re-review), and returns the updated row.
+**`cancel_user_community_event(p_event_id uuid) returns void`** — same `submitted_by`/`draft`
+preconditions; transitions `status → 'archived'` (D2).
 
-**`cancel_user_community_event`**
+**Read path** — reuse `get_user_submissions` from [013](https://linear.app/hexsleeves/issue/CIL-74)
+for the list, plus a detail read for the edit form. Add
+**`get_user_submission(p_event_id uuid) returns events`** (JWT-scoped to `submitted_by = auth.uid()`,
+`draft` only) so the form can prefill every editable field including ones the public RPC omits.
 
+## Editable-state matrix
+
+| Status | User edit | User cancel |
+|--------|-----------|-------------|
+| `draft` | ✅ | ✅ |
+| `published` | ❌ contact admin | ❌ contact admin |
+| `rejected` | ❌ closed | ❌ closed |
+| `archived` | ❌ closed | ❌ closed |
+
+## Web implementation
+
+### Form refactor (`submit-event-form.tsx`)
+
+Extend props to support edit mode:
+
+```ts
+interface SubmitEventFormProps {
+  cityId: string | undefined
+  onSubmit: (data: CommunityEventFormData) => Promise<void>
+  isSubmitting: boolean
+  initialValues?: Partial<CommunityEventFormData>  // NEW
+  submitLabel?: string                              // NEW ("Submit for Review" | "Save changes")
+}
 ```
-cancel_user_community_event(
-  p_event_id uuid
-) returns void
+
+Seed the 11 `useState` calls from `initialValues` via lazy initializers, e.g.
+`useState(() => initialValues?.title ?? "")` and split `start_datetime`/`end_datetime` back into the
+date/time inputs. The form stays uncontrolled internally; only the initial seed changes. If a single
+form instance must switch between create/edit targets, remount with a `key={eventId ?? "new"}`.
+
+### Data hooks — `features/events/hooks/use-submission-mutations.ts` (new)
+
+```ts
+export function useUpdateUserSubmission(userId: string | undefined) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (vars: { eventId: string; data: CommunityEventFormData; expectedUpdatedAt: string }) => {
+      const { error } = await supabase.rpc("update_user_community_event", {
+        p_event_id: vars.eventId,
+        p_expected_updated_at: vars.expectedUpdatedAt,
+        p_title: vars.data.title,
+        /* …remaining p_ fields, mapping "" → undefined like submit-event.tsx… */
+      })
+      if (error) throw error
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: qk.submissions.byUser(userId) })
+    },
+  })
+}
+
+export function useCancelUserSubmission(userId: string | undefined) { /* cancel_user_community_event */ }
 ```
 
-Preconditions (same as above):
-- `events.submitted_by = auth.uid()`
-- `events.status = 'draft'`
+Surface errors with `humanizeSupabaseError`; map the concurrency conflict to a clear "This event
+changed since you opened it — reload to see the latest." message.
 
-On success: transitions `status` to `"archived"` (soft-delete) so audit history is preserved and
-the event is invisible to public queries. Hard-delete is not recommended; see Open Questions.
+### Route + page
 
-### Editable states
+- `app-route-pages.ts`: lazy `EditSubmissionPage` from `features/events/pages/edit-submission.tsx`.
+- `app-router.tsx`: add `{ path: "/submissions/:id/edit", element: <FeatureErrorBoundary featureName="Edit Submission"><EditSubmissionPage /></FeatureErrorBoundary> }`
+  inside the **ProtectedRoute → AppLayout** children.
+- `EditSubmissionPage`: read `:id`; `get_user_submission(id)`; if not found/owned/`draft` → locked
+  state ("This submission can no longer be edited."). Otherwise render `SubmitEventForm` with
+  `initialValues` + `submitLabel="Save changes"` + a destructive "Cancel submission" action
+  (confirm dialog → `useCancelUserSubmission`). The client owner/`draft` check is **UX-only**; the
+  RPC is the real gate.
 
-| Status | User can edit | User can cancel |
-|--------|--------------|-----------------|
-| `draft` | Yes | Yes |
-| `published` | No | No — contact admin |
-| `rejected` | No | No — already closed |
-| `archived` | No | No — already closed |
+### Entry points (on the 013 `/submissions` surface)
 
-Once an admin publishes or rejects an event, user-initiated changes must go through an admin. This
-avoids silent content changes to live published events.
+Each `draft` row gets **Edit** (→ `/submissions/:id/edit`) and **Cancel submission** actions. A
+`not-approved` row may later offer "Edit & resubmit" (D6, future).
 
-### Web surface
+## Test plan
 
-**Route:** `/events/:id/edit`
+- **Unit**: `CommunityEventFormData` → `p_` param mapping (incl. `"" → undefined`, free/price logic);
+  concurrency-conflict error → friendly message.
+- **Component** (jsdom, plan 008 infra): `SubmitEventForm` prefilled from `initialValues` renders
+  existing values; `EditSubmissionPage` locked state for non-draft/non-owner; cancel confirm dialog
+  fires `cancel_user_community_event`.
+- **E2E** (best-effort, live env): submit → edit a field → save → row reflects change; cancel → row
+  shows "Archived".
 
-- Loads the event by `id`.
-- Verifies on the client that `event.submitted_by === user.id` and `event.status === "draft"`;
-  if not, shows a locked state (edit window closed or not the owner). This is a UX guard only —
-  the RPC enforces the real rule.
-- Renders `SubmitEventForm` prefilled with existing values. `SubmitEventForm` needs an optional
-  `initialValues: CommunityEventFormData` prop added (no logic change; just seeded state).
-- On submit calls `update_user_community_event`.
-- Includes a "Cancel submission" destructive action that calls `cancel_user_community_event`.
+## Acceptance criteria
 
-**Entry point:** The user must be able to discover their own submissions. This surface overlaps
-directly with plan 013's "My Submissions" view — a list of the current user's submitted events
-with status badges. The edit/cancel actions would be accessible from that list. Implementing
-the edit route without the discovery surface has limited value; the two should ship together.
-See [Plan 013 (CIL-74)](https://linear.app/hexsleeves/issue/CIL-74) for the "My Submissions"
-surface design.
+- [ ] `update_user_community_event` (with `updated_at` guard + admin-lock reject + LLM re-queue) and
+      `cancel_user_community_event` exist and are JWT/`draft` scoped.
+- [ ] `get_user_submission` returns a draft only to its owner.
+- [ ] `/submissions/:id/edit` prefills the form; saves via the update RPC; locks non-editable states.
+- [ ] Cancel soft-deletes (`status='archived'`); the row leaves public queries.
+- [ ] Concurrency conflicts surface a clear reload message (no silent clobber).
+- [ ] Form-mapping unit + edit-page component tests pass under `verify:web`.
 
-**Read path:** Loading the event for the edit form requires a user-scoped query or RPC that
-returns the submitter's own `draft` events (including fields that are currently admin-only such
-as `llm_review_status`). A new backend RPC or RLS-governed view is required; no such path exists
-today.
+## Phased rollout
 
-## Open Questions and Risks
+1. Backend RPCs + RLS + rate limit (M, backend repo).
+2. `SubmitEventForm` prefill refactor + mutation hooks (S).
+3. `/submissions/:id/edit` page + cancel action (S).
+4. Wire Edit/Cancel actions into the 013 `/submissions` rows (S) — ships together with CIL-74.
 
-1. **Reset on edit**: Should `update_user_community_event` reset `llm_review_status` and
-   `llm_review_decision` to null, re-queuing the event for LLM review? If not, stale LLM flags
-   could affect admin review of the edited content. Recommended: yes, reset on every user edit.
+## Effort
 
-2. **Concurrency with admin edits**: If an admin is mid-edit when a user edits, the user's update
-   could overwrite admin changes or vice versa. The RPC should check `updated_at` for optimistic
-   concurrency, or the draft window should close as soon as an admin opens the event.
-
-3. **Rate limiting**: The existing `submit_community_event` enforces max 5 submissions/day (noted
-   in `submit-event-form.tsx`). `update_user_community_event` should be separately rate-limited
-   (e.g. 10 edits/day per user) to prevent abuse.
-
-4. **Hard-delete vs soft-delete**: Soft-delete via `status = 'archived'` is proposed. Hard-delete
-   loses audit history. If privacy regulations require true erasure of user-submitted PII, a
-   scheduled hard-delete pipeline should be considered separately.
-
-5. **Edit after rejection**: Should a user be allowed to re-submit an edited version of a rejected
-   event? The current proposal says no (rejected events are locked). An alternative is a
-   "resubmit" flow that creates a new draft copying the rejected event's content. This is out of
-   scope here but worth deciding before the build plan.
-
-6. **Admin-locked fields**: Events already have an `admin_locked_fields` array (visible in test
-   fixtures). If an admin has locked specific fields, the `update_user_community_event` RPC should
-   skip or reject edits to those fields to avoid overwriting intentional admin corrections.
-
-7. **Notification on user edit**: Should an admin be notified when a user edits a draft? If the
-   event was already in an admin's review queue, a silent edit could confuse the reviewer.
-
-## Effort Estimate (future build)
-
-- Backend (separate repo): 2 new RPCs + RLS policies + tests — M (2–3 days).
-- Web: `SubmitEventForm` prefill prop, `/events/:id/edit` route, cancel action — S (1 day).
-- Discovery surface (shared with plan 013): see that RFC — M.
-- Total web estimate: S–M assuming the "My Submissions" surface is implemented concurrently with
-  plan 013.
+- Backend: 3 RPCs (`update`, `cancel`, `get_user_submission`) + RLS + tests — **M** (2–3 days).
+- Web: form prefill + edit route + cancel — **S** (~1 day), assuming the 013 surface exists.
 
 ## Cross-references
 
-- [Plan 012 (CIL-73)](https://linear.app/hexsleeves/issue/CIL-73) — this spike's source plan.
-- [Plan 013 (CIL-74)](https://linear.app/hexsleeves/issue/CIL-74) — "My Submissions" surface
-  (overlapping entry point; the two RFCs converge on one list view that enables both edit access
-  and rejection feedback display).
+- [CIL-73 / Plan 012](https://linear.app/hexsleeves/issue/CIL-73) — this spike's source plan.
+- [CIL-74 / Plan 013](https://linear.app/hexsleeves/issue/CIL-74) — the `/submissions` surface and
+  `get_user_submissions` read path this RFC builds on. Build both in one sprint.
