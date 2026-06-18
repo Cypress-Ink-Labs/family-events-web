@@ -117,7 +117,7 @@ export function DashboardPage() {
           ) : bodyKey === "dashboard-loading" ? (
             <DashboardLoadingState />
           ) : bodyKey === "dashboard-empty" ? (
-            <DashboardEmptyState />
+            <DashboardEmptyState hasCitySelected={Boolean(selectedCity)} />
           ) : (
             <>
               <DashboardTodaySection todayEvents={todayEvents} />
