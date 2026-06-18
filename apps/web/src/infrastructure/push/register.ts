@@ -21,6 +21,11 @@ export async function registerWebPush(): Promise<PushRegistrationResult> {
 
   const vapidKey = getVapidPublicKey()
   if (!vapidKey) {
+    if (import.meta.env.DEV) {
+      console.warn(
+        "[push] VITE_VAPID_PUBLIC_KEY is unset — web push is disabled. See apps/web/.env.example."
+      )
+    }
     return { status: "no-vapid-key" }
   }
 
