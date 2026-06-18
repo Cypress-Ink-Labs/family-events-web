@@ -20,8 +20,20 @@ export async function loadProfileAndAccess(userId: string): Promise<{
 }> {
   try {
     const [profileResult, accessResult] = await Promise.all([
-      supabase.from("user_profiles").select("*").eq("id", userId).maybeSingle(),
-      supabase.from("user_access").select("*").eq("user_id", userId).maybeSingle(),
+      supabase
+        .from("user_profiles")
+        .select(
+          "id, email, display_name, avatar_url, role, created_at, updated_at, child_name, child_age, city_preference_id"
+        )
+        .eq("id", userId)
+        .maybeSingle(),
+      supabase
+        .from("user_access")
+        .select(
+          "user_id, is_enabled, enabled_at, disabled_at, disabled_reason, access_expires_at, created_at, updated_at"
+        )
+        .eq("user_id", userId)
+        .maybeSingle(),
     ])
     if (profileResult.error) throw profileResult.error
     if (accessResult.error) throw accessResult.error
