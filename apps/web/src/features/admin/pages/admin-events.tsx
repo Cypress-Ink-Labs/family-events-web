@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { useAdminStore } from "@/features/admin/stores/admin-store"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
@@ -49,6 +49,7 @@ function readStoredPageSize(): AdminEventsPageSize {
 export function AdminEventsPage() {
   useAdminEventsRealtime()
   const keyword = useAdminStore((state) => state.keyword)
+  const deferredKeyword = useDeferredValue(keyword)
   const statusFilter = useAdminStore((state) => state.statusFilter)
   const selectedIds = useAdminStore((state) => state.selectedIds)
   const setKeyword = useAdminStore((state) => state.setKeyword)
@@ -88,7 +89,7 @@ export function AdminEventsPage() {
     hasNextPage: listHasNextPage,
     refetch: refetchEvents,
   } = useAdminEventsInfinite({
-    keyword,
+    keyword: deferredKeyword,
     status: statusFilter,
     cityFilter,
     sourceFilter,
@@ -102,7 +103,7 @@ export function AdminEventsPage() {
   const hasNextPage = eventList?.hasNextPage ?? listHasNextPage
   const isFetchingNext = eventList?.isFetchingNextPage ?? isFetchingNextPage
 
-  const { data: facets = [] } = useAdminEventFacets(keyword)
+  const { data: facets = [] } = useAdminEventFacets(deferredKeyword)
   const { data: cities = [] } = useAdminCities()
   const { data: sources = [] } = useAdminSources()
 
