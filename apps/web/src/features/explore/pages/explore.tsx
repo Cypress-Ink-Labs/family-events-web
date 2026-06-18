@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from "react"
-import { useInfiniteQuery } from "@tanstack/react-query"
 import { useApp } from "@/app/stores/app-store"
+import { useAuth } from "@/features/auth/stores/auth-store"
 import { useExploreStore } from "@/features/explore/stores/explore-store"
 import { useTags } from "@/features/events/hooks/use-tags"
 import { EXPLORE_AGE_OPTIONS } from "@/features/explore/constants/categories"
@@ -20,13 +20,14 @@ import {
   ExploreSearchFilters,
   ExploreViewControls,
 } from "@/features/explore/components/explore-sections"
-import { searchEvents } from "@/features/explore/lib/search-api"
+import { useSearchEventsEnriched } from "@/features/explore/hooks/use-search-events-enriched"
 import type { SearchEventsParams } from "@/features/explore/lib/search-api"
 import { Page, Stack } from "@/components/v2"
 import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 
 export function ExplorePage() {
   const { selectedCity } = useApp()
+  const { user } = useAuth()
   useDocumentTitle(selectedCity ? `Explore Events in ${selectedCity.name}` : "Explore Events")
   const keyword = useExploreStore((s) => s.keyword)
   const activeDateFilter = useExploreStore((s) => s.activeDateFilter)
@@ -146,29 +147,13 @@ export function ExplorePage() {
   const { data: tags = [] } = useTags()
 
   const {
-    data: infiniteData,
+    events: allEvents,
     isLoading: isEventsLoading,
     isError: isEventsError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["search-events", searchParams],
-    queryFn: ({ pageParam }) =>
-      searchEvents({
-        ...searchParams,
-        afterStartDatetime: pageParam?.afterStartDatetime,
-        afterId: pageParam?.afterId,
-      }),
-    initialPageParam: null as { afterStartDatetime: string; afterId: string } | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  })
-
-  // Flatten all pages into a single array
-  const allEvents = useMemo(
-    () => infiniteData?.pages.flatMap((page) => page.events) ?? [],
-    [infiniteData]
-  )
+  } = useSearchEventsEnriched({ searchParams, userId: user?.id })
 
   const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
