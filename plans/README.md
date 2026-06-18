@@ -22,6 +22,10 @@ plan fully before starting, honor its STOP conditions, and update your row when 
 | 012 | SPIKE: user edit/delete of own event submissions | P3 | M | — | DONE — merged `4ab4b53` (RFC) ✅ verified 2026-06-18 |
 | 013 | SPIKE: surface submission rejection reasons to users | P3 | M | — | DONE — merged `d0c706d` (RFC) ✅ verified 2026-06-18 |
 | 014 | SPIKE: web-side push-notification gap analysis | P3 | M | — | DONE — merged `df77d40` (RFC) ✅ verified 2026-06-18 |
+| 015 | Wire `registerWebPush()` into profile push toggles | P2 | S | — | TODO |
+| 016 | Replace `select("*")` with explicit cols in session bootstrap | P2 | S | — | TODO |
+| 017 | Cover dashboard render + admin bulk-mutation contracts with tests | P2 | M | — | TODO |
+| 018 | Prune stale tanstack-virtual `minimumReleaseAgeExclude` entries | P3 | S | — | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
 
@@ -79,7 +83,20 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
     `features/events/lib/event-card-media.ts` (+ `.test.ts`) present · 012/013/014 RFCs in `docs/rfcs/`
     (`2026-06-17-user-edit-submissions.md`, `-submission-feedback.md`, `-push-pipeline-gap.md`).
   - Nothing BLOCKED, IN PROGRESS, or drifted. No plan files need refreshing.
-  - Deferred findings (below) re-checked: none addressed yet — still open, still real.
+  - Deferred findings (below) re-checked: at reconcile time still open; **resolved later the same
+    day** — see "Deferred findings — addressed 2026-06-18".
+
+- **2026-06-18 (reconcile + fresh audit)** — Reconcile confirmed all 7 deferred-finding fix commits
+  landed locally (ahead 7 of origin) and **verified each** delivering (lefthook, vite@8.0.16, knip CI
+  job, coverage config, `.editorconfig`, 5 e2e specs, js-yaml override); these were then **pushed to
+  `origin/main`** (HEAD `e07d499`). A fresh `standard` audit (4 parallel Explore agents, all 9
+  categories) followed. After vetting (6 over-reports rejected — see "Findings considered and
+  rejected"), four new plans were written against `e07d499`: **015** (wire web push — the concrete
+  next step from spike 014), **016** (trim `select("*")` in session bootstrap), **017** (dashboard +
+  admin bulk-mutation tests), **018** (prune stale tanstack release-age excludes). The audit's
+  loudest finding — a "committed PAT in `.env`" — was **false**: `.env` is gitignored and untracked
+  (only `.env.example` is tracked); never committed, no exposure. Direction findings surfaced but not
+  planned: comment-moderation gap (needs backend RLS/RPC) and a v2-migration roadmap (docs/process).
 
 ## Dependency notes
 
@@ -90,6 +107,9 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
   conditions; it has a client-only fallback path if the RPC cannot be changed.
 - 012, 013, 014 are **design/investigation spikes**, not build-everything plans. Each ends
   with a written findings doc + open questions, not a shipped feature.
+- **015–018 are independent** of each other and of 001–014; any order. 015 is the concrete
+  follow-up to spike 014 (wire the registration call the RFC recommended). 017 builds on the
+  jsdom+RTL infra from 008 (already merged).
 
 ## Findings considered and rejected
 
@@ -104,6 +124,25 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
   Supabase Row-Level Security in the backend repo. Client-side checks are UX gating by design.
 - **"Document the TS6 / Node25 / Tailwind4 / Vite8 stack" (deps)**: generic; build + typecheck
   pass; no concrete action.
+- **Move `@cypress-ink-labs/contracts` to devDependencies (audit DEPS-02)**: FALSE — it is not
+  type-only. `use-notification-preferences.ts:4-8` imports `DEFAULT_NOTIFICATION_PREFERENCES`
+  and `toUpsertParams` as **runtime values** in the bundle. Moving it would break the build.
+- **OAuth open-redirect via `?next=` (audit SECURITY-01)**: `safeNext()`
+  (`oauth-callback.tsx:11-15`) returns `HOME_PATH` unless `raw` starts with `/` and not `//`;
+  `useSearchParams().get()` is already decoded, so `//evil.com` is caught, and `/../x` stays a
+  same-origin SPA route — not a cross-origin redirect. Plan 008 already tests this. The
+  "decode-timing TOCTOU" was speculative.
+- **auth-store `initAuth` unmount race (audit CORRECTNESS-01)**: the `destroyed` flag is checked
+  at promise resolution (`auth-store.ts:177`) and inside both `.catch` blocks (181, 200); the
+  trailing `.finally` only sets Zustand store state, which outlives components — no
+  setState-after-unmount footgun. Correct as written.
+- **Realtime payload cast XSS (audit SECURITY-02)**: defense-in-depth only — Supabase is the
+  trusted source, CSP is enforced (plan 003), and there is no unsanitized render sink. Not worth a
+  Zod gate on the hot realtime path.
+- **`humanizeSupabaseError` "duplication" across 11 sites (audit ARCH-02)**: that is normal reuse
+  of a shared helper, not duplicated logic. No action.
+- **map-view decomposition / Turbo cache granularity (audit ARCH-03, DX-03)**: speculative — no
+  churn or bug evidence motivating either; "not worth doing" until there is.
 
 ## Deferred findings — addressed 2026-06-18
 
