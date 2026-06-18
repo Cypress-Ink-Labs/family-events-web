@@ -8,20 +8,20 @@ plan fully before starting, honor its STOP conditions, and update your row when 
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 001 | Add project `CLAUDE.md` for agent execution | P1 | S | — | DONE (worktree, unmerged) |
-| 002 | Make vitest run `.test.tsx` files (currently excluded) | P1 | S | — | DONE (worktree, unmerged) |
-| 003 | Enforce Content-Security-Policy (flip Report-Only) | P1 | M | — | DONE (worktree, unmerged) |
-| 004 | Untrack `apps/web/.env.hosted` from git | P1 | S | — | DONE (worktree, unmerged) |
-| 005 | Fix onboarding: sync `.env.example` + README getting-started | P1 | S | — | DONE (worktree, unmerged) |
-| 006 | Debounce admin event search input | P1 | S | — | DONE (worktree, unmerged) |
-| 007 | Memoize calendar-view per-day filtering + derived values | P1 | S | — | DONE (worktree, unmerged) |
-| 008 | Stand up component-test infra + auth-guard/admin-form tests | P2 | M | 002 | DONE (worktree, unmerged) |
-| 009 | Restore enrichment parity in explore search results | P2 | M | — | DONE (worktree, unmerged) |
-| 010 | Make `components/v2` canonical + write `docs/DESIGN.md` | P2 | M | — | DONE (worktree, unmerged) |
-| 011 | Consolidate event-card variants behind a shared base | P2 | M | — | DONE (worktree, unmerged) |
-| 012 | SPIKE: user edit/delete of own event submissions | P3 | M | — | DONE (worktree, unmerged) |
-| 013 | SPIKE: surface submission rejection reasons to users | P3 | M | — | DONE (worktree, unmerged) |
-| 014 | SPIKE: web-side push-notification gap analysis | P3 | M | — | DONE (worktree, unmerged) |
+| 001 | Add project `CLAUDE.md` for agent execution | P1 | S | — | DONE — merged `8e6db3c` ✅ verified 2026-06-18 |
+| 002 | Make vitest run `.test.tsx` files (currently excluded) | P1 | S | — | DONE — merged `7891be6` ✅ verified 2026-06-18 |
+| 003 | Enforce Content-Security-Policy (flip Report-Only) | P1 | M | — | DONE — merged `8968c80` ✅ verified 2026-06-18 |
+| 004 | Untrack `apps/web/.env.hosted` from git | P1 | S | — | DONE — merged `0067268` ✅ verified 2026-06-18 |
+| 005 | Fix onboarding: sync `.env.example` + README getting-started | P1 | S | — | DONE — merged `90e2401` ✅ verified 2026-06-18 |
+| 006 | Debounce admin event search input | P1 | S | — | DONE — merged `f17c532` ✅ verified 2026-06-18 |
+| 007 | Memoize calendar-view per-day filtering + derived values | P1 | S | — | DONE — merged `2ede15b` ✅ verified 2026-06-18 |
+| 008 | Stand up component-test infra + auth-guard/admin-form tests | P2 | M | 002 | DONE — merged `2c394d1`+`dc29c02` ✅ verified 2026-06-18 |
+| 009 | Restore enrichment parity in explore search results | P2 | M | — | DONE — merged `05aaf5d` ✅ verified 2026-06-18 |
+| 010 | Make `components/v2` canonical + write `docs/DESIGN.md` | P2 | M | — | DONE — merged `4d809eb` ✅ verified 2026-06-18 |
+| 011 | Consolidate event-card variants behind a shared base | P2 | M | — | DONE — merged `7836b3f`+`53a4444` ✅ verified 2026-06-18 |
+| 012 | SPIKE: user edit/delete of own event submissions | P3 | M | — | DONE — merged `4ab4b53` (RFC) ✅ verified 2026-06-18 |
+| 013 | SPIKE: surface submission rejection reasons to users | P3 | M | — | DONE — merged `d0c706d` (RFC) ✅ verified 2026-06-18 |
+| 014 | SPIKE: web-side push-notification gap analysis | P3 | M | — | DONE — merged `df77d40` (RFC) ✅ verified 2026-06-18 |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
 
@@ -63,6 +63,24 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
   Commits: 004 `57877a4`, 005 `a1f3ea2`, 008 `9d5a0b3`+`f4570c9`+`86a564b`, 010 `477bb42`,
   011 `dd51b88`, 012 `97d207c`, 013 `e59ba43`, 014 `4f74afa`. Worktrees under `.claude/worktrees/wf_3ce952ab-620-*`.
 
+- **2026-06-18 (reconcile)** — All 14 worktree branches have since **landed on `main`** (HEAD `53a4444`);
+  the worktrees are gone (`git worktree list` shows only the main checkout). Reconcile spot-checked each
+  plan's done criteria against the current HEAD and **all 14 hold** — table updated from
+  "worktree, unmerged" to "merged `<sha>` ✅ verified". The merged SHAs differ from the worktree SHAs
+  logged above because the branches were rebased/squashed on merge; the mapping is the merged-commit
+  column in the table. Verification evidence:
+  - 001 `CLAUDE.md` present · 002 `vitest.config.ts:22` include glob `*.test.{ts,tsx}` · 003 CSP header
+    key `Content-Security-Policy` (not `-Report-Only`) in `apps/web/public/serve.json` · 004
+    `apps/web/.env.hosted` untracked (`git ls-files` empty), on disk, ignored · 005 `apps/web/.env.example`
+    present · 006 `useDeferredValue` in `admin-events.tsx` · 007 `useMemo` in `calendar-view.tsx` ·
+    008 `apps/web/src/test.d.ts` + 4 `*.test.tsx` under jsdom (`oauth-callback`, `protected-route`,
+    `public-only-route`, `admin-event-edit-form`) · 009 `use-search-events-enriched.ts` +
+    `merge-search-enriched.ts` present · 010 `docs/DESIGN.md` present · 011
+    `features/events/lib/event-card-media.ts` (+ `.test.ts`) present · 012/013/014 RFCs in `docs/rfcs/`
+    (`2026-06-17-user-edit-submissions.md`, `-submission-feedback.md`, `-push-pipeline-gap.md`).
+  - Nothing BLOCKED, IN PROGRESS, or drifted. No plan files need refreshing.
+  - Deferred findings (below) re-checked: none addressed yet — still open, still real.
+
 ## Dependency notes
 
 - **008 requires 002**: 002 fixes the vitest `include` glob so `.test.tsx` files run at all.
@@ -87,14 +105,26 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
 - **"Document the TS6 / Node25 / Tailwind4 / Vite8 stack" (deps)**: generic; build + typecheck
   pass; no concrete action.
 
-## Deferred findings (real, but not selected for plans this run)
+## Deferred findings — addressed 2026-06-18
 
-- No pre-commit hooks (husky/lefthook) — `check` failures surface only in CI. (DX, M)
-- `pnpm-workspace.yaml` `minimumReleaseAgeExclude` stale: `vite@8.0.14` (actual `8.0.16`),
-  redundant `framer-motion@12.40.0` (not directly imported; `motion` is). (Deps, S)
-- `knip` installed but orphaned — no `knip.json`, not in CI; wire-in or remove. (DX, S)
-- No coverage reporting in vitest; no `.editorconfig`. (DX, S)
-- Thin e2e suite (only `smoke` + `favorite-toggle`). (Tests, L)
-- `js-yaml` moderate DoS via `@changesets/cli` (dev/release path only). (Deps/Sec, S)
-</content>
-</invoke>
+All seven follow-up findings were executed (2 file-disjoint workflow executors + adversarial verify),
+advisor-reviewed, and **merged to `main`**. `verify:web`, `knip`, `pnpm audit`, and coverage are all
+green on the merged tree.
+
+- **Pre-commit hooks** → `lefthook` running oxfmt `--check` + oxlint on staged `apps/web/src` (skips
+  merge/rebase). Hook installed via a `prepare` script. Commit `404a03f`.
+- **`pnpm-workspace.yaml` stale exclude** → `vite@8.0.14`→`8.0.16`; motion trio kept with a clarifying
+  comment. Commit `53239f9`.
+- **`knip`** → wired in with `knip.json` + `pnpm knip` script + a **blocking CI job**. Commit `1262b3a`.
+  **Baseline only:** `exports`/`types`/`nsTypes`/`enumMembers` rules are OFF (first run flagged ~49 unused
+  exports + ~20 types — mostly UI-library exports kept for future/dynamic use, not deleted). It currently
+  gates unused **files + dependencies**. Tightening exports/types detection is a follow-up.
+- **Coverage** → `@vitest/coverage-v8` + `test:coverage` script, **report-only (no threshold gate)**.
+  Baseline ~21% statements. Commit `6138fb4`.
+- **`.editorconfig`** → added, matching the oxfmt 2-space baseline. Commit `886f3a7`.
+- **Thin e2e** → 4 **best-effort, UNVERIFIED** specs (`sign-in`, `submit-event`, `comments-ratings`,
+  `admin-edit-event`) following existing auth/storageState patterns; they parse via `playwright --list`
+  but **require a live Supabase + `TEST_ADMIN_*` creds to actually run** — user must verify/iterate.
+  Commit `e49dbda`.
+- **`js-yaml` DoS** → pnpm `overrides: js-yaml ">=4.1.2"` in `pnpm-workspace.yaml` (resolved to 4.2.0);
+  `pnpm audit` now clean. Commit `8a99147`.
