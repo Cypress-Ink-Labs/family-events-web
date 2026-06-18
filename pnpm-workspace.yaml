@@ -5,11 +5,13 @@ packages:
 allowBuilds:
   '@sentry/cli': true
   esbuild: true
+  lefthook: true
   sharp: true
   workerd: true
 
 onlyBuiltDependencies:
   - esbuild
+  - lefthook
 
 minimumReleaseAgeExclude:
   - '@vitest/*'

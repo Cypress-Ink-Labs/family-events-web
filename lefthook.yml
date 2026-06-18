@@ -1,0 +1,19 @@
+pre-commit:
+  parallel: true
+  commands:
+    oxfmt:
+      glob: "apps/web/src/**/*.{ts,tsx}"
+      run: >
+        pnpm exec oxfmt
+        --config packages/config-quality/oxfmt.base.json
+        --check
+        {staged_files}
+      skip:
+        - merge
+        - rebase
+    oxlint:
+      glob: "apps/web/src/**/*.{ts,tsx}"
+      run: pnpm exec oxlint {staged_files}
+      skip:
+        - merge
+        - rebase

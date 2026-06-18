@@ -25,13 +25,15 @@
     "workspace:test": "node --test tests/guards/workspace-layout.test.mjs tests/guards/packages-consumers.test.mjs tests/guards/shared-boundary.test.mjs tests/guards/url-validation-boundary.test.mjs tests/guards/web-bundle-budget.test.mjs tests/guards/config-typescript.test.mjs tests/guards/config-quality.test.mjs tests/guards/domain-boundaries.test.mjs tests/guards/docs-coverage.test.mjs tests/guards/workspace-workflows.test.mjs",
     "clean:artifacts": "bash scripts/clean-generated-artifacts.sh",
     "clean": "turbo run clean && find . -name 'node_modules' -prune -o -name '.turbo' -print | xargs rm -rf",
-    "clean:dist": "find apps packages -name 'dist' -not -path '*/node_modules/*' -exec rm -rf {} + ; find apps packages -name 'build' -not -path '*/node_modules/*' -exec rm -rf {} + ; find apps packages -name '.next' -not -path '*/node_modules/*' -exec rm -rf {} +"
+    "clean:dist": "find apps packages -name 'dist' -not -path '*/node_modules/*' -exec rm -rf {} + ; find apps packages -name 'build' -not -path '*/node_modules/*' -exec rm -rf {} + ; find apps packages -name '.next' -not -path '*/node_modules/*' -exec rm -rf {} +",
+    "prepare": "lefthook install"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@types/node": "^25.9.3",
     "knip": "^6.17.1",
+    "lefthook": "^2.1.9",
     "oxfmt": "^0.55.0",
     "oxlint": "^1.70.0",
     "turbo": "^2.9.18",
