@@ -24,7 +24,5 @@ minimumReleaseAgeExclude:
   - motion-dom@12.40.0
   - motion@12.40.0
   - vite@8.0.16
-  - '@tanstack/react-virtual@3.13.26'
-  - '@tanstack/virtual-core@3.16.0'
   - '@cypress-ink-labs/contracts'
   - '@cypress-ink-labs/design-system'
