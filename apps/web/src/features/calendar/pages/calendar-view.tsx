@@ -1,4 +1,4 @@
-import { useMemo, useReducer, useState } from "react"
+import { useCallback, useMemo, useReducer, useState } from "react"
 import {
   startOfMonth,
   endOfMonth,
@@ -6,11 +6,11 @@ import {
   endOfWeek,
   startOfDay,
   eachDayOfInterval,
-  isSameDay,
   addMonths,
   subMonths,
   addWeeks,
   subWeeks,
+  format,
 } from "date-fns"
 import {
   CalendarErrorState,
@@ -28,6 +28,19 @@ import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
 import { useFavorites } from "@/features/events/hooks/use-favorites"
 import { useCalendarEvents } from "@/features/events/hooks/use-calendar-events"
 import { Page, Stack } from "@/components/v2"
+import type { EventWithDetails } from "@/shared/types"
+
+/** Pure helper: groups events into a Map keyed by local "yyyy-MM-dd". */
+export function groupEventsByDay(events: EventWithDetails[]): Map<string, EventWithDetails[]> {
+  const map = new Map<string, EventWithDetails[]>()
+  for (const event of events) {
+    const key = format(new Date(event.start_datetime), "yyyy-MM-dd")
+    const bucket = map.get(key)
+    if (bucket) bucket.push(event)
+    else map.set(key, [event])
+  }
+  return map
+}
 
 function favoriteOverridesReducer(state: Record<string, boolean>, patch: Record<string, boolean>) {
   return { ...state, ...patch }
@@ -100,17 +113,27 @@ export function CalendarViewPage() {
     return favoriteOverrides[eventId] ?? baseFavoritedIds.has(eventId)
   }
 
-  const eventsForSelectedDate = monthEvents
-    .filter((event) => isSameDay(new Date(event.start_datetime), selectedDate))
-    .sort((a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime())
+  const eventsByDay = useMemo(() => groupEventsByDay(monthEvents), [monthEvents])
 
-  const upcomingCount = savedEvents.filter(
-    (event) => new Date(event.start_datetime) >= new Date()
-  ).length
+  const getEventsForDay = useCallback(
+    (day: Date) => eventsByDay.get(format(day, "yyyy-MM-dd")) ?? [],
+    [eventsByDay]
+  )
 
-  function getEventsForDay(day: Date) {
-    return monthEvents.filter((event) => isSameDay(new Date(event.start_datetime), day))
-  }
+  const eventsForSelectedDate = useMemo(
+    () =>
+      (eventsByDay.get(format(selectedDate, "yyyy-MM-dd")) ?? [])
+        .slice()
+        .sort(
+          (a, b) => new Date(a.start_datetime).getTime() - new Date(b.start_datetime).getTime()
+        ),
+    [eventsByDay, selectedDate]
+  )
+
+  const upcomingCount = useMemo(
+    () => savedEvents.filter((event) => new Date(event.start_datetime) >= new Date()).length,
+    [savedEvents]
+  )
 
   function handleFavoriteToggle(eventId: string, newState: boolean) {
     setFavoriteOverrides({ [eventId]: newState })
