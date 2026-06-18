@@ -8,22 +8,60 @@ plan fully before starting, honor its STOP conditions, and update your row when 
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 001 | Add project `CLAUDE.md` for agent execution | P1 | S | — | TODO |
-| 002 | Make vitest run `.test.tsx` files (currently excluded) | P1 | S | — | TODO |
-| 003 | Enforce Content-Security-Policy (flip Report-Only) | P1 | M | — | TODO |
-| 004 | Untrack `apps/web/.env.hosted` from git | P1 | S | — | TODO |
-| 005 | Fix onboarding: sync `.env.example` + README getting-started | P1 | S | — | TODO |
-| 006 | Debounce admin event search input | P1 | S | — | TODO |
-| 007 | Memoize calendar-view per-day filtering + derived values | P1 | S | — | TODO |
-| 008 | Stand up component-test infra + auth-guard/admin-form tests | P2 | M | 002 | TODO |
-| 009 | Restore enrichment parity in explore search results | P2 | M | — | TODO |
-| 010 | Make `components/v2` canonical + write `docs/DESIGN.md` | P2 | M | — | TODO |
-| 011 | Consolidate event-card variants behind a shared base | P2 | M | — | TODO |
-| 012 | SPIKE: user edit/delete of own event submissions | P3 | M | — | TODO |
-| 013 | SPIKE: surface submission rejection reasons to users | P3 | M | — | TODO |
-| 014 | SPIKE: web-side push-notification gap analysis | P3 | M | — | TODO |
+| 001 | Add project `CLAUDE.md` for agent execution | P1 | S | — | DONE (worktree, unmerged) |
+| 002 | Make vitest run `.test.tsx` files (currently excluded) | P1 | S | — | DONE (worktree, unmerged) |
+| 003 | Enforce Content-Security-Policy (flip Report-Only) | P1 | M | — | DONE (worktree, unmerged) |
+| 004 | Untrack `apps/web/.env.hosted` from git | P1 | S | — | DONE (worktree, unmerged) |
+| 005 | Fix onboarding: sync `.env.example` + README getting-started | P1 | S | — | DONE (worktree, unmerged) |
+| 006 | Debounce admin event search input | P1 | S | — | DONE (worktree, unmerged) |
+| 007 | Memoize calendar-view per-day filtering + derived values | P1 | S | — | DONE (worktree, unmerged) |
+| 008 | Stand up component-test infra + auth-guard/admin-form tests | P2 | M | 002 | DONE (worktree, unmerged) |
+| 009 | Restore enrichment parity in explore search results | P2 | M | — | DONE (worktree, unmerged) |
+| 010 | Make `components/v2` canonical + write `docs/DESIGN.md` | P2 | M | — | DONE (worktree, unmerged) |
+| 011 | Consolidate event-card variants behind a shared base | P2 | M | — | DONE (worktree, unmerged) |
+| 012 | SPIKE: user edit/delete of own event submissions | P3 | M | — | DONE (worktree, unmerged) |
+| 013 | SPIKE: surface submission rejection reasons to users | P3 | M | — | DONE (worktree, unmerged) |
+| 014 | SPIKE: web-side push-notification gap analysis | P3 | M | — | DONE (worktree, unmerged) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
+
+## Execution log
+
+- **2026-06-17** — 001, 002, 006, 007 executed by dispatched `general-purpose` executors in isolated
+  worktrees, then reviewed and **APPROVED** by the advisor (criteria re-run, scope verified, diffs read,
+  tests audited). Each lives on its own worktree branch, **not merged to `main`** — merging is the user's
+  call. Branches: `advisor/002-vitest-run-tsx-tests` (commit `362687a`),
+  `advisor/006-debounce-admin-search` (`bf3569b`), `advisor/007-calendar-view-memoization` (`951f627`),
+  and 001 on `worktree-agent-aef83ec565e6aa2a2` (`76b5ca2`). Worktrees under `.claude/worktrees/`.
+- **2026-06-17** — 003 and 009 executed via a `Workflow` (parallel executors in worktrees + 3
+  adversarial verifier lenses each), then reviewed and **APPROVED** by the advisor. **003** also
+  passed a live browser CSP smoke (advisor served the built `dist` and traversed home/explore/map/
+  sign-in under a `securitypolicyviolation` listener: **0 violations**, 4 stylesheets + 17 fonts
+  loaded, directive byte-identical to the report-only original). **009** confirmed batched enrichment
+  (one `events_enriched` call, no N+1), search order preserved, pure tested merge, old inline query
+  removed. Branches: `worktree-wf_a6b65f0c-ea2-1` (003, commit `c8ac385`),
+  `worktree-wf_a6b65f0c-ea2-2` (009, commit `a748cb0`). Not merged — user's call.
+
+- **2026-06-17** — 004, 005, 008, 010, 011 + spikes 012/013/014 executed via a `Workflow`
+  (parallel executors + adversarial verify), then advisor-reviewed. **All 14 plans now DONE
+  (worktree, unmerged).** Notable review outcomes:
+  - **008** stacked on 002 (cherry-pick `9d5a0b3`) → `f4570c9` (jsdom+RTL infra, 406 tests) →
+    `86a564b` (test-assertion hardening after a REVISE). The first 008 pass shipped gamed tests
+    (navigate mock pushed a constant string; open-redirect/fallback destinations unasserted); the
+    advisor caught it, sent a focused REVISE, and **mutation-tested** the fix (bypassing the
+    `safeNext` guard makes the open-redirect tests fail → they're real). Added `apps/web/src/test.d.ts`
+    (jest-dom matcher types) — an accepted in-spirit infra deviation. Vitest 4.1.9 lacks
+    `environmentMatchGlobs`, so the 4 component tests use `// @vitest-environment jsdom` docblocks.
+  - **011** migrated the real duplication site — the dispatcher `event-card.tsx` (which computes
+    `imageUrl` and passes it to sub-cards as a prop), plus plan/my-events cards — NOT the 4 sub-cards
+    the plan's scope list named (they receive `imageUrl` as a prop). The plan's enumerated scope was
+    inaccurate; the executor's choice was correct and behavior-preserving.
+  - **004** untrack is functionally correct (file untracked, on disk, now ignored). The deletion diff
+    re-shows the `sb_publishable_…` **anon/publishable key** (public by design, already in history via
+    commits `89d99d5`/`bd2f46c`/`d0dce8e`) — no new exposure. Optional history-purge (filter-repo/BFG)
+    remains the user's call and is low-priority for a public key.
+  Commits: 004 `57877a4`, 005 `a1f3ea2`, 008 `9d5a0b3`+`f4570c9`+`86a564b`, 010 `477bb42`,
+  011 `dd51b88`, 012 `97d207c`, 013 `e59ba43`, 014 `4f74afa`. Worktrees under `.claude/worktrees/wf_3ce952ab-620-*`.
 
 ## Dependency notes
 
