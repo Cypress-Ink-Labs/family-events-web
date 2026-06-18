@@ -3,7 +3,7 @@
 **Date**: 2026-06-17
 **Status**: findings / spike
 **Author**: spike (plan 014)
-**Related plans**: [005](../../plans/005-onboarding-env-readme.md), [014](../../plans/014-spike-push-gap-analysis.md)
+**Related plans**: [005 (CIL-66)](https://linear.app/hexsleeves/issue/CIL-66), [014 (CIL-75)](https://linear.app/hexsleeves/issue/CIL-75)
 
 ---
 
@@ -40,7 +40,7 @@ key for `PushManager.subscribe()`.
 **Documentation gap**: `VITE_VAPID_PUBLIC_KEY` is absent from both `.env.example` and
 `apps/web/.env.example`. A developer who clones the repo and runs `pnpm dev` will get
 `status: "no-vapid-key"` silently — push will not work and there is no error surfaced
-to the UI. See [plan 005](../../plans/005-onboarding-env-readme.md) for the broader
+to the UI. See [plan 005 (CIL-66)](https://linear.app/hexsleeves/issue/CIL-66) for the broader
 onboarding env-docs work; adding `VITE_VAPID_PUBLIC_KEY` to `.env.example` belongs
 there.
 

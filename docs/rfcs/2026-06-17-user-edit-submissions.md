@@ -120,7 +120,7 @@ avoids silent content changes to live published events.
 directly with plan 013's "My Submissions" view — a list of the current user's submitted events
 with status badges. The edit/cancel actions would be accessible from that list. Implementing
 the edit route without the discovery surface has limited value; the two should ship together.
-See [Plan 013](../../plans/013-spike-submission-rejection-feedback.md) for the "My Submissions"
+See [Plan 013 (CIL-74)](https://linear.app/hexsleeves/issue/CIL-74) for the "My Submissions"
 surface design.
 
 **Read path:** Loading the event for the edit form requires a user-scoped query or RPC that
@@ -168,7 +168,7 @@ today.
 
 ## Cross-references
 
-- [Plan 012](../../plans/012-spike-user-edit-submissions.md) — this spike's source plan.
-- [Plan 013](../../plans/013-spike-submission-rejection-feedback.md) — "My Submissions" surface
+- [Plan 012 (CIL-73)](https://linear.app/hexsleeves/issue/CIL-73) — this spike's source plan.
+- [Plan 013 (CIL-74)](https://linear.app/hexsleeves/issue/CIL-74) — "My Submissions" surface
   (overlapping entry point; the two RFCs converge on one list view that enables both edit access
   and rejection feedback display).
