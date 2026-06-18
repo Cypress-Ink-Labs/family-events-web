@@ -32,6 +32,7 @@ import {
   useUpdateNotificationPreferences,
 } from "@/features/profile/hooks/use-notification-preferences"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
+import { registerWebPush } from "@/infrastructure/push/register"
 import { toast } from "sonner"
 import { Page, Stack } from "@/components/v2"
 import type { NotificationPreferences } from "@cypress-ink-labs/contracts"
@@ -82,8 +83,33 @@ export function ProfilePage() {
     }
   }
 
-  function handleNotificationToggle(field: keyof NotificationPreferences, value: boolean) {
+  async function handleNotificationToggle(field: keyof NotificationPreferences, value: boolean) {
     if (!notifPrefs) return
+
+    if (value && field.endsWith("_push")) {
+      const result = await registerWebPush()
+      switch (result.status) {
+        case "subscribed":
+          break
+        case "denied":
+          toast.error("Push notifications blocked", {
+            description: "Enable notifications for this site in your browser settings.",
+          })
+          break
+        case "unsupported":
+          toast.error("Push isn't supported in this browser.")
+          break
+        case "no-vapid-key":
+          toast.error("Push isn't configured.", {
+            description: "Missing VAPID key — contact support.",
+          })
+          break
+        case "error":
+          toast.error("Couldn't enable push", { description: result.error })
+          break
+      }
+    }
+
     const updated = { ...notifPrefs, [field]: value }
     updateNotifPrefs.mutate(updated, {
       onSuccess: () => toast.success("Notification preference updated"),
