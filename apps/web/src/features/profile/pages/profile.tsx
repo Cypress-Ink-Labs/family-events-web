@@ -95,18 +95,18 @@ export function ProfilePage() {
           toast.error("Push notifications blocked", {
             description: "Enable notifications for this site in your browser settings.",
           })
-          break
+          return
         case "unsupported":
           toast.error("Push isn't supported in this browser.")
-          break
+          return
         case "no-vapid-key":
           toast.error("Push isn't configured.", {
             description: "Missing VAPID key — contact support.",
           })
-          break
+          return
         case "error":
           toast.error("Couldn't enable push", { description: result.error })
-          break
+          return
       }
     }
 
