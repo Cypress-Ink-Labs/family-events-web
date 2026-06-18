@@ -1,8 +1,4 @@
 import { z } from "zod"
-import {
-  LLM_EVENT_REVIEW_DECISIONS,
-  LLM_EVENT_REVIEW_STATUSES,
-} from "@/shared/constants/llm-review"
 
 // event_sources row. Mirrors src/lib/types.ts's EventSource. The status enum
 // is a runtime convention (the column is plain text in the DB); accept null
@@ -36,8 +32,6 @@ export const eventSourceRowSchema = z.object({
   updated_at: z.string(),
 })
 
-export type EventSourceRow = z.infer<typeof eventSourceRowSchema>
-
 // Trimmed-projection row used by the admin facets query — only the columns
 // the dashboard needs to render the city/status filter bar counts.
 export const adminEventFacetRowSchema = z.object({
@@ -50,19 +44,3 @@ export const adminEventFacetRowSchema = z.object({
   status: z.enum(["draft", "published", "rejected", "archived"]),
   count: z.coerce.number().int().nonnegative(),
 })
-
-export type AdminEventFacetRow = z.infer<typeof adminEventFacetRowSchema>
-
-const llmReviewStatusSchema = z.enum(LLM_EVENT_REVIEW_STATUSES)
-
-const llmReviewDecisionSchema = z.enum(LLM_EVENT_REVIEW_DECISIONS)
-
-const adminEventFilterSchema = z.object({
-  status: z.enum(["draft", "published", "rejected", "archived"]).optional(),
-  city_id: z.string().nullable().optional(),
-  keyword: z.string().optional(),
-  llm_review_status: llmReviewStatusSchema.optional(),
-  llm_review_decision: llmReviewDecisionSchema.optional(),
-})
-
-export type AdminEventFilters = z.infer<typeof adminEventFilterSchema>

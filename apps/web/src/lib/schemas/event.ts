@@ -165,8 +165,6 @@ export const eventRowSchema = z.object({
   updated_at: z.string(),
 })
 
-export type EventRow = z.infer<typeof eventRowSchema>
-
 // events_enriched RPC row: event columns + tags jsonb + denormalized stats.
 // `avg_rating` / `rating_count` default to 0 when the underlying COALESCE
 // surfaces NULL (no ratings yet). Boolean flags default to false for the
@@ -215,5 +213,3 @@ export const enrichedEventRowSchema = eventRowSchema.extend({
     .optional()
     .transform((v) => v ?? false),
 })
-
-export type EnrichedEventRow = z.infer<typeof enrichedEventRowSchema>

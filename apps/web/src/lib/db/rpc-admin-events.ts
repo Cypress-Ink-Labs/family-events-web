@@ -28,13 +28,6 @@ export interface AdminEventsPageResult {
   nextCursor?: AdminEventsCursor
 }
 
-export interface AdminEventFacetRow {
-  city_id: string | null
-  source_id: string | null
-  status: Event["status"]
-  count: number
-}
-
 const defaultAdminEventsLimit = 200
 const maxAdminEventsLimit = 500
 

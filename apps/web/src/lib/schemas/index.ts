@@ -1,6 +1,5 @@
 export { enrichedEventRowSchema, eventRowSchema } from "./event"
 export { planEventsWindowRowSchema } from "./plan"
 export { adminEventFacetRowSchema, eventSourceRowSchema } from "./admin"
-export type { AdminEventFacetRow } from "./admin"
 export { parseRowsWithSentry } from "./parse-rows"
 export { userAccessRowSchema, userProfileRowSchema } from "./auth"

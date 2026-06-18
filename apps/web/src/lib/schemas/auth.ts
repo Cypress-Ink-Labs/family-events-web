@@ -27,8 +27,6 @@ export const userProfileRowSchema = z
   })
   .passthrough()
 
-export type UserProfileRow = z.infer<typeof userProfileRowSchema>
-
 export const userAccessRowSchema = z
   .object({
     user_id: z.string(),
@@ -41,5 +39,3 @@ export const userAccessRowSchema = z
     updated_at: z.string(),
   })
   .passthrough()
-
-export type UserAccessRow = z.infer<typeof userAccessRowSchema>

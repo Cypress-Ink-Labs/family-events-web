@@ -18,14 +18,6 @@ import {
   updateAdminEventStatus,
 } from "@/features/admin/api/events"
 
-export interface AdminEventsInfiniteData {
-  events: Event[]
-  loadedCount: number
-  totalCount: number
-  hasNextPage: boolean
-  isFetchingNextPage: boolean
-}
-
 interface AdminEventsInfiniteOptions {
   keyword: string
   status: Event["status"] | "all"
@@ -134,9 +126,6 @@ export function useAdminEventsInfinite({
 
   return { ...query, data }
 }
-
-// Re-exported from the schema module so existing call sites keep working.
-export type { AdminEventFacetRow } from "@/lib/schemas"
 
 export function useAdminEventFacets(keyword: string) {
   return useQuery({

@@ -21,5 +21,3 @@ export type PlanEventsRow = z.infer<typeof planEventsRowSchema>
 export const planEventsWindowRowSchema = planEventsRowSchema.extend({
   day_offset: z.coerce.number().int().min(0),
 })
-
-export type PlanEventsWindowRow = z.infer<typeof planEventsWindowRowSchema>

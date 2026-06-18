@@ -31,6 +31,7 @@
   "ignore": [
     "apps/web/src/env.d.ts",
     "apps/web/src/test.d.ts",
+    "apps/web/src/shared/components/ui/**",
     "packages/design-system/src/generated/**"
   ],
   "ignoreDependencies": [
@@ -42,9 +43,9 @@
   ],
   "ignoreExportsUsedInFile": true,
   "rules": {
-    "exports": "off",
-    "types": "off",
-    "nsTypes": "off",
-    "enumMembers": "off"
+    "exports": "error",
+    "types": "error",
+    "nsTypes": "error",
+    "enumMembers": "error"
   }
 }

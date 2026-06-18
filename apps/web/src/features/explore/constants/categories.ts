@@ -50,8 +50,6 @@ export const EXPLORE_DATE_QUICK_FILTERS = [
   { label: "Past Events", value: "past" },
 ] as const
 
-export type ExploreDateQuickFilter = (typeof EXPLORE_DATE_QUICK_FILTERS)[number]["value"]
-
 export const EXPLORE_AGE_OPTIONS = [
   { label: "0-1 yr", min: 0, max: 1 },
   { label: "1-3 yrs", min: 1, max: 3 },
@@ -59,5 +57,3 @@ export const EXPLORE_AGE_OPTIONS = [
   { label: "5-8 yrs", min: 5, max: 8 },
   { label: "9+ yrs", min: 9, max: null },
 ] as const
-
-export type ExploreAgeOption = (typeof EXPLORE_AGE_OPTIONS)[number]

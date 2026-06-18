@@ -1,5 +1,4 @@
 import type {
-  AdminAuditLogRow,
   CityRow,
   CommentRow,
   EventAiTraceRow,
@@ -11,7 +10,6 @@ import type {
   InviteRequestRow,
   Json as DbJson,
   RatingRow,
-  RecommendationSignalRow,
   SourceRunRow,
   TagRow,
   UserAccessRow,
@@ -62,8 +60,6 @@ export type Favorite = FavoriteRow
 export type UserCalendarEvent = UserCalendarEventRow
 export type Rating = RatingRow
 export type Comment = CommentRow
-export type AdminAuditLog = AdminAuditLogRow
-
 export type InviteCode = Pick<
   InviteCodeRow,
   "id" | "max_uses" | "used_count" | "expires_at" | "notes" | "created_by" | "created_at"
@@ -192,11 +188,6 @@ export interface EventWithDetails extends Event {
 export interface CommentWithProfile extends Comment {
   user_profiles?: Pick<UserProfile, "display_name" | "avatar_url">
 }
-
-export type RecommendationSignal = Override<
-  RecommendationSignalRow,
-  { signal_type: "view" | "favorite" | "calendar" | "rate" | "comment" }
->
 
 export interface EventFilters {
   cityId?: string
