@@ -7,8 +7,7 @@ import { StarRating } from "@/features/events/components/star-rating"
 import { SmartImage } from "@/shared/components/motion"
 import { AgeRangeBadge, TagBadge } from "@/features/events/components/tag-badge"
 import type { EventWithDetails } from "@/shared/types"
-import { safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { formatEventPrice } from "@/shared/utils/format"
 
 interface EventRowProps {
@@ -20,14 +19,7 @@ interface EventRowProps {
 }
 
 export function EventRow({ event, onRemove, rating, onRate, variant }: EventRowProps) {
-  const imageUrl =
-    safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(
-      event.id,
-      (event.tags ?? []).map((t) => t.tag.slug),
-      200,
-      200
-    )
+  const imageUrl = resolveEventImageUrl(event, 200, 200)
   const startDate = new Date(event.start_datetime)
 
   return (

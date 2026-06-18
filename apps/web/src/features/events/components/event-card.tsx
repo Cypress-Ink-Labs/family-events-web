@@ -1,6 +1,5 @@
-import { safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
 import type { EventWithDetails } from "@/shared/types"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { CompactEventCard } from "@/features/events/components/event-card/compact-card"
 import { DefaultEventCard } from "@/features/events/components/event-card/default-card"
 import { FeaturedEventCard } from "@/features/events/components/event-card/featured-card"
@@ -24,14 +23,7 @@ export function EventCard({
   className,
   showImages = true,
 }: EventCardProps) {
-  const imageUrl =
-    safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(
-      event.id,
-      (event.tags ?? []).map((t) => t.tag.slug),
-      600,
-      400
-    )
+  const imageUrl = resolveEventImageUrl(event, 600, 400)
   const startDate = new Date(event.start_datetime)
 
   const shared = {

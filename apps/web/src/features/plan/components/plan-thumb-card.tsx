@@ -5,8 +5,7 @@ import { Badge } from "@/shared/components/ui/badge"
 import { ClientDate } from "@/shared/components/client-date"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/shared/components/motion"
-import { safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { formatEventPrice } from "@/shared/utils/format"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 
@@ -20,14 +19,7 @@ function formatMatch(score: number): string {
 }
 
 export function PlanThumbCard({ event }: PlanThumbCardProps) {
-  const imageUrl =
-    safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(
-      event.id,
-      (event.tags ?? []).map((t) => t.tag.slug),
-      640,
-      360
-    )
+  const imageUrl = resolveEventImageUrl(event, 640, 360)
 
   return (
     <Link to={`/events/${event.id}`} className="block">

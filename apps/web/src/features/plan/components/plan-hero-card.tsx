@@ -7,8 +7,7 @@ import { ClientDate } from "@/shared/components/client-date"
 import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { ShareEventButton } from "@/features/plan/components/share-event-button"
 import { SmartImage } from "@/shared/components/motion"
-import { safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { formatEventPrice } from "@/shared/utils/format"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 
@@ -28,14 +27,7 @@ function formatMatch(score: number): string {
 }
 
 export function PlanHeroCard({ event }: PlanHeroCardProps) {
-  const imageUrl =
-    safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(
-      event.id,
-      (event.tags ?? []).map((t) => t.tag.slug),
-      1200,
-      630
-    )
+  const imageUrl = resolveEventImageUrl(event, 1200, 630)
   const distanceLabel = formatDistance(event.distance_km)
 
   return (
