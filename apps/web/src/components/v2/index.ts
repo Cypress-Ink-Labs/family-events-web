@@ -6,8 +6,7 @@
  * primitives remain unchanged during the per-route migration; new code should
  * compose from `v2/*` instead.
  *
- * See `docs/DESIGN.md` for the rationale + `docs/design/mocks/design-preview.html`
- * for visual reference.
+ * See `docs/DESIGN.md` for the rationale and guidance on when to use v2 vs ui primitives.
  */
 
 export { Page } from "./page.js"
