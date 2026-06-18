@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, act, cleanup } from "@testing-library/react"
-import { MemoryRouter, Route, Routes } from "react-router"
+import { MemoryRouter, Route, Routes, useLocation } from "react-router"
 import type { Session } from "@supabase/supabase-js"
 import { OAuthCallbackPage } from "./oauth-callback"
 
@@ -64,8 +64,11 @@ function CatchAllRoute() {
   // MemoryRouter keeps its own history so window.location doesn't change.
   // Instead, we capture renders of the catch-all route which only mount when
   // the component navigates away from /auth/callback.
-  navigatedPaths.push("navigated")
-  return <div data-testid="navigated" />
+  const location = useLocation()
+  // Capture the real destination path (plus any search string)
+  const destination = location.pathname + location.search
+  navigatedPaths.push(destination)
+  return <div data-testid="navigated" data-path={destination} />
 }
 
 function renderOAuthCallback(searchParams = "") {
@@ -100,8 +103,8 @@ describe("OAuthCallbackPage — safeNext and navigation", () => {
       await Promise.resolve()
     })
 
-    // If navigation happened the catch-all mounted
-    expect(navigatedPaths.length).toBeGreaterThan(0)
+    // Must have navigated to the exact safe in-app path from the ?next= param
+    expect(navigatedPaths).toContain("/events/event-1")
   })
 
   it("safeNext rejects an absolute URL — falls back to HOME_PATH (/home)", async () => {
@@ -114,8 +117,9 @@ describe("OAuthCallbackPage — safeNext and navigation", () => {
       await Promise.resolve()
     })
 
-    // Navigation still happens (to /home), so the catch-all mounts
-    expect(navigatedPaths.length).toBeGreaterThan(0)
+    // Must navigate to /home (the safe fallback), never to the evil domain
+    expect(navigatedPaths).toContain("/home")
+    expect(navigatedPaths.every((p) => !p.includes("evil"))).toBe(true)
   })
 
   it("safeNext rejects a protocol-relative URL — falls back to HOME_PATH", async () => {
@@ -127,7 +131,9 @@ describe("OAuthCallbackPage — safeNext and navigation", () => {
       await Promise.resolve()
     })
 
-    expect(navigatedPaths.length).toBeGreaterThan(0)
+    // Must navigate to /home (the safe fallback), never to the evil domain
+    expect(navigatedPaths).toContain("/home")
+    expect(navigatedPaths.every((p) => !p.includes("evil"))).toBe(true)
   })
 
   it("navigates to /sign-in?oauth_failed=1 after 8 s with no session", async () => {
@@ -140,8 +146,9 @@ describe("OAuthCallbackPage — safeNext and navigation", () => {
       vi.advanceTimersByTime(8001)
     })
 
-    // The fallback navigate("/sign-in?oauth_failed=1") caused the catch-all to mount.
-    expect(navigatedPaths.length).toBeGreaterThan(0)
+    // The fallback navigate("/sign-in?oauth_failed=1") caused the catch-all to mount
+    // at the exact failure destination — not just any destination.
+    expect(navigatedPaths).toContain("/sign-in?oauth_failed=1")
   })
 
   it("does NOT navigate before 8 s when there is no session yet", async () => {

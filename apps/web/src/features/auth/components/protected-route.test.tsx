@@ -1,9 +1,22 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, cleanup } from "@testing-library/react"
-import { MemoryRouter, Route, Routes } from "react-router"
+import { MemoryRouter, Route, Routes, useLocation } from "react-router"
 import type { User } from "@supabase/supabase-js"
 import { ProtectedRoute } from "./protected-route"
+
+// A /sign-in stub that also exposes the location state so tests can assert
+// that ProtectedRoute correctly forwards `state.from`.
+function SignInPageWithState() {
+  const location = useLocation()
+  const from = (location.state as { from?: string } | null)?.from ?? ""
+  return (
+    <div data-testid="sign-in-page">
+      Sign In
+      {from && <span data-testid="redirect-from">{from}</span>}
+    </div>
+  )
+}
 
 // Mock auth store — tests control the returned slice via makeAuth below.
 vi.mock("@/features/auth/stores/auth-store", () => ({
@@ -55,7 +68,7 @@ function renderProtectedRoute(initialPath = "/protected") {
           <Route path="/protected" element={<div>Protected Content</div>} />
           <Route path="/protected/deep/path" element={<div>Protected Content</div>} />
         </Route>
-        <Route path="/sign-in" element={<div data-testid="sign-in-page">Sign In</div>} />
+        <Route path="/sign-in" element={<SignInPageWithState />} />
       </Routes>
     </MemoryRouter>
   )
@@ -114,9 +127,12 @@ describe("ProtectedRoute", () => {
     mockedUseAuth.mockReturnValue(makeAuth({ user: null, isEnabled: false, isLoading: false }))
 
     // The ProtectedRoute passes `state={{ from: location.pathname }}` to Navigate.
-    // We verify the redirect target is /sign-in when the user visits a deep path.
+    // We verify the redirect target is /sign-in AND that state.from equals the
+    // originating path so the sign-in page can redirect back after authentication.
     renderProtectedRoute("/protected/deep/path")
 
     expect(screen.getByTestId("sign-in-page")).toBeInTheDocument()
+    // The SignInPageWithState stub renders state.from into a data-testid span.
+    expect(screen.getByTestId("redirect-from")).toHaveTextContent("/protected/deep/path")
   })
 })
