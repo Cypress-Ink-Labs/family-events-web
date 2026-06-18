@@ -22,10 +22,10 @@ plan fully before starting, honor its STOP conditions, and update your row when 
 | 012 | SPIKE: user edit/delete of own event submissions | P3 | M | — | DONE — merged `4ab4b53` (RFC) ✅ verified 2026-06-18 |
 | 013 | SPIKE: surface submission rejection reasons to users | P3 | M | — | DONE — merged `d0c706d` (RFC) ✅ verified 2026-06-18 |
 | 014 | SPIKE: web-side push-notification gap analysis | P3 | M | — | DONE — merged `df77d40` (RFC) ✅ verified 2026-06-18 |
-| 015 | Wire `registerWebPush()` into profile push toggles | P2 | S | — | TODO |
-| 016 | Replace `select("*")` with explicit cols in session bootstrap | P2 | S | — | TODO |
-| 017 | Cover dashboard render + admin bulk-mutation contracts with tests | P2 | M | — | TODO |
-| 018 | Prune stale tanstack-virtual `minimumReleaseAgeExclude` entries | P3 | S | — | TODO |
+| 015 | Wire `registerWebPush()` into profile push toggles | P2 | S | — | DONE — merged `c6b3dd0`+`888653e` ✅ 2026-06-18 |
+| 016 | Replace `select("*")` with explicit cols in session bootstrap | P2 | S | — | DONE — merged `b4aa918` ✅ 2026-06-18 |
+| 017 | Cover dashboard render + admin bulk-mutation contracts with tests | P2 | M | — | DONE — merged `8ec20a0` ✅ 2026-06-18 |
+| 018 | Prune stale tanstack-virtual `minimumReleaseAgeExclude` entries | P3 | S | — | DONE — merged `31c5c78` ✅ 2026-06-18 |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
 
@@ -97,6 +97,17 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED 
   loudest finding — a "committed PAT in `.env`" — was **false**: `.env` is gitignored and untracked
   (only `.env.example` is tracked); never committed, no exposure. Direction findings surfaced but not
   planned: comment-moderation gap (needs backend RLS/RPC) and a v2-migration roadmap (docs/process).
+
+- **2026-06-18 (015–018 execute)** — Executed via a `Workflow` (4 parallel file-disjoint executors +
+  adversarial verify), advisor-reviewed, **merged to `main`** (5 commits). `verify:web` green on the
+  merged tree (64 test files / 447 tests, build ✓; `knip` still exits 0). **015** hit a REVISE — the
+  first pass wired `registerWebPush()` but failure statuses (denied/unsupported/no-vapid-key/error)
+  fell through to `updateNotifPrefs.mutate()`, saving a push-enabled pref with no subscription + a
+  contradictory success toast; advisor caught it, sent a focused fix (`return` after each failure arm,
+  commit `888653e`) and confirmed the production `profile.tsx` handler now returns before mutate.
+  **016/017/018** approved first pass. Commits: 015 `c6b3dd0`+`888653e`, 016 `b4aa918`, 017 `8ec20a0`,
+  018 `31c5c78`. Not pushed by advisor.
+
 
 ## Dependency notes
 
