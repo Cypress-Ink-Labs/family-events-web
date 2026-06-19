@@ -6,7 +6,7 @@
    ```
    pnpm install --frozen-lockfile
    ```
-2. **Copy and fill the web env file** — the Vite app requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` at minimum. For local Supabase, get these from `supabase status` after `supabase start`; for Supabase Cloud, find them in your project settings:
+2. **Copy and fill the web env file** — the Vite app requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` at minimum. For Supabase Cloud, find these in your project settings. This repo has no in-repo Supabase stack; local-Supabase development is driven from the separate Supabase backend repository, so follow that repo's instructions if you need a local backend:
    ```
    cp apps/web/.env.example apps/web/.env
    # Edit apps/web/.env and fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
