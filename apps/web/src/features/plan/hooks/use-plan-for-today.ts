@@ -4,6 +4,7 @@ import { z } from "zod"
 import { qk } from "@/infrastructure/queries/query-keys"
 import { planEventsWindowRowSchema } from "@/lib/schemas"
 import type { PlanEventsRow } from "@/lib/schemas/plan"
+import { Sentry } from "@/infrastructure/observability/sentry"
 import { supabase } from "@/infrastructure/supabase/client"
 import type { City, EventWithDetails } from "@/shared/types"
 import { adaptEnrichedRow } from "@/features/events/hooks/use-enriched-events"
@@ -195,6 +196,28 @@ export function usePlanForToday(options: UsePlanForTodayOptions = {}) {
         })
         return acc
       }, [])
+
+      // Diagnostic only: a ranked row whose enriched event is missing is dropped
+      // above (a defensible anti-join — a transient enrichment gap must not crash
+      // the page). The drop stays silent to the user, so surface the count
+      // mismatch to Sentry instead. If this fires, `events_enriched` is dropping
+      // ids the planner returned — investigate the backend RPC, not this hook.
+      if (plannedEvents.length < rankedRows.length) {
+        const missingIds = rankedRows
+          .map((row) => row.event_id)
+          .filter((eventId) => !eventsById.has(eventId))
+        Sentry.captureException(
+          new Error("plan-for-today: ranked events dropped during enrichment hydration"),
+          {
+            tags: { area: "plan.hydration" },
+            extra: {
+              expected: rankedRows.length,
+              got: plannedEvents.length,
+              missingIds,
+            },
+          }
+        )
+      }
 
       return {
         date: selectedDate,
