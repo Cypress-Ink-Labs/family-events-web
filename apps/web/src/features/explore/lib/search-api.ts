@@ -1,5 +1,6 @@
+import { eventRowSchema, parseRowsWithSentry } from "@/lib/schemas"
 import { supabase } from "@/infrastructure/supabase/client"
-import type { EventWithDetails } from "@/shared/types"
+import type { Event, EventWithDetails } from "@/shared/types"
 
 export interface SearchEventsParams {
   keyword?: string
@@ -54,21 +55,27 @@ export async function searchEvents(params: SearchEventsParams): Promise<SearchEv
 
   if (error) throw error
 
-  const rows = (data ?? []) as unknown[]
-
-  // search_events returns raw event rows, not enriched rows.
-  // Map them to EventWithDetails-compatible shape with empty enrichment fields.
-  const events: EventWithDetails[] = rows.map((row) => {
-    const r = row as Record<string, unknown>
-    return {
-      ...(r as unknown as EventWithDetails),
-      tags: [],
-      avg_rating: 0,
-      rating_count: 0,
-      is_favorited: false,
-      is_in_calendar: false,
-    }
+  // search_events returns base event rows, not enriched rows. Validate each at
+  // the boundary so RPC drift surfaces as a Sentry capture (parity with the
+  // enriched path) instead of an undefined-access crash deep in a render card.
+  // parseRowsWithSentry drops malformed rows rather than throwing — a partial
+  // result beats a blanked search, and the capture still flags the drift.
+  const baseRows = parseRowsWithSentry(eventRowSchema, data ?? [], {
+    area: "search_events",
   })
+
+  // Map each validated base row to EventWithDetails by appending the enrichment
+  // defaults search has no data for (search_events returns no tags/ratings).
+  // The cast to Event is a structural narrowing — the parsed row is already
+  // shape-validated, mirroring adaptEnrichedRow in use-enriched-events.ts.
+  const events: EventWithDetails[] = baseRows.map((row) => ({
+    ...(row as unknown as Event),
+    tags: [],
+    avg_rating: 0,
+    rating_count: 0,
+    is_favorited: false,
+    is_in_calendar: false,
+  }))
 
   // Determine next cursor: if we got exactly `limit` results, there may be more
   const hasMore = events.length === limit
