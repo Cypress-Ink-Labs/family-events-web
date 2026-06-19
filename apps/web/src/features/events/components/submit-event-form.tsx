@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm, type Resolver } from "react-hook-form"
 import { z } from "zod"
 import { CalendarDays, DollarSign, FileText, Loader2, MapPin, Type, Users } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
@@ -28,6 +29,22 @@ interface SubmitEventFormProps {
   cityId: string | undefined
   onSubmit: (data: CommunityEventFormData) => Promise<void>
   isSubmitting: boolean
+}
+
+// The schema's `start_datetime`/`end_datetime` are single strings, but the UI
+// collects a date plus separate start/end times. These auxiliary fields hold
+// the split inputs; they are combined into the schema strings at submit time.
+interface SubmitEventFormValues extends CommunityEventFormData {
+  startDate: string
+  startTime: string
+  endTime: string
+}
+
+// Empty numeric inputs map to `null` (not 0) — the original form treated a blank
+// age/price as "unset". zod's `z.coerce.number()` then validates the number.
+function emptyToNull(value: unknown): number | null {
+  if (value === "" || value === null || value === undefined) return null
+  return Number(value)
 }
 
 function FormSection({
@@ -79,63 +96,84 @@ function FormField({
 }
 
 export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventFormProps) {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [startDate, setStartDate] = useState("")
-  const [startTime, setStartTime] = useState("")
-  const [endTime, setEndTime] = useState("")
-  const [venueName, setVenueName] = useState("")
-  const [address, setAddress] = useState("")
-  const [ageMin, setAgeMin] = useState("")
-  const [ageMax, setAgeMax] = useState("")
-  const [isFree, setIsFree] = useState(true)
-  const [price, setPrice] = useState("")
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<SubmitEventFormValues, unknown, CommunityEventFormData>({
+    // The resolver only knows the schema fields; `SubmitEventFormValues` adds the
+    // UI-only split date/time fields (stripped by zod), so widen its field type.
+    resolver: zodResolver(communityEventSchema) as unknown as Resolver<
+      SubmitEventFormValues,
+      unknown,
+      CommunityEventFormData
+    >,
+    defaultValues: {
+      title: "",
+      description: "",
+      start_datetime: "",
+      end_datetime: "",
+      venue_name: "",
+      address: "",
+      city_id: cityId as string,
+      age_min: null,
+      age_max: null,
+      is_free: true,
+      price: null,
+      startDate: "",
+      startTime: "",
+      endTime: "",
+    },
+  })
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setErrors({})
+  const isFree = watch("is_free")
+  const description = watch("description") ?? ""
 
-    const startDatetime = startDate && startTime ? `${startDate}T${startTime}:00` : ""
-    const endDatetime = startDate && endTime ? `${startDate}T${endTime}:00` : undefined
+  // Sync prop-derived and split inputs into the schema fields before validation:
+  //  - `city_id` comes from a prop, not an input (kept raw so the zod `uuid`
+  //    check sees `undefined` when no city is selected).
+  //  - the split date + time inputs combine into the schema's single
+  //    `start_datetime`/`end_datetime` strings as `${date}T${time}:00`,
+  //    preserved exactly from the original form.
+  function syncSchemaFields() {
+    const { startDate, startTime, endTime } = getValues()
+    setValue("city_id", cityId as string)
+    setValue("start_datetime", startDate && startTime ? `${startDate}T${startTime}:00` : "")
+    setValue("end_datetime", startDate && endTime ? `${startDate}T${endTime}:00` : "")
+  }
 
-    const result = communityEventSchema.safeParse({
-      title: title.trim(),
-      description: description.trim() || undefined,
-      start_datetime: startDatetime,
-      end_datetime: endDatetime,
-      venue_name: venueName.trim() || undefined,
-      address: address.trim() || undefined,
-      city_id: cityId,
-      age_min: ageMin ? Number(ageMin) : null,
-      age_max: ageMax ? Number(ageMax) : null,
-      is_free: isFree,
-      price: !isFree && price ? Number(price) : null,
+  // zod has already stripped the UI-only split fields and coerced the numbers,
+  // so `data` is the parsed `CommunityEventFormData`. Trim strings and gate
+  // price on the free toggle, matching the original form's output exactly.
+  function submit(data: CommunityEventFormData) {
+    onSubmit({
+      ...data,
+      title: data.title.trim(),
+      description: data.description?.trim() || undefined,
+      end_datetime: data.end_datetime || undefined,
+      venue_name: data.venue_name?.trim() || undefined,
+      address: data.address?.trim() || undefined,
+      price: data.is_free ? null : data.price,
     })
-
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {}
-      for (const issue of result.error.issues) {
-        const key = issue.path[0]
-        if (key && !fieldErrors[String(key)]) {
-          fieldErrors[String(key)] = issue.message
-        }
-      }
-      setErrors(fieldErrors)
-      return
-    }
-
-    onSubmit(result.data)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        syncSchemaFields()
+        void handleSubmit(submit)(e)
+      }}
+      className="space-y-6"
+    >
       {/* Event Details */}
       <FormSection icon={Type} title="Event Details">
-        <FormField label="Event Title" required error={errors.title}>
+        <FormField label="Event Title" required error={errors.title?.message}>
           <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            {...register("title")}
             placeholder="e.g. Neighborhood Playdate at the Park"
             maxLength={200}
             className="h-11"
@@ -144,8 +182,7 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
 
         <FormField label="Description" hint="Help families know what to expect">
           <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            {...register("description")}
             placeholder="Describe the event, what to bring, parking info..."
             rows={4}
             maxLength={5000}
@@ -162,31 +199,16 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
       {/* Date & Time */}
       <FormSection icon={CalendarDays} title="Date & Time">
         <div className="grid grid-cols-2 gap-3">
-          <FormField label="Date" required error={errors.start_datetime}>
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="h-11"
-            />
+          <FormField label="Date" required error={errors.start_datetime?.message}>
+            <Input type="date" {...register("startDate")} className="h-11" />
           </FormField>
           <FormField label="Start Time" required>
-            <Input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="h-11"
-            />
+            <Input type="time" {...register("startTime")} className="h-11" />
           </FormField>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <FormField label="End Time" hint="Optional">
-            <Input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="h-11"
-            />
+            <Input type="time" {...register("endTime")} className="h-11" />
           </FormField>
         </div>
       </FormSection>
@@ -196,17 +218,11 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
       {/* Location */}
       <FormSection icon={MapPin} title="Location">
         <FormField label="Venue Name" hint="e.g. Moncus Park, Lafayette Public Library">
-          <Input
-            value={venueName}
-            onChange={(e) => setVenueName(e.target.value)}
-            placeholder="Where is the event?"
-            className="h-11"
-          />
+          <Input {...register("venue_name")} placeholder="Where is the event?" className="h-11" />
         </FormField>
         <FormField label="Address">
           <Input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            {...register("address")}
             placeholder="Street address or cross streets"
             className="h-11"
           />
@@ -218,24 +234,26 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
       {/* Audience */}
       <FormSection icon={Users} title="Audience">
         <div className="grid grid-cols-2 gap-3">
-          <FormField label="Min Age" hint="Leave blank for all ages">
+          <FormField
+            label="Min Age"
+            hint="Leave blank for all ages"
+            error={errors.age_min?.message}
+          >
             <Input
               type="number"
               min={0}
               max={18}
-              value={ageMin}
-              onChange={(e) => setAgeMin(e.target.value)}
+              {...register("age_min", { setValueAs: emptyToNull })}
               placeholder="Any"
               className="h-11"
             />
           </FormField>
-          <FormField label="Max Age">
+          <FormField label="Max Age" error={errors.age_max?.message}>
             <Input
               type="number"
               min={0}
               max={18}
-              value={ageMax}
-              onChange={(e) => setAgeMax(e.target.value)}
+              {...register("age_max", { setValueAs: emptyToNull })}
               placeholder="Any"
               className="h-11"
             />
@@ -252,19 +270,24 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
             <p className="text-sm font-medium">Free Event</p>
             <p className="text-xs text-muted-foreground">Toggle off to set a price</p>
           </div>
-          <Switch checked={isFree} onCheckedChange={setIsFree} />
+          <Controller
+            control={control}
+            name="is_free"
+            render={({ field }) => (
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
         </div>
 
         {!isFree && (
-          <FormField label="Ticket Price" hint="Per person">
+          <FormField label="Ticket Price" hint="Per person" error={errors.price?.message}>
             <div className="relative">
               <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
                 type="number"
                 min={0}
                 step={0.01}
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                {...register("price", { setValueAs: emptyToNull })}
                 placeholder="0.00"
                 className="h-11 pl-9"
               />
@@ -277,7 +300,9 @@ export function SubmitEventForm({ cityId, onSubmit, isSubmitting }: SubmitEventF
 
       {/* Submit */}
       <div className="space-y-3 pt-2">
-        {errors.city_id && <p className="text-sm text-destructive text-center">{errors.city_id}</p>}
+        {errors.city_id && (
+          <p className="text-sm text-destructive text-center">{errors.city_id.message}</p>
+        )}
 
         <Button
           type="submit"

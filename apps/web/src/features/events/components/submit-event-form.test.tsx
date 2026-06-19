@@ -13,9 +13,15 @@ beforeAll(() => {
 })
 
 // A real UUID so the zod `city_id` check (z.string().uuid()) passes on the
-// happy path. This is the current manual-useState form; plan 023 may migrate
-// it to react-hook-form and will update this test then.
+// happy path. The form now runs on react-hook-form + zodResolver, so submit
+// validation is async — tests flush the microtask queue after clicking submit.
 const CITY_ID = "11111111-1111-4111-8111-111111111111"
+
+// react-hook-form validates and resolves on submit asynchronously; let those
+// promises settle before asserting on onSubmit / rendered errors.
+function flush() {
+  return new Promise((r) => setTimeout(r, 0))
+}
 
 function renderForm(overrides: Partial<React.ComponentProps<typeof SubmitEventForm>> = {}) {
   const onSubmit = vi.fn().mockResolvedValue(undefined)
@@ -36,14 +42,19 @@ function fillRequiredFields(container: HTMLElement) {
   fireEvent.change(timeInputs[0] as HTMLInputElement, { target: { value: "10:00" } })
 }
 
+function submitForm() {
+  fireEvent.click(screen.getByRole("button", { name: /Submit Event for Review/i }))
+  return flush()
+}
+
 afterEach(() => cleanup())
 
 describe("SubmitEventForm", () => {
-  it("calls onSubmit once with parsed form data when required fields are filled", () => {
+  it("calls onSubmit once with parsed form data when required fields are filled", async () => {
     const { onSubmit, container } = renderForm()
 
     fillRequiredFields(container)
-    fireEvent.click(screen.getByRole("button", { name: /Submit Event for Review/i }))
+    await submitForm()
 
     expect(onSubmit).toHaveBeenCalledTimes(1)
     expect(onSubmit).toHaveBeenCalledWith(
@@ -56,21 +67,21 @@ describe("SubmitEventForm", () => {
     )
   })
 
-  it("shows the required-field error and does NOT call onSubmit when submitted empty", () => {
+  it("surfaces react-hook-form validation errors and does NOT call onSubmit when submitted empty", async () => {
     const { onSubmit } = renderForm()
 
-    fireEvent.click(screen.getByRole("button", { name: /Submit Event for Review/i }))
+    await submitForm()
 
     expect(onSubmit).not.toHaveBeenCalled()
     expect(screen.getByText(/Title must be at least 3 characters/i)).toBeInTheDocument()
     expect(screen.getByText(/Date and time required/i)).toBeInTheDocument()
   })
 
-  it("blocks submission and surfaces a city_id error when no city is selected", () => {
+  it("blocks submission and surfaces a city_id error when no city is selected", async () => {
     const { onSubmit, container } = renderForm({ cityId: undefined })
 
     fillRequiredFields(container)
-    fireEvent.click(screen.getByRole("button", { name: /Submit Event for Review/i }))
+    await submitForm()
 
     // city_id is `z.string().uuid()`, so an undefined cityId fails the string
     // check first and renders the centered city_id error paragraph; the exact
@@ -79,7 +90,7 @@ describe("SubmitEventForm", () => {
     expect(screen.getByText(/expected string/i)).toBeInTheDocument()
   })
 
-  it("gates the price field behind the free/paid toggle", () => {
+  it("gates the price field behind the free/paid toggle and submits the entered price", async () => {
     const { onSubmit, container } = renderForm()
 
     // Free is the default: no price field rendered.
@@ -92,7 +103,7 @@ describe("SubmitEventForm", () => {
 
     fillRequiredFields(container)
     fireEvent.change(priceInput, { target: { value: "12.50" } })
-    fireEvent.click(screen.getByRole("button", { name: /Submit Event for Review/i }))
+    await submitForm()
 
     expect(onSubmit).toHaveBeenCalledTimes(1)
     expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ is_free: false, price: 12.5 }))
