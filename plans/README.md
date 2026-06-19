@@ -24,13 +24,13 @@ conditions and update its row.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 019 | Cover admin mutation hooks with invalidation-contract tests | P2 | M | — | TODO — [CIL-97](https://linear.app/hexsleeves/issue/CIL-97) |
-| 020 | Cover user mutation hooks + the event-submission flow with tests | P2 | M | — | TODO — [CIL-98](https://linear.app/hexsleeves/issue/CIL-98) |
+| 019 | Cover admin mutation hooks with invalidation-contract tests | P2 | M | — | DONE — merged `3230be4` ([PR #20](https://github.com/Cypress-Ink-Labs/family-events-web/pull/20)) · [CIL-97](https://linear.app/hexsleeves/issue/CIL-97) |
+| 020 | Cover user mutation hooks + the event-submission flow with tests | P2 | M | — | DONE — merged `1f8817b` ([PR #22](https://github.com/Cypress-Ink-Labs/family-events-web/pull/22)) · [CIL-98](https://linear.app/hexsleeves/issue/CIL-98) |
 | 021 | Validate explore-search RPC rows with zod (parity w/ enriched) | P2 | S | — | DONE — merged `7936556` ([PR #17](https://github.com/Cypress-Ink-Labs/family-events-web/pull/17)) · [CIL-99](https://linear.app/hexsleeves/issue/CIL-99) |
-| 022 | Fix the misleading local-Supabase onboarding step in the README | P3 | S | — | TODO — [CIL-100](https://linear.app/hexsleeves/issue/CIL-100) |
-| 023 | Migrate the community-event submission form to react-hook-form | P3 | M | 020 | TODO — [CIL-101](https://linear.app/hexsleeves/issue/CIL-101) |
-| 024 | Add a Sentry signal when plan-for-today drops ranked events | P3 | S | — | TODO — [CIL-102](https://linear.app/hexsleeves/issue/CIL-102) |
-| 025 | Remove the `as unknown as` casts in the auth profile/access loader | P3 | S | — | TODO — [CIL-103](https://linear.app/hexsleeves/issue/CIL-103) |
+| 022 | Fix the misleading local-Supabase onboarding step in the README | P3 | S | — | DONE — merged `8de2703` ([PR #18](https://github.com/Cypress-Ink-Labs/family-events-web/pull/18)) · [CIL-100](https://linear.app/hexsleeves/issue/CIL-100) |
+| 023 | Migrate the community-event submission form to react-hook-form | P3 | M | 020 | IN PROGRESS — 020 merged, dispatched · [CIL-101](https://linear.app/hexsleeves/issue/CIL-101) |
+| 024 | Add a Sentry signal when plan-for-today drops ranked events | P3 | S | — | DONE — merged `93a6d24` ([PR #19](https://github.com/Cypress-Ink-Labs/family-events-web/pull/19)) · [CIL-102](https://linear.app/hexsleeves/issue/CIL-102) |
+| 025 | Remove the `as unknown as` casts in the auth profile/access loader | P3 | S | — | DONE — merged `1aceed2` ([PR #21](https://github.com/Cypress-Ink-Labs/family-events-web/pull/21)) · [CIL-103](https://linear.app/hexsleeves/issue/CIL-103) |
 
 ### Round 2 dependency notes
 
