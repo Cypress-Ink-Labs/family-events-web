@@ -2,7 +2,7 @@
   "name": "family-events-web",
   "private": true,
   "version": "0.0.1",
-  "packageManager": "pnpm@11.7.0",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "changeset": "changeset",
     "changeset:version": "changeset version",
