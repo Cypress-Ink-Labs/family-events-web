@@ -38,11 +38,11 @@ export async function loadProfileAndAccess(userId: string): Promise<{
     if (profileResult.error) throw profileResult.error
     if (accessResult.error) throw accessResult.error
 
-    const profile = profileResult.data
-      ? (userProfileRowSchema.parse(profileResult.data) as unknown as UserProfile)
+    const profile: UserProfile | null = profileResult.data
+      ? userProfileRowSchema.parse(profileResult.data)
       : null
-    const access = accessResult.data
-      ? (userAccessRowSchema.parse(accessResult.data) as unknown as UserAccess)
+    const access: UserAccess | null = accessResult.data
+      ? userAccessRowSchema.parse(accessResult.data)
       : null
 
     return { profile, access }

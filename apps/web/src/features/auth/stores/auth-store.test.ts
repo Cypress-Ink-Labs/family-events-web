@@ -72,9 +72,13 @@ const profile = {
   id: "user-1",
   email: "parent@example.com",
   display_name: "Parent",
+  avatar_url: null,
   role: "user",
   created_at: "2026-05-01T00:00:00.000Z",
   updated_at: "2026-05-01T00:00:00.000Z",
+  child_name: null,
+  child_age: null,
+  city_preference_id: null,
 } as UserProfile
 
 const enabledAccess = {
