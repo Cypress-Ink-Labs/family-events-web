@@ -26,7 +26,7 @@ conditions and update its row.
 |------|-------|----------|--------|------------|--------|
 | 019 | Cover admin mutation hooks with invalidation-contract tests | P2 | M | — | TODO — [CIL-97](https://linear.app/hexsleeves/issue/CIL-97) |
 | 020 | Cover user mutation hooks + the event-submission flow with tests | P2 | M | — | TODO — [CIL-98](https://linear.app/hexsleeves/issue/CIL-98) |
-| 021 | Validate explore-search RPC rows with zod (parity w/ enriched) | P2 | S | — | IN REVIEW — [PR #17](https://github.com/Cypress-Ink-Labs/family-events-web/pull/17) · [CIL-99](https://linear.app/hexsleeves/issue/CIL-99) |
+| 021 | Validate explore-search RPC rows with zod (parity w/ enriched) | P2 | S | — | DONE — merged `7936556` ([PR #17](https://github.com/Cypress-Ink-Labs/family-events-web/pull/17)) · [CIL-99](https://linear.app/hexsleeves/issue/CIL-99) |
 | 022 | Fix the misleading local-Supabase onboarding step in the README | P3 | S | — | TODO — [CIL-100](https://linear.app/hexsleeves/issue/CIL-100) |
 | 023 | Migrate the community-event submission form to react-hook-form | P3 | M | 020 | TODO — [CIL-101](https://linear.app/hexsleeves/issue/CIL-101) |
 | 024 | Add a Sentry signal when plan-for-today drops ranked events | P3 | S | — | TODO — [CIL-102](https://linear.app/hexsleeves/issue/CIL-102) |
