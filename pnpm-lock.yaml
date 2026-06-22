@@ -45,8 +45,8 @@ importers:
   apps/web:
     dependencies:
       '@cypress-ink-labs/contracts':
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: ^0.0.4
+        version: 0.0.4
       '@cypress-ink-labs/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -405,8 +405,8 @@ packages:
     resolution: {integrity: sha512-QxULHAm7cNu72w97JUNCBFODFaXpbDg+dP8b/oWFAZ2MTRppA3U00Y2L1HqaS4J6yBqxwa/Y3nMBaxVKbB/NsA==}
     engines: {node: '>=20.19.0'}
 
-  '@cypress-ink-labs/contracts@0.0.3':
-    resolution: {integrity: sha512-durAmXL+en4T2yL0aZ/8dHbypuBd2E6ID024gl5y+TcM0zTkavxHIe1JWSBVab35sf+c7aIvoQx8mRJ6Uebljg==, tarball: https://npm.pkg.github.com/download/@cypress-ink-labs/contracts/0.0.3/c2bdf6452e56c13fc0375af816a3e12bbdfa9c85}
+  '@cypress-ink-labs/contracts@0.0.4':
+    resolution: {integrity: sha512-ws9VBb7/Scu/4BaQRfXU+TlmImx/pedZjrFvIlMyf6IEh8KgYZjvrCRsS4Nd6DWu9IztFsj1dcqI3SxTl9/QCw==, tarball: https://npm.pkg.github.com/download/@cypress-ink-labs/contracts/0.0.4/54ac22aae2b8f071696a5906ec2471f38507338b}
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -4387,7 +4387,7 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.0': {}
 
-  '@cypress-ink-labs/contracts@0.0.3': {}
+  '@cypress-ink-labs/contracts@0.0.4': {}
 
   '@emnapi/core@1.10.0':
     dependencies:

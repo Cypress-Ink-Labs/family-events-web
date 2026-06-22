@@ -8,7 +8,6 @@ import {
   savePreferredCities,
   type PreferredCityRow,
 } from "@/features/profile/api/preferred-cities"
-import { useUpdateProfile } from "@/features/profile/hooks/use-profile"
 
 export interface PreferredCity {
   cityId: string
@@ -70,17 +69,14 @@ export interface SavePreferredCitiesInput {
 }
 
 /**
- * Persist the user's preferred-city set with exactly one primary, then mirror
- * `user_profiles.city_preference_id` to that primary (the compatibility field
- * the backend still reads as a fallback). The set-replacement write sequences
- * its statements so the partial unique index on `is_primary` is never violated.
- *
- * On success the caller should invalidate via the returned mutation's
- * onSuccess (preferred-cities + user-profile keys are invalidated here).
+ * Persist the user's preferred-city set with exactly one primary and mirror
+ * `user_profiles.city_preference_id` to that primary — atomically, in one
+ * transaction, via the `set_preferred_cities` RPC (the RPC does the mirror, so
+ * no separate profile write is needed). On success the preferred-cities and
+ * user-profile query keys are invalidated.
  */
 export function useSavePreferredCities(userId: string | undefined) {
   const queryClient = useQueryClient()
-  const updateProfile = useUpdateProfile(userId)
 
   return useMutation({
     mutationFn: async ({ cityIds, primaryCityId }: SavePreferredCitiesInput) => {
@@ -88,9 +84,7 @@ export function useSavePreferredCities(userId: string | undefined) {
         throw new Error("You must be signed in to update your preferred cities.")
       }
 
-      await savePreferredCities(userId, cityIds, primaryCityId)
-      // Mirror the primary into the compatibility column the backend reads.
-      await updateProfile.mutateAsync({ city_preference_id: primaryCityId })
+      await savePreferredCities(cityIds, primaryCityId)
 
       return { cityIds: Array.from(new Set(cityIds)), primaryCityId }
     },
