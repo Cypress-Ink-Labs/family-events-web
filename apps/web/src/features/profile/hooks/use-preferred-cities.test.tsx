@@ -18,14 +18,6 @@ vi.mock("@/features/profile/api/preferred-cities", () => ({
 const { useCities } = vi.hoisted(() => ({ useCities: vi.fn() }))
 vi.mock("@/shared/hooks/use-cities", () => ({ useCities }))
 
-// useUpdateProfile mirrors city_preference_id; capture its calls via this mock.
-const { updateProfileMutateAsync, useUpdateProfile } = vi.hoisted(() => {
-  const updateProfileMutateAsync = vi.fn()
-  const useUpdateProfile = vi.fn(() => ({ mutateAsync: updateProfileMutateAsync }))
-  return { updateProfileMutateAsync, useUpdateProfile }
-})
-vi.mock("@/features/profile/hooks/use-profile", () => ({ useUpdateProfile }))
-
 import { usePreferredCities, useSavePreferredCities } from "./use-preferred-cities"
 
 const USER_ID = "user-1"
@@ -93,10 +85,9 @@ describe("usePreferredCities", () => {
 })
 
 describe("useSavePreferredCities", () => {
-  it("persists the set and mirrors city_preference_id to the primary", async () => {
+  it("calls savePreferredCities with the selected set and primary", async () => {
     useCities.mockReturnValue({ data: CITIES })
     savePreferredCities.mockResolvedValue(undefined)
-    updateProfileMutateAsync.mockResolvedValue({ id: USER_ID })
 
     const client = makeQueryClient()
     const { result } = renderHook(() => useSavePreferredCities(USER_ID), {
@@ -107,15 +98,15 @@ describe("useSavePreferredCities", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(savePreferredCities).toHaveBeenCalledWith(USER_ID, ["city-a", "city-b"], "city-b")
-    // Mirror write: the compatibility column tracks the primary.
-    expect(updateProfileMutateAsync).toHaveBeenCalledWith({ city_preference_id: "city-b" })
+    // The RPC (mocked behind savePreferredCities) does the set replacement +
+    // primary swap + city_preference_id mirror atomically — one call, no
+    // separate profile write.
+    expect(savePreferredCities).toHaveBeenCalledWith(["city-a", "city-b"], "city-b")
   })
 
   it("invalidates preferred-cities and user-profile caches on success", async () => {
     useCities.mockReturnValue({ data: CITIES })
     savePreferredCities.mockResolvedValue(undefined)
-    updateProfileMutateAsync.mockResolvedValue({ id: USER_ID })
 
     const client = makeQueryClient()
     const spy = vi.spyOn(client, "invalidateQueries")
@@ -132,7 +123,7 @@ describe("useSavePreferredCities", () => {
     expect(invalidated).toContainEqual(qk.userProfile.byUser(USER_ID))
   })
 
-  it("surfaces the save error and never mirrors when the set write fails", async () => {
+  it("surfaces the save error and skips cache invalidation when the RPC fails", async () => {
     useCities.mockReturnValue({ data: CITIES })
     savePreferredCities.mockRejectedValue(new Error("row-level security"))
 
@@ -146,7 +137,6 @@ describe("useSavePreferredCities", () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true))
 
-    expect(updateProfileMutateAsync).not.toHaveBeenCalled()
     expect(spy).not.toHaveBeenCalled()
   })
 

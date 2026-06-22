@@ -158,6 +158,8 @@ export function AdminSourcesPage() {
         last_scraped_at: null,
         last_status: "pending",
         error_count: 0,
+        consecutive_zero_result_scrapes: 0,
+        stale_escalated_at: null,
         notes: null,
       })
       setDialogOpen(false)

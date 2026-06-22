@@ -23,7 +23,7 @@
     "clean": "rm -rf dist .next out"
   },
   "dependencies": {
-    "@cypress-ink-labs/contracts": "^0.0.3",
+    "@cypress-ink-labs/contracts": "^0.0.4",
     "@cypress-ink-labs/shared": "workspace:*",
     "@hookform/resolvers": "^5.4.0",
     "@sentry/react": "^10.58.0",
