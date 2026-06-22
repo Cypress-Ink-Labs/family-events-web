@@ -150,6 +150,10 @@ export const qk = {
     all: ["notification-preferences"] as const,
     byUser: (userId: string | undefined) => ["notification-preferences", nil(userId)] as const,
   },
+  userPreferredCities: {
+    all: ["user-preferred-cities"] as const,
+    byUser: (userId: string | undefined) => ["user-preferred-cities", nil(userId)] as const,
+  },
   notifications: {
     all: ["notifications"] as const,
     byUser: (userId: string | undefined) => ["notifications", nil(userId)] as const,

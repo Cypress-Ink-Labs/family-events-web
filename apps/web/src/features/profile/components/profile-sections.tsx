@@ -11,7 +11,6 @@ import { supabase } from "@/infrastructure/supabase/client"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
 import type { NotificationPreferences } from "@cypress-ink-labs/contracts"
-import type { CityRow as City } from "@/lib/db"
 type ThemeOption = "light" | "dark" | "system"
 
 interface ProfileGuestStateProps {
@@ -363,8 +362,4 @@ export function ProfileSignOutButton({ onSignOut }: { onSignOut: () => void }) {
       Sign Out
     </Button>
   )
-}
-
-export function resolveSelectedCity(cities: City[], cityId: string) {
-  return cities.find((city) => city.id === cityId)
 }
