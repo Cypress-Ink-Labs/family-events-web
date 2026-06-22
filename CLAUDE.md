@@ -60,6 +60,17 @@ before declaring any web work done.
 | Workspace guards | `pnpm run workspace:test` |
 | **Full gate (run before done)** | **`pnpm run verify:web`** |
 | E2E tests (Playwright) | `pnpm run test:e2e` |
+| Deploy to prod (manual) | `pnpm run deploy` |
+
+---
+
+## Deployment
+
+The `web` service deploys to Railway via GitHub Actions (`.github/workflows/deploy.yml`)
+after `ci` passes on `main`, gated by a one-click approval on the `production`
+environment (Railway auto-deploy is disabled). For a web change that depends on a new
+backend RPC/column, deploy the backend first — never ship web code calling something
+introduced in the same release. See `docs/DEPLOYMENT.md`.
 
 ---
 
