@@ -1,0 +1,47 @@
+name: deploy
+
+# Production CD for the web app. Runs after the `ci` workflow succeeds on `main`
+# (or via workflow_dispatch), pauses on the `production` GitHub Environment for a
+# one-click approval, then deploys the exact green commit to Railway. Railway's own
+# auto-deploy-on-push is disabled so this is the single, CI-gated deploy path.
+
+on:
+  workflow_run:
+    workflows: ["ci"]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy web to Railway
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Deploy exactly the commit CI went green on (workflow_run runs against the
+          # default branch otherwise); fall back to the dispatched ref for manual runs.
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
+          persist-credentials: false
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy web
+        run: bash scripts/deploy-web.sh
+        env:
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+          RAILWAY_PROJECT_ID: b97c92f7-464e-4f77-a760-725fc9fdb5a2
