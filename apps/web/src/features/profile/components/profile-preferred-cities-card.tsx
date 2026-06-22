@@ -124,7 +124,7 @@ export function ProfilePreferredCitiesCard({
           <Select
             value={pickerValue}
             onValueChange={handleAdd}
-            disabled={isCitiesLoading || availableCities.length === 0}
+            disabled={isSaving || isCitiesLoading || availableCities.length === 0}
           >
             <SelectTrigger>
               <SelectValue
@@ -147,7 +147,10 @@ export function ProfilePreferredCitiesCard({
           </Select>
         </div>
 
-        <Button onClick={onSave} disabled={isSaving || !isDirty || selectedCityIds.length === 0}>
+        <Button
+          onClick={onSave}
+          disabled={isSaving || !isDirty || selectedCityIds.length === 0 || !primaryCityId}
+        >
           {isSaving ? (
             "Saving..."
           ) : (

@@ -53,7 +53,14 @@ const { ops, from } = vi.hoisted(() => {
     },
   }
 
-  const from = vi.fn(() => table)
+  // Validate the table name so a typo in `.from("user_preferred_cities")` is
+  // caught rather than silently returning the same mock for any table.
+  const from = vi.fn((tableName: string) => {
+    if (tableName !== "user_preferred_cities") {
+      throw new Error(`Unexpected table: ${tableName}`)
+    }
+    return table
+  })
   return { ops, from }
 })
 
