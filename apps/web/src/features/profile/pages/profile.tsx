@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Button } from "@/shared/components/ui/button"
@@ -7,13 +7,6 @@ import { Label } from "@/shared/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { Separator } from "@/shared/components/ui/separator"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select"
-import {
   ProfileAdminLink,
   ProfileChangePasswordCard,
   ProfileGuestState,
@@ -21,12 +14,16 @@ import {
   ProfileSignOutButton,
   ProfileThemeCard,
   ProfileUserSummary,
-  resolveSelectedCity,
 } from "@/features/profile/components/profile-sections"
+import { ProfilePreferredCitiesCard } from "@/features/profile/components/profile-preferred-cities-card"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useApp } from "@/app/stores/app-store"
 import { useTheme } from "@/app/providers/theme-provider"
 import { useUpdateProfile } from "@/features/profile/hooks/use-profile"
+import {
+  usePreferredCities,
+  useSavePreferredCities,
+} from "@/features/profile/hooks/use-preferred-cities"
 import {
   useNotificationPreferences,
   useUpdateNotificationPreferences,
@@ -39,22 +36,79 @@ import type { NotificationPreferences } from "@cypress-ink-labs/contracts"
 
 export function ProfilePage() {
   const { user, profile, signOut, isAdmin, refreshProfile, updatePassword } = useAuth()
-  const { selectedCity, setSelectedCity, cities, isCitiesLoading } = useApp()
+  const { setSelectedCity, cities, isCitiesLoading } = useApp()
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
   const updateProfile = useUpdateProfile(user?.id)
   const { data: notifPrefs } = useNotificationPreferences(user?.id)
   const updateNotifPrefs = useUpdateNotificationPreferences(user?.id)
+  const { preferredCities, primaryCityId: persistedPrimaryId } = usePreferredCities(user?.id)
+  const savePreferredCities = useSavePreferredCities(user?.id)
 
   useDocumentTitle("Profile")
 
   const [displayNameDraft, setDisplayNameDraft] = useState<string | null>(null)
   const [childNameDraft, setChildNameDraft] = useState<string | null>(null)
   const [childAgeDraft, setChildAgeDraft] = useState<string | null>(null)
+  // null = follow the server-resolved set; arrays = local edits awaiting save.
+  const [cityIdsDraft, setCityIdsDraft] = useState<string[] | null>(null)
+  const [primaryIdDraft, setPrimaryIdDraft] = useState<string | null | undefined>(undefined)
 
   const displayName = displayNameDraft ?? profile?.display_name ?? ""
   const childName = childNameDraft ?? profile?.child_name ?? ""
   const childAge = childAgeDraft ?? profile?.child_age?.toString() ?? ""
+
+  const persistedCityIds = useMemo(
+    () => preferredCities.map((entry) => entry.cityId),
+    [preferredCities]
+  )
+  const selectedCityIds = cityIdsDraft ?? persistedCityIds
+  const primaryCityId = primaryIdDraft === undefined ? persistedPrimaryId : primaryIdDraft
+
+  const isCitiesDirty = useMemo(() => {
+    const persistedSet = [...persistedCityIds].toSorted()
+    const draftSet = [...selectedCityIds].toSorted()
+    const setChanged =
+      persistedSet.length !== draftSet.length ||
+      persistedSet.some((id, index) => id !== draftSet[index])
+    return setChanged || primaryCityId !== persistedPrimaryId
+  }, [persistedCityIds, selectedCityIds, primaryCityId, persistedPrimaryId])
+
+  // Keep the app-store selection coherent with the persisted primary so the
+  // rest of the app (default view) reflects the user's primary city.
+  useEffect(() => {
+    if (!persistedPrimaryId) return
+    const primaryCity = cities.find((city) => city.id === persistedPrimaryId)
+    if (primaryCity) setSelectedCity(primaryCity)
+  }, [persistedPrimaryId, cities, setSelectedCity])
+
+  function handleAddCity(cityId: string) {
+    setCityIdsDraft((current) => {
+      const base = current ?? persistedCityIds
+      if (base.includes(cityId)) return base
+      return [...base, cityId]
+    })
+    // First city added with no primary chosen becomes the primary by default.
+    setPrimaryIdDraft((current) => {
+      const resolved = current === undefined ? persistedPrimaryId : current
+      return resolved ?? cityId
+    })
+  }
+
+  function handleRemoveCity(cityId: string) {
+    setCityIdsDraft((current) => (current ?? persistedCityIds).filter((id) => id !== cityId))
+    setPrimaryIdDraft((current) => {
+      const resolved = current === undefined ? persistedPrimaryId : current
+      if (resolved !== cityId) return resolved
+      // Removing the primary: promote the first remaining city, if any.
+      const remaining = (cityIdsDraft ?? persistedCityIds).filter((id) => id !== cityId)
+      return remaining[0] ?? null
+    })
+  }
+
+  function handleSetPrimary(cityId: string) {
+    setPrimaryIdDraft(cityId)
+  }
 
   async function handleSignOut() {
     await signOut()
@@ -71,7 +125,6 @@ export function ProfilePage() {
         display_name: displayName.trim() || null,
         child_name: childName.trim() || null,
         child_age: childAge.trim() ? Number(childAge) : null,
-        city_preference_id: selectedCity?.id ?? null,
       })
       await refreshProfile()
       setDisplayNameDraft(null)
@@ -80,6 +133,27 @@ export function ProfilePage() {
       toast.success("Profile updated!")
     } catch (error) {
       toast.error(humanizeSupabaseError(error, "Failed to update profile."))
+    }
+  }
+
+  async function handleSavePreferredCities() {
+    if (!user || !primaryCityId || selectedCityIds.length === 0) {
+      return
+    }
+
+    try {
+      await savePreferredCities.mutateAsync({
+        cityIds: selectedCityIds,
+        primaryCityId,
+      })
+      await refreshProfile()
+      const primaryCity = cities.find((city) => city.id === primaryCityId)
+      if (primaryCity) setSelectedCity(primaryCity)
+      setCityIdsDraft(null)
+      setPrimaryIdDraft(undefined)
+      toast.success("Preferred cities updated!")
+    } catch (error) {
+      toast.error(humanizeSupabaseError(error, "Failed to update preferred cities."))
     }
   }
 
@@ -166,34 +240,25 @@ export function ProfilePage() {
                 placeholder="e.g. 3"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>Preferred City</Label>
-              <Select
-                value={selectedCity?.id ?? ""}
-                onValueChange={(val) => {
-                  const city = resolveSelectedCity(cities, val)
-                  if (city) setSelectedCity(city)
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={isCitiesLoading ? "Loading cities..." : "Select city"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}, {c.state}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
             <Button onClick={handleSaveProfile} disabled={updateProfile.isPending}>
               {updateProfile.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </CardContent>
         </Card>
+
+        {/* Preferred cities */}
+        <ProfilePreferredCitiesCard
+          cities={cities}
+          selectedCityIds={selectedCityIds}
+          primaryCityId={primaryCityId}
+          isCitiesLoading={isCitiesLoading}
+          isSaving={savePreferredCities.isPending}
+          isDirty={isCitiesDirty}
+          onAddCity={handleAddCity}
+          onRemoveCity={handleRemoveCity}
+          onSetPrimary={handleSetPrimary}
+          onSave={handleSavePreferredCities}
+        />
 
         {/* Security */}
         {user.email && (
