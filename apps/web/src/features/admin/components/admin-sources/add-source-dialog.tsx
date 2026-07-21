@@ -90,7 +90,7 @@ export function AddSourceDialog({
               <Label>Type</Label>
               <Select
                 value={newSource.source_type}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   onSourceDraftPatch({ source_type: value as AdminSourceType })
                 }
               >
@@ -110,7 +110,7 @@ export function AddSourceDialog({
               <Label>Extraction</Label>
               <Select
                 value={newSource.extraction_mode}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   onSourceDraftPatch({ extraction_mode: value as ExtractionMode })
                 }
               >
@@ -130,7 +130,7 @@ export function AddSourceDialog({
               <Label>Processing</Label>
               <Select
                 value={newSource.processing_mode}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   onSourceDraftPatch({ processing_mode: value as EventProcessingMode })
                 }
               >
@@ -148,7 +148,7 @@ export function AddSourceDialog({
               <Label>City</Label>
               <Select
                 value={newSource.city_id}
-                onValueChange={(value) => onSourceDraftPatch({ city_id: value })}
+                onValueChange={(value: string) => onSourceDraftPatch({ city_id: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select city" />

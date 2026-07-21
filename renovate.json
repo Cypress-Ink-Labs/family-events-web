@@ -6,7 +6,7 @@
       "matchPackageNames": ["@cypress-ink-labs/**"],
       "groupName": "family-events packages",
       "rangeStrategy": "bump",
-      "automerge": false,
+      "automerge": true,
       "labels": ["dependencies", "family-events"]
     }
   ]

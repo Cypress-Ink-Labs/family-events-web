@@ -90,7 +90,7 @@ export function AdminInvitesHeader({
                   <Label>Expires in</Label>
                   <Select
                     value={newCode.expires}
-                    onValueChange={(value) => onExpiryChange(value as ExpiryOption)}
+                    onValueChange={(value: string) => onExpiryChange(value as ExpiryOption)}
                   >
                     <SelectTrigger>
                       <SelectValue />

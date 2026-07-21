@@ -42,7 +42,10 @@ export function CalendarViewHeader({
             Upcoming only
           </Label>
         </div>
-        <Tabs value={view} onValueChange={(nextView) => onViewChange(nextView as "month" | "week")}>
+        <Tabs
+          value={view}
+          onValueChange={(nextView: string) => onViewChange(nextView as "month" | "week")}
+        >
           <TabsList className="h-9">
             <TabsTrigger value="month" className="text-xs gap-1.5 px-3">
               <CalendarDays className="size-3.5" />

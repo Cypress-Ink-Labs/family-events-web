@@ -230,7 +230,10 @@ export function AdminInvitesPage() {
         />
       )}
 
-      <Tabs value={activeTab} onValueChange={(value) => setState({ activeTab: value as Tab })}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(value: string) => setState({ activeTab: value as Tab })}
+      >
         <TabsList>
           <TabsTrigger value="codes">Codes</TabsTrigger>
           <TabsTrigger value="requests" className="gap-2">

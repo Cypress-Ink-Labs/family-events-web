@@ -50,7 +50,9 @@ export function AdminEventSourceFields({
             render={({ field }) => (
               <Select
                 value={field.value ?? NONE_VALUE}
-                onValueChange={(value) => field.onChange(value === NONE_VALUE ? null : value)}
+                onValueChange={(value: string) =>
+                  field.onChange(value === NONE_VALUE ? null : value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="No source" />

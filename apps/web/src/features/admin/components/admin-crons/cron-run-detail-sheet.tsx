@@ -128,7 +128,7 @@ export function CronRunDetailSheet({
         <div className="flex min-h-0 flex-1 flex-col">
           {isRailwayRun && (
             <div className="border-b border-border/60 px-4 py-3">
-              <Tabs value={filter} onValueChange={(value) => setFilter(value as LogFilter)}>
+              <Tabs value={filter} onValueChange={(value: string) => setFilter(value as LogFilter)}>
                 <TabsList className="h-9">
                   <TabsTrigger value="all">All</TabsTrigger>
                   <TabsTrigger value="supabase">Supabase</TabsTrigger>

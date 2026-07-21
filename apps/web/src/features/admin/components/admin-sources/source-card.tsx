@@ -93,7 +93,7 @@ export function SourceCard({
             <Switch
               id={`source-${source.id}-active`}
               checked={source.is_active}
-              onCheckedChange={(checked) => onToggleActive(source.id, checked)}
+              onCheckedChange={(checked: boolean) => onToggleActive(source.id, checked)}
               aria-label={`Toggle ${source.name} active`}
             />
             <span className="text-xs text-muted-foreground">Active</span>
@@ -103,7 +103,7 @@ export function SourceCard({
             <Select
               value={source.processing_mode}
               disabled={!source.is_active}
-              onValueChange={(value) =>
+              onValueChange={(value: string) =>
                 onSetProcessingMode(source.id, value as EventProcessingMode)
               }
             >

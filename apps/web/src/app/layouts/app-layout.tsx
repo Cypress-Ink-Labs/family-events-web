@@ -82,7 +82,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:max-w-xs">
             <Select
               value={selectedCity?.id ?? ""}
-              onValueChange={(val) => {
+              onValueChange={(val: string) => {
                 const city = cities.find((c) => c.id === val)
                 if (city) setSelectedCity(city)
               }}

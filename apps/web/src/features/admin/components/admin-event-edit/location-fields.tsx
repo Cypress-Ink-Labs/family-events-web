@@ -40,7 +40,9 @@ export function AdminEventLocationFields({
             render={({ field }) => (
               <Select
                 value={field.value ?? NONE_VALUE}
-                onValueChange={(value) => field.onChange(value === NONE_VALUE ? null : value)}
+                onValueChange={(value: string) =>
+                  field.onChange(value === NONE_VALUE ? null : value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="No city" />
@@ -70,7 +72,7 @@ export function AdminEventLocationFields({
             render={({ field }) => (
               <Select
                 value={field.value === null ? NONE_VALUE : String(field.value)}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   field.onChange(value === NONE_VALUE ? null : value === "true")
                 }
               >

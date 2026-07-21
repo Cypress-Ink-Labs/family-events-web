@@ -175,7 +175,7 @@ export function AdminEventsToolbar({
       </div>
       <Select
         value={String(pageSize)}
-        onValueChange={(value) => onPageSizeChange(Number(value) as AdminEventsPageSize)}
+        onValueChange={(value: string) => onPageSizeChange(Number(value) as AdminEventsPageSize)}
       >
         <SelectTrigger className="min-h-[44px] w-auto gap-1.5 text-xs" aria-label="Rows per page">
           <SelectValue />
