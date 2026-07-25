@@ -147,7 +147,9 @@ export function buildEnrichedQueryKey(options: UseEnrichedEventsOptions) {
   })
 }
 
-async function fetchEnrichedEvents(options: UseEnrichedEventsOptions): Promise<EventWithDetails[]> {
+export async function fetchEnrichedEvents(
+  options: UseEnrichedEventsOptions
+): Promise<EventWithDetails[]> {
   // Short-circuit empty id arrays — RPC would return 0 rows anyway, skip the round-trip.
   if (options.eventIds && options.eventIds.length === 0) {
     return []

@@ -1,6 +1,9 @@
 import { useMemo } from "react"
-import { useInfiniteQuery } from "@tanstack/react-query"
-import { useEnrichedEvents } from "@/features/events/hooks/use-enriched-events"
+import { useInfiniteQuery, useQueries } from "@tanstack/react-query"
+import {
+  buildEnrichedQueryKey,
+  fetchEnrichedEvents,
+} from "@/features/events/hooks/use-enriched-events"
 import { searchEvents } from "@/features/explore/lib/search-api"
 import {
   indexEnrichedById,
@@ -28,12 +31,12 @@ interface UseSearchEventsEnrichedResult {
 
 /**
  * Composes search_events (filtered/sorted/paginated id ordering) with
- * events_enriched (tags, ratings, favorite state) via a single batched
- * enrichment call per loaded page of ids.
+ * events_enriched (tags, ratings, favorite state) via one batched enrichment
+ * query per loaded search page of ids.
  *
- * Enrichment is BATCHED: one events_enriched call covers all ids currently
- * loaded across all pages — not one call per event. React Query deduplicates
- * this automatically because the by-ids key is sorted and stable.
+ * Enrichment is BATCHED per page: each events_enriched call covers the ids
+ * from one loaded search page — never one call per event. Its stable by-ids
+ * query key keeps earlier page data cached when more results load.
  */
 export function useSearchEventsEnriched({
   searchParams,
@@ -65,20 +68,30 @@ export function useSearchEventsEnriched({
     [infiniteData]
   )
 
-  // Collect all currently-loaded event ids for a single batched enrichment call
-  const allEventIds = useMemo(() => allSearchEvents.map((e) => e.id), [allSearchEvents])
+  // --- Enrichment queries (one batch per loaded search page) ---
+  // Each page keeps its own stable by-ids key, so loading another page does not
+  // refetch enrichment for pages already in cache.
+  const enrichmentQueries = useQueries({
+    queries: (infiniteData?.pages ?? []).map((page) => {
+      const pageIds = page.events.map((event) => event.id)
+      const options = { eventIds: pageIds, userId }
 
-  // --- Enrichment query (batched over all loaded ids) ---
-  // One call per set of loaded ids — never one call per event (N+1 avoided).
-  // Disabled when there are no ids to enrich.
-  const { data: enrichedData, isFetching: isEnrichmentFetching } = useEnrichedEvents({
-    eventIds: allEventIds,
-    userId,
-    enabled: allEventIds.length > 0,
+      return {
+        queryKey: buildEnrichedQueryKey(options),
+        queryFn: () => fetchEnrichedEvents(options),
+      }
+    }),
   })
 
+  const enrichedData = useMemo(
+    () => enrichmentQueries.flatMap((query) => query.data ?? []),
+    [enrichmentQueries]
+  )
+
   // Build an id → enriched event index for O(1) merge lookups
-  const enrichedById = useMemo(() => indexEnrichedById(enrichedData ?? []), [enrichedData])
+  const enrichedById = useMemo(() => indexEnrichedById(enrichedData), [enrichedData])
+
+  const isEnriching = enrichmentQueries.some((query) => query.isFetching)
 
   // Merge: search order preserved; enrichment fields replaced where available;
   // fallback to raw search row when enrichment is missing for an id.
@@ -91,7 +104,7 @@ export function useSearchEventsEnriched({
     events,
     isLoading: isSearchLoading,
     isError: isSearchError,
-    isEnriching: isEnrichmentFetching,
+    isEnriching,
     hasNextPage: hasNextPage ?? false,
     isFetchingNextPage,
     fetchNextPage,
