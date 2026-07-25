@@ -1,6 +1,17 @@
 // Push-only service worker — no caching to avoid conflicts with Vite HMR.
 // Receives push events from the server and shows notifications.
 
+// Mirror of resolveAppUrl in src/infrastructure/safe-url.ts — service workers cannot import bundled modules; keep in sync.
+function resolveAppUrl(raw, origin) {
+  try {
+    const u = new URL(typeof raw === "string" && raw ? raw : "/", origin)
+    return u.origin === origin ? u.pathname + u.search + u.hash : "/"
+  } catch {
+    return "/"
+  }
+}
+
+
 self.addEventListener("push", (event) => {
   if (!event.data) return
 
@@ -18,7 +29,7 @@ self.addEventListener("push", (event) => {
       body,
       icon: icon || "/brand/icon-192.png",
       badge: "/brand/icon-192.png",
-      data: { url: url || "/" },
+      data: { url: resolveAppUrl(url, self.location.origin) },
       tag: payload.tag || undefined,
     })
   )
@@ -27,7 +38,7 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close()
 
-  const url = event.notification.data?.url || "/"
+  const url = resolveAppUrl(event.notification.data?.url, self.location.origin)
 
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
