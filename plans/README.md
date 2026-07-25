@@ -25,27 +25,27 @@ published)`.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 026 | Derive planner "today" from the selected city's timezone | P1 | S | — | DONE — `advisor/026-plan-today-city-timezone` (`817dd35`), unmerged |
-| 027 | Constrain push-notification click navigation to same-origin URLs | P1 | S | — | DONE — `advisor/027-push-click-same-origin` (`e3d44c0`), unmerged |
-| 028 | Handle rejected realtime `setAuth()` before subscribing (events + presence) | P2 | S | — | DONE — `advisor/028-realtime-setauth-rejection` (`7fdc3ca`), unmerged |
-| 029 | Make admin realtime cache updates query-aware | P1 | M | 028 | DONE — `advisor/029-admin-realtime-query-aware-cache` (`6d1c516`, stacked on 028), unmerged |
-| 030 | Add a sync generation guard to the auth store | P1 | M | — | DONE — `advisor/030-auth-store-sync-generation` (`bcddff3`), unmerged |
-| 031 | Enrich only the newly loaded Explore page | P2 | M | — | DONE — `advisor/031-explore-per-page-enrichment` (`cb5faac`), unmerged |
-| 032 | Paginate the admin comments and ratings collections | P2 | M | — | DONE — `advisor/032-admin-comments-ratings-pagination` (`da1efa9`), unmerged |
-| 033 | Route the public preview hero through SmartImage | P2 | S | — | DONE — `advisor/033-public-preview-hero-smart-image` (`b89cf66`), unmerged |
-| 034 | Bound the admin bulk-operation fan-out | P2 | M | — | DONE — `advisor/034-admin-bulk-concurrency-limit` (`d3c7e82`), unmerged |
-| 035 | Declare and hash the production build environment in Turbo | P1 | S | — | DONE — `advisor/035-turbo-build-env-hashing` (`fb82d84`), unmerged |
-| 036 | Override `brace-expansion` to the patched version | P1 | S | — | DONE — `advisor/036-brace-expansion-override` (`a736a01`), unmerged |
-| 037 | Consolidate event imagery on the canonical resolver | P3 | S | — | DONE — `advisor/037-canonical-event-image-resolver` (`ab9014d`), unmerged |
-| 038 | Remove the pnpm 11 build-policy setting that no longer exists | P3 | S | — | DONE — `advisor/038-remove-pnpm-onlybuiltdependencies` (`a0054d2`), unmerged |
-| 039 | Delete the orphaned `scripts/dev-all.sh` | P3 | S | — | DONE — `advisor/039-delete-orphaned-dev-all-script` (`3e3f410`), unmerged |
-| 040 | Reconcile agent/design docs with the actual workspace | P2 | S | — | DONE — `advisor/040-docs-workspace-reconciliation` (`5f73019`), unmerged |
-| 041 | Surface why each plan recommendation fits (D1, web-only build) | P3 | S | — | DONE — `advisor/041-plan-reason-chips` (`8da139a`), unmerged |
-| 042 | Complete the plan→Explore filter handoff (D2, web-only build) | P3 | M | — | DONE — `advisor/042-plan-explore-filter-handoff` (`0fff1f8`), unmerged |
-| 043 | Add a preferred-city quick switch to the city selector (D5, web-only first phase) | P3 | M | — | DONE — `advisor/043-city-selector-preferred-quick-switch` (`4466a0f`), unmerged |
-| 044 | SPIKE: multi-event plan share snapshot (D3) | P3 | M | — | DONE — `advisor/044-spike-plan-share-snapshot` (`59b1c76`), unmerged |
-| 045 | SPIKE: saved / planned / attended lifecycle (D4) | P3 | M | — | DONE — `advisor/045-spike-saved-planned-attended` (`18731aa`), unmerged |
-| 046 | SPIKE: structured event-correction intake (D6) | P3 | M | — | DONE — `advisor/046-spike-event-corrections` (`0b9ae19`), unmerged |
+| 026 | Derive planner "today" from the selected city's timezone | P1 | S | — | DONE — `advisor/026-plan-today-city-timezone` (`817dd35`), merged |
+| 027 | Constrain push-notification click navigation to same-origin URLs | P1 | S | — | DONE — `advisor/027-push-click-same-origin` (`e3d44c0`), merged |
+| 028 | Handle rejected realtime `setAuth()` before subscribing (events + presence) | P2 | S | — | DONE — `advisor/028-realtime-setauth-rejection` (`7fdc3ca`), merged |
+| 029 | Make admin realtime cache updates query-aware | P1 | M | 028 | DONE — `advisor/029-admin-realtime-query-aware-cache` (`6d1c516`, stacked on 028), merged |
+| 030 | Add a sync generation guard to the auth store | P1 | M | — | DONE — `advisor/030-auth-store-sync-generation` (`bcddff3`), merged |
+| 031 | Enrich only the newly loaded Explore page | P2 | M | — | DONE — `advisor/031-explore-per-page-enrichment` (`cb5faac`), merged |
+| 032 | Paginate the admin comments and ratings collections | P2 | M | — | DONE — `advisor/032-admin-comments-ratings-pagination` (`da1efa9`), merged |
+| 033 | Route the public preview hero through SmartImage | P2 | S | — | DONE — `advisor/033-public-preview-hero-smart-image` (`b89cf66`), merged |
+| 034 | Bound the admin bulk-operation fan-out | P2 | M | — | DONE — `advisor/034-admin-bulk-concurrency-limit` (`d3c7e82`), merged |
+| 035 | Declare and hash the production build environment in Turbo | P1 | S | — | DONE — `advisor/035-turbo-build-env-hashing` (`fb82d84`), merged |
+| 036 | Override `brace-expansion` to the patched version | P1 | S | — | DONE — `advisor/036-brace-expansion-override` (`a736a01`), merged |
+| 037 | Consolidate event imagery on the canonical resolver | P3 | S | — | DONE — `advisor/037-canonical-event-image-resolver` (`ab9014d`), merged |
+| 038 | Remove the pnpm 11 build-policy setting that no longer exists | P3 | S | — | DONE — `advisor/038-remove-pnpm-onlybuiltdependencies` (`a0054d2`), merged |
+| 039 | Delete the orphaned `scripts/dev-all.sh` | P3 | S | — | DONE — `advisor/039-delete-orphaned-dev-all-script` (`3e3f410`), merged |
+| 040 | Reconcile agent/design docs with the actual workspace | P2 | S | — | DONE — `advisor/040-docs-workspace-reconciliation` (`5f73019`), merged |
+| 041 | Surface why each plan recommendation fits (D1, web-only build) | P3 | S | — | DONE — `advisor/041-plan-reason-chips` (`8da139a`), merged |
+| 042 | Complete the plan→Explore filter handoff (D2, web-only build) | P3 | M | — | DONE — `advisor/042-plan-explore-filter-handoff` (`0fff1f8`), merged |
+| 043 | Add a preferred-city quick switch to the city selector (D5, web-only first phase) | P3 | M | — | DONE — `advisor/043-city-selector-preferred-quick-switch` (`4466a0f`), merged |
+| 044 | SPIKE: multi-event plan share snapshot (D3) | P3 | M | — | DONE — `advisor/044-spike-plan-share-snapshot` (`59b1c76`), merged |
+| 045 | SPIKE: saved / planned / attended lifecycle (D4) | P3 | M | — | DONE — `advisor/045-spike-saved-planned-attended` (`18731aa`), merged |
+| 046 | SPIKE: structured event-correction intake (D6) | P3 | M | — | DONE — `advisor/046-spike-event-corrections` (`0b9ae19`), merged |
 
 ### Round 3 dependency notes
 
@@ -168,6 +168,16 @@ tracked — no new plan written:
 | 018 | Prune stale tanstack-virtual `minimumReleaseAgeExclude` entries | P3 | S | — | DONE — merged `31c5c78` ✅ 2026-06-18 |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
+
+- **2026-07-25 (026–046 merged)** — All 21 advisor branches merged to `main` (HEAD `a615a55`) at the
+  maintainer's direction. The maintainer's concurrent curated commit `8b299a4` (partial, stylistically
+  varied versions of 028/030/035/036/043 + this index) collided with three merges; conflicts in
+  `use-admin-events-realtime.ts`, `use-admin-dashboard-presence.ts` (028) and `auth-store.test.ts`
+  (030) were resolved in favor of the reviewed branch versions — the variants were functionally
+  identical, and 029's stack required 028's exact text. Auto-merges of 035/036/038/043 spot-checked
+  correct (turbo env list, brace-expansion override, no `onlyBuiltDependencies`, full city-selector
+  grouping). `pnpm install` + `verify:web` exit 0 on the merged tree. Worktrees removed and merged
+  branches deleted after the gate. Not pushed.
 
 ## Execution log
 
