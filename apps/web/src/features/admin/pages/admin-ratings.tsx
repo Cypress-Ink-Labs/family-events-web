@@ -1,4 +1,5 @@
 import { Trash2 } from "lucide-react"
+import { useState } from "react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { ClientDate } from "@/shared/components/client-date"
@@ -9,10 +10,15 @@ import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
 import { Toolbar } from "@/components/v2"
 
+const ADMIN_RATING_PAGE_SIZE = 50
+
 export function AdminRatingsPage() {
-  const { data: ratings = [] } = useAdminRatings()
+  const [page, setPage] = useState(0)
+  const { data = { rows: [], totalCount: 0 } } = useAdminRatings(page)
+  const { rows: ratings, totalCount } = data
   const deleteRating = useDeleteAdminRating()
   const { toastError } = useAdminToast()
+  const pageCount = Math.max(1, Math.ceil(totalCount / ADMIN_RATING_PAGE_SIZE))
 
   async function handleRemove(id: string) {
     try {
@@ -30,7 +36,7 @@ export function AdminRatingsPage() {
 
   return (
     <div className="space-y-6">
-      <Toolbar title="Ratings" subtitle={`${ratings.length} ratings · ${avg} avg`} />
+      <Toolbar title="Ratings" subtitle={`${totalCount} ratings · ${avg} avg on this page`} />
 
       <div className="space-y-3">
         {ratings.map((r) => (
@@ -69,6 +75,28 @@ export function AdminRatingsPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="flex items-center justify-between">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage((currentPage) => currentPage - 1)}
+          disabled={page === 0}
+        >
+          Previous
+        </Button>
+        <span className="text-sm text-muted-foreground">
+          Page {page + 1} of {pageCount}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage((currentPage) => currentPage + 1)}
+          disabled={page >= pageCount - 1}
+        >
+          Next
+        </Button>
       </div>
     </div>
   )

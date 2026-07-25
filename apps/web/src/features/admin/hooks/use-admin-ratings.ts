@@ -1,11 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
 import { deleteAdminRating, listAdminRatings } from "@/features/admin/api/ratings"
 
-export function useAdminRatings() {
+export function useAdminRatings(page: number) {
   return useQuery({
-    queryKey: qk.admin.ratings,
-    queryFn: listAdminRatings,
+    queryKey: [...qk.admin.ratings, page],
+    queryFn: () => listAdminRatings(page),
+    placeholderData: keepPreviousData,
   })
 }
 
