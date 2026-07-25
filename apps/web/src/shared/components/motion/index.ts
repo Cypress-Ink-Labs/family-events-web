@@ -3,10 +3,4 @@ export { FadeSwap } from "./fade-swap"
 export { StaggerList, StaggerItem } from "./stagger-children"
 export { SmartImage } from "./smart-image"
 export { PageTransition } from "./page-transition"
-export {
-  fadeInUpVariants,
-  fadeOnlyVariants,
-  staggerContainerVariants,
-  staggerItemVariants,
-  popInVariants,
-} from "./motion-presets"
+export { popInVariants } from "./motion-presets"

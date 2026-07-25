@@ -7,12 +7,6 @@ import {
   retrySourceQueue,
 } from "@/features/admin/api/source-queue"
 
-export type {
-  DeadSourceQueueRow,
-  SourceQueueStatus,
-  SourceQueueSummaryRow,
-} from "@/features/admin/api/source-queue"
-
 export function useAdminSourceQueueSummary() {
   return useQuery({
     queryKey: qk.admin.sourceQueueSummary,

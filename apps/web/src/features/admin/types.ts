@@ -1,5 +1,4 @@
 import type {
-  City,
   Comment,
   EventAiTrace,
   EventAiTraceWithParsed,
@@ -210,8 +209,6 @@ export function railwayCronRunToCronRun(r: RailwayCronRun): CronRun {
     provider: "railway",
   }
 }
-
-export type { City }
 
 export interface ApprovedAiModel {
   id: string

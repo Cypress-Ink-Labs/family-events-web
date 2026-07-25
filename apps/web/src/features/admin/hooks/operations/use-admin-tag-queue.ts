@@ -7,12 +7,6 @@ import {
   retryTagQueue,
 } from "@/features/admin/api/tag-queue"
 
-export type {
-  DeadTagQueueRow,
-  TagQueueStatus,
-  TagQueueSummaryRow,
-} from "@/features/admin/api/tag-queue"
-
 // Live observability for the tag-event durable queue. Refreshes on a 10s
 // cadence — fast enough to feel live while the cron worker runs every minute,
 // slow enough that 4-tab admins don't hammer the DB.
