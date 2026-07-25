@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import type { City } from "@/shared/types"
 import { Link, NavLink, Outlet, useNavigate } from "react-router"
 import { m } from "motion/react"
 import {
@@ -26,7 +27,10 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select"
@@ -37,6 +41,7 @@ import { PageTransition } from "@/shared/components/motion"
 import { BrandLogo } from "@/shared/components/brand-logo"
 import { ThemeToggle } from "@/shared/components/theme-toggle"
 import { NotificationBell } from "@/features/notifications/components/notification-bell"
+import { usePreferredCities } from "@/features/profile/hooks/use-preferred-cities"
 
 const PRIMARY_TABS = [
   { to: HOME_PATH, label: "Plan", icon: Home, auth: true },
@@ -57,10 +62,51 @@ interface AppLayoutProps {
   children?: ReactNode
 }
 
+export function orderCitiesForSelect(
+  cities: City[],
+  preferredIds: readonly string[],
+  primaryId: string | null
+): City[] {
+  const preferredIdSet = new Set(preferredIds)
+  const citiesById = new Map(cities.map((city) => [city.id, city]))
+  const orderedCities: City[] = []
+  const addedCityIds = new Set<string>()
+
+  function addCity(cityId: string) {
+    const city = citiesById.get(cityId)
+    if (city && !addedCityIds.has(cityId)) {
+      orderedCities.push(city)
+      addedCityIds.add(cityId)
+    }
+  }
+
+  if (primaryId && preferredIdSet.has(primaryId)) {
+    addCity(primaryId)
+  }
+
+  for (const cityId of preferredIds) {
+    addCity(cityId)
+  }
+
+  for (const city of cities) {
+    if (!preferredIdSet.has(city.id)) {
+      addCity(city.id)
+    }
+  }
+
+  return orderedCities
+}
+
 export function AppLayout({ children }: AppLayoutProps) {
   const navigate = useNavigate()
   const { user, profile, signOut, isAdmin } = useAuth()
   const { selectedCity, setSelectedCity, cities } = useApp()
+  const { preferredCities, primaryCityId } = usePreferredCities(user?.id)
+  const preferredIds = preferredCities.map((entry) => entry.cityId)
+  const orderedCities = orderCitiesForSelect(cities, preferredIds, primaryCityId)
+  const preferredIdSet = new Set(preferredIds)
+  const activePreferredCities = orderedCities.filter((city) => preferredIdSet.has(city.id))
+  const remainingCities = orderedCities.filter((city) => !preferredIdSet.has(city.id))
   const { isBelow } = useBreakpoint()
   const isMobile = isBelow("md")
 
@@ -91,11 +137,30 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <SelectValue placeholder="Select city" />
               </SelectTrigger>
               <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.id} value={city.id}>
-                    {city.name}
-                  </SelectItem>
-                ))}
+                {activePreferredCities.length > 0 ? (
+                  <>
+                    <SelectGroup>
+                      <SelectLabel>Preferred</SelectLabel>
+                      {activePreferredCities.map((city) => (
+                        <SelectItem key={city.id} value={city.id}>
+                          {city.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                    {remainingCities.length > 0 ? <SelectSeparator /> : null}
+                    {remainingCities.map((city) => (
+                      <SelectItem key={city.id} value={city.id}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </>
+                ) : (
+                  orderedCities.map((city) => (
+                    <SelectItem key={city.id} value={city.id}>
+                      {city.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
