@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/infrastructure/supabase/client"
+import { Sentry } from "@/infrastructure/observability/sentry"
 import { useAuthStore } from "@/features/auth/stores/auth-store"
 
 export interface AdminDashboardPresenceUser {
@@ -67,14 +68,25 @@ export function useAdminDashboardPresence() {
       online_at: new Date().toISOString(),
     }
 
-    void supabase.realtime.setAuth().then(() => {
-      if (closed) return
-      channel.subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          void channel.track(payload)
+    void supabase.realtime.setAuth().then(
+      () => {
+        if (closed) return
+        channel.subscribe((status) => {
+          if (status === "SUBSCRIBED") {
+            void channel.track(payload).catch((error) => {
+              if (!closed) {
+                Sentry.captureException(error, { tags: { area: "admin.presence" } })
+              }
+            })
+          }
+        })
+      },
+      (error) => {
+        if (!closed) {
+          Sentry.captureException(error, { tags: { area: "admin.presence" } })
         }
-      })
-    })
+      }
+    )
 
     return () => {
       closed = true

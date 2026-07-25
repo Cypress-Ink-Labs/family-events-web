@@ -1,14 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalPassThroughEnv": [
-    "ANDROID_GOOGLE_WEB_CLIENT_ID",
-    "ANDROID_HOME",
-    "ANDROID_SDK_ROOT",
-    "JAVA_HOME",
-    "MAP_STYLE_URL",
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_URL"
-  ],
   "tasks": {
     "dev": {
       "cache": false,
@@ -34,7 +25,15 @@
     },
     "@cypress-ink-labs/web#build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "../../node_modules/.tmp/apps-web*.tsbuildinfo"]
+      "outputs": ["dist/**", "../../node_modules/.tmp/apps-web*.tsbuildinfo"],
+      "env": [
+        "SENTRY_AUTH_TOKEN",
+        "SENTRY_ORG",
+        "SENTRY_PROJECT",
+        "SENTRY_RELEASE",
+        "RAILWAY_GIT_COMMIT_SHA",
+        "VITE_GOOGLE_SITE_VERIFICATION"
+      ]
     },
     "@cypress-ink-labs/design-system#build": {
       "dependsOn": ["^build"],

@@ -25,27 +25,27 @@ published)`.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| 026 | Derive planner "today" from the selected city's timezone | P1 | S | — | TODO |
-| 027 | Constrain push-notification click navigation to same-origin URLs | P1 | S | — | TODO |
-| 028 | Handle rejected realtime `setAuth()` before subscribing (events + presence) | P2 | S | — | TODO |
-| 029 | Make admin realtime cache updates query-aware | P1 | M | 028 | TODO |
-| 030 | Add a sync generation guard to the auth store | P1 | M | — | TODO |
-| 031 | Enrich only the newly loaded Explore page | P2 | M | — | TODO |
-| 032 | Paginate the admin comments and ratings collections | P2 | M | — | TODO |
-| 033 | Route the public preview hero through SmartImage | P2 | S | — | TODO |
-| 034 | Bound the admin bulk-operation fan-out | P2 | M | — | TODO |
-| 035 | Declare and hash the production build environment in Turbo | P1 | S | — | TODO |
-| 036 | Override `brace-expansion` to the patched version | P1 | S | — | TODO |
-| 037 | Consolidate event imagery on the canonical resolver | P3 | S | — | TODO |
-| 038 | Remove the pnpm 11 build-policy setting that no longer exists | P3 | S | — | TODO |
-| 039 | Delete the orphaned `scripts/dev-all.sh` | P3 | S | — | TODO |
-| 040 | Reconcile agent/design docs with the actual workspace | P2 | S | — | TODO |
-| 041 | Surface why each plan recommendation fits (D1, web-only build) | P3 | S | — | TODO |
-| 042 | Complete the plan→Explore filter handoff (D2, web-only build) | P3 | M | — | TODO |
-| 043 | Add a preferred-city quick switch to the city selector (D5, web-only first phase) | P3 | M | — | TODO |
-| 044 | SPIKE: multi-event plan share snapshot (D3) | P3 | M | — | TODO |
-| 045 | SPIKE: saved / planned / attended lifecycle (D4) | P3 | M | — | TODO |
-| 046 | SPIKE: structured event-correction intake (D6) | P3 | M | — | TODO |
+| 026 | Derive planner "today" from the selected city's timezone | P1 | S | — | DONE — `advisor/026-plan-today-city-timezone` (`817dd35`), unmerged |
+| 027 | Constrain push-notification click navigation to same-origin URLs | P1 | S | — | DONE — `advisor/027-push-click-same-origin` (`e3d44c0`), unmerged |
+| 028 | Handle rejected realtime `setAuth()` before subscribing (events + presence) | P2 | S | — | DONE — `advisor/028-realtime-setauth-rejection` (`7fdc3ca`), unmerged |
+| 029 | Make admin realtime cache updates query-aware | P1 | M | 028 | DONE — `advisor/029-admin-realtime-query-aware-cache` (`6d1c516`, stacked on 028), unmerged |
+| 030 | Add a sync generation guard to the auth store | P1 | M | — | DONE — `advisor/030-auth-store-sync-generation` (`bcddff3`), unmerged |
+| 031 | Enrich only the newly loaded Explore page | P2 | M | — | DONE — `advisor/031-explore-per-page-enrichment` (`cb5faac`), unmerged |
+| 032 | Paginate the admin comments and ratings collections | P2 | M | — | DONE — `advisor/032-admin-comments-ratings-pagination` (`da1efa9`), unmerged |
+| 033 | Route the public preview hero through SmartImage | P2 | S | — | DONE — `advisor/033-public-preview-hero-smart-image` (`b89cf66`), unmerged |
+| 034 | Bound the admin bulk-operation fan-out | P2 | M | — | DONE — `advisor/034-admin-bulk-concurrency-limit` (`d3c7e82`), unmerged |
+| 035 | Declare and hash the production build environment in Turbo | P1 | S | — | DONE — `advisor/035-turbo-build-env-hashing` (`fb82d84`), unmerged |
+| 036 | Override `brace-expansion` to the patched version | P1 | S | — | DONE — `advisor/036-brace-expansion-override` (`a736a01`), unmerged |
+| 037 | Consolidate event imagery on the canonical resolver | P3 | S | — | DONE — `advisor/037-canonical-event-image-resolver` (`ab9014d`), unmerged |
+| 038 | Remove the pnpm 11 build-policy setting that no longer exists | P3 | S | — | DONE — `advisor/038-remove-pnpm-onlybuiltdependencies` (`a0054d2`), unmerged |
+| 039 | Delete the orphaned `scripts/dev-all.sh` | P3 | S | — | DONE — `advisor/039-delete-orphaned-dev-all-script` (`3e3f410`), unmerged |
+| 040 | Reconcile agent/design docs with the actual workspace | P2 | S | — | DONE — `advisor/040-docs-workspace-reconciliation` (`5f73019`), unmerged |
+| 041 | Surface why each plan recommendation fits (D1, web-only build) | P3 | S | — | DONE — `advisor/041-plan-reason-chips` (`8da139a`), unmerged |
+| 042 | Complete the plan→Explore filter handoff (D2, web-only build) | P3 | M | — | DONE — `advisor/042-plan-explore-filter-handoff` (`0fff1f8`), unmerged |
+| 043 | Add a preferred-city quick switch to the city selector (D5, web-only first phase) | P3 | M | — | DONE — `advisor/043-city-selector-preferred-quick-switch` (`4466a0f`), unmerged |
+| 044 | SPIKE: multi-event plan share snapshot (D3) | P3 | M | — | DONE — `advisor/044-spike-plan-share-snapshot` (`59b1c76`), unmerged |
+| 045 | SPIKE: saved / planned / attended lifecycle (D4) | P3 | M | — | DONE — `advisor/045-spike-saved-planned-attended` (`18731aa`), unmerged |
+| 046 | SPIKE: structured event-correction intake (D6) | P3 | M | — | DONE — `advisor/046-spike-event-corrections` (`0b9ae19`), unmerged |
 
 ### Round 3 dependency notes
 
@@ -53,7 +53,12 @@ published)`.
 - 032 explicitly **excludes `admin/api/access.ts` pagination** — its selection/bulk-delete
   semantics need a separate design; recorded as a follow-up in the plan's Maintenance
   notes and here so it is not lost.
-- **044-046 are design spikes** ending in RFCs under `docs/rfcs/`, not shipped features.
+- **044-046 are design spikes** ending in RFCs under `docs/rfcs/` (written:
+  `2026-07-24-plan-share-snapshot.md`, `2026-07-24-saved-planned-attended.md`,
+  `2026-07-24-event-corrections.md`), not shipped features.
+- **Round 3 follow-up findings for the next audit** (surfaced during execution, not planned):
+  react-router `GHSA-qwww-vcr4-c8h2` (needs >=8.3.0) and js-yaml `GHSA-pm4m-ph32-ghv5`
+  (existing `>=4.1.2` override insufficient) — both Renovate/dependency-plan territory.
 - **041-043 are web-only direction builds**; 043's combined cross-city querying is a
   later, separately-approved phase.
 - Two spec drifts were found and resolved at plan-writing time (2026-07-24), recorded in
@@ -165,6 +170,24 @@ tracked — no new plan written:
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (one-line reason) | REJECTED (one-line rationale)
 
 ## Execution log
+
+- **2026-07-24 (026–046 swarm execute)** — All 21 Round-3 plans executed by 21 dispatched executors in
+  isolated worktrees (20 parallel + 029 stacked on 028's branch after its review), then reviewed and
+  **APPROVED** by the advisor (done criteria re-verified, scope checked per diff, full diffs read,
+  tests audited). Main checkout kept pristine; an executor edit-path anomaly (bare relative paths
+  resolving to the repo root) sent early edits into the main tree — the advisor reverted it and
+  broadcast a path-discipline correction; final main-tree check clean. Two REVISE rounds: **026**
+  (the plan's own suggested 23:00Z fixture was non-discriminating — Chicago is same-date then;
+  fixed to 02:00Z with executor mutation check) and **043** (primary-mirror ref not reset when
+  preferences are cleared; one-line fix + test). **036**: advisor superseded the literal
+  "0 vulnerabilities" criterion — two NEW advisories published after plan-writing are Renovate
+  scope: js-yaml `GHSA-pm4m-ph32-ghv5` (29 paths via read-yaml-file) and react-router
+  `GHSA-qwww-vcr4-c8h2` (patched >=8.3.0); 036's objective (brace-expansion `GHSA-mh99-v99m-4gvg`
+  absent from audit) verified in the worktree. Three executors (029/032/042) died to harness stream
+  stalls AFTER committing; the advisor re-ran their full gates green (505/510/510 web tests,
+  check + build). Branches are unmerged — merging is the user's call. Merge-order notes: land
+  **028 before 029** (029's branch already includes 028); **036 and 038** both edit
+  `pnpm-workspace.yaml` (different blocks — whichever lands second may see a trivial conflict).
 
 - **2026-06-17** — 001, 002, 006, 007 executed by dispatched `general-purpose` executors in isolated
   worktrees, then reviewed and **APPROVED** by the advisor (criteria re-run, scope verified, diffs read,

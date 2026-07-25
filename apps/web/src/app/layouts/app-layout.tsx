@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import type { City } from "@/shared/types"
 import { Link, NavLink, Outlet, useNavigate } from "react-router"
 import { m } from "motion/react"
 import {
@@ -55,6 +56,41 @@ const DESKTOP_NAV_ITEMS = [
 
 interface AppLayoutProps {
   children?: ReactNode
+}
+
+export function orderCitiesForSelect(
+  cities: City[],
+  preferredIds: readonly string[],
+  primaryId: string | null
+): City[] {
+  const preferredIdSet = new Set(preferredIds)
+  const citiesById = new Map(cities.map((city) => [city.id, city]))
+  const orderedCities: City[] = []
+  const addedCityIds = new Set<string>()
+
+  function addCity(cityId: string) {
+    const city = citiesById.get(cityId)
+    if (city && !addedCityIds.has(cityId)) {
+      orderedCities.push(city)
+      addedCityIds.add(cityId)
+    }
+  }
+
+  if (primaryId && preferredIdSet.has(primaryId)) {
+    addCity(primaryId)
+  }
+
+  for (const cityId of preferredIds) {
+    addCity(cityId)
+  }
+
+  for (const city of cities) {
+    if (!preferredIdSet.has(city.id)) {
+      addCity(city.id)
+    }
+  }
+
+  return orderedCities
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
