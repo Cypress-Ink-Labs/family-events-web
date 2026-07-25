@@ -1,18 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
 import {
   deleteAdminComment,
   listAdminComments,
   updateAdminComment,
+  type AdminCommentFilter,
 } from "@/features/admin/api/comments"
 import type { Comment } from "@/shared/types"
 
 export type { AdminComment } from "@/features/admin/types"
 
-export function useAdminComments() {
+export function useAdminComments(page: number, filter: AdminCommentFilter) {
   return useQuery({
-    queryKey: qk.admin.comments,
-    queryFn: listAdminComments,
+    queryKey: [...qk.admin.comments, page, filter],
+    queryFn: () => listAdminComments(page, filter),
+    placeholderData: keepPreviousData,
   })
 }
 

@@ -3,6 +3,7 @@ import { describe, it, expect, vi, afterEach } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { qk } from "@/infrastructure/queries/query-keys"
+import type { AdminComment } from "@/features/admin/types"
 
 vi.mock("@/features/admin/api/comments", () => ({
   updateAdminComment: vi.fn().mockResolvedValue(undefined),
@@ -10,8 +11,41 @@ vi.mock("@/features/admin/api/comments", () => ({
   listAdminComments: vi.fn(),
 }))
 
-import { deleteAdminComment, updateAdminComment } from "@/features/admin/api/comments"
-import { useDeleteAdminComment, useUpdateAdminComment } from "./use-admin-comments"
+import {
+  deleteAdminComment,
+  listAdminComments,
+  updateAdminComment,
+  type AdminCommentPage,
+} from "@/features/admin/api/comments"
+import {
+  useAdminComments,
+  useDeleteAdminComment,
+  useUpdateAdminComment,
+} from "./use-admin-comments"
+
+type CommentQueryArgs = { page: number; filter: "all" | "flagged" }
+
+const firstPage: AdminCommentPage = {
+  rows: [{ id: "comment-page-1" } as AdminComment],
+  totalCount: 101,
+}
+const secondPage: AdminCommentPage = {
+  rows: [{ id: "comment-page-2" } as AdminComment],
+  totalCount: 101,
+}
+const flaggedPage: AdminCommentPage = {
+  rows: [{ id: "flagged-comment-page-2" } as AdminComment],
+  totalCount: 1,
+}
+
+function deferred<T>() {
+  let resolve!: (value: T) => void
+  const promise = new Promise<T>((resolvePromise) => {
+    resolve = resolvePromise
+  })
+
+  return { promise, resolve }
+}
 
 function wrapper(client: QueryClient) {
   return ({ children }: { children: React.ReactNode }) => (
@@ -20,6 +54,45 @@ function wrapper(client: QueryClient) {
 }
 
 afterEach(() => vi.clearAllMocks())
+
+describe("useAdminComments", () => {
+  it("uses a page-and-filter query key while preserving prior rows during the next page load", async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const nextPage = deferred<typeof secondPage>()
+    vi.mocked(listAdminComments)
+      .mockResolvedValueOnce(firstPage)
+      .mockImplementationOnce(() => nextPage.promise)
+      .mockResolvedValueOnce(flaggedPage)
+
+    const initialProps: CommentQueryArgs = { page: 0, filter: "all" }
+    const { result, rerender } = renderHook(
+      ({ page, filter }: CommentQueryArgs) => useAdminComments(page, filter),
+      {
+        initialProps,
+        wrapper: wrapper(client),
+      }
+    )
+
+    await waitFor(() => expect(result.current.data).toEqual(firstPage))
+    expect(listAdminComments).toHaveBeenCalledWith(0, "all")
+    expect(client.getQueryData([...qk.admin.comments, 0, "all"])).toEqual(firstPage)
+
+    rerender({ page: 1, filter: "all" })
+
+    await waitFor(() => expect(listAdminComments).toHaveBeenLastCalledWith(1, "all"))
+    expect(result.current.data).toEqual(firstPage)
+    expect(result.current.isPlaceholderData).toBe(true)
+
+    nextPage.resolve(secondPage)
+    await waitFor(() => expect(result.current.data).toEqual(secondPage))
+
+    rerender({ page: 1, filter: "flagged" })
+
+    await waitFor(() => expect(listAdminComments).toHaveBeenLastCalledWith(1, "flagged"))
+    await waitFor(() => expect(result.current.data).toEqual(flaggedPage))
+    expect(client.getQueryData([...qk.admin.comments, 1, "flagged"])).toEqual(flaggedPage)
+  })
+})
 
 describe("useUpdateAdminComment", () => {
   it("calls updateAdminComment and invalidates the admin + public comment caches", async () => {

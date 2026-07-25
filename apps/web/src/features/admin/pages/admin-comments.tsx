@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useState } from "react"
 import { Check, Flag, Trash2, MessageSquare } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Badge } from "@/shared/components/ui/badge"
@@ -12,9 +12,12 @@ import {
   useUpdateAdminComment,
   type AdminComment,
 } from "@/features/admin/hooks/use-admin-comments"
+import type { AdminCommentFilter } from "@/features/admin/api/comments"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
 import { Toolbar } from "@/components/v2"
+
+const ADMIN_COMMENT_PAGE_SIZE = 50
 
 interface CommentCardProps {
   c: AdminComment
@@ -84,10 +87,14 @@ function CommentCard({ c, onApprove, onRemove }: CommentCardProps) {
 }
 
 export function AdminCommentsPage() {
-  const { data: comments = [] } = useAdminComments()
+  const [page, setPage] = useState(0)
+  const [filter, setFilter] = useState<AdminCommentFilter>("all")
+  const { data = { rows: [], totalCount: 0 } } = useAdminComments(page, filter)
+  const { rows: comments, totalCount } = data
   const updateComment = useUpdateAdminComment()
   const deleteComment = useDeleteAdminComment()
   const { toastError } = useAdminToast()
+  const pageCount = Math.max(1, Math.ceil(totalCount / ADMIN_COMMENT_PAGE_SIZE))
 
   async function approve(id: string) {
     try {
@@ -110,52 +117,58 @@ export function AdminCommentsPage() {
     }
   }
 
-  const { flagged, approved, pending } = useMemo(() => {
-    return {
-      flagged: comments.filter((comment) => comment.is_flagged),
-      approved: comments.filter((comment) => comment.is_approved && !comment.is_flagged),
-      pending: comments.filter((comment) => !comment.is_approved && !comment.is_flagged),
-    }
-  }, [comments])
-
   return (
     <div className="space-y-6">
-      <Toolbar title="Comment Moderation" subtitle={`${comments.length} total`} />
+      <Toolbar title="Comment Moderation" subtitle={`${totalCount} total`} />
 
-      <Tabs defaultValue="all">
+      <Tabs
+        value={filter}
+        onValueChange={(value) => {
+          setFilter(value as AdminCommentFilter)
+          setPage(0)
+        }}
+      >
         <TabsList className="flex-wrap">
-          <TabsTrigger value="all">All ({comments.length})</TabsTrigger>
-          <TabsTrigger value="flagged">
-            Flagged{" "}
-            {flagged.length > 0 && (
-              <Badge variant="destructive" className="ml-1.5 h-4 px-1.5 text-[10px]">
-                {flagged.length}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>
-          <TabsTrigger value="approved">Approved ({approved.length})</TabsTrigger>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="flagged">Flagged</TabsTrigger>
+          <TabsTrigger value="pending">Pending</TabsTrigger>
+          <TabsTrigger value="approved">Approved</TabsTrigger>
         </TabsList>
 
-        {[
-          { value: "all", list: comments },
-          { value: "flagged", list: flagged },
-          { value: "pending", list: pending },
-          { value: "approved", list: approved },
-        ].map(({ value, list }) => (
-          <TabsContent key={value} value={value} className="mt-4 space-y-3">
-            {list.length === 0 ? (
-              <div className="text-center py-12">
-                <MessageSquare className="size-10 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-muted-foreground text-sm">No comments here</p>
-              </div>
-            ) : (
-              list.map((c) => (
-                <CommentCard key={c.id} c={c} onApprove={approve} onRemove={remove} />
-              ))
-            )}
-          </TabsContent>
-        ))}
+        <TabsContent value={filter} className="mt-4 space-y-3">
+          {comments.length === 0 ? (
+            <div className="text-center py-12">
+              <MessageSquare className="size-10 text-muted-foreground/30 mx-auto mb-3" />
+              <p className="text-muted-foreground text-sm">No comments here</p>
+            </div>
+          ) : (
+            comments.map((c) => (
+              <CommentCard key={c.id} c={c} onApprove={approve} onRemove={remove} />
+            ))
+          )}
+
+          <div className="flex items-center justify-between pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((currentPage) => currentPage - 1)}
+              disabled={page === 0}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {page + 1} of {pageCount}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((currentPage) => currentPage + 1)}
+              disabled={page >= pageCount - 1}
+            >
+              Next
+            </Button>
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   )
