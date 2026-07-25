@@ -68,8 +68,9 @@ export function useAdminDashboardPresence() {
       online_at: new Date().toISOString(),
     }
 
-    void supabase.realtime.setAuth().then(
-      () => {
+    void supabase.realtime
+      .setAuth()
+      .then(() => {
         if (closed) return
         channel.subscribe((status) => {
           if (status === "SUBSCRIBED") {
@@ -80,13 +81,12 @@ export function useAdminDashboardPresence() {
             })
           }
         })
-      },
-      (error) => {
+      })
+      .catch((error) => {
         if (!closed) {
           Sentry.captureException(error, { tags: { area: "admin.presence" } })
         }
-      }
-    )
+      })
 
     return () => {
       closed = true

@@ -111,18 +111,18 @@ export function useAdminEventsRealtime() {
       void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     }
 
-    void supabase.realtime.setAuth().then(
-      () => {
+    void supabase.realtime
+      .setAuth()
+      .then(() => {
         if (!closed) {
           channel.subscribe()
         }
-      },
-      (error) => {
+      })
+      .catch((error) => {
         if (!closed) {
           Sentry.captureException(error, { tags: { area: "admin.realtime" } })
         }
-      }
-    )
+      })
 
     return () => {
       closed = true
