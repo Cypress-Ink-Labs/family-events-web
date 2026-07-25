@@ -2,6 +2,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { qk } from "@/infrastructure/queries/query-keys"
+import type { City } from "@/shared/types"
 
 const captureExceptionSpy = vi.fn()
 
@@ -14,9 +16,12 @@ vi.mock("@/infrastructure/observability/sentry", () => ({
 // plan_events_first_nonempty_window + events_enriched are the only two RPCs the
 // hook hits. The mock returns the canned payload registered per test below.
 const rpcResults = new Map<string, { data: unknown; error: unknown }>()
+const rpcSpy = vi.fn((name: string, _params?: unknown) =>
+  Promise.resolve(rpcResults.get(name) ?? { data: [], error: null })
+)
 vi.mock("@/infrastructure/supabase/client", () => ({
   supabase: {
-    rpc: (name: string) => Promise.resolve(rpcResults.get(name) ?? { data: [], error: null }),
+    rpc: rpcSpy,
   },
 }))
 
@@ -60,11 +65,14 @@ function wrapper(client: QueryClient) {
   )
 }
 
-function renderPlan() {
+function renderPlan(options: { selectedCity?: City | null } = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  return renderHook(() => usePlanForToday({ userId: "user-1" }), {
-    wrapper: wrapper(client),
-  })
+  return {
+    client,
+    ...renderHook(() => usePlanForToday({ userId: "user-1", ...options }), {
+      wrapper: wrapper(client),
+    }),
+  }
 }
 
 beforeEach(() => {
@@ -73,6 +81,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  vi.useRealTimers()
   vi.clearAllMocks()
 })
 
@@ -117,5 +126,59 @@ describe("usePlanForToday hydration observability", () => {
       tags: { area: "plan.hydration" },
       extra: { expected: 2, got: 1, missingIds: ["e2"] },
     })
+  })
+})
+
+describe("usePlanForToday date key", () => {
+  it("uses the selected city's local date in the query key and planner RPC", async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date("2026-07-24T02:00:00.000Z"))
+    const selectedCity = { id: "city-1", timezone: "America/Chicago" } as City
+    const { client, result } = renderPlan({ selectedCity })
+
+    await vi.waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    expect(
+      client.getQueryCache().find({
+        queryKey: qk.saturdayPlan.byContext({
+          userId: "user-1",
+          cityId: "city-1",
+          latitude: null,
+          longitude: null,
+          weatherFit: "any",
+          dateKey: "2026-07-23",
+        }),
+        exact: true,
+      })
+    ).toBeDefined()
+    expect(rpcSpy).toHaveBeenCalledWith(
+      "plan_events_first_nonempty_window",
+      expect.objectContaining({ p_date: "2026-07-23" })
+    )
+  })
+
+  it("uses UTC for the date key when no city is selected", async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date("2026-07-24T02:00:00.000Z"))
+    const { client, result } = renderPlan()
+
+    await vi.waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    expect(
+      client.getQueryCache().find({
+        queryKey: qk.saturdayPlan.byContext({
+          userId: "user-1",
+          latitude: null,
+          longitude: null,
+          weatherFit: "any",
+          dateKey: "2026-07-24",
+        }),
+        exact: true,
+      })
+    ).toBeDefined()
+    expect(rpcSpy).toHaveBeenCalledWith(
+      "plan_events_first_nonempty_window",
+      expect.objectContaining({ p_date: "2026-07-24" })
+    )
   })
 })
