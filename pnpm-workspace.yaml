@@ -13,9 +13,6 @@ allowBuilds:
   sharp: true
   workerd: true
 
-onlyBuiltDependencies:
-  - esbuild
-  - lefthook
 
 minimumReleaseAgeExclude:
   - '@vitest/*'
