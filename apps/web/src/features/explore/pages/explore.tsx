@@ -1,4 +1,5 @@
-import { useMemo, useCallback } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useSearchParams } from "react-router"
 import { useApp } from "@/app/stores/app-store"
 import { useAuth } from "@/features/auth/stores/auth-store"
 import { useExploreStore } from "@/features/explore/stores/explore-store"
@@ -25,12 +26,52 @@ import type { SearchEventsParams } from "@/features/explore/lib/search-api"
 import { Page, Stack } from "@/components/v2"
 import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 
+const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/
+const MIN_RADIUS_KM = 5
+const MAX_RADIUS_KM = 50
+
+function parseCustomDateKey(value: string | null): string | null {
+  if (!value || !DATE_KEY_PATTERN.test(value)) {
+    return null
+  }
+
+  const year = Number(value.slice(0, 4))
+  const month = Number(value.slice(5, 7))
+  const day = Number(value.slice(8, 10))
+  const date = new Date(`${value}T00:00:00`)
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null
+  }
+
+  return value
+}
+
+function parseRadiusKm(value: string | null): number | null {
+  if (!value || !/^-?\d+$/.test(value)) {
+    return null
+  }
+
+  const radiusKm = Number(value)
+  if (!Number.isSafeInteger(radiusKm)) {
+    return null
+  }
+
+  return Math.min(MAX_RADIUS_KM, Math.max(MIN_RADIUS_KM, radiusKm))
+}
+
 export function ExplorePage() {
   const { selectedCity } = useApp()
   const { user } = useAuth()
   useDocumentTitle(selectedCity ? `Explore Events in ${selectedCity.name}` : "Explore Events")
+  const [urlSearchParams, setSearchParams] = useSearchParams()
   const keyword = useExploreStore((s) => s.keyword)
   const activeDateFilter = useExploreStore((s) => s.activeDateFilter)
+  const customDate = useExploreStore((s) => s.customDate)
   const selectedAge = useExploreStore((s) => s.selectedAge)
   const onlyFree = useExploreStore((s) => s.onlyFree)
   const selectedTagSlugs = useExploreStore((s) => s.selectedTagSlugs)
@@ -45,6 +86,8 @@ export function ExplorePage() {
   const toggleTagSlug = useExploreStore((s) => s.toggleTagSlug)
   const setActiveCategory = useExploreStore((s) => s.setActiveCategory)
   const resetFilters = useExploreStore((s) => s.resetFilters)
+  const setCustomDate = useExploreStore((s) => s.setCustomDate)
+  const setRadiusKm = useExploreStore((s) => s.setRadiusKm)
 
   const layout = useExploreViewStore((s) => s.layout)
   const columns = useExploreViewStore((s) => s.columns)
@@ -56,6 +99,57 @@ export function ExplorePage() {
   const setShowImages = useExploreViewStore((s) => s.setShowImages)
 
   const cardVariant = CARD_VARIANT_BY_LAYOUT[layout]
+  const initialUrlStateRef = useRef<{ customDate: string | null; radiusKm: number } | null>(null)
+  const hasHydratedUrlStateRef = useRef(false)
+
+  useEffect(() => {
+    if (initialUrlStateRef.current) {
+      return
+    }
+
+    const urlCustomDate = parseCustomDateKey(urlSearchParams.get("date"))
+    const urlRadiusKm = parseRadiusKm(urlSearchParams.get("dist"))
+    initialUrlStateRef.current = {
+      customDate: urlCustomDate ?? customDate,
+      radiusKm: urlRadiusKm ?? radiusKm,
+    }
+
+    if (urlCustomDate) {
+      setCustomDate(urlCustomDate)
+    }
+    if (urlRadiusKm !== null) {
+      setRadiusKm(urlRadiusKm)
+    }
+  }, [customDate, radiusKm, urlSearchParams, setCustomDate, setRadiusKm])
+
+  useEffect(() => {
+    const initialUrlState = initialUrlStateRef.current
+    if (!initialUrlState) {
+      return
+    }
+
+    if (!hasHydratedUrlStateRef.current) {
+      if (customDate !== initialUrlState.customDate || radiusKm !== initialUrlState.radiusKm) {
+        return
+      }
+      hasHydratedUrlStateRef.current = true
+      return
+    }
+
+    setSearchParams(
+      (current) => {
+        const params = new URLSearchParams(current)
+        if (customDate) {
+          params.set("date", customDate)
+        } else {
+          params.delete("date")
+        }
+        params.set("dist", String(radiusKm))
+        return params
+      },
+      { replace: true }
+    )
+  }, [customDate, radiusKm, setSearchParams])
   const containerClassName =
     layout === "grid"
       ? GRID_COLUMN_CLASSNAMES[columns]
@@ -66,6 +160,14 @@ export function ExplorePage() {
   const ageFilter = EXPLORE_AGE_OPTIONS.find((option) => option.label === selectedAge)
 
   const dateRange = useMemo(() => {
+    if (customDate) {
+      const dayStart = new Date(`${customDate}T00:00:00`)
+      dayStart.setHours(0, 0, 0, 0)
+      const nextDay = new Date(dayStart)
+      nextDay.setDate(nextDay.getDate() + 1)
+      return { dateFrom: dayStart.toISOString(), dateTo: nextDay.toISOString() }
+    }
+
     const now = new Date()
     const startOfToday = new Date(now)
     startOfToday.setHours(0, 0, 0, 0)
@@ -103,7 +205,7 @@ export function ExplorePage() {
     }
 
     return { dateFrom: undefined, dateTo: undefined }
-  }, [activeDateFilter])
+  }, [activeDateFilter, customDate])
 
   const combinedTagSlugs = useMemo(() => {
     const all = [...selectedTagSlugs]
@@ -162,7 +264,7 @@ export function ExplorePage() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const activeFilterCount = [
-    activeDateFilter,
+    customDate ?? activeDateFilter,
     selectedAge,
     onlyFree ? "free" : null,
     nearMeEnabled ? "near-me" : null,
@@ -204,10 +306,12 @@ export function ExplorePage() {
         />
         <ExploreActiveFilters
           onlyFree={onlyFree}
+          customDate={customDate}
           activeCategory={activeCategory}
           selectedTagSlugs={selectedTagSlugs}
           tags={tags}
           onOnlyFreeChange={setOnlyFree}
+          onCustomDateChange={setCustomDate}
           onActiveCategoryChange={setActiveCategory}
           onToggleTagSlug={toggleTagSlug}
         />

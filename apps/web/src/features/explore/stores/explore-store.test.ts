@@ -27,6 +27,24 @@ describe("useExploreStore", () => {
       expect(useExploreStore.getState().selectedTagSlugs).toEqual(["sports"])
     })
   })
+  describe("custom date", () => {
+    it("stores an exact custom date", () => {
+      useExploreStore.getState().setCustomDate("2026-07-26")
+
+      expect(useExploreStore.getState().customDate).toBe("2026-07-26")
+    })
+
+    it.each(["past", "today", "weekend", "week", "month"])(
+      "clears a custom date when selecting the %s bucket",
+      (filter) => {
+        useExploreStore.getState().setCustomDate("2026-07-26")
+
+        useExploreStore.getState().setActiveDateFilter(filter)
+
+        expect(useExploreStore.getState().customDate).toBeNull()
+      }
+    )
+  })
 
   describe("resetFilters", () => {
     it("clears all filter state", () => {
@@ -36,6 +54,7 @@ describe("useExploreStore", () => {
       useExploreStore.getState().setOnlyFree(true)
       useExploreStore.getState().toggleTagSlug("music")
       useExploreStore.getState().setActiveCategory("arts")
+      useExploreStore.getState().setCustomDate("2026-07-26")
 
       useExploreStore.getState().resetFilters()
 
@@ -46,6 +65,7 @@ describe("useExploreStore", () => {
       expect(s.onlyFree).toBe(false)
       expect(s.selectedTagSlugs).toEqual([])
       expect(s.activeCategory).toBeNull()
+      expect(s.customDate).toBeNull()
     })
   })
 })

@@ -7,30 +7,57 @@ import type { Tag } from "@/shared/types"
 
 interface ExploreActiveFiltersProps {
   onlyFree: boolean
+  customDate: string | null
   activeCategory: string | null
   selectedTagSlugs: string[]
   tags: Tag[]
   onOnlyFreeChange: (value: boolean) => void
+  onCustomDateChange: (value: string | null) => void
   onActiveCategoryChange: (value: string | null) => void
   onToggleTagSlug: (slug: string) => void
 }
 
 export function ExploreActiveFilters({
   onlyFree,
+  customDate,
   activeCategory,
   selectedTagSlugs,
   tags,
   onOnlyFreeChange,
+  onCustomDateChange,
   onActiveCategoryChange,
   onToggleTagSlug,
 }: ExploreActiveFiltersProps) {
-  if (!onlyFree && !activeCategory && selectedTagSlugs.length === 0) {
+  if (!customDate && !onlyFree && !activeCategory && selectedTagSlugs.length === 0) {
     return null
   }
 
   return (
     <div className="flex flex-wrap gap-2">
       <AnimatePresence initial={false}>
+        {customDate && (
+          <m.div
+            key={`filter-date-${customDate}`}
+            layout
+            variants={popInVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <Badge variant="secondary" className="gap-1">
+              Date: {customDate}
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                className="size-4"
+                aria-label="Clear custom date"
+                onClick={() => onCustomDateChange(null)}
+              >
+                <X className="size-3" />
+              </Button>
+            </Badge>
+          </m.div>
+        )}
         {onlyFree && (
           <m.div
             key="filter-free"
