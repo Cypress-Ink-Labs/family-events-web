@@ -21,6 +21,9 @@ interface AdminEventBroadcastPayload {
 
 type AdminEventsInfiniteCache = InfiniteData<AdminEventsPageResult>
 
+const isAdminEventsListQuery = (query: { queryKey: readonly unknown[] }) =>
+  query.queryKey.length === 3 && typeof query.queryKey[2] === "object" && query.queryKey[2] !== null
+
 function changedEventId(payload: AdminEventBroadcastPayload): string | null {
   return payload.payload.record?.id ?? payload.payload.old_record?.id ?? null
 }
@@ -33,7 +36,7 @@ export function patchAdminEventsInfiniteCache(
   data: AdminEventsInfiniteCache | undefined,
   payload: AdminEventBroadcastPayload
 ): AdminEventsInfiniteCache | undefined {
-  if (!data) return data
+  if (!data || !Array.isArray(data.pages)) return data
 
   const id = changedEventId(payload)
   if (!id) return data
@@ -80,13 +83,21 @@ function patchAdminEventQueries(queryClient: QueryClient, payload: AdminEventBro
   const id = changedEventId(payload)
   if (!id) return
 
-  queryClient.setQueriesData<AdminEventsInfiniteCache>({ queryKey: qk.admin.events.all }, (data) =>
-    patchAdminEventsInfiniteCache(data, payload)
+  queryClient.setQueriesData<AdminEventsInfiniteCache>(
+    { queryKey: qk.admin.events.all, predicate: isAdminEventsListQuery },
+    (data) => patchAdminEventsInfiniteCache(data, payload)
   )
   queryClient.setQueryData<EventWithDetails | null | undefined>(
     qk.admin.events.detail(id),
     (data) => patchAdminEventDetailCache(data, payload)
   )
+
+  if (payload.payload.operation === "INSERT" || payload.payload.operation === "DELETE") {
+    void queryClient.invalidateQueries({
+      queryKey: qk.admin.events.all,
+      predicate: isAdminEventsListQuery,
+    })
+  }
 }
 
 export function useAdminEventsRealtime() {
