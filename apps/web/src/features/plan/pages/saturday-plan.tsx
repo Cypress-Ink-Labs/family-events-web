@@ -15,15 +15,12 @@ import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
 import { toast } from "sonner"
 import { Page, Stack } from "@/components/v2"
 
-function planExploreHref(date: string | null, weatherFit: string): string {
+function planExploreHref(date: string | null): string {
   const params = new URLSearchParams()
   if (date) {
     params.set("date", date)
   }
   params.set("dist", "15")
-  if (weatherFit !== "any") {
-    params.set("fit", weatherFit)
-  }
   const query = params.toString()
   return query ? `/explore?${query}` : "/explore"
 }
@@ -117,10 +114,7 @@ export function SaturdayPlanPage() {
     })
   }, [error, isError])
 
-  const exploreHref = useMemo(
-    () => planExploreHref(plan?.date ?? null, plan?.weatherFit ?? "any"),
-    [plan?.date, plan?.weatherFit]
-  )
+  const exploreHref = useMemo(() => planExploreHref(plan?.date ?? null), [plan?.date])
 
   return (
     <Page width="content" className="py-6">

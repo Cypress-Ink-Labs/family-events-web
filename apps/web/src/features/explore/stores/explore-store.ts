@@ -10,6 +10,7 @@ export interface LocationState {
 const INITIAL_FILTERS = {
   keyword: "",
   activeDateFilter: null as string | null,
+  customDate: null as string | null,
   selectedAge: null as string | null,
   onlyFree: false,
   selectedTagSlugs: [] as string[],
@@ -23,6 +24,7 @@ const INITIAL_FILTERS = {
 interface ExploreStore {
   keyword: string
   activeDateFilter: string | null
+  customDate: string | null
   selectedAge: string | null
   onlyFree: boolean
   selectedTagSlugs: string[]
@@ -33,6 +35,7 @@ interface ExploreStore {
 
   setKeyword: (k: string) => void
   setActiveDateFilter: (f: string | null) => void
+  setCustomDate: (date: string | null) => void
   setSelectedAge: (a: string | null) => void
   setOnlyFree: (v: boolean) => void
   setSelectedTagSlugs: (slugs: string[]) => void
@@ -50,7 +53,8 @@ export const useExploreStore = create<ExploreStore>()(
       ...INITIAL_FILTERS,
 
       setKeyword: (k) => set({ keyword: k }),
-      setActiveDateFilter: (f) => set({ activeDateFilter: f }),
+      setActiveDateFilter: (f) => set({ activeDateFilter: f, customDate: null }),
+      setCustomDate: (date) => set({ customDate: date }),
       setSelectedAge: (a) => set({ selectedAge: a }),
       setOnlyFree: (v) => set({ onlyFree: v }),
       setSelectedTagSlugs: (slugs) => set({ selectedTagSlugs: slugs }),
