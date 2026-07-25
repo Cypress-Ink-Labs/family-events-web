@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import type { InfiniteData, QueryClient } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/infrastructure/supabase/client"
+import { Sentry } from "@/infrastructure/observability/sentry"
 import { qk } from "@/infrastructure/queries/query-keys"
 import type { AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
 import type { Event, EventWithDetails } from "@/shared/types"
@@ -110,11 +111,18 @@ export function useAdminEventsRealtime() {
       void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     }
 
-    void supabase.realtime.setAuth().then(() => {
-      if (!closed) {
-        channel.subscribe()
-      }
-    })
+    void supabase.realtime
+      .setAuth()
+      .then(() => {
+        if (!closed) {
+          channel.subscribe()
+        }
+      })
+      .catch((error) => {
+        if (!closed) {
+          Sentry.captureException(error, { tags: { area: "admin.realtime" } })
+        }
+      })
 
     return () => {
       closed = true

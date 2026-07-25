@@ -1,8 +1,73 @@
-import { describe, expect, it } from "vitest"
-import { patchAdminEventsInfiniteCache } from "./use-admin-events-realtime"
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { createElement } from "react"
+import { renderHook, waitFor } from "@testing-library/react"
+import { QueryClient, QueryClientProvider, type InfiniteData } from "@tanstack/react-query"
+import { patchAdminEventsInfiniteCache, useAdminEventsRealtime } from "./use-admin-events-realtime"
 import type { AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
 import type { Event } from "@/shared/types"
-import type { InfiniteData } from "@tanstack/react-query"
+
+const realtimeMocks = vi.hoisted(() => {
+  const channel = {
+    on: vi.fn(),
+    subscribe: vi.fn(),
+  }
+  channel.on.mockReturnValue(channel)
+
+  return {
+    captureException: vi.fn(),
+    channel,
+    channelFactory: vi.fn(() => channel),
+    removeChannel: vi.fn(),
+    setAuth: vi.fn(),
+  }
+})
+
+vi.mock("@/infrastructure/observability/sentry", () => ({
+  Sentry: {
+    captureException: realtimeMocks.captureException,
+  },
+}))
+
+vi.mock("@/infrastructure/supabase/client", () => ({
+  supabase: {
+    channel: realtimeMocks.channelFactory,
+    realtime: {
+      setAuth: realtimeMocks.setAuth,
+    },
+    removeChannel: realtimeMocks.removeChannel,
+  },
+}))
+
+interface Deferred<T> {
+  promise: Promise<T>
+  reject: (reason?: unknown) => void
+  resolve: (value: T) => void
+}
+
+function deferred<T>(): Deferred<T> {
+  let resolve!: (value: T) => void
+  let reject!: (reason?: unknown) => void
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise
+    reject = rejectPromise
+  })
+  return { promise, reject, resolve }
+}
+
+function renderRealtimeHook() {
+  const queryClient = new QueryClient()
+  return renderHook(() => useAdminEventsRealtime(), {
+    wrapper: ({ children }) =>
+      createElement(QueryClientProvider, { client: queryClient }, children),
+  })
+}
+
+beforeEach(() => {
+  vi.clearAllMocks()
+  realtimeMocks.channel.on.mockReturnValue(realtimeMocks.channel)
+  realtimeMocks.removeChannel.mockResolvedValue(undefined)
+})
 
 function event(overrides: Partial<Event> & Pick<Event, "id">): Event {
   return {
@@ -109,5 +174,52 @@ describe("patchAdminEventsInfiniteCache", () => {
 
     expect(updated?.pages[0].rows.map((row) => row.id)).toEqual(["event-2"])
     expect(updated?.pages[0].totalCount).toBe(1)
+  })
+})
+
+describe("useAdminEventsRealtime auth failures", () => {
+  it("captures a rejected setAuth once and never subscribes", async () => {
+    const auth = deferred<void>()
+    realtimeMocks.setAuth.mockReturnValue(auth.promise)
+
+    const { unmount } = renderRealtimeHook()
+    const error = new Error("setAuth rejected")
+    auth.reject(error)
+
+    await waitFor(() => {
+      expect(realtimeMocks.captureException).toHaveBeenCalledTimes(1)
+    })
+    expect(realtimeMocks.captureException).toHaveBeenCalledWith(error, {
+      tags: { area: "admin.realtime" },
+    })
+    expect(realtimeMocks.channel.subscribe).not.toHaveBeenCalled()
+
+    unmount()
+  })
+
+  it("does not subscribe or capture when unmounted before setAuth resolves", async () => {
+    const auth = deferred<void>()
+    realtimeMocks.setAuth.mockReturnValue(auth.promise)
+
+    const { unmount } = renderRealtimeHook()
+    unmount()
+    auth.resolve()
+    await Promise.resolve()
+
+    expect(realtimeMocks.channel.subscribe).not.toHaveBeenCalled()
+    expect(realtimeMocks.captureException).not.toHaveBeenCalled()
+  })
+
+  it("does not subscribe or capture when unmounted before setAuth rejects", async () => {
+    const auth = deferred<void>()
+    realtimeMocks.setAuth.mockReturnValue(auth.promise)
+
+    const { unmount } = renderRealtimeHook()
+    unmount()
+    auth.reject(new Error("setAuth rejected after unmount"))
+    await Promise.resolve()
+
+    expect(realtimeMocks.channel.subscribe).not.toHaveBeenCalled()
+    expect(realtimeMocks.captureException).not.toHaveBeenCalled()
   })
 })
