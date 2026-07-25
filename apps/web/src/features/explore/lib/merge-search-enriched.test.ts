@@ -144,6 +144,27 @@ describe("mergeSearchWithEnriched", () => {
     expect(result[0]!.avg_rating).toBe(4.5)
     expect(result[0]!.tags).toHaveLength(1)
   })
+
+  it("indexes page-concatenated enrichment independently of search ordering", () => {
+    const firstPageEnriched = [enrichedEvent("page-1-a"), enrichedEvent("page-1-b")]
+    const secondPageEnriched = [enrichedEvent("page-2-a"), enrichedEvent("page-2-b")]
+    const enrichedById = indexEnrichedById([...firstPageEnriched, ...secondPageEnriched])
+
+    expect([...enrichedById.keys()]).toEqual(["page-1-a", "page-1-b", "page-2-a", "page-2-b"])
+
+    const result = mergeSearchWithEnriched(
+      [rawEvent("page-2-b"), rawEvent("page-1-a"), rawEvent("page-2-a"), rawEvent("page-1-b")],
+      enrichedById
+    )
+
+    expect(result.map((event) => event.id)).toEqual([
+      "page-2-b",
+      "page-1-a",
+      "page-2-a",
+      "page-1-b",
+    ])
+    expect(result.map((event) => event.avg_rating)).toEqual([4.5, 4.5, 4.5, 4.5])
+  })
 })
 
 describe("indexEnrichedById", () => {
