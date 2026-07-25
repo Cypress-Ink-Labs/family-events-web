@@ -38,3 +38,12 @@ export function safeImageSrc(url: string | null | undefined): string | undefined
   if (!scheme) return undefined
   return SAFE_IMG_SCHEMES.has(scheme) ? url : undefined
 }
+
+export function resolveAppUrl(raw: unknown, origin: string): string {
+  try {
+    const u = new URL(typeof raw === "string" && raw ? raw : "/", origin)
+    return u.origin === origin ? u.pathname + u.search + u.hash : "/"
+  } catch {
+    return "/"
+  }
+}

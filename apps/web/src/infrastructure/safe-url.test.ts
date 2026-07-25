@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { safeHref, safeImageSrc } from "./safe-url"
+import { resolveAppUrl, safeHref, safeImageSrc } from "./safe-url"
 
 describe("safeHref", () => {
   it("returns # for null/undefined/empty", () => {
@@ -58,5 +58,22 @@ describe("safeImageSrc", () => {
   it("preserves http and https URLs", () => {
     expect(safeImageSrc("https://example.com/img.png")).toBe("https://example.com/img.png")
     expect(safeImageSrc("http://example.com/img.png")).toBe("http://example.com/img.png")
+  })
+})
+
+describe("resolveAppUrl", () => {
+  const origin = "https://family.example"
+
+  it.each([
+    ["/events/1?tab=details#comments", "/events/1?tab=details#comments"],
+    ["https://family.example/events/1?tab=details#comments", "/events/1?tab=details#comments"],
+    ["https://evil.example/x", "/"],
+    ["//evil.example", "/"],
+    ["javascript:alert(1)", "/"],
+    ["", "/"],
+    [null, "/"],
+    [123, "/"],
+  ])("resolves %j to %j", (raw, expected) => {
+    expect(resolveAppUrl(raw, origin)).toBe(expected)
   })
 })
