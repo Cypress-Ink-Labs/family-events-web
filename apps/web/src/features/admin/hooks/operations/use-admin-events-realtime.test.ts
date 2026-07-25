@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider, type InfiniteData } from "@tanstack/r
 import { patchAdminEventsInfiniteCache, useAdminEventsRealtime } from "./use-admin-events-realtime"
 import type { AdminEventsPageResult } from "@/lib/db/rpc-admin-events"
 import type { Event } from "@/shared/types"
+import { qk } from "@/infrastructure/queries/query-keys"
 
 const realtimeMocks = vi.hoisted(() => {
   const channel = {
@@ -55,8 +56,7 @@ function deferred<T>(): Deferred<T> {
   return { promise, reject, resolve }
 }
 
-function renderRealtimeHook() {
-  const queryClient = new QueryClient()
+function renderRealtimeHook(queryClient = new QueryClient()) {
   return renderHook(() => useAdminEventsRealtime(), {
     wrapper: ({ children }) =>
       createElement(QueryClientProvider, { client: queryClient }, children),
@@ -67,6 +67,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   realtimeMocks.channel.on.mockReturnValue(realtimeMocks.channel)
   realtimeMocks.removeChannel.mockResolvedValue(undefined)
+  realtimeMocks.setAuth.mockResolvedValue(undefined)
 })
 
 function event(overrides: Partial<Event> & Pick<Event, "id">): Event {
@@ -131,6 +132,36 @@ function cache(rows: Event[]): InfiniteData<AdminEventsPageResult> {
     pageParams: [{}],
     pages: [{ rows, totalCount: rows.length }],
   }
+}
+
+function cachePages(...pageRows: Event[][]): InfiniteData<AdminEventsPageResult> {
+  return {
+    pageParams: pageRows.map(() => ({})),
+    pages: pageRows.map((rows) => ({ rows, totalCount: rows.length })),
+  }
+}
+
+type RealtimeBroadcastPayload = {
+  payload: {
+    operation: "INSERT" | "UPDATE" | "DELETE"
+    record: Event | null
+    old_record: Event | null
+  }
+}
+
+function receiveBroadcast(
+  operation: RealtimeBroadcastPayload["payload"]["operation"],
+  payload: RealtimeBroadcastPayload
+) {
+  const callback = realtimeMocks.channel.on.mock.calls.find(
+    ([event, filter]) => event === "broadcast" && filter.event === operation
+  )?.[2] as ((payload: RealtimeBroadcastPayload) => void) | undefined
+
+  if (!callback) {
+    throw new Error(`Missing ${operation} broadcast callback`)
+  }
+
+  callback(payload)
 }
 
 describe("patchAdminEventsInfiniteCache", () => {
@@ -221,5 +252,115 @@ describe("useAdminEventsRealtime auth failures", () => {
 
     expect(realtimeMocks.channel.subscribe).not.toHaveBeenCalled()
     expect(realtimeMocks.captureException).not.toHaveBeenCalled()
+  })
+})
+
+describe("useAdminEventsRealtime cache updates", () => {
+  it("patches a populated detail cache through its exact key without treating it as a list", () => {
+    const queryClient = new QueryClient()
+    const detailKey = qk.admin.events.detail("event-1")
+    const otherDetailKey = qk.admin.events.detail("event-2")
+    const detail = event({ id: "event-1", title: "Before" })
+    const otherDetail = event({ id: "event-2", title: "Unchanged" })
+    queryClient.setQueryData(detailKey, detail)
+    queryClient.setQueryData(otherDetailKey, otherDetail)
+
+    const { unmount } = renderRealtimeHook(queryClient)
+
+    expect(() =>
+      receiveBroadcast("UPDATE", {
+        payload: {
+          operation: "UPDATE",
+          record: event({ id: "event-1", title: "After" }),
+          old_record: detail,
+        },
+      })
+    ).not.toThrow()
+    expect(queryClient.getQueryData<Event>(detailKey)?.title).toBe("After")
+    expect(queryClient.getQueryData(otherDetailKey)).toBe(otherDetail)
+
+    unmount()
+  })
+
+  it("invalidates matching list queries after an insert", async () => {
+    const queryClient = new QueryClient()
+    const firstListKey = qk.admin.events.list({ keyword: "", status: "all" })
+    const secondListKey = qk.admin.events.list({ keyword: "music", status: "all" })
+    const detailKey = qk.admin.events.detail("event-1")
+    const auditKey = qk.admin.events.audit("event-1")
+    const facetsKey = qk.admin.events.facets("music")
+    queryClient.setQueryData(firstListKey, cache([event({ id: "event-1" })]))
+    queryClient.setQueryData(secondListKey, cache([event({ id: "event-2" })]))
+    queryClient.setQueryData(detailKey, event({ id: "event-1" }))
+    queryClient.setQueryData(auditKey, [{ id: "audit-1" }])
+    queryClient.setQueryData(facetsKey, { values: [] })
+
+    const { unmount } = renderRealtimeHook(queryClient)
+    receiveBroadcast("INSERT", {
+      payload: {
+        operation: "INSERT",
+        record: event({ id: "event-3" }),
+        old_record: null,
+      },
+    })
+
+    await waitFor(() => {
+      expect(queryClient.getQueryState(firstListKey)?.isInvalidated).toBe(true)
+      expect(queryClient.getQueryState(secondListKey)?.isInvalidated).toBe(true)
+    })
+    expect(queryClient.getQueryState(detailKey)?.isInvalidated).toBe(false)
+    expect(queryClient.getQueryState(auditKey)?.isInvalidated).toBe(false)
+    expect(queryClient.getQueryState(facetsKey)?.isInvalidated).toBe(false)
+
+    unmount()
+  })
+
+  it("removes a deleted event from a later page and invalidates its list query", async () => {
+    const queryClient = new QueryClient()
+    const listKey = qk.admin.events.list({ keyword: "", status: "all" })
+    queryClient.setQueryData(
+      listKey,
+      cachePages([event({ id: "event-1" })], [event({ id: "event-2" }), event({ id: "event-3" })])
+    )
+
+    const { unmount } = renderRealtimeHook(queryClient)
+    receiveBroadcast("DELETE", {
+      payload: {
+        operation: "DELETE",
+        record: null,
+        old_record: event({ id: "event-2" }),
+      },
+    })
+
+    const updated = queryClient.getQueryData<InfiniteData<AdminEventsPageResult>>(listKey)
+    expect(updated?.pages[0].rows.map((row) => row.id)).toEqual(["event-1"])
+    expect(updated?.pages[1].rows.map((row) => row.id)).toEqual(["event-3"])
+    expect(updated?.pages[1].totalCount).toBe(1)
+    await waitFor(() => {
+      expect(queryClient.getQueryState(listKey)?.isInvalidated).toBe(true)
+    })
+
+    unmount()
+  })
+
+  it("patches an updated event in place without invalidating its list query", () => {
+    const queryClient = new QueryClient()
+    const listKey = qk.admin.events.list({ keyword: "", status: "all" })
+    queryClient.setQueryData(listKey, cache([event({ id: "event-1", title: "Before" })]))
+
+    const { unmount } = renderRealtimeHook(queryClient)
+    receiveBroadcast("UPDATE", {
+      payload: {
+        operation: "UPDATE",
+        record: event({ id: "event-1", title: "After" }),
+        old_record: event({ id: "event-1", title: "Before" }),
+      },
+    })
+
+    const updated = queryClient.getQueryData<InfiniteData<AdminEventsPageResult>>(listKey)
+    expect(updated?.pages[0].rows[0].title).toBe("After")
+    expect(queryClient.getQueryState(listKey)?.isInvalidated).toBe(false)
+
+    unmount()
   })
 })
