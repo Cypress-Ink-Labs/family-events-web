@@ -107,24 +107,26 @@ function session(expiresAt = Math.floor(Date.now() / 1000) + 3600): Session {
   } as Session
 }
 function sessionFor(userId: string, accessToken: string): Session {
+  const activeSession = session()
+
   return {
-    ...session(),
+    ...activeSession,
     access_token: accessToken,
     refresh_token: `refresh-${userId}`,
     user: {
-      ...session().user,
+      ...activeSession.user,
       id: userId,
     },
   }
 }
 
 function createDeferred<T>() {
-  let resolvePromise: (value: T) => void
+  let resolvePromise!: (value: T) => void
   const promise = new Promise<T>((resolve) => {
     resolvePromise = resolve
   })
 
-  return { promise, resolve: resolvePromise! }
+  return { promise, resolve: resolvePromise }
 }
 
 function mockProfileAndAccessLoader(
