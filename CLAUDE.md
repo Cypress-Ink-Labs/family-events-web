@@ -11,7 +11,7 @@ for detailed workflow docs. This file distills the agent-critical facts.
 single-page application in `apps/web`, backed by a **Supabase backend that lives in a separate
 repo**. Shared utilities and design tokens live under `packages/*`.
 
-Package manager: `pnpm@11.7.0`. Node workspaces: `apps/*`, `packages/*`.
+Package manager: see the `packageManager` field in `package.json`. Node workspaces: `apps/*`, `packages/*`.
 
 ---
 

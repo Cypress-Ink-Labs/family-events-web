@@ -95,7 +95,7 @@ breakpoints). The build step in `packages/design-system` codegenerates:
 
 - `apps/web/src/styles/tokens.generated.css` — CSS custom properties consumed by Tailwind 4 via `@theme inline`
 - `packages/design-system/src/generated/tokens.ts` — TypeScript mirror for programmatic access
-- `apps/ios/...` — Swift constants for iOS parity
+- `packages/design-system/dist/ios/Tokens.swift` and `packages/design-system/dist/android/Tokens.kt` — package artifacts shipped for external mobile consumers
 
 The v2 layout components consume these tokens via Tailwind utility classes that reference the generated CSS
 variables. Do not hardcode color or spacing values in v2 components — use the token-backed Tailwind classes.
