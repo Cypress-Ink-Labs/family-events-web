@@ -106,6 +106,37 @@ function session(expiresAt = Math.floor(Date.now() / 1000) + 3600): Session {
     },
   } as Session
 }
+function sessionFor(userId: string, accessToken: string): Session {
+  const activeSession = session()
+
+  return {
+    ...activeSession,
+    access_token: accessToken,
+    refresh_token: `refresh-${userId}`,
+    user: {
+      ...activeSession.user,
+      id: userId,
+    },
+  }
+}
+
+function createDeferred<T>() {
+  let resolvePromise!: (value: T) => void
+  const promise = new Promise<T>((resolve) => {
+    resolvePromise = resolve
+  })
+
+  return { promise, resolve: resolvePromise }
+}
+
+function mockProfileAndAccessLoader(
+  loader: (userId: string) => Promise<{ profile: UserProfile | null; access: UserAccess | null }>
+) {
+  vi.doMock("@/features/auth/api/load-profile-and-access", () => ({
+    claimPendingInviteAccess: vi.fn().mockResolvedValue(undefined),
+    loadProfileAndAccess: loader,
+  }))
+}
 
 async function loadStore() {
   const { useAuthStore } = await import("./auth-store")
@@ -140,6 +171,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.useRealTimers()
   vi.unstubAllGlobals()
+  vi.doUnmock("@/features/auth/api/load-profile-and-access")
 })
 
 describe("useAuthStore", () => {
@@ -162,6 +194,91 @@ describe("useAuthStore", () => {
       role: "user",
       accessEnabled: true,
     })
+  })
+
+  it("keeps a newer session's profile, access, and Sentry context when an older load resolves last", async () => {
+    const profileA: UserProfile = {
+      ...profile,
+      id: "user-a",
+      email: "a@example.com",
+      display_name: "User A",
+    }
+    const accessA: UserAccess = {
+      ...enabledAccess,
+      user_id: "user-a",
+    }
+    const profileB: UserProfile = {
+      ...profile,
+      id: "user-b",
+      email: "b@example.com",
+      display_name: "User B",
+      role: "admin",
+    }
+    const accessB: UserAccess = {
+      ...enabledAccess,
+      user_id: "user-b",
+    }
+    const profileLoadA = createDeferred<{ profile: UserProfile; access: UserAccess }>()
+    const profileLoadB = createDeferred<{ profile: UserProfile; access: UserAccess }>()
+    const mockLoadProfileAndAccess = vi.fn((userId: string) => {
+      if (userId === "user-a") return profileLoadA.promise
+      if (userId === "user-b") return profileLoadB.promise
+      throw new Error(`Unexpected user ${userId}`)
+    })
+    mockProfileAndAccessLoader(mockLoadProfileAndAccess)
+    const useAuthStore = await loadStore()
+
+    const syncA = useAuthStore.getState()._syncSession(sessionFor("user-a", "token-a"))
+    await flushPromises()
+    const syncB = useAuthStore.getState()._syncSession(sessionFor("user-b", "token-b"))
+    await flushPromises()
+
+    profileLoadB.resolve({ profile: profileB, access: accessB })
+    await syncB
+    profileLoadA.resolve({ profile: profileA, access: accessA })
+    await syncA
+
+    expect(useAuthStore.getState()).toMatchObject({
+      profile: profileB,
+      access: accessB,
+    })
+    expect(mockSetSentryUserContext).toHaveBeenLastCalledWith({
+      id: "user-b",
+      role: "admin",
+      accessEnabled: true,
+    })
+  })
+
+  it("does not restore profile, access, or Sentry context when a load resolves after sign-out", async () => {
+    const profileA: UserProfile = {
+      ...profile,
+      id: "user-a",
+      email: "a@example.com",
+      display_name: "User A",
+    }
+    const accessA: UserAccess = {
+      ...enabledAccess,
+      user_id: "user-a",
+    }
+    const profileLoadA = createDeferred<{ profile: UserProfile; access: UserAccess }>()
+    const mockLoadProfileAndAccess = vi.fn((userId: string) => {
+      if (userId === "user-a") return profileLoadA.promise
+      throw new Error(`Unexpected user ${userId}`)
+    })
+    mockProfileAndAccessLoader(mockLoadProfileAndAccess)
+    const useAuthStore = await loadStore()
+
+    const syncA = useAuthStore.getState()._syncSession(sessionFor("user-a", "token-a"))
+    await flushPromises()
+    await useAuthStore.getState().signOut()
+    profileLoadA.resolve({ profile: profileA, access: accessA })
+    await syncA
+
+    expect(useAuthStore.getState()).toMatchObject({
+      profile: null,
+      access: null,
+    })
+    expect(mockSetSentryUserContext).not.toHaveBeenCalled()
   })
 
   it.each([

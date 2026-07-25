@@ -25,6 +25,7 @@ function createAuthStoreRuntime() {
     expiryTimer: null as ReturnType<typeof setTimeout> | null,
     lastSyncedAccessToken: null as string | null,
     lastProfileFetchAt: 0,
+    syncGeneration: 0,
     clearExpiryTimer() {
       if (this.expiryTimer) {
         clearTimeout(this.expiryTimer)
@@ -98,6 +99,7 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: true,
 
       _resetAuthState() {
+        authRuntime.syncGeneration += 1
         authRuntime.reset()
         set({ session: null, user: null, profile: null, access: null, authError: null })
         clearSentryUserContext()
@@ -106,13 +108,16 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       async _syncSession(sessionValue, force = false) {
+        const generation = ++authRuntime.syncGeneration
         if (!sessionValue?.user) {
           get()._resetAuthState()
           return
         }
 
         if (isSessionExpired(sessionValue)) {
+          const resetGeneration = authRuntime.syncGeneration + 1
           await get().signOut()
+          if (resetGeneration !== authRuntime.syncGeneration) return
           throw new Error("Session expired")
         }
 
@@ -139,6 +144,7 @@ export const useAuthStore = create<AuthStore>()(
         // First sync of a new token: best-effort invite claim.
         if (isNewToken) {
           await claimPendingInviteAccess()
+          if (generation !== authRuntime.syncGeneration) return
         }
 
         // Fetch profile + access. On network failure, fail-soft if we have
@@ -149,20 +155,29 @@ export const useAuthStore = create<AuthStore>()(
         try {
           ;({ profile, access } = await loadProfileAndAccess(sessionValue.user.id))
         } catch (error) {
+          if (generation !== authRuntime.syncGeneration) return
           if (get().profile !== null) return
           throw error
         }
+        if (generation !== authRuntime.syncGeneration) return
 
         // Access revocation is NOT fail-soft — sign out immediately.
         const accessState = evaluateAccessState({ user: { id: sessionValue.user.id } }, access)
         if (!accessState.isAllowed) {
+          if (generation !== authRuntime.syncGeneration) return
+          const resetGeneration = authRuntime.syncGeneration + 1
           await get().signOut()
+          if (resetGeneration !== authRuntime.syncGeneration) return
           throw new Error(accessDeniedMessage(accessState.reason))
         }
 
+        if (generation !== authRuntime.syncGeneration) return
         authRuntime.lastSyncedAccessToken = sessionValue.access_token
+        if (generation !== authRuntime.syncGeneration) return
         authRuntime.lastProfileFetchAt = Date.now()
+        if (generation !== authRuntime.syncGeneration) return
         set({ profile, access })
+        if (generation !== authRuntime.syncGeneration) return
         setSentryUserContext({
           id: sessionValue.user.id,
           role: profile?.role,
