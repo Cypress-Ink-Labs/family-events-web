@@ -6,6 +6,13 @@ import test from "node:test"
 const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..")
 const readmePath = path.join(repoRoot, "README.md")
 const devDocPath = path.join(repoRoot, "docs", "DEVELOPMENT.md")
+const reconciledDocPaths = [
+  path.join(repoRoot, "apps", "web", "knowledge.md"),
+  path.join(repoRoot, "apps", "web", "AGENTS.md"),
+  path.join(repoRoot, "CLAUDE.md"),
+  path.join(repoRoot, "docs", "DESIGN.md"),
+  path.join(repoRoot, "packages", "design-system", "README.md"),
+]
 
 function read(filePath) {
   return readFileSync(filePath, "utf8")
@@ -25,4 +32,10 @@ test("docs/DEVELOPMENT.md documents setup and workflow commands by domain", () =
   assert.match(devDoc, /^## Shared Packages \(packages\)$/m)
   assert.match(devDoc, /^## Design Tokens$/m)
   assert.match(devDoc, /^## CI and Local Verification Workflows$/m)
+})
+
+test("reconciled docs do not reference the retired package scope", () => {
+  for (const filePath of reconciledDocPaths) {
+    assert.doesNotMatch(read(filePath), /@family-events\//, filePath)
+  }
 })

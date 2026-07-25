@@ -1,4 +1,4 @@
-# Project knowledge — `@family-events/web`
+# Project knowledge — `@cypress-ink-labs/web`
 
 React + Vite SPA for the Family Events product (consumer + admin workflows). Lives inside a pnpm + Turbo monorepo as `apps/web`.
 
@@ -7,15 +7,15 @@ React + Vite SPA for the Family Events product (consumer + admin workflows). Liv
 Run from the repo root (preferred — uses workspace filters):
 
 ```bash
-pnpm --filter @family-events/web dev        # local dev server (Vite)
-pnpm --filter @family-events/web build      # tsc -b && vite build
-pnpm --filter @family-events/web test       # vitest unit tests
-pnpm --filter @family-events/web test:e2e   # Playwright e2e (chromium)
-pnpm --filter @family-events/web check      # tsc + oxlint + oxfmt --check
-pnpm --filter @family-events/web typecheck  # tsc -b
-pnpm --filter @family-events/web lint       # oxlint src
-pnpm --filter @family-events/web lint:fix   # oxlint --fix src
-pnpm --filter @family-events/web format     # oxfmt --write src
+pnpm --filter @cypress-ink-labs/web dev        # local dev server (Vite)
+pnpm --filter @cypress-ink-labs/web build      # tsc -b && vite build
+pnpm --filter @cypress-ink-labs/web test       # vitest unit tests
+pnpm --filter @cypress-ink-labs/web test:e2e   # Playwright e2e (chromium)
+pnpm --filter @cypress-ink-labs/web check      # tsc + oxlint + oxfmt --check
+pnpm --filter @cypress-ink-labs/web typecheck  # tsc -b
+pnpm --filter @cypress-ink-labs/web lint       # oxlint src
+pnpm --filter @cypress-ink-labs/web lint:fix   # oxlint --fix src
+pnpm --filter @cypress-ink-labs/web format     # oxfmt --write src
 ```
 
 Or from this directory: `pnpm dev`, `pnpm build`, `pnpm test`, `pnpm check`, etc.
@@ -51,18 +51,17 @@ Web-only verification: `pnpm run verify:web` (from repo root).
 
 ### Workspace package boundaries
 
-- `@family-events/contracts` — backend/API contract types (use for anything crossing the API).
-- `@family-events/shared` — framework-neutral helpers only.
-- `@family-events/design-system` — design tokens / generated UI assets.
-- **Do not import** from `apps/ios`, `apps/android`, cron apps, or Supabase function source.
+- `@cypress-ink-labs/contracts` — backend/API contract types (use for anything crossing the API).
+- `@cypress-ink-labs/shared` — framework-neutral helpers only.
+- `@cypress-ink-labs/design-system` — design tokens / generated UI assets.
 
 ## Conventions
 
-- **Tooling:** TypeScript (strict via `tsconfig.app.json`), Vite 8, React 19, React Router 7, TanStack Query 5, Zustand, Tailwind v4 (via `@tailwindcss/vite`), shadcn/ui, MapLibre + react-map-gl, Recharts, Sonner, react-hook-form + zod, Sentry.
+- **Tooling:** TypeScript (strict via `tsconfig.app.json`), Vite 8, React 19, React Router 8, TanStack Query 5, Zustand, Tailwind v4 (via `@tailwindcss/vite`), shadcn/ui, MapLibre + react-map-gl, Recharts, Sonner, react-hook-form + zod, Sentry.
 - **Linting:** `oxlint` (extends `packages/config-quality/oxlint.base.json`). Browser env enabled.
 - **Formatting:** `oxfmt` (config at `packages/config-quality/oxfmt.base.json`). Run `pnpm format` or `format:check`.
 - **Tests:**
-  - Unit: Vitest, files `src/**/*.test.ts`, node environment, no JSX in tests.
+  - Unit: Vitest, colocated `*.test.ts` files in the node environment and `*.test.tsx` files with a `// @vitest-environment jsdom` docblock for DOM rendering.
   - E2E: Playwright (chromium only, `fullyParallel: false`, single worker). Auto-starts vite on `127.0.0.1:4173` unless `PLAYWRIGHT_BASE_URL` is set.
 - **Schemas:** Zod schemas live in `src/lib/schemas/` and are tested alongside (`*.test.ts`).
 - **Feature work:** Add new pages/flows under `src/features/<domain>/`. Co-locate hooks, components, and tests with the feature.
@@ -73,11 +72,11 @@ Web-only verification: `pnpm run verify:web` (from repo root).
 - **Generated files** are not hand-edited:
   - `src/styles/tokens.generated.css`
   - `packages/design-system/src/generated/*`
-  - To change tokens: edit `packages/design-system/tokens/tokens.json`, then `pnpm --filter @family-events/design-system build`.
+  - To change tokens: edit `packages/design-system/tokens/tokens.json`, then `pnpm --filter @cypress-ink-labs/design-system build`.
 - **Supabase clients:** never instantiate outside `src/infrastructure/supabase/client.ts`.
 - **Source maps** are only emitted when all `SENTRY_*` envs + a release are present (see `vite.config.ts`). This is intentional — bare `serve -s dist` would otherwise expose `*.map`.
 - **Manual chunking** in `vite.config.ts` splits heavy single-purpose vendors (`maplibre`, `recharts`, `sentry`, `motion`, `date-fns`, `radix-ui`, `supabase`, `d3`). It also strips `maplibre`/`recharts`/`sentry` from initial `<link rel="modulepreload">` to keep first paint lean — they load via `React.lazy()` on demand. Don't disable this without measuring TTI.
 - **Chunk size warning** is set to Rollup's default 500 KB so regressions surface in CI.
 - **`/version.json`** is synthesized in dev and written at build close — `useVersionCheck` relies on it.
 - **Playwright** uses `vite` (not `vite preview`), so behavior matches dev. It depends on a setup project that creates `e2e/.auth/admin.json`; if e2e is failing locally, check that auth fixture.
-- The `dist/` directory is checked in here (build output committed for the deployed image); regenerate via `pnpm build` rather than editing it.
+- The `dist` build output is gitignored, not checked in; regenerate via `pnpm build` rather than editing it.

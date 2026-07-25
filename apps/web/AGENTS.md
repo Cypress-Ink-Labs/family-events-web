@@ -46,10 +46,3 @@ For web-only changes:
 ```bash
 pnpm run verify:web
 ```
-
-For changes touching shared packages or generated design tokens, also run the relevant mobile checks when generated outputs affect mobile:
-
-```bash
-pnpm run verify:ios
-pnpm run verify:android
-```
