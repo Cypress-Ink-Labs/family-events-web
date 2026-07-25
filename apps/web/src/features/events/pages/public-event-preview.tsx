@@ -8,6 +8,7 @@ import { supabase } from "@/infrastructure/supabase/client"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { cleanDescription } from "@cypress-ink-labs/shared"
+import { SmartImage } from "@/shared/components/motion"
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
@@ -132,9 +133,11 @@ export function PublicEventPreviewPage() {
     <div className="bg-background py-8">
       <div className="mx-auto max-w-3xl space-y-4 px-4">
         <Card className="overflow-hidden border-border/60">
-          <img
+          <SmartImage
             src={imageUrl}
             alt={event.title ?? "Family event"}
+            variant="hero"
+            priority
             className="h-64 w-full object-cover"
           />
           <CardContent className="space-y-4 p-5">
