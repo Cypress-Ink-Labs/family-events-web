@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Button } from "@/shared/components/ui/button"
@@ -73,13 +73,21 @@ export function ProfilePage() {
       persistedSet.some((id, index) => id !== draftSet[index])
     return setChanged || primaryCityId !== persistedPrimaryId
   }, [persistedCityIds, selectedCityIds, primaryCityId, persistedPrimaryId])
+  const lastAppliedPrimaryId = useRef<string | null>(null)
 
   // Keep the app-store selection coherent with the persisted primary so the
   // rest of the app (default view) reflects the user's primary city.
   useEffect(() => {
-    if (!persistedPrimaryId) return
+    if (!persistedPrimaryId) {
+      lastAppliedPrimaryId.current = null
+      return
+    }
+    if (persistedPrimaryId === lastAppliedPrimaryId.current) return
     const primaryCity = cities.find((city) => city.id === persistedPrimaryId)
-    if (primaryCity) setSelectedCity(primaryCity)
+    if (primaryCity) {
+      setSelectedCity(primaryCity)
+      lastAppliedPrimaryId.current = persistedPrimaryId
+    }
   }, [persistedPrimaryId, cities, setSelectedCity])
 
   function handleAddCity(cityId: string) {
