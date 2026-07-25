@@ -9,6 +9,7 @@ import { ShareEventButton } from "@/features/plan/components/share-event-button"
 import { SmartImage } from "@/shared/components/motion"
 import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { formatEventPrice } from "@/shared/utils/format"
+import { planReasonChips } from "@/features/plan/lib/plan-reasons"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 
 interface PlanHeroCardProps {
@@ -29,6 +30,7 @@ function formatMatch(score: number): string {
 export function PlanHeroCard({ event }: PlanHeroCardProps) {
   const imageUrl = resolveEventImageUrl(event, 1200, 630)
   const distanceLabel = formatDistance(event.distance_km)
+  const reasonChips = planReasonChips(event)
 
   return (
     <Card className="overflow-hidden border-primary/30 bg-card shadow-sm">
@@ -74,6 +76,11 @@ export function PlanHeroCard({ event }: PlanHeroCardProps) {
           <Badge variant="secondary">{formatEventPrice(event.price, event.is_free)}</Badge>
           {distanceLabel ? <Badge variant="outline">{distanceLabel}</Badge> : null}
           <Badge variant="outline">{formatMatch(event.plan_score)}</Badge>
+          {reasonChips.map((label) => (
+            <Badge key={label} variant="outline">
+              {label}
+            </Badge>
+          ))}
         </div>
 
         <div className="flex flex-wrap gap-2">

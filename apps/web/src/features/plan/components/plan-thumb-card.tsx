@@ -7,6 +7,7 @@ import { FavoriteButton } from "@/features/events/components/favorite-button"
 import { SmartImage } from "@/shared/components/motion"
 import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { formatEventPrice } from "@/shared/utils/format"
+import { planReasonChips } from "@/features/plan/lib/plan-reasons"
 import type { PlannedEvent } from "@/features/plan/hooks/use-plan-for-today"
 
 interface PlanThumbCardProps {
@@ -20,6 +21,7 @@ function formatMatch(score: number): string {
 
 export function PlanThumbCard({ event }: PlanThumbCardProps) {
   const imageUrl = resolveEventImageUrl(event, 640, 360)
+  const reasonChips = planReasonChips(event)
 
   return (
     <Link to={`/events/${event.id}`} className="block">
@@ -52,9 +54,14 @@ export function PlanThumbCard({ event }: PlanThumbCardProps) {
               </div>
             ) : null}
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary">{formatEventPrice(event.price, event.is_free)}</Badge>
-            <span className="text-[11px] text-muted-foreground">
+            {reasonChips.map((label) => (
+              <Badge key={label} variant="outline">
+                {label}
+              </Badge>
+            ))}
+            <span className="ml-auto text-[11px] text-muted-foreground">
               {formatMatch(event.plan_score)}
             </span>
           </div>
