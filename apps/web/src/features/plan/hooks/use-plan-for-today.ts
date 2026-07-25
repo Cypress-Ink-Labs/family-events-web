@@ -11,6 +11,7 @@ import { adaptEnrichedRow } from "@/features/events/hooks/use-enriched-events"
 import { useGeolocation } from "@/features/plan/hooks/use-geolocation"
 import type { WeatherSnapshot } from "@/features/plan/hooks/use-weather"
 import { useWeather } from "@/features/plan/hooks/use-weather"
+import { formatDayKey } from "@/shared/lib/intl-formatters"
 
 // Cache the parser arrays at module scope so we're not allocating new
 // z.array wrappers on every render of the hook.
@@ -43,8 +44,8 @@ interface UsePlanForTodayOptions {
   enabled?: boolean
 }
 
-function todayDateKey(): string {
-  return new Date().toISOString().slice(0, 10)
+function todayDateKey(timeZone: string): string {
+  return formatDayKey(new Date(), timeZone)
 }
 
 function addDays(dateKey: string, daysToAdd: number): string {
@@ -78,6 +79,7 @@ function emptyPlan(weatherFit: string, weather: WeatherSnapshot | null): PlanFor
 
 export function usePlanForToday(options: UsePlanForTodayOptions = {}) {
   const { userId, selectedCity, childAge, enabled = true } = options
+  const timeZone = selectedCity?.timezone ?? "UTC"
 
   const geolocation = useGeolocation({ selectedCity, enabled })
   const weather = useWeather({
@@ -87,11 +89,11 @@ export function usePlanForToday(options: UsePlanForTodayOptions = {}) {
   })
   const weatherFit = weather.data?.weatherFit ?? "any"
 
-  const [dateKey, setDateKey] = useState(() => todayDateKey())
+  const [dateKey, setDateKey] = useState(() => todayDateKey(timeZone))
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const nextDateKey = todayDateKey()
+      const nextDateKey = todayDateKey(timeZone)
       setDateKey((currentDateKey) =>
         currentDateKey === nextDateKey ? currentDateKey : nextDateKey
       )
@@ -100,7 +102,7 @@ export function usePlanForToday(options: UsePlanForTodayOptions = {}) {
     return () => {
       clearInterval(interval)
     }
-  }, [])
+  }, [timeZone])
 
   return useQuery({
     queryKey: qk.saturdayPlan.byContext({
