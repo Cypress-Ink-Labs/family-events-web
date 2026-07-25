@@ -5,8 +5,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { ClientDate } from "@/shared/components/client-date"
 import { SmartImage } from "@/shared/components/motion"
-import { safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { cn } from "@/shared/utils/format"
 import type { EventWithDetails } from "@/shared/types"
 
@@ -53,15 +52,7 @@ export function DashboardTodaySection({ todayEvents }: DashboardTodaySectionProp
                   <div className="flex gap-4">
                     <div className="size-20 rounded-xl overflow-hidden shrink-0 bg-muted">
                       <SmartImage
-                        src={
-                          safeImageSrc(event.images?.[0]) ??
-                          getFallbackImageUrl(
-                            event.id,
-                            (event.tags ?? []).map((t) => t.tag.slug),
-                            200,
-                            200
-                          )
-                        }
+                        src={resolveEventImageUrl(event, 200, 200)}
                         alt={event.title}
                         variant="thumbnail"
                         className="size-full object-cover"

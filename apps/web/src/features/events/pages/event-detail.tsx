@@ -3,8 +3,7 @@ import { useParams } from "react-router"
 import { useDocumentTitle } from "@/shared/hooks/use-document-title"
 import { Clock, Star, Users } from "lucide-react"
 import { humanizeSupabaseError } from "@/infrastructure/supabase/errors"
-import { safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { formatDurationBetween } from "@/shared/utils/dates"
 import { formatEventPrice } from "@/shared/utils/format"
 import { cleanDescription } from "@cypress-ink-labs/shared"
@@ -141,14 +140,7 @@ export function EventDetailPage() {
   }
 
   const currentEvent = event
-  const imageUrl =
-    safeImageSrc(currentEvent.images?.[0]) ??
-    getFallbackImageUrl(
-      currentEvent.id,
-      (currentEvent.tags ?? []).map((t) => t.tag.slug),
-      800,
-      500
-    )
+  const imageUrl = resolveEventImageUrl(currentEvent, 800, 500)
   const startDate = new Date(currentEvent.start_datetime)
   const infoItems = [
     {

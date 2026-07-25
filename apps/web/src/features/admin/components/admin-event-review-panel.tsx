@@ -1,8 +1,8 @@
 import { Check, ExternalLink, Pencil, Sparkles, X, XCircle } from "lucide-react"
 import { Link } from "react-router"
 import type { EventAiTraceWithParsed, EventWithDetails, Tag as EventTag } from "@/shared/types"
-import { safeHref, safeImageSrc } from "@/infrastructure/safe-url"
-import { getFallbackImageUrl } from "@/features/events/lib/fallback-images"
+import { safeHref } from "@/infrastructure/safe-url"
+import { resolveEventImageUrl } from "@/features/events/lib/event-card-media"
 import { cn, formatEventPrice, formatSlugLabel } from "@/shared/utils/format"
 import { cleanDescription } from "@cypress-ink-labs/shared"
 import { Badge } from "@/shared/components/ui/badge"
@@ -77,14 +77,7 @@ export function AdminEventReviewDialog({
 
   const confidenceRaw = event.llm_review_confidence ?? event.ai_confidence ?? 0
   const confidencePct = Math.round(Number(confidenceRaw) * 100)
-  const heroImage =
-    safeImageSrc(event.images?.[0]) ??
-    getFallbackImageUrl(
-      event.id,
-      (event.tags ?? []).map((t) => t.tag.slug),
-      900,
-      360
-    )
+  const heroImage = resolveEventImageUrl(event, 900, 360)
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
