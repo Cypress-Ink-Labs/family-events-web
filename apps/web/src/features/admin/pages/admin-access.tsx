@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import {
   AdminAccessBulkBar,
@@ -15,6 +16,9 @@ import {
 } from "@/features/admin/hooks/use-admin-access"
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
+import { deleteAdminUser } from "@/features/admin/api/access"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { mapWithConcurrency } from "@/lib/async/map-with-concurrency"
 
 export function AdminAccessPage() {
   const { user, refreshProfile } = useAuth()
@@ -22,6 +26,7 @@ export function AdminAccessPage() {
   const updateAccess = useUpdateAdminUserAccess()
   const deleteUser = useDeleteAdminUser()
   const { toastError } = useAdminToast()
+  const queryClient = useQueryClient()
 
   const query = useAdminStore((s) => s.accessQuery)
   const setQuery = useAdminStore((s) => s.setAccessQuery)
@@ -119,7 +124,8 @@ export function AdminAccessPage() {
     ) {
       return
     }
-    const results = await Promise.allSettled(ids.map((id) => deleteUser.mutateAsync(id)))
+    const results = await mapWithConcurrency(ids, 4, deleteAdminUser)
+    void queryClient.invalidateQueries({ queryKey: qk.admin.userAccess })
     const succeeded = results.filter((r) => r.status === "fulfilled").length
     const failed = ids.length - succeeded
     if (succeeded > 0) {

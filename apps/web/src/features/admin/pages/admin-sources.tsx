@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import {
   AdminSourcesHeader,
@@ -21,6 +22,9 @@ import { useAdminSourceRunErrors } from "@/features/admin/hooks/sources/use-admi
 import { useAdminToast } from "@/features/admin/hooks/use-admin-toast"
 import { toast } from "sonner"
 import type { EventProcessingMode, ExtractionMode } from "@/shared/types"
+import { triggerSourceScrape } from "@/features/admin/api/sources"
+import { qk } from "@/infrastructure/queries/query-keys"
+import { mapWithConcurrency } from "@/lib/async/map-with-concurrency"
 
 function defaultExtractionModeForSourceType(sourceType: AdminSourceType): ExtractionMode {
   return sourceType === "website" ? "deterministic_then_llm" : "deterministic"
@@ -37,6 +41,7 @@ export function AdminSourcesPage() {
   const { value: cityFilter, setValue: setCityFilter } = useCityFilter()
   const { toastError } = useAdminToast()
   const bulkProcessingMode = useAdminBulkSetProcessingMode()
+  const queryClient = useQueryClient()
 
   const scrapingSourceIds = useAdminStore((s) => s.scrapingSourceIds)
   const addScrapingId = useAdminStore((s) => s.addScrapingId)
@@ -127,10 +132,18 @@ export function AdminSourcesPage() {
     if (activeSources.length === 0) return
 
     setIsScrapeAllPending(true)
-    const results = await Promise.all(activeSources.map((source) => handleScrape(source.id)))
+    const results = await mapWithConcurrency(
+      activeSources.map((source) => source.id),
+      4,
+      triggerSourceScrape
+    )
+    void queryClient.invalidateQueries({ queryKey: qk.admin.sources })
+    void queryClient.invalidateQueries({ queryKey: qk.admin.sourceQueueSummary })
+    void queryClient.invalidateQueries({ queryKey: qk.admin.sourceRuns })
+    void queryClient.invalidateQueries({ queryKey: qk.admin.stats })
     setIsScrapeAllPending(false)
 
-    const failed = results.filter((queued) => !queued).length
+    const failed = results.filter((result) => result.status === "rejected").length
     if (failed > 0) {
       toast.warning(`Scrape All: ${activeSources.length - failed} queued, ${failed} failed.`)
     } else {
