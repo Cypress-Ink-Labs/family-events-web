@@ -79,7 +79,7 @@ pnpm run verify:android
 Package manager: `pnpm@11.7.0`. Node workspaces: `apps/*`, `packages/*`.
 ```
 
-The live pin is `pnpm@11.15.1` in `package.json:5`, so this line should instead
+The live pin is `pnpm@11.22.0` in `package.json:5`, so this line should instead
 point readers to `package.json`'s `packageManager` field.
 
 `docs/DESIGN.md:93-99` claims the token build writes Swift output below a

@@ -35,7 +35,7 @@ changing which dependency build scripts are permitted.
 `package.json:5` pins the workspace package manager to pnpm 11:
 
 ```json
-"packageManager": "pnpm@11.15.1"
+"packageManager": "pnpm@11.22.0"
 ```
 
 `pnpm-workspace.yaml:8-17` already has the active pnpm 11 policy and a stale
@@ -93,7 +93,7 @@ at `pnpm-workspace.yaml:10-11`. pnpm 11 no longer recognizes
 ### Step 1: Confirm the active pnpm 11 policy before editing
 
 Read `package.json` and `pnpm-workspace.yaml` after the drift check. Confirm
-that `packageManager` remains `pnpm@11.15.1`, `onlyBuiltDependencies` contains
+that `packageManager` remains `pnpm@11.22.0`, `onlyBuiltDependencies` contains
 only `esbuild` and `lefthook`, and `allowBuilds` already sets both keys to
 `true`. Do not change the active map.
 
@@ -141,7 +141,7 @@ exits 0.
 
 ## STOP conditions
 
-- `package.json` no longer pins pnpm 11.15.1, or either policy excerpt in
+- `package.json` no longer pins pnpm 11.22.0, or either policy excerpt in
   `pnpm-workspace.yaml` does not match the Current state section.
 - `allowBuilds` does not already allow `esbuild` and `lefthook`; do not infer a
   replacement policy in this cleanup plan.
