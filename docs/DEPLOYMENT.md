@@ -26,3 +26,5 @@ introduces gets documented here and pointed at the API service's public URL.
 3. First deploy: verify `/healthz` returns 200, then load `/` in a browser:
    events should render (DB reachable), sign-in should open Clerk.
 4. Set the API service's `WEB_ORIGIN` to this app's public URL and redeploy the API.
+
+This replaces the old GitHub Actions-gated deploy flow with a Railway-native railpack build approach.
