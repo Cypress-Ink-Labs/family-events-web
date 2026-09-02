@@ -1,41 +1,30 @@
-# Deployment
+# Deployment (family-events-app)
 
-How `family-events-web` reaches production.
+Railway service, railpack build (`railway.toml`), Node 22 (`NODE_VERSION=22`
+service variable). Healthcheck: `GET /healthz` (TanStack server route).
 
-## What deploys, and how
+Authoritative variable list: `.env.example`.
 
-The web app (`apps/web`) is the `web` service on Railway (project `family-events-ui`,
-`production` environment). It deploys through **GitHub Actions**, not Railway's
-auto-deploy:
+## Service variables
 
-1. `ci` passes on `main` (or run `deploy.yml` via **workflow_dispatch**).
-2. `.github/workflows/deploy.yml`'s `deploy` job pauses on the **`production`** GitHub
-   Environment until a required reviewer approves.
-3. On approval it runs `scripts/deploy-web.sh` → `railway up --ci`, which uploads the
-   exact green commit; Railway builds it via `railway.toml` and deploys.
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `DATABASE_URL` | yes | Same shared Postgres as the API — the app's server functions query it directly until cutover (U33). Local dev uses the family-events-backend Supabase stack at `127.0.0.1:55322`. |
+| `VITE_CLERK_PUBLISHABLE_KEY` | yes | Clerk publishable key (`pk_...`); the only Clerk value the browser receives. |
+| `CLERK_SECRET_KEY` | yes | Clerk secret key (`sk_...`), server-side session verification. |
+| `CLERK_WEBHOOK_SIGNING_SECRET` | yes | Svix signing secret for `/api/webhooks/clerk`; unverified webhook requests are rejected. |
+| `NODE_VERSION` | yes | `22` — Railway service variable, not a `.env` entry. |
 
-Railway's own auto-deploy-on-push is **disabled** for the `web` service, so this is the
-single, CI-gated deploy path (a red CI can no longer reach production).
+There is no API-URL variable yet: the app does not call the NestJS API at
+runtime until cutover. When U33 wires the generated client in, the variable it
+introduces gets documented here and pointed at the API service's public URL.
 
-### Required GitHub secret
+## Deploy flow (operator)
 
-| Secret | Purpose |
-| --- | --- |
-| `RAILWAY_API_TOKEN` | Railway account token used by `railway up` |
+1. Create/link the Railway service to the family-events-app repo (`main` branch).
+2. Set the variables above plus `NODE_VERSION=22`.
+3. First deploy: verify `/healthz` returns 200, then load `/` in a browser:
+   events should render (DB reachable), sign-in should open Clerk.
+4. Set the API service's `WEB_ORIGIN` to this app's public URL and redeploy the API.
 
-(`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `NODE_AUTH_TOKEN` already exist for CI builds.)
-
-## Local / manual deploy
-
-```bash
-railway login          # one-time (or set RAILWAY_API_TOKEN)
-pnpm run deploy        # railway up --ci to family-events-ui / production / web
-```
-
-## Cross-repo ordering
-
-The backend (`family-events-backend`) deploys migrations + edge functions through its own
-gated pipeline. When a web change depends on a new RPC/column, deploy the **backend**
-first: make backend schema changes additive (expand/contract) and approve the backend
-`production` deploy before the web one. A web release must never call an RPC/column
-introduced in the same release. See the backend repo's `docs/DEPLOYMENT.md` (CIL-190).
+This replaces the old GitHub Actions-gated deploy flow with a Railway-native railpack build approach.
